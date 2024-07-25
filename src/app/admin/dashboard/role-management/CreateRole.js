@@ -3,8 +3,8 @@ import ButtonLoader from "@/common-components/ButtonLoader";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import Loader from "@/common-components/Loader";
-import { communication } from "@/services/communication";
-import { tabsArray } from "@/utilities/tabsArray";
+import { communication } from "@/apis/communication";
+// import { tabsArray } from "@/utilities/tabsArray";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/navigation";
@@ -240,12 +240,7 @@ function CreateRole({ data }) {
                   </label>
                 </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
-                  <input
-                    id="Brand"
-                    type="checkbox"
-                    {...register("Brand")}
-                    className="checkbox"
-                  />
+                  <input id="Brand" type="checkbox" {...register("Brand")} className="checkbox" />
                   <label className="fs-9" htmlFor="Brand">
                     Brand
                   </label>
@@ -262,7 +257,12 @@ function CreateRole({ data }) {
                   </label>
                 </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
-                  <input id="Name" type="checkbox" {...register("Product Name")} className="checkbox" />
+                  <input
+                    id="Name"
+                    type="checkbox"
+                    {...register("Product Name")}
+                    className="checkbox"
+                  />
                   <label className="fs-9" htmlFor="Name">
                     Product Name
                   </label>

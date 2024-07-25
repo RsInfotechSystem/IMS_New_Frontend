@@ -1,6 +1,23 @@
+import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
 const { communication } = require("./communication");
+
+export async function getUserAccessTabs(router) {
+  try {
+    const serverResponse = await communication.getUserAccessTab();
+    if (serverResponse?.data?.status === "SUCCESS") {
+      return serverResponse?.data?.tab;
+    } else if (serverResponse?.data?.status === "JWT_INVALID") {
+      toast.info(serverResponse.data.message);
+      router.push("/");
+    } else {
+      return [];
+    }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
+  }
+}
 
 export async function getLocations(setLoader, router, setLocations = []) {
   try {

@@ -3,7 +3,7 @@ import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import Loader from "@/common-components/Loader";
 import SelectBox from "@/common-components/Select";
-import { getCategory, getCategoryWiseBrand } from "@/services/commonApis";
+import { getCategory, getCategoryWiseBrand } from "@/apis/common-apis";
 import { communication, getServerUrl } from "@/services/communication";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";

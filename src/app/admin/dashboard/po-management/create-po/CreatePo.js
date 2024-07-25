@@ -5,7 +5,7 @@ import Loader from "@/common-components/Loader";
 import Search from "@/common-components/Search";
 import SelectBox from "@/common-components/Select";
 import currencyFormatter from "@/helper/currencyFormatter";
-import { getActiveVendorList, getCategory, getCategoryWiseBrand } from "@/services/commonApis";
+import { getActiveVendorList, getCategory, getCategoryWiseBrand } from "@/apis/common-apis";
 import { communication } from "@/services/communication";
 import { vendorType } from "@/utilities/vendorType";
 import { faCaretLeft, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";

@@ -83,23 +83,23 @@ export default function Login() {
           res?.data?.userDetails?.roleId?.tab.includes("user_management") ||
           res?.data?.userDetails?.roleId?.tab.includes("User Management")
         ) {
-          router.push("/admin/dashboard/user");
+          router.push("/admin/dashboard/user-management");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Location")) {
           router.push("/admin/dashboard/location");
         } else if (
           res?.data?.userDetails?.roleId?.tab.includes("category") ||
           res?.data?.userDetails?.roleId?.tab.includes("brand")
         ) {
-          router.push("/admin/dashboard/category-brand");
+          router.push("/admin/dashboard/category-management");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("parameter")) {
-          router.push("/admin/dashboard/parameter");
+          router.push("/admin/dashboard/parameter-management");
         } else if (
           res?.data?.userDetails?.roleId?.tab.includes("Rack Management") ||
           res?.data?.userDetails?.roleId?.tab.includes("Block Management")
         ) {
-          router.push("/admin/dashboard/rack-and-block");
+          router.push("/admin/dashboard/rack-management");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock In")) {
-          router.push("/admin/dashboard/stock");
+          router.push("/admin/dashboard/stock-management");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Assign Material")) {
           router.push("/admin/dashboard/assign-material");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Daily Task")) {
@@ -107,7 +107,7 @@ export default function Login() {
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock Out")) {
           router.push("/admin/dashboard/stock-out");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Inventory Look")) {
-          router.push("/admin/dashboard/inventory-look");
+          router.push("/admin/dashboard/inventory");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock List")) {
           router.push("/admin/dashboard/stock-list");
         } else if (res?.data?.userDetails?.roleId?.tab.includes("Model Details")) {

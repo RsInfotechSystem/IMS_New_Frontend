@@ -3,7 +3,7 @@ import ButtonLoader from "@/common-components/ButtonLoader";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import Loader from "@/common-components/Loader";
-import { getCategory } from "@/services/commonApis";
+import { getCategory } from "@/apis/common-apis";
 import { communication } from "@/services/communication";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

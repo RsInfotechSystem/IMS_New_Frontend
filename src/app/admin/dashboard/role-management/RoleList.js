@@ -5,9 +5,9 @@ import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { communication } from "@/services/communication";
+import { communication } from "@/apis/communication";
 import Loader from "@/common-components/Loader";
-import { getCookiesData } from "@/utilities/getCookiesData";
+// import { getCookiesData } from "@/utilities/getCookiesData";
 import CreateRole from "./CreateRole";
 import { toast } from "react-toastify";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
@@ -70,10 +70,12 @@ const RoleList = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
-  
+
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
-    setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === roles?.length)))
+    setSelectAllChecked(
+      !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === roles?.length
+    );
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
         // If the checkbox is already in the array, remove it
@@ -83,7 +85,6 @@ const RoleList = () => {
         return [...prevSelected, checkboxId];
       }
     });
-
   };
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
@@ -243,9 +244,7 @@ const RoleList = () => {
                         <h6>{roleDetails?.role}</h6>
                       </div>
                       <div className="col_50p">
-                        <h6>
-                          {roleDetails?.tab?.join(', ')}
-                        </h6>
+                        <h6>{roleDetails?.tab?.join(", ")}</h6>
                       </div>
                       <div className="col_10p">
                         <h6 className="action_wrraper">

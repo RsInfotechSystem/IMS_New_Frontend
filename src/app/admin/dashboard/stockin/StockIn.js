@@ -6,7 +6,7 @@ import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import SelectBox from "@/common-components/Select";
 
-import { getCategory, getCategoryWiseBrand, getLocationWiseBlock } from "@/services/commonApis";
+import { getCategory, getCategoryWiseBrand, getLocationWiseBlock } from "@/apis/common-apis";
 import { communication, getServerUrl } from "@/services/communication";
 import { toast } from "react-toastify";
 import ButtonLoader from "@/common-components/ButtonLoader";
