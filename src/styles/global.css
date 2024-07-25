@@ -4,13 +4,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  --green_color: #198754;
+  --green_color: #79080a;
   --black_color_dark_shade: #272727;
   --blue_color_dark_shade: #48505e;
   --grey_color_light_shade1: #d0d3d9;
   --grey_color_light_shade2: #f1f5f9;
-  --subtable_data: #f1fbf5;
-  --skyblue_color_light_shade1: #dcf4e6;
+  --subtable_data: #e5d9d9;
+  /* --skyblue_color_light_shade1: #dcf4e6; */
+  --skyblue_color_light_shade1: #f3df9a;
   --skyblue_color_light_shade2: #f3f8ff;
   --red_color: #dc3545;
   --yellow_color: #ffc107;
@@ -101,104 +102,6 @@ p {
   to {
     rotate: 360deg;
   }
-}
-/****************** CSS FOR ONLY LOGIN PAGE******************/
-
-body {
-  color: #929292 !important;
-  font-family: "Inter", sans-serif;
-  font-size: 20px !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: normal !important;
-}
-
-:root {
-  --primaryBlue: #4ca6bf;
-  --sidebarText: #4d4c4c;
-  --sidebarTextActive: #000000;
-  --sidebarBg: #b2c5ba;
-  --btn: #cbd8d0;
-  --tableContentColor: #6f6674;
-  --tableHeaderFontSize: 12px;
-  --tableDataFontSize: 11px;
-}
-
-.signinBody {
-  width: 100vw;
-  height: 100vh;
-  background: #ecedef;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.signin {
-  width: 985px;
-  height: 550px;
-  background: #fff;
-  box-shadow: 4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
-.warehouseSignin {
-  background: lightgray 50% / cover no-repeat;
-}
-
-.loginbtn {
-  width: 173px;
-  height: 42px;
-  /* flex-shrink: 0; */
-  border: none;
-  border-radius: 12px;
-  background: var(--primaryBlue);
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.input-box {
-  display: flex;
-  gap: 5px;
-  margin-left: 30px;
-  border-bottom: 4px solid #4ca6bf;
-  width: 462px;
-}
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input {
-  /* margin-left: 5px; */
-  border: none;
-  /* border-bottom: 2px solid #4ca6bf; */
-  /* padding-right: 25px; */
-  /* Space for lock icon
-  background-color: transparent; /* Transparent background */
-  outline: none;
-  /* Remove focus outline */
-  /* width: 100%; */
-}
-.remember-box {
-  display: flex;
-  margin-left: 290px;
-  gap: 20px;
-}
-.signin-footer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* margin-top: 70px; */
-  width: 390px;
-  height: 24px;
-  position: absolute;
-  bottom: 0;
-}
-
-.footer h6 {
-  font-size: 20px;
-  font-weight: 700;
 }
 
 /****************** COMMON UNIVERSAL CSS END ******************/
@@ -1062,7 +965,7 @@ div:where(.tab_active, .tab_inactive) {
 
 .login_info_section .icon {
   position: absolute;
-  top: 40%;
+  top: 48%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -1168,6 +1071,16 @@ div:where(.tab_active, .tab_inactive) {
 
 .reset_password_wrapper .form_title {
   padding: 25px;
+}
+
+.password{
+  width: 220px;
+  text-align: "center";
+  position: relative;
+}
+
+.password h6{
+  text-transform: none;
 }
 
 /*admin panel css */
@@ -1520,7 +1433,7 @@ div:where(.tab_active, .tab_inactive) {
 }
 
 .pi_view_product_table {
-  min-width: 500px;
+  min-width: 600px;
   max-height: 250px;
   overflow: auto;
 }
@@ -1621,7 +1534,7 @@ div:where(.tab_active, .tab_inactive) {
 }
 
 .custom_button:hover {
-  background-color: #167448;
+  background-color: #79080a;
 }
 
 .custom_input,
@@ -2028,7 +1941,7 @@ div:where(.tab_active, .tab_inactive) {
 
 .check_box .form-check {
   display: block;
-  /* min-height: 2.5rem !important; */
+  min-height: 2.5rem !important;
   padding-left: 2.5em;
   margin-bottom: 0.125rem;
 }
@@ -2807,7 +2720,7 @@ div:where(.access_sudo_class) {
 }
 
 .form_modal_wrapper .form_modal {
-  width: 30%;
+  width: 60%;
   min-height: 30%;
   max-height: 95%;
   background-color: var(--white-color);
@@ -2842,9 +2755,9 @@ div:where(.access_sudo_class) {
 }
 
 .form_modal_wrapper .form_modal_body {
-  width: 70%;
+  width: 90%;
   margin: auto;
-  padding: 5% 0% 2% 0;
+  padding: 0% 0% 2% 0;
 }
 
 .hrm_config_modal_wrapper .form_modal_body,
@@ -5341,3 +5254,16 @@ ul .appointment_letter_ul {
 .sales-table-data h6 {
   padding: 0 10px;
 }
+
+.checkbox_main {
+  margin-top: 10px !important;
+}
+.customer_sign p {
+  text-align: left;
+  margin-top: 10vh;
+  padding-left: 10%;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--black_color_dark_shade);
+}
+

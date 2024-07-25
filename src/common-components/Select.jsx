@@ -14,6 +14,7 @@ const SelectBox = ({
   defaultValue,
   selectedValue,
 }) => {
+  console.log("options", options);
   return (
     <div className="position-relative">
       <select

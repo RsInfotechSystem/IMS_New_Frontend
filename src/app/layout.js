@@ -1,25 +1,30 @@
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
-// import './globals.css'
-// import "../styles/styles.css";
-// import "../styles/media.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-// import "bootstrap/dist/css/bootstrap-icons.css";
-// import "sweetalert2/dist/sweetalert2.min.css"; // Import default Swal CSS
-// import "../styles/custom-styles.css"; // Import your custom styles CSS
-// import "react-datepicker/dist/react-datepicker.css";
-import "../styles/global.css";
+import "@/styles/global.css";
+import "@/styles/mediaQuery.css";
+import 'bootstrap/dist/css/bootstrap.min.css'
+// datepicker css 
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Inventory Management",
-  description: "Inventory Management next app",
+  title: "SBM",
+  description: "Seasonable Bussiness Management",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <head>
+        <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon" />
+      </head>
+      <body className={inter.className}>
+        <Suspense>
+          {children}
+        </Suspense>
+      </body>
     </html>
   );
 }

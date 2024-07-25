@@ -1,206 +1,199 @@
-/****************** ONLY FOR LOGIN PAGE******************/
-@media screen and (min-width: 1025px) and (max-width: 1440px) {
-  .bottom_login {
-    position: absolute;
-    transform: translate(70px, 10px);
-  }
+@media only screen and (min-width:768px) and (max-width:1023px) {
+    .side_nav_wrapper {
+        width: 15% !important;
+    }
+
+    .view_routes_wrapper {
+        width: 85%;
+    }
+
+    .top_header_nav_wrapper h6 {
+        font-size: 14px;
+    }
+
+    .side_nav_wrapper .tab_active,
+    .side_nav_wrapper .tab_inactive {
+        width: 80%;
+    }
+
+    .side_nav_wrapper .footer h6 {
+        font-size: 10px !important;
+    }
+
+    .side_nav_sub_tab_wrapper {
+        width: 30%;
+    }
+
+    .user_profile_wrapper .user_image_wrapper {
+        width: 42px;
+        height: 42px;
+    }
+
+    .user_profile_wrapper .profile_detail h6 {
+        font-size: 12px;
+    }
+
+    .user_profile_wrapper .profile_detail p {
+        font-size: 11px;
+    }
+
+    /*======login page & reset password==========*/
+    .login_form_section .login_form {
+        width: 70%;
+    }
+
+    .login_info_section .content h3 {
+        font-size: 40px;
+    }
+
+    /*=====form modal=============*/
+    .form_modal_wrapper .form_modal {
+        width: 55%;
+    }
+
+    /*====Employee tab HRM======*/
+    .employee_detail_main {
+        flex-direction: column;
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .employee_info_wrapper {
+        width: 100%;
+        height: auto !important;
+        overflow: unset !important;
+    }
+
+    .employee_info_data_wrapper {
+        width: 100%;
+        height: auto !important;
+        overflow-y: unset !important;
+    }
+
+    .employee_info_wrapper .employee_info_card_wrapper {
+        display: flex;
+        column-gap: 15px;
+    }
+
+    .net_salary_card_wrapper .table {
+        width: 70%;
+    }
+
+    .employee_info_data_wrapper .penalty_wrapper {
+        height: auto;
+    }
+
+    /*======Approval tab===============*/
+    .main_detail_wrapper .detail_box {
+        width: 70%;
+    }
+
+    /*=====code of conduct tab========*/
+    .coc_list_wrapper .coc_card_wrapper h5 {
+        font-size: 16px;
+    }
+
+    /*======payroll tab============*/
+    .payroll_counting_card_wrapper .counting_card_main {
+        column-gap: 2%;
+    }
+
+    .payroll_counting_card_wrapper .counting_card_main .card {
+        min-width: 140px;
+    }
+
+    .payroll_counting_card_wrapper .card h5 {
+        font-size: 14px;
+    }
+
+    .payroll_counting_card_wrapper .card h6 {
+        font-size: 12px;
+    }
+
+    .advance_payment_wrapper {
+        height: 84% !important;
+    }
+
+    /* ==========Admin Dashboard=========== */
+    .roll_access_card p {
+        font-size: 12px !important;
+    }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 1023px) {
-  .side_nav_wrapper {
-    width: 15% !important;
-  }
+@media only screen and (min-width:1024px) and (max-width:1300px) {
 
-  .view_routes_wrapper {
-    width: 85%;
-  }
+    .side_nav_wrapper .tab_active,
+    .side_nav_wrapper .tab_inactive {
+        width: 80%;
+    }
 
-  .top_header_nav_wrapper h6 {
-    font-size: 14px;
-  }
+    .side_nav_wrapper .footer h6 {
+        font-size: 11px !important;
+    }
 
-  .side_nav_wrapper .tab_active,
-  .side_nav_wrapper .tab_inactive {
-    width: 80%;
-  }
+    .user_profile_wrapper .user_image_wrapper {
+        width: 43px;
+        height: 43px;
+    }
 
-  .side_nav_wrapper .footer h6 {
-    font-size: 10px !important;
-  }
+    .user_profile_wrapper .profile_detail h6 {
+        font-size: 13px;
+    }
 
-  .side_nav_sub_tab_wrapper {
-    width: 30%;
-  }
+    .user_profile_wrapper .profile_detail p {
+        font-size: 12px;
+    }
 
-  .user_profile_wrapper .user_image_wrapper {
-    width: 42px;
-    height: 42px;
-  }
+    /*======login page & reset password==========*/
+    .login_form_section .login_form {
+        width: 65%;
+    }
 
-  .user_profile_wrapper .profile_detail h6 {
-    font-size: 12px;
-  }
+    /*=====form modal=============*/
+    .form_modal_wrapper .form_modal {
+        width: 45%;
+    }
 
-  .user_profile_wrapper .profile_detail p {
-    font-size: 11px;
-  }
+    /*======Approval tab===============*/
+    .main_detail_wrapper .detail_box {
+        width: 50%;
+    }
 
-  /*======login page & reset password==========*/
-  .login_form_section .login_form {
-    width: 70%;
-  }
+    /*=====code of conduct tab========*/
+    .coc_list_wrapper .coc_card_wrapper h5 {
+        font-size: 14px;
+    }
 
-  .login_info_section .content h3 {
-    font-size: 40px;
-  }
-
-  /*=====form modal=============*/
-  .form_modal_wrapper .form_modal {
-    width: 55%;
-  }
-
-  /*====Employee tab HRM======*/
-  .employee_detail_main {
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  .employee_info_wrapper {
-    width: 100%;
-    height: auto !important;
-    overflow: unset !important;
-  }
-
-  .employee_info_data_wrapper {
-    width: 100%;
-    height: auto !important;
-    overflow-y: unset !important;
-  }
-
-  .employee_info_wrapper .employee_info_card_wrapper {
-    display: flex;
-    column-gap: 15px;
-  }
-
-  .net_salary_card_wrapper .table {
-    width: 70%;
-  }
-
-  .employee_info_data_wrapper .penalty_wrapper {
-    height: auto;
-  }
-
-  /*======Approval tab===============*/
-  .main_detail_wrapper .detail_box {
-    width: 70%;
-  }
-
-  /*=====code of conduct tab========*/
-  .coc_list_wrapper .coc_card_wrapper h5 {
-    font-size: 16px;
-  }
-
-  /*======payroll tab============*/
-  .payroll_counting_card_wrapper .counting_card_main {
-    column-gap: 2%;
-  }
-
-  .payroll_counting_card_wrapper .counting_card_main .card {
-    min-width: 140px;
-  }
-
-  .payroll_counting_card_wrapper .card h5 {
-    font-size: 14px;
-  }
-
-  .payroll_counting_card_wrapper .card h6 {
-    font-size: 12px;
-  }
-
-  .advance_payment_wrapper {
-    height: 84% !important;
-  }
-
-  /* ==========Admin Dashboard=========== */
-  .roll_access_card p {
-    font-size: 12px !important;
-  }
-}
-
-@media only screen and (min-width: 1024px) and (max-width: 1300px) {
-  .side_nav_wrapper .tab_active,
-  .side_nav_wrapper .tab_inactive {
-    width: 80%;
-  }
-
-  .side_nav_wrapper .footer h6 {
-    font-size: 11px !important;
-  }
-
-  .user_profile_wrapper .user_image_wrapper {
-    width: 43px;
-    height: 43px;
-  }
-
-  .user_profile_wrapper .profile_detail h6 {
-    font-size: 13px;
-  }
-
-  .user_profile_wrapper .profile_detail p {
-    font-size: 12px;
-  }
-
-  /*======login page & reset password==========*/
-  .login_form_section .login_form {
-    width: 65%;
-  }
-
-  /*=====form modal=============*/
-  .form_modal_wrapper .form_modal {
-    width: 45%;
-  }
-
-  /*======Approval tab===============*/
-  .main_detail_wrapper .detail_box {
-    width: 50%;
-  }
-
-  /*=====code of conduct tab========*/
-  .coc_list_wrapper .coc_card_wrapper h5 {
-    font-size: 14px;
-  }
-
-  .coc_list_wrapper .coc_card_wrapper p {
-    font-size: 12px;
-  }
+    .coc_list_wrapper .coc_card_wrapper p {
+        font-size: 12px;
+    }
 }
 
 /*=======manage table width=========*/
-@media only screen and (min-width: 768px) and (max-width: 1300px) {
-  .top_header .tab_title {
-    font-size: 17px !important;
-  }
+@media only screen and (min-width:768px) and (max-width:1300px) {
+    .top_header .tab_title {
+        font-size: 17px !important;
+    }
 
-  .employee_table {
-    width: 1200px;
-  }
+    .employee_table {
+        width: 1200px;
+    }
 
-  .form_layout .form_main {
-    width: 92%;
-  }
+    .form_layout .form_main {
+        width: 92%;
+    }
 
-  .employee_dashboard_table {
-    min-width: 1200px;
-  }
+    .employee_dashboard_table {
+        min-width: 1200px;
+    }
 
-  .approval_card {
-    width: 100%;
-  }
+    .approval_card {
+        width: 100%;
+    }
 }
 
-@media only screen and (max-width: 768px) {
-  .search_box {
-    width: 250px;
-  }
+@media only screen and (max-width:768px) {
+    .search_box {
+        width: 250px;
+    }
 }
