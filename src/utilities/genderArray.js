@@ -1,0 +1,1 @@
+export const genderArray = ["Male", "Female", "Other"]
