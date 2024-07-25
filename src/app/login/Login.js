@@ -9,7 +9,7 @@ import lock from "../../../public/images/lock.png";
 // import Loader from "@/reusable/Loader";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
-// import { communication } from "@/apis/communication";
+import { communication } from "@/apis/communication";
 import { setCookie } from "cookies-next";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux-store/useReducer";
@@ -24,7 +24,7 @@ export default function Login() {
     formState: { errors },
   } = useForm();
 
-  // const [loader, setLoader] = useState(false);
+  const [loader, setLoader] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   // Check if localStorage is available
@@ -78,7 +78,7 @@ export default function Login() {
           icon: "success",
         });
         if (res?.data?.userDetails?.roleId?.tab.includes("Role Management")) {
-          router.push("/admin/dashboard/role");
+          router.push("/admin/dashboard/role-management");
         } else if (
           res?.data?.userDetails?.roleId?.tab.includes("user_management") ||
           res?.data?.userDetails?.roleId?.tab.includes("User Management")
@@ -234,8 +234,8 @@ export default function Login() {
                       id="rememberMe"
                       name="rememberMe"
                       className="custom-checkbox ms-4 cursor-pointer"
-                      // checked={rememberMe}
-                      // onChange={handleRememberMeChange}
+                      checked={rememberMe}
+                      onChange={handleRememberMeChange}
                     />
                     <label className="cursor-pointer" htmlFor="rememberMe">
                       Remember me
@@ -244,7 +244,7 @@ export default function Login() {
                   <div className="remember-box mt-4">
                     <button
                       type="submit"
-                      // onClick={handleSubmit(onSubmit)}
+                      onClick={handleSubmit(onSubmit)}
                       className="loginbtn ms-4"
                     >
                       Login
