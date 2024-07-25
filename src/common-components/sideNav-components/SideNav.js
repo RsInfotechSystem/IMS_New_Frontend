@@ -28,12 +28,13 @@ function SideNav() {
       </div>
       <div className="tab_wrapper">
         {sideNavTabArray
-          .filter((tabAccess) => tab.includes(tabAccess?.tabName?.toLowerCase()))
+          .filter((tabAccess) => tab?.includes(tabAccess?.tabName?.toLowerCase()))
           ?.map((ele, index) => {
+            // console.log(ele, "tabAccess?.tabName");
             return (
               <div
-                className={currentUrl.includes(ele.activeUrl) ? "tab_active" : "tab_inactive"}
-                onClick={() => router.push(ele.url)}
+                className={currentUrl?.includes(ele?.activeUrl) ? "tab_active" : "tab_inactive"}
+                onClick={() => router?.push(ele.url)}
                 key={index + 1}
               >
                 <div className="icon_wrapper">

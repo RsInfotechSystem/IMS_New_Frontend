@@ -48,6 +48,7 @@ export default function Login() {
       // setLoader(true);
       let res = await communication.login(data);
       if (res.data.status == "SUCCESS") {
+        debugger;
         setCookie("inventryToken", res?.data?.token);
         setCookie("userID", res?.data?.userDetails?.userId);
         setCookie("roleId", res?.data?.userDetails?.roleId?._id);
@@ -57,13 +58,13 @@ export default function Login() {
         setCookie("tab", res?.data?.userDetails?.roleId?.tab);
         setCookie("locationId", res?.data?.userDetails?.locationId);
 
-        if (rememberMe) {
-          window.localStorage.setItem("rememberedUserId", window.btoa(data.userId));
-          window.localStorage.setItem("rememberedPassword", window.btoa(data.password));
-        } else {
-          window.localStorage.removeItem("rememberedUserId");
-          window.localStorage.removeItem("rememberedPassword");
-        }
+        // if (rememberMe) {
+        //   window.localStorage.setItem("rememberedUserId", window.btoa(data.userId));
+        //   window.localStorage.setItem("rememberedPassword", window.btoa(data.password));
+        // } else {
+        //   window.localStorage.removeItem("rememberedUserId");
+        //   window.localStorage.removeItem("rememberedPassword");
+        // }
         // dispatch(
         //   login({
         //     isLoggedIn: true,
@@ -77,63 +78,65 @@ export default function Login() {
           text: res?.data?.message,
           icon: "success",
         });
-        if (res?.data?.userDetails?.roleId?.tab.includes("Role Management")) {
-          router.push("/admin/dashboard/role-management");
-        } else if (
-          res?.data?.userDetails?.roleId?.tab.includes("user_management") ||
-          res?.data?.userDetails?.roleId?.tab.includes("User Management")
-        ) {
-          router.push("/admin/dashboard/user-management");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Location")) {
-          router.push("/admin/dashboard/location");
-        } else if (
-          res?.data?.userDetails?.roleId?.tab.includes("category") ||
-          res?.data?.userDetails?.roleId?.tab.includes("brand")
-        ) {
-          router.push("/admin/dashboard/category-management");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("parameter")) {
-          router.push("/admin/dashboard/parameter-management");
-        } else if (
-          res?.data?.userDetails?.roleId?.tab.includes("Rack Management") ||
-          res?.data?.userDetails?.roleId?.tab.includes("Block Management")
-        ) {
-          router.push("/admin/dashboard/rack-management");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock In")) {
-          router.push("/admin/dashboard/stock-management");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Assign Material")) {
-          router.push("/admin/dashboard/assign-material");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Daily Task")) {
-          router.push("/admin/dashboard/daily-task");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock Out")) {
-          router.push("/admin/dashboard/stock-out");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Inventory Look")) {
-          router.push("/admin/dashboard/inventory");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock List")) {
-          router.push("/admin/dashboard/stock-list");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Model Details")) {
-          router.push("/admin/dashboard/model-details");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Inventory Look")) {
-          router.push("/admin/dashboard/inventory-look");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Sales Order")) {
-          router.push("/admin/dashboard/sales-order");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Transfer Material")) {
-          router.push("/admin/dashboard/transfer-material");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Receive Material")) {
-          router.push("/admin/dashboard/receive-material");
-        } else if (
-          res?.data?.userDetails?.roleId?.tab.includes("NR") ||
-          res?.data?.userDetails?.roleId?.tab.includes("NR Material")
-        ) {
-          router.push("/admin/dashboard/non-replaceable");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("notification")) {
-          router.push("/admin/dashboard/notification");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Approval")) {
-          router.push("/admin/dashboard/approval");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock Out")) {
-          router.push("/admin/dashboard/stock-out");
-        } else if (res?.data?.userDetails?.roleId?.tab.includes("report")) {
-          router.push("/admin/dashboard/report");
-        }
+        router.push("/admin/dashboard/role-management");
+
+        // if (res?.data?.userDetails?.roleId?.tab.includes("Role Management")) {
+        //   router.push("/admin/dashboard/role-management");
+        // } else if (
+        //   res?.data?.userDetails?.roleId?.tab.includes("user_management") ||
+        //   res?.data?.userDetails?.roleId?.tab.includes("User Management")
+        // ) {
+        //   router.push("/admin/dashboard/user-management");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Location")) {
+        //   router.push("/admin/dashboard/location");
+        // } else if (
+        //   res?.data?.userDetails?.roleId?.tab.includes("category") ||
+        //   res?.data?.userDetails?.roleId?.tab.includes("brand")
+        // ) {
+        //   router.push("/admin/dashboard/category-management");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("parameter")) {
+        //   router.push("/admin/dashboard/parameter-management");
+        // } else if (
+        //   res?.data?.userDetails?.roleId?.tab.includes("Rack Management") ||
+        //   res?.data?.userDetails?.roleId?.tab.includes("Block Management")
+        // ) {
+        //   router.push("/admin/dashboard/rack-management");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock In")) {
+        //   router.push("/admin/dashboard/stock-management");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Assign Material")) {
+        //   router.push("/admin/dashboard/assign-material");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Daily Task")) {
+        //   router.push("/admin/dashboard/daily-task");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock Out")) {
+        //   router.push("/admin/dashboard/stock-out");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Inventory Look")) {
+        //   router.push("/admin/dashboard/inventory");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock List")) {
+        //   router.push("/admin/dashboard/stock-list");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Model Details")) {
+        //   router.push("/admin/dashboard/model-details");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Inventory Look")) {
+        //   router.push("/admin/dashboard/inventory-look");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Sales Order")) {
+        //   router.push("/admin/dashboard/sales-order");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Transfer Material")) {
+        //   router.push("/admin/dashboard/transfer-material");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Receive Material")) {
+        //   router.push("/admin/dashboard/receive-material");
+        // } else if (
+        //   res?.data?.userDetails?.roleId?.tab.includes("NR") ||
+        //   res?.data?.userDetails?.roleId?.tab.includes("NR Material")
+        // ) {
+        //   router.push("/admin/dashboard/non-replaceable");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("notification")) {
+        //   router.push("/admin/dashboard/notification");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Approval")) {
+        //   router.push("/admin/dashboard/approval");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("Stock Out")) {
+        //   router.push("/admin/dashboard/stock-out");
+        // } else if (res?.data?.userDetails?.roleId?.tab.includes("report")) {
+        //   router.push("/admin/dashboard/report");
+        // }
       } else if (res.data.status == "FAILED") {
         Swal.fire({
           text: res?.data?.message,

@@ -5,7 +5,18 @@ const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 
 export const communication = {
   login: async (data) => await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/login`, data),
-
+  getUserAccessTab: async () => {
+    try {
+      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/get-user-access-tab`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      toast.error(error.message);
+    }
+  },
   //?---------Role management----------------------
   createRole: async (data) => {
     try {
