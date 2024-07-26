@@ -139,6 +139,8 @@ const Product = () => {
   useEffect(() => {
     getProductList(currentPage, searchString);
   }, [isPageUpdated]);
+
+  
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
@@ -155,7 +157,7 @@ const Product = () => {
         />
       )}
       <div className="top_header">
-        <div className="tab_title">Product</div>
+        <div className="tab_title">Model Details</div>
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -223,8 +225,8 @@ const Product = () => {
                 <h5>Sr. No.</h5>
               </div>
 
-              <div className="col_35p">
-                <h5>Product Name</h5>
+              <div className="col_20p">
+                <h5>Model Name</h5>
               </div>
               <div className="col_20p">
                 <h5>Category</h5>
@@ -260,13 +262,13 @@ const Product = () => {
                     <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                   </div>
 
-                  <div className="col_35p user_profile_wrapper">
-                    <Image
+                  <div className="col_20p">
+                    {/* <Image
                       src={`${getServerUrl()}/getFiles/${data?.files[0]?.fileUrl}`}
                       width={40}
                       height={40}
                       alt="Profile"
-                    />
+                    /> */}
                     <h6>{data?.name}</h6>
                   </div>
                   <div className="col_20p">

@@ -699,6 +699,8 @@ div:where(.col_100p) {
   column-gap: 35px;
 }
 
+.image_preview_container{
+}
 .notification_icon_wrapper {
   position: relative;
   cursor: pointer;

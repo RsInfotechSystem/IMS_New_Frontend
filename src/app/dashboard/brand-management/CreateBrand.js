@@ -14,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 function CreateBrand({ data }) {
-  const { modalStates, setModalStates, setIsPageUpdated } = data;
+  const { modalStates, setModalStates, setIsPageUpdated, getBrandList, currentPage,searchString } = data;
   const [loader, setLoader] = useState(false);
   const [CategoryMapData, setCategoryMapData] = useState([])
   const router = useRouter();
@@ -43,7 +43,9 @@ function CreateBrand({ data }) {
           type: "",
           id: "",
         }))
-        setIsPageUpdated(true)
+        // setIsPageUpdated(true)
+        getBrandList()
+
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.info(response.data.message)
         router.push("/");
@@ -63,8 +65,9 @@ function CreateBrand({ data }) {
       const responseFromServer = await communication.getBrandById({ brandId: modalStates.id });
       if (responseFromServer?.data?.status === "SUCCESS") {
         const brandData = responseFromServer?.data?.brand;
+        console.log("brandData",brandData);
         setValue("name", brandData.name);
-        setValue("categoryId", brandData.categoryId);
+        setValue("categoryId", brandData?.categoryId?._id);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message)
         router.push("/");

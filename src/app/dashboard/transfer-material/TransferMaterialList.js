@@ -89,8 +89,11 @@ const TransferMaterialList = () => {
           <div className="buttons_wrapper">
             <CustomBtn
               name={"Transfer"}
+              // onClick={() => {
+              //   setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
+              // }}
               onClick={() => {
-                setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
+                router.push("./transfer-material/transfer-material-form");
               }}
               svg={
                 <svg
