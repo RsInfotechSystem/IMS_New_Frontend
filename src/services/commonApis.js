@@ -37,6 +37,7 @@ export async function getCategoryWiseBrand(categoryId, setLoader, router, setBra
   try {
     const serverResponse = await communication.getCategoryWiseBrand(categoryId);
     if (serverResponse?.data?.status === "SUCCESS") {
+      setBrandsData(serverResponse?.data?.brand);
       return serverResponse?.data?.brand;
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
       toast.info(serverResponse.data.message);
@@ -49,17 +50,16 @@ export async function getCategoryWiseBrand(categoryId, setLoader, router, setBra
   }
 }
 
-
 export async function getUserAccessTabs(router) {
   try {
     const serverResponse = await communication.getUserAccessTab();
     if (serverResponse?.data?.status === "SUCCESS") {
       return serverResponse?.data?.tab;
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
-      toast.info(serverResponse.data.message)
+      toast.info(serverResponse.data.message);
       router.push("/");
     } else {
-      return []
+      return [];
     }
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);

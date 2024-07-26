@@ -232,19 +232,20 @@ const Inventory = () => {
                     <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                   </div>
                   <div className="col_40p user_profile_wrapper">
-                    <Image
+                    {/* <Image
                       src={`${getServerUrl()}/getFiles/${materialDetails?.modelId?.files[0]?.fileUrl
                         }`}
                       width={40}
                       height={40}
                       alt="Profile"
-                    />
-                    <h6 onClick={() => {
-                      router.push(
-                        `/dashboard/inventory/inventory-update?stockId=${materialDetails?._id
-                        }&type=view`
-                      );
-                    }}>
+                    /> */}
+                    <h6
+                      onClick={() => {
+                        router.push(
+                          `/dashboard/inventory/inventory-update?stockId=${materialDetails?._id}&type=view`
+                        );
+                      }}
+                    >
                       <strong>{materialDetails?.categoryId?.name}</strong>
                     </h6>
                   </div>
@@ -252,9 +253,7 @@ const Inventory = () => {
                     <h6>{materialDetails?.brandId?.name}</h6>
                   </div>
                   <div className="col_35p">
-                    <h6>
-                      {materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}
-                    </h6>
+                    <h6>{materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}</h6>
                   </div>
                   <div className="col_35p">
                     <h6>{materialDetails?.locationId.name}</h6>
@@ -284,7 +283,8 @@ const Inventory = () => {
                         <svg
                           onClick={() => {
                             router.push(
-                              `/dashboard/inventory/inventory-update?stockId=${materialDetails?._id
+                              `/dashboard/inventory/inventory-update?stockId=${
+                                materialDetails?._id
                               }&isView=${true}`
                             );
                           }}
@@ -339,7 +339,6 @@ const Inventory = () => {
           />
         </div>
       )}
-
     </>
   );
 };
