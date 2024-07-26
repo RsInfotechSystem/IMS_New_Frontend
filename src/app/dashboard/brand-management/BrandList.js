@@ -295,7 +295,7 @@ const BrandList = () => {
       }
       {
         modalStates?.modal && (
-          <CreateBrand data={{ modalStates, setModalStates, setIsPageUpdated }} />
+          <CreateBrand data={{ modalStates, setModalStates, setIsPageUpdated,getBrandList, searchString, currentPage}} />
         )
       }
     </>

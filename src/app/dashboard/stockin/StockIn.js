@@ -17,7 +17,7 @@ const StockIn = () => {
   const params = useSearchParams();
   const [loader, setLoader] = useState(false);
   const [CategoryMapData, setCategoryMapData] = useState([]);
-  const [brandMapData, setBrandMapData] = useState([]);
+  const [brandsData, setBrandsData] = useState([]);
   const [productMapData, setProductMapData] = useState([]);
   const [buttonLoader, setButtonLoader] = useState(false);
   const [locationList, setLocationList] = useState([]);
@@ -117,9 +117,9 @@ const StockIn = () => {
   }
   const handleCategory = async () => {
     if (getValues("categoryId")) {
-      setBrandMapData(await getCategoryWiseBrand(getValues("categoryId")));
+      setBrandsData(await getCategoryWiseBrand(getValues("categoryId"),setLoader, router, setBrandsData));
     } else {
-      setBrandMapData([]);
+      setBrandsData([]);
     }
   };
 
@@ -193,7 +193,7 @@ const StockIn = () => {
             <div className="row">
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Select Location *</label>
-                <SelectBox
+                {/* <SelectBox
                   options={locationList}
                   firstOption={"Select Location"}
                   displayName={"name"}
@@ -205,11 +205,35 @@ const StockIn = () => {
                     }),
                   }}
                   errors={errors.locationId}
-                />
+                /> */}
+                <select
+                  name="locationId"
+                  className="form-control custom_input"
+                  style={{ width: "100%" }}
+                  {...register("locationId", {
+                    required: "locationId is required",
+                  })}
+                >
+                  <option value="" className="text-secondary text-lowercase">
+                    Select Location
+                  </option>
+                  {locationList.map((ele, index) => {
+                    return (
+                      <option
+                        className="small text-capitalize"
+                        value={ele._id}
+                        key={index}
+                      >
+                        {" "}
+                        {ele.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>category Name *</label>
-                <SelectBox
+                {/* <SelectBox
                   options={CategoryMapData}
                   firstOption={"Select Category"}
                   displayName={"name"}
@@ -221,11 +245,35 @@ const StockIn = () => {
                     }),
                   }}
                   errors={errors.categoryId}
-                />
+                /> */}
+                <select
+                  name="categoryId"
+                  className="form-control custom_input"
+                  style={{ width: "100%" }}
+                  {...register("categoryId", {
+                    required: "categoryId is required",
+                  })}
+                >
+                  <option value="" className="text-secondary text-lowercase">
+                    Select Category*
+                  </option>
+                  {CategoryMapData.map((ele, index) => {
+                    return (
+                      <option
+                        className="small text-capitalize"
+                        value={ele._id}
+                        key={index}
+                      >
+                        {" "}
+                        {ele.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Brand Name *</label>
-                <SelectBox
+                {/* <SelectBox
                   options={brandMapData}
                   firstOption={"Select Brand"}
                   displayName={"name"}
@@ -237,11 +285,35 @@ const StockIn = () => {
                     }),
                   }}
                   errors={errors.brandId}
-                />
+                /> */}
+                <select
+                  name="brandId"
+                  className="form-control custom_input"
+                  style={{ width: "100%" }}
+                  {...register("brandId", {
+                    required: "Brand is required",
+                  })}
+                >
+                  <option value="" className="text-secondary text-lowercase">
+                    Select Brand
+                  </option>
+                  {brandsData?.map((ele, index) => {
+                    return (
+                      <option
+                        className="small text-capitalize"
+                        value={ele._id}
+                        key={index}
+                      >
+                        {" "}
+                        {ele.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Product Name *</label>
-                <SelectBox
+                {/* <SelectBox
                   options={productMapData}
                   firstOption={"Select Product"}
                   displayName={"name"}
@@ -253,11 +325,35 @@ const StockIn = () => {
                     }),
                   }}
                   errors={errors.modelId}
-                />
+                /> */}
+                <select
+                  name="categoryId"
+                  className="form-control custom_input"
+                  style={{ width: "100%" }}
+                  {...register("modelId", {
+                    required: "modelId is required",
+                  })}
+                >
+                  <option value="" className="text-secondary text-lowercase">
+                    Select Model
+                  </option>
+                  {productMapData.map((ele, index) => {
+                    return (
+                      <option
+                        className="small text-capitalize"
+                        value={ele._id}
+                        key={index}
+                      >
+                        {" "}
+                        {ele.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Select Block *</label>
-                <SelectBox
+                {/* <SelectBox
                   options={blocks}
                   firstOption={"Select Block"}
                   displayName={"blockNo"}
@@ -269,7 +365,31 @@ const StockIn = () => {
                     }),
                   }}
                   errors={errors.blockId}
-                />
+                /> */}
+                <select
+                  name="blockId"
+                  className="form-control custom_input"
+                  style={{ width: "100%" }}
+                  {...register("blockId", {
+                    required: "blockNo is required",
+                  })}
+                >
+                  <option value="" className="text-secondary text-lowercase">
+                    Select block
+                  </option>
+                  {blocks.map((ele, index) => {
+                    return (
+                      <option
+                        className="small text-capitalize"
+                        value={ele._id}
+                        key={index}
+                      >
+                        {" "}
+                        {ele.blockNo}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Quantity *</label>
