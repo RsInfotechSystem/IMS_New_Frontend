@@ -1095,6 +1095,23 @@ export const communication = {
     }
   },
 
+  // ----------------------------NR material API-----------------------------------
+  getNrMaterialList: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/nr/get-non-replacable-stock-list`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   /////////////////////////sakshi assign material//////////////////////////////////////
   // ------------------material-------------------
   getMaterialList: async (data) => {
@@ -1113,6 +1130,23 @@ export const communication = {
       throw error;
     }
   },
+  sellNrMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/nr/sell-non-replacable-stock`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getCategoryWiseParameter: async (data) => {
     try {
       return await axios.post(
@@ -1130,6 +1164,24 @@ export const communication = {
       throw error;
     }
   },
+  // ----------------------------Stock-Out material API-----------------------------------
+  getStockOutMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/fetched-stock-out-materials`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
   getTechnicianList: async () => {
     try {
       return await axios.get(
