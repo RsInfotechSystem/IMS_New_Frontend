@@ -152,7 +152,7 @@ const NrMateial = () => {
         <>
             {loader && <Loader text="Fetching Data..." />}
             <div className="top_header">
-                <div className="tab_title">Inventory</div>
+                <div className="tab_title">NR Material</div>
             </div>
             <div className="search_btn_wrapper">
                 <Search
