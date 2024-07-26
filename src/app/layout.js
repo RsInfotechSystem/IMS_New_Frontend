@@ -10,7 +10,7 @@ import 'react-calendar/dist/Calendar.css';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "SBM",
+  title: "IMS",
   description: "Seasonable Bussiness Management",
 };
 

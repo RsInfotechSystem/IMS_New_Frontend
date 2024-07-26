@@ -139,6 +139,8 @@ const Product = () => {
   useEffect(() => {
     getProductList(currentPage, searchString);
   }, [isPageUpdated]);
+
+  
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}

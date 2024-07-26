@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import { communication } from "./communication";
 
-export async function getCategory(router) {
+export async function getCategory(setLoader, router, setCategory = []) {
   try {
     const serverResponse = await communication.getActiveCategory();
     if (serverResponse?.data?.status === "SUCCESS") {
@@ -57,6 +57,7 @@ export async function getLocations(setLoader, router, setLocations = []) {
 
 export async function getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData = []) {
   try {
+    
     const serverResponse = await communication.getCategoryWiseBrand(categoryId);
     if (serverResponse?.data?.status === "SUCCESS") {
       setBrandsData(serverResponse?.data?.brand);
