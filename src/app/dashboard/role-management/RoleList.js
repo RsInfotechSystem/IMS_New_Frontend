@@ -14,6 +14,7 @@ import CustomResponseHandlerModal from "@/common-components/CustomResponseHandle
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
+
 const RoleList = () => {
   const [roles, setRoles] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -28,6 +29,7 @@ const RoleList = () => {
   const [modalStates, setModalStates] = useState({ modal: false, type: "" });
   const router = useRouter();
   const [showModal, setShowModal] = useState({ modal: false });
+
   //get Role list on initial Load
   async function getRoleList(page, searchString, isSearch = false) {
     try {
@@ -70,7 +72,7 @@ const RoleList = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
-  
+
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
     setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === roles?.length)))
