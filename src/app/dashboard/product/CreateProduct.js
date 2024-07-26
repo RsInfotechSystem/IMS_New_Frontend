@@ -17,15 +17,11 @@ import { toast } from "react-toastify";
 function CreateProduct({ data }) {
   const { modalStates, setModalStates, getProductList } = data;
   const [loader, setLoader] = useState(false);
-  const [CategoryMapData, setCategoryMapData] = useState([]);
-  const [brandData, setBrandData] = useState([]);
+  const [categoryList, setCategoryList] = useState([]);
+  const [brandsData, setBrandsData] = useState([]);
   const [_brandId, _setBrandId] = useState("");
   const router = useRouter();
-  const [profile, setProfile] = useState({
-    fieldName: "",
-    documentName: "",
-    fileUrl: "",
-  });
+  const [profile, setProfile] = useState([]);
   const {
     register,
     handleSubmit,
@@ -35,7 +31,11 @@ function CreateProduct({ data }) {
     formState: { errors },
   } = useForm();
 
-  const categoryId = watch("categoryId");
+  let categoryId = watch("categoryId");
+  const brandId = watch("brandId");
+
+  console.log("profile",profile);
+
   async function onSubmit(values) {
     try {
       setLoader(true);
@@ -48,19 +48,22 @@ function CreateProduct({ data }) {
         brandId: values.brandId,
       };
       if (modalStates?.type === "create") {
-        if (!profile.documentName) {
-          toast.info("Please select the product Image");
+        if (profile.length === 0) {
+          toast.info("Please select the product Image(s)");
           return;
         }
-        formData.append("files", profile.fileUrl);
+        profile.forEach((file) => {
+          formData.append("files", file.fileUrl);
+        });
         formData.append("modelDetails", JSON.stringify(dataToSend));
         response = await communication.createProduct(formData);
       } else {
-        let isFileAttached = false;
+        let isFileAttached = profile.length > 0;
         dataToSend.modelId = modalStates.productId;
-        if (profile.fieldName) {
-          isFileAttached = true;
-          formData.append("files", profile.fileUrl);
+        if (isFileAttached) {
+          profile.forEach((file) => {
+            formData.append("files", file.fileUrl);
+          });
           formData.append("modelDetails", JSON.stringify(dataToSend));
         } else {
           formData = dataToSend;
@@ -97,12 +100,12 @@ function CreateProduct({ data }) {
       if (responseFromServer?.data?.status === "SUCCESS") {
         const modelData = responseFromServer?.data?.model;
         setValue("name", modelData.name);
-        setValue("categoryId", modelData.categoryId._id);
+        setValue("categoryId", modelData?.categoryId?._id);
         _setBrandId(modelData.brandId._id);
-        await getCategoryWiseBrand(modelData?.categoryId?._id);
-        setValue("brandId", modelData.brandId._id);
+        await getCategoryWiseBrand(modelData?.categoryId?._id,setLoader, router, setBrandsData);
+        setValue("brandId", modelData?.brandId?._id);
         setValue("description", modelData.description);
-        setProfile(modelData?.files[0]);
+        setProfile(modelData?.files);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -110,26 +113,14 @@ function CreateProduct({ data }) {
         toast.info(serverResponse.data.message);
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || error.message);
+      toast.info(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
   };
 
-  const handleCategory = async () => {
-    if (getValues("categoryId")) {
-      setBrandData(await getCategoryWiseBrand(getValues("categoryId")));
-    } else {
-      setBrandData([]);
-    }
-  };
-
-  useMemo(() => {
-    handleCategory();
-  }, [categoryId]);
-
   async function initialAPICall() {
-    setCategoryMapData(await getCategory(router));
+    setCategoryList(await getCategory(router));
     if (modalStates?.type !== "create") {
       await getProductById();
     }
@@ -137,6 +128,18 @@ function CreateProduct({ data }) {
   useEffect(() => {
     initialAPICall();
   }, []);
+
+  useEffect(() => {
+    getCategory(setLoader, router, setCategoryList);
+  }, []);
+
+  useEffect(() => {
+    const id = getValues("categoryId");
+    if (id) {
+      getCategoryWiseBrand(id, setLoader, router, setBrandsData);
+    }
+  }, [categoryId]);
+
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
@@ -155,12 +158,12 @@ function CreateProduct({ data }) {
           <div className="form_modal_body">
             <div className="row">
               <div className="input_wrapper col-lg-4">
-                <label>Product Name*</label>
+                <label>Model Name*</label>
                 <InputBox
                   type={"text"}
                   register={{
                     ...register("name", {
-                      required: "Product Name is required",
+                      required: "Model Name is required",
                     }),
                   }}
                   errors={errors.name}
@@ -168,36 +171,59 @@ function CreateProduct({ data }) {
               </div>
               <div className="input_wrapper col-lg-4">
                 <label>Category*</label>
-                <SelectBox
-                  firstOption="select Category"
-                  options={CategoryMapData}
-                  displayName={"name"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("categoryId", {
-                      required: "Category is required",
-                    }),
-                  }}
-                  errors={errors.categoryId}
-                />
+                <select
+                  name="categoryId"
+                  className="form-control custom_input"
+                  style={{ width: "100%" }}
+                  {...register("categoryId", {
+                    required: "Category is required",
+                  })}
+
+                >
+                  <option value="" className="text-secondary text-lowercase">
+                    Select Category
+                  </option>
+                  {categoryList.map((ele, index) => {
+                    return (
+                      <option
+                        className="small text-capitalize"
+                        value={ele._id}
+                        key={index}
+                      >
+                        {" "}
+                        {ele.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
 
               <div className="input_wrapper col-lg-4">
                 <label>Brand*</label>
-                <SelectBox
-                  firstOption="select Brand"
-                  options={brandData}
-                  displayName={"name"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("brandId", {
-                      required: "Brand is required",
-                    }),
-                  }}
-                  errors={errors.brandId}
-                />
+                <select
+                  name="categoryId"
+                  className="form-control custom_input"
+                  style={{ width: "100%" }}
+                  {...register("brandId", {
+                    required: "Brand is required",
+                  })}
+                >
+                  <option value="" className="text-secondary text-lowercase">
+                    Select Brand
+                  </option>
+                  {brandsData.map((ele, index) => {
+                    return (
+                      <option
+                        className="small text-capitalize"
+                        value={ele._id}
+                        key={index}
+                      >
+                        {" "}
+                        {ele.name}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div className="input_wrapper col-lg-12">
                 <label>Description*</label>
@@ -214,7 +240,7 @@ function CreateProduct({ data }) {
 
               <div className="input_wrapper col-lg-12">
                 <div className="document_picker_wrapper">
-                  <h6>Product Photo*</h6>
+                  <h6>Model Photo(s)*</h6>
                   <label htmlFor={"photo"}>
                     <div className="document_picker">
                       <input
@@ -222,35 +248,40 @@ function CreateProduct({ data }) {
                         type="file"
                         className="d-none"
                         id={"photo"}
+                        multiple
                         onChange={(e) => {
-                          const file = e.target.files[0];
-                          if (file) {
-                            setProfile((prev) => ({
-                              ...prev,
+                          const files = Array.from(e.target.files);
+                          if (files.length > 0) {
+                            const updatedFiles = files.map((file) => ({
                               fieldName: "photo",
                               documentName: file.name,
                               fileUrl: file,
                             }));
+                            setProfile((prev) => [...prev, ...updatedFiles]);
                           }
                         }}
                       />
-                      {![null, undefined, ""].includes(profile?.fileUrl) ? (
-                        <>
-                          <Image
-                            alt={profile?.documentName}
-                            width={200}
-                            height={200}
-                            src={
-                              typeof profile?.fileUrl === "object"
-                                ? URL.createObjectURL(profile?.fileUrl)
-                                : `${getServerUrl()}/getFiles/${profile?.fileUrl}`
-                            }
-                          />
-                          <p>
-                            {profile?.documentName?.split(".")[0]?.slice(0, 10)}.
-                            {profile?.documentName?.split(".")[1]}
-                          </p>
-                        </>
+                      {profile.length > 0 ? (
+                        <div className="image_preview_container">
+                          {profile.map((file, index) => (
+                            <div key={index} className="image_preview">
+                              <Image
+                                alt={file.documentName}
+                                width={100}
+                                height={100}
+                                src={
+                                  typeof file.fileUrl === "object"
+                                    ? URL.createObjectURL(file.fileUrl)
+                                    : `${getServerUrl()}/getFiles/${file.fileUrl}`
+                                }
+                              />
+                              <p>
+                                {file.documentName?.split(".")[0]?.slice(0, 10)}.
+                                {file.documentName?.split(".")[1]}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
                       ) : (
                         <FontAwesomeIcon icon={faCirclePlus} className="icon fontAwesome_icon" />
                       )}
