@@ -13,6 +13,7 @@ const SelectBox = ({
   errors,
   defaultValue,
   selectedValue,
+  onChange,
 }) => {
   console.log("options", options);
   return (
@@ -21,6 +22,7 @@ const SelectBox = ({
         {...register}
         className="form-control custom_input"
         disabled={disable}
+        onChange={onChange}
       >
         <option value="" className="text-secondary text-lowercase">
           {firstOption}
@@ -32,15 +34,13 @@ const SelectBox = ({
               key={index}
               value={value ? data[value] : data}
               defaultValue={value ? data[value] : data == defaultValue}
-              selected={
-                value ? data[value] === selectedValue : data === selectedValue
-              }
+              selected={value ? data[value] === selectedValue : data === selectedValue}
             >
-              {otherDisplayName ?
-                `${data[displayName]} (${data[otherDisplayName]})`
-                :
-                displayName ? data[displayName] : data
-              }
+              {otherDisplayName
+                ? `${data[displayName]} (${data[otherDisplayName]})`
+                : displayName
+                ? data[displayName]
+                : data}
             </option>
           );
         })}

@@ -1112,11 +1112,47 @@ export const communication = {
       throw error;
     }
   },
+  /////////////////////////sakshi assign material//////////////////////////////////////
+  // ------------------material-------------------
+  getMaterialList: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-list`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   sellNrMaterial: async (data) => {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/nr/sell-non-replacable-stock`,
         data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getCategoryWiseParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-category-wise-parameter-for-material`,
+        data,
+
         {
           headers: {
             "Content-Type": "application/json",
@@ -1145,4 +1181,125 @@ export const communication = {
       throw error;
     }
   },
+
+  getTechnicianList: async () => {
+    try {
+      return await axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-technician`,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  AssignMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/assigned-material`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  // -----------------------Transfer Material------------------------------------
+  getTransferMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-transfer-material-list`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getReceiveMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-receive-material-list`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  transferMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/transfer-material`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getActiveLocation: async () => {
+    try {
+      return await axios.get(
+        // " https://imsbackend.rsinfotechsys.com/location/get-all-location",
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/location/get-active-locations`,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getTransferMaterialDetails: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-transfer-material-by-id`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  ////////////////////////////////end////////////////////////////////////////////
 };

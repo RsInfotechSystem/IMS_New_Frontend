@@ -188,7 +188,7 @@ function CreateBlock({ data }) {
                   }}
                   errors={errors.blockNo}
                 />
-              </div>{" "}
+              </div>
             </div>
             <div className="form_button_wrapper">
               <CustomBtn
