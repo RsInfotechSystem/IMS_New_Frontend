@@ -12,9 +12,9 @@ import { toast } from "react-toastify";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const BrandList = () => {
-  const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
   const router = useRouter();
   const [modalStates, setModalStates] = useState({ deleteBrand: false, modal: false, type: "", id: "" });
   const [brandList, setBrandList] = useState([]);

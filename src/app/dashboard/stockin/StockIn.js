@@ -312,7 +312,7 @@ const StockIn = () => {
                 </select>
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Product Name *</label>
+                <label>Model Name *</label>
                 {/* <SelectBox
                   options={productMapData}
                   firstOption={"Select Product"}

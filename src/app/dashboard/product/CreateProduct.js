@@ -158,12 +158,12 @@ function CreateProduct({ data }) {
           <div className="form_modal_body">
             <div className="row">
               <div className="input_wrapper col-lg-4">
-                <label>Product Name*</label>
+                <label>Model Name*</label>
                 <InputBox
                   type={"text"}
                   register={{
                     ...register("name", {
-                      required: "Product Name is required",
+                      required: "Model Name is required",
                     }),
                   }}
                   errors={errors.name}
@@ -178,6 +178,7 @@ function CreateProduct({ data }) {
                   {...register("categoryId", {
                     required: "Category is required",
                   })}
+
                 >
                   <option value="" className="text-secondary text-lowercase">
                     Select Category
@@ -239,7 +240,7 @@ function CreateProduct({ data }) {
 
               <div className="input_wrapper col-lg-12">
                 <div className="document_picker_wrapper">
-                  <h6>Product Photo(s)*</h6>
+                  <h6>Model Photo(s)*</h6>
                   <label htmlFor={"photo"}>
                     <div className="document_picker">
                       <input
