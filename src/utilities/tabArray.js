@@ -136,7 +136,7 @@ export const sideNavTabArray = [
     },
     {
         tab: "Stock Management",
-        activeUrl: "stockin",
+        activeUrl: "stock-management",
         tabName: "Stock Management",
         url: "/dashboard/stock-management",
         icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
