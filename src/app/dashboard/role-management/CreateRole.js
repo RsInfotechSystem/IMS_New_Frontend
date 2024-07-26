@@ -209,11 +209,11 @@ function CreateRole({ data }) {
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
                   <input
                     type="checkbox"
-                    id="location"
+                    id="Location"
                     {...register("Location")}
                     className="checkbox"
                   />
-                  <label className="fs-9" htmlFor="location">
+                  <label className="fs-9" htmlFor="Location">
                     Location
                   </label>
                 </div>
@@ -243,11 +243,33 @@ function CreateRole({ data }) {
                   <input
                     id="Brand"
                     type="checkbox"
-                    {...register("Brand")}
+                    {...register("Brand Management")}
                     className="checkbox"
                   />
-                  <label className="fs-9" htmlFor="Brand">
+                  <label className="fs-9" htmlFor="Brand Management">
                     Brand
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Parameters"
+                    type="checkbox"
+                    {...register("Parameters")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Parameters">
+                    Parameters
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Rack Management"
+                    type="checkbox"
+                    {...register("Rack Management")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Rack Management">
+                    Rack Management
                   </label>
                 </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
@@ -262,9 +284,12 @@ function CreateRole({ data }) {
                   </label>
                 </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
-                  <input id="Name" type="checkbox" {...register("Product Name")} className="checkbox" />
-                  <label className="fs-9" htmlFor="Name">
-                    Product Name
+                  <input
+                    id="Model Details"
+                    type="checkbox" {...register("Model Details")}
+                    className="checkbox" />
+                  <label className="fs-9" htmlFor="Model Details">
+                    Model Details
                   </label>
                 </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
@@ -280,6 +305,39 @@ function CreateRole({ data }) {
                 </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
                   <input
+                    id="Assign Material"
+                    type="checkbox"
+                    {...register("Assign Material")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Assign Material">
+                    Assign Material
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Daily Task"
+                    type="checkbox"
+                    {...register("Daily Task")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Daily Task">
+                    Daily Task
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Stock Management"
+                    type="checkbox"
+                    {...register("Stock Management")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Stock Management">
+                    Stock Management
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
                     id="Inventory Look"
                     type="checkbox"
                     {...register("Inventory Look")}
@@ -289,8 +347,42 @@ function CreateRole({ data }) {
                     Inventory Look
                   </label>
                 </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Sales Order"
+                    type="checkbox"
+                    {...register("Sales Order")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Sales Order">
+                    Sales Order
+                  </label>
+                </div>
 
-                {/* <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Transfer Material"
+                    type="checkbox"
+                    {...register("Transfer Material")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Transfer Material">
+                    Transfer Material
+                  </label>
+                </div>
+
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Receive  Material"
+                    type="checkbox"
+                    {...register("Receive  Material")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Receive  Material">
+                    Receive  Material
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
                   <input
                     id="Approval"
                     type="checkbox"
@@ -300,8 +392,18 @@ function CreateRole({ data }) {
                   <label className="fs-9" htmlFor="Approval">
                     Approval
                   </label>
-                </div> */}
-
+                </div>
+                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                  <input
+                    id="NR Material"
+                    type="checkbox"
+                    {...register("NR Material")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="NR Material">
+                    NR Material
+                  </label>
+                </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
                   <input
                     id="Stock Out"
@@ -313,34 +415,30 @@ function CreateRole({ data }) {
                     Stock Out
                   </label>
                 </div>
+
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
                   <input
-                    id="Po List"
+                    id="Notification"
                     type="checkbox"
-                    {...register("Po List")}
+                    {...register("Notification")}
                     className="checkbox"
                   />
-                  <label className="fs-9" htmlFor="Po List">
-                    Po List
-                  </label>
-                </div>
-                {/* <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
-                  <input
-                    id="notification"
-                    type="checkbox"
-                    {...register("notification")}
-                    className="checkbox"
-                  />
-                  <label className="fs-9" htmlFor="notification">
+                  <label className="fs-9" htmlFor="Notification">
                     Notification
                   </label>
-                </div> */}
+                </div>
                 <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
-                  <input id="report" type="checkbox" {...register("report")} className="checkbox" />
-                  <label className="fs-9" htmlFor="report">
+                  <input
+                    id="Report"
+                    type="checkbox"
+                    {...register("Report")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Report">
                     Report
                   </label>
                 </div>
+
               </div>
             </div>
             <div className="form_button_wrapper">
