@@ -196,7 +196,7 @@ const RoleList = () => {
         <div className="table_main">
           <div className="table_section">
             <div className="table_header">
-              <div className="col_5p">
+              <div className="col_7p">
                 <div className="check_box">
                   <input
                     className="form-check-input"

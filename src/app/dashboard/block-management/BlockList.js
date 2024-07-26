@@ -40,6 +40,7 @@ const BlockList = () => {
   const [checkedStatus, setCheckedStatus] = useState({});
   const [errorForRackFlag, setErrorRackFlag] = useState("");
   const [showModal, setShowModal] = useState({ modal: false });
+
   async function getBlockList(page, searchString, isSearch = false) {
     try {
       setLoader(true);
@@ -123,7 +124,7 @@ const BlockList = () => {
         toast.info(serverResponse?.data?.message);
         setIsEnableDisable((prev) => ({ ...prev, modal: false }));
       }
-    } catch (error) {}
+    } catch (error) { }
   };
   const deleteRole = async () => {
     if (selectedCheckboxes.length > 0) {
