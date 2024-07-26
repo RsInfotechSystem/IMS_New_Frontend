@@ -130,17 +130,39 @@ const ReceiveMaterialList = () => {
                       <div className="col_30p">
                         <h6>{modelData?.transferBy?.name}</h6>
                       </div>
-                      <div className="col_30p">
-                        <h6 className="action_wrraper">
-                          <button
-                            // onClick={addProductInRequirement}
-                            className="btn btn-success"
-                            // disabled={requirementDetails?.quantity < 1 ? true : false}
-                          >
-                            + Receive
-                          </button>
-                        </h6>
-                      </div>
+                      {modelData?.acceptedBy?.name ? (
+                        <div className="col_30p">
+                          <h6 className="action_wrraper">
+                            <button
+                              disabled
+                              title="Received"
+                              className="btn btn-success"
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/receive-material/receive-material-action?reciveMaterialId=${modelData?._id}`
+                                )
+                              }
+                            >
+                              Received
+                            </button>
+                          </h6>
+                        </div>
+                      ) : (
+                        <div className="col_30p">
+                          <h6 className="action_wrraper">
+                            <button
+                              className="btn btn-success"
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/receive-material/receive-material-action?reciveMaterialId=${modelData?._id}`
+                                )
+                              }
+                            >
+                              Receive
+                            </button>
+                          </h6>
+                        </div>
+                      )}
                     </div>
                   </>
                 );

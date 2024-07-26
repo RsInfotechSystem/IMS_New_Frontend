@@ -3,7 +3,7 @@
 import CustomBtn from "@/common-components/CustomBtn";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
@@ -22,29 +22,22 @@ const ReceiveMaterialDetails = () => {
   const [isPageUpdated, setIsPageUpdated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
-  const [categoryList, setCategoryList] = useState([]);
   const [timeoutId, setTimeoutId] = useState();
   const [page, setPage] = useState(1);
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-  const [errorForRackFlag, setErrorRackFlag] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [showModal, setShowModal] = useState({ modal: false });
-  const [materialList, setMaterialList] = useState([]);
-  const [receiveMaterial, setReceiveMaterial] = useState([]);
   const [material, setMaterial] = useState([]);
+  const params = useSearchParams();
   //get transfer material list on initial Load
   async function getTransferMaterialDetails() {
     try {
       setLoader(true);
       const serverResponse = await communication.getTransferMaterialDetails({
-        transferMaterialId: searchParams.get("materialId"),
+        transferMaterialId: params.get("materialId"),
       });
       if (serverResponse?.data?.status === "SUCCESS") {
         // console.log("serverResponse", serverResponse?.data?.transferMaterial);
         setMaterial(serverResponse?.data?.transferMaterial[0]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.warn(serverResponse.data.message);
         router.push("/");
         setLoader(false);
       } else {
@@ -52,43 +45,40 @@ const ReceiveMaterialDetails = () => {
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+      toast.error(error?.response?.data?.message || error.message);
       setLoader(false);
     }
   }
 
-  useEffect(() => {
-    getTransferMaterialDetails();
-  }, []);
   const handleSearch = (e) => {
     setSearchString(e.target.value);
     let isSearch = true;
     clearTimeout(timeoutId);
     let _timeOutId = setTimeout(() => {
-      getTransferMaterial("1", e.target.value, isSearch);
+      getTransferMaterialDetails("1", e.target.value, isSearch);
     }, 2000);
     setTimeoutId(_timeOutId);
   };
-
+  useEffect(() => {
+    getTransferMaterialDetails();
+  }, []);
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
-        <div className="tab_title">Receive Material</div>
+        <div className="tab_title">Receive Material Details</div>
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
         {
           <div className="buttons_wrapper">
-            <CustomBtn
-              name={"Transfer"}
+            <div
+              className="back_btn"
               onClick={() => {
-                setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
+                router.back();
               }}
-              svg={
+            >
+              <div>
                 <svg
                   width="24"
                   height="24"
@@ -96,36 +86,23 @@ const ReceiveMaterialDetails = () => {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path
-                    d="M12.75 9C12.75 8.58579 12.4142 8.25 12 8.25C11.5858 8.25 11.25 8.58579 11.25 9V11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H11.25V15C11.25 15.4142 11.5858 15.75 12 15.75C12.4142 15.75 12.75 15.4142 12.75 15V12.75H15C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H12.75V9Z"
-                    fill="#F3F8FF"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
-                    d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
-                    fill="#F3F8FF"
-                  />
+                  <g clip-path="url(#clip0_1564_1770)">
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
+                      fill="#79080a"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_1564_1770">
+                      <rect width="24" height="24" fill="white" />
+                    </clipPath>
+                  </defs>
                 </svg>
-              }
-            />
-            {/* <CustomBtn
-              name={"Delete"}
-              // onClick={() => {
-              //   setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
-              // }}
-              svg={<FontAwesomeIcon icon={faTrash} />}
-              onClick={deletecategory}
-            />
-            {showModal.modal && (
-              <CustomResponseHandlerModal
-                status="warning"
-                // show={showModal}
-                message="Are you sure you want to delete this role?"
-                successHandler={successHandler}
-                cancelHandler={cancelHandler}
-              />
-            )} */}
+              </div>
+              <div>Back</div>
+            </div>
           </div>
         }
       </div>
@@ -169,8 +146,8 @@ const ReceiveMaterialDetails = () => {
               </div>
             </div>
 
-            {materialList?.materialIds?.length > 0 ? (
-              materialList?.materialIds?.map((transferItem, index) => {
+            {material?.materialIds?.length > 0 ? (
+              material?.materialIds?.map((transferItem, index) => {
                 return (
                   <>
                     <div className="table_data" key={index}>
@@ -178,10 +155,10 @@ const ReceiveMaterialDetails = () => {
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{materialList?.fromLocation?.name}</h6>
+                        <h6>{material?.fromLocation?.name}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{materialList?.toLocation?.name}</h6>
+                        <h6>{material?.toLocation?.name}</h6>
                       </div>
                       <div className="col_30p">
                         <h6>{transferItem?.categoryId?.name}</h6>
