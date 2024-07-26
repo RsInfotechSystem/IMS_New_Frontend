@@ -31,6 +31,7 @@ function CreateBlock({ data }) {
     formState: { errors },
   } = useForm();
   const location = watch("locationId");
+
   const onSubmit = async (values) => {
     try {
       let payload = {
@@ -101,6 +102,7 @@ function CreateBlock({ data }) {
       setLoader(false);
     }
   };
+
   const updateExistingBlock = async (values) => {
     try {
       let payload = {

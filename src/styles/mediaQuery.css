@@ -178,6 +178,9 @@
     .employee_table {
         width: 1200px;
     }
+    .inventory_table_res{
+        width: 1500px;
+    }
 
     .form_layout .form_main {
         width: 92%;

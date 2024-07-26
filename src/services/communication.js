@@ -278,6 +278,103 @@ export const communication = {
       throw error;
     }
   },
+  //----------------------------Rack Api----------------------
+  getRackList: async (page = 1, searchString = "") => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/rack/get-rack-list`,
+        { page, searchString },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  createRack: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/rack/create-rack`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  changeRackStatus: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/rack/change-rack-status`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getRackById: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/rack/get-rack-by-id`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateRackDetails: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/rack/update-rack`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteRack: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/rack/delete-rack`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  getActiveRack: async (locationId) => {
+    try {
+      return await axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/rack/get-active-rack?locationId=${locationId}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   //----------------------------Block Api----------------------
   getLocations: async () => {
     try {
@@ -678,6 +775,22 @@ export const communication = {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/get-material-for-inventory`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  stockOutMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/stock-out-material`,
         data,
         {
           headers: {
@@ -1225,6 +1338,8 @@ export const communication = {
       throw error;
     }
   },
+
+
   /////////////////////////sakshi assign material//////////////////////////////////////
   // ------------------material-------------------
   getMaterialList: async (data) => {
@@ -1414,6 +1529,24 @@ export const communication = {
       throw error;
     }
   },
+
+  // aproval ///////
+  getMaterialForApproval: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/get-material-for-approval`,
+data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   // --------------------------------receive material------------------------------------------------
   getRackPartation: async (data) => {
     try {
@@ -1431,12 +1564,12 @@ export const communication = {
       throw error;
     }
   },
-  updateStockAfterReceive: async (data) => {
+
+  approveTransferMaterial: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/updated-receive-material`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-tranfer-material-for-approval`,
         data,
-
         {
           headers: {
             "Content-Type": "application/json",
@@ -1448,6 +1581,41 @@ export const communication = {
       throw error;
     }
   },
+
+  updateStockAfterReceive: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/updated-receive-material`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  changeMaterialStatus: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/change-material-status`,
+        data,   
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
   updateStockAfterReceive: async (data) => {
     try {
       return await axios.post(
@@ -1470,7 +1638,6 @@ export const communication = {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-transfer-material-by-id`,
         data,
-
         {
           headers: {
             "Content-Type": "application/json",

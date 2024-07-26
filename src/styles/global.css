@@ -4503,7 +4503,15 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 .general_po_table {
   min-width: 800px;
 }
-
+.sell_btn{
+  border: none;
+  background-color: #79080a;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
 /* css for Kitchen Tab Start */
 /* recipe */
 .kitchen_recipe_tab {
