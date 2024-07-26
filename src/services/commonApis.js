@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { communication } from "./communication";
+import Swal from "sweetalert2";
 
 export async function getCategory(setLoader, router, setCategory = []) {
   try {
@@ -16,7 +17,28 @@ export async function getCategory(setLoader, router, setCategory = []) {
     toast.error(error?.response?.data?.message || error.message);
   }
 }
-
+export async function getLocations(setLoader, router, setLocations = []) {
+  try {
+    setLoader(true);
+    const serverResponse = await communication.getLocations();
+    if (serverResponse?.data?.status === "SUCCESS") {
+      setLocations(serverResponse?.data?.result);
+    } else if (serverResponse?.data?.status === "JWT_INVALID") {
+      Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+      router.push("/");
+      setLoader(false);
+    } else {
+      setLocations([]);
+    }
+    setLoader(false);
+  } catch (error) {
+    Swal.fire({
+      text: error?.response?.data?.message || error.message,
+      icon: "warning",
+    });
+    setLoader(false);
+  }
+}
 export async function getBrands(router) {
   try {
     const serverResponse = await communication.getActiveBrand();
@@ -30,6 +52,53 @@ export async function getBrands(router) {
     }
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
+  }
+}
+export async function getParameter(setLoader, router, setParameter = []) {
+  try {
+    setLoader(true);
+    const serverResponse = await communication.getParameters();
+    if (serverResponse?.data?.status === "SUCCESS") {
+      setParameter(serverResponse?.data?.parameter);
+    } else if (serverResponse?.data?.status === "JWT_INVALID") {
+      Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+      router.push("/");
+      setLoader(false);
+    } else {
+      setParameter([]);
+    }
+    setLoader(false);
+  } catch (error) {
+    Swal.fire({
+      text: error?.response?.data?.message || error.message,
+      icon: "warning",
+    });
+    setLoader(false);
+  }
+}
+
+export async function getRackPartation(id, setLoader, router, setRackPartation = []) {
+  try {
+    setLoader(true);
+    const serverResponse = await communication.getRackPartation({
+      rackId: id,
+    });
+    if (serverResponse?.data?.status === "SUCCESS") {
+      setRackPartation(serverResponse?.data?.filteredPartitions);
+    } else if (serverResponse?.data?.status === "JWT_INVALID") {
+      Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+      router.push("/");
+      setLoader(false);
+    } else {
+      setRackPartation([]);
+    }
+    setLoader(false);
+  } catch (error) {
+    Swal.fire({
+      text: error?.response?.data?.message || error.message,
+      icon: "warning",
+    });
+    setLoader(false);
   }
 }
 

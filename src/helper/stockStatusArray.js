@@ -1,0 +1,1 @@
+export const stockStatus = ["TO TEST", "READY", "FAULTY", "FAULTY-NO POWER", "NR", "TESTED-OK"]
