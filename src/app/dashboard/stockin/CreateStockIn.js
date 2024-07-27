@@ -318,19 +318,6 @@ const CreateStockIn = ({ data }) => {
               <div className="row">
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Select Location *</label>
-                  {/* <SelectBox
-                  options={locationList}
-                  firstOption={"Select Location"}
-                  displayName={"name"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("locationId", {
-                      required: "Select Location",
-                    }),
-                  }}
-                  errors={errors.locationId}
-                /> */}
                   <select
                     name="locationId"
                     className="form-control custom_input"
