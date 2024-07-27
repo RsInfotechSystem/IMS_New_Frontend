@@ -169,6 +169,10 @@ const ReturnMaterial = ({ data }) => {
         materialId: modalStates?.id,
       });
       if (responseFromServer?.data?.status === "SUCCESS") {
+        console.log(
+          responseFromServer.data.materialData,
+          "rrrrrrrrrrr sdata brand materialData?.brandId"
+        );
         // Set default values for each form field
         setIsRackExist(responseFromServer?.data?.material.rackId._id);
         setDataToAddList(responseFromServer?.data?.material.dataToAddList);
@@ -179,6 +183,7 @@ const ReturnMaterial = ({ data }) => {
         const materialData = responseFromServer?.data?.material;
         setValue("locationId", materialData?.locationId._id);
         await getLocationWiseBlock(materialData?.locationId._id, setLoader, router, setBlocks);
+        await getBrands(setLoader, router, setBrands);
         // await getModelList(result?.model?.name, setLoader, router, setModelList);
         setValue("parameterId", materialData?.parameterId);
         setModelId(materialData.modelId._id);
@@ -189,7 +194,9 @@ const ReturnMaterial = ({ data }) => {
         setValue("status", materialData?.status);
         setValue("categoryId", materialData?.categoryId._id);
         setValue("rackId", materialData?.rackId._id);
+        console.log(materialData?.brandId._id, "rrrrrr materialData?.brandId._id");
         setValue("brandId", materialData?.brandId._id);
+        setValue("brandIds", materialData?.brandId.name);
         setBlockvalue(materialData?.blockId._id);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         Swal.fire({ text: responseFromServer?.data?.message, icon: "warning" });
@@ -245,7 +252,6 @@ const ReturnMaterial = ({ data }) => {
   async function callAPIs(params) {
     await getLocations(setLoader, router, setLocations);
     await getParameter(setLoader, router, setCategory);
-    await getBrands(setLoader, router, setBrands);
     await getMaterialById();
     getModelList();
   }
@@ -340,21 +346,18 @@ const ReturnMaterial = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-2 col-md-3  mb-3"></div>
 
                 {racks.length >= 1 && isRackExist && (
                   <>
                     {" "}
-                    <div className="col-lg-1 col-md-1  d-flex align-items-center">
+                    <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Select Rack</label>
-                    </div>
-                    <div className="col-lg-2 col-md-3">
                       <select
                         disabled
                         {...register("rackId", {
                           required: "Rack is required",
                         })}
-                        className="selectBox"
+                        className="form-control custom_input"
                         style={{ width: "100%" }}
                       >
                         <option value="">Select Rack</option>
@@ -380,16 +383,14 @@ const ReturnMaterial = ({ data }) => {
                     </div>
                   </>
                 )}
-                <div className="col-lg-1 col-md-1  mb-3  d-flex align-items-center">
+                <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Category</label>
-                </div>
-                <div className="col-lg-2 col-md-3  mb-3">
                   <select
                     disabled
                     {...register("categoryId", {
                       required: "Category is required",
                     })}
-                    className="selectBox text-capitalize"
+                    className="form-control custom_input"
                     style={{ width: "100%" }}
                   >
                     <option value="">Select Category</option>
@@ -414,16 +415,22 @@ const ReturnMaterial = ({ data }) => {
                   </div>
                 </div>
 
-                <div className="col-lg-1 col-md-1  mb-3  d-flex align-items-center">
+                <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Brand/Make</label>
-                </div>
-                <div className="col-lg-2 col-md-3  mb-3">
-                  <select
+                  <input
+                    type="text"
+                    disabled
+                    {...register("brandIds", {
+                      required: "Brand is required",
+                    })}
+                    className="form-control custom_input"
+                  />
+                  {/* <select
                     disabled
                     {...register("brandId", {
                       required: "Brand is required",
                     })}
-                    className="selectBox text-capitalize"
+                    className="form-control custom_input"
                     style={{ width: "100%" }}
                   >
                     <option value="">Select Brand</option>
@@ -438,7 +445,7 @@ const ReturnMaterial = ({ data }) => {
                         </option>
                       );
                     })}
-                  </select>
+                  </select> */}
                   <div style={{ height: "5px" }}>
                     {errors.brandId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -448,16 +455,14 @@ const ReturnMaterial = ({ data }) => {
                   </div>
                 </div>
 
-                <div className="col-lg-1 col-md-1 mb-3 d-flex align-items-center">
+                <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Condition Type</label>
-                </div>
-                <div className="col-lg-2 col-md-3 mb-3">
                   <select
                     disabled
                     {...register("conditionType", {
                       required: "condition is required",
                     })}
-                    className="selectBox text-capitalize"
+                    className="form-control custom_input"
                     style={{ width: "100%" }}
                   >
                     <option value="">Select Condition</option>
@@ -516,17 +521,15 @@ const ReturnMaterial = ({ data }) => {
                     )}
                   </div>
                 </div> */}
-                <div className="col-lg-1 col-md-1  mb-3 d-flex align-items-center">
+                <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Item Code</label>
-                </div>
-                <div className="col-lg-2 col-md-3  mb-3">
                   <input
                     disabled
                     type="text"
                     {...register("itemCode", {
                       required: "Item code is required",
                     })}
-                    className="inputBox"
+                    className="form-control custom_input"
                     style={{ width: "100%", height: "31px" }}
                   />
 
@@ -538,18 +541,15 @@ const ReturnMaterial = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-1 col-md-1  mb-3 d-flex align-items-center">
+                <div className="col-lg-3 col-md-6 input_wrapper">
                   <label className="me-1">Serial No</label>
-                  {/* <input type="checkbox" style={{ width: "13px", backgroundColor: "#B9B9B9" }} /> */}
-                </div>
-                <div className="col-lg-2 col-md-3  mb-3">
                   <input
                     disabled
                     type="text"
                     {...register("serialNo", {
                       required: "SerialNo is required",
                     })}
-                    className="inputBox"
+                    className="form-control custom_input"
                     style={{ width: "100%", height: "31px" }}
                   />
                   <div style={{ height: "5px" }}>
@@ -559,19 +559,19 @@ const ReturnMaterial = ({ data }) => {
                       </p>
                     )}
                   </div>
+
+                  {/* <input type="checkbox" style={{ width: "13px", backgroundColor: "#B9B9B9" }} /> */}
                 </div>
 
-                <div className="col-lg-1 col-md-1  d-flex align-items-center">
+                <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Quantity</label>
-                </div>
-                <div className="col-lg-2 col-md-3 ">
                   <input
                     disabled
                     type="text"
                     {...register("quantity", {
                       required: "Quantity is required",
                     })}
-                    className="inputBox"
+                    className="form-control custom_input"
                     style={{ width: "100%", height: "31px" }}
                   />
                   <div style={{ height: "5px" }}>
@@ -583,31 +583,13 @@ const ReturnMaterial = ({ data }) => {
                   </div>
                 </div>
 
-                <div className="col-lg-1 col-md-1  d-flex align-items-center">
+                <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Model Name</label>
-                </div>
-                <div className="col-lg-2 col-md-3">
-                  {/* <input
-                    disabled
-                    type="text"
-                    {...register("modelName", {
-                      required: "Model Name is required",
-                    })}
-                    className="inputBox"
-                    style={{ width: "100%", height: "31px" }}
-                  />
-                  <div style={{ height: "5px" }}>
-                    {errors.modelName && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                        {errors.modelName.message}
-                      </p>
-                    )}
-                  </div> */}
                   <select
                     {...register("modelName", {
                       required: "Model Name is required",
                     })}
-                    className="selectBox text-capitalize"
+                    className="form-control custom_input"
                     style={{ width: "100%" }}
                     disabled
                   >
@@ -632,19 +614,35 @@ const ReturnMaterial = ({ data }) => {
                     )}
                   </div>
                 </div>
+                <div className="col-lg-2 col-md-3">
+                  {/* <input
+                    disabled
+                    type="text"
+                    {...register("modelName", {
+                      required: "Model Name is required",
+                    })}
+                    className="inputBox"
+                    style={{ width: "100%", height: "31px" }}
+                  />
+                  <div style={{ height: "5px" }}>
+                    {errors.modelName && (
+                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                        {errors.modelName.message}
+                      </p>
+                    )}
+                  </div> */}
+                </div>
               </div>
-              <div className="row m-0 mt-3 mb-3 ps-5">
+              <div className="row m-0 mt-3 mb-3 ">
                 {parameter?.map((item) => (
                   <>
-                    <div className="col-lg-1 col-md-1 mt-2 d-flex align-items-center">
+                    <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>{item}</label>
-                    </div>
-                    <div className="col-lg-2 col-md-3 mt-2 d-flex align-items-center">
                       <input
                         disabled
                         type="text"
                         {...register(`parameter[${item}]`)}
-                        className="inputBox"
+                        className="form-control custom_input"
                         style={{ width: "100%", height: "31px" }}
                       />
                       <div style={{ height: "5px" }}>
@@ -659,16 +657,14 @@ const ReturnMaterial = ({ data }) => {
                 ))}
               </div>
 
-              <div className="row m-0 mt-3 mb-3 ps-5">
+              <div className="row m-0 mt-3 mb-3">
                 {isShowMaterialList && (
                   <>
-                    <div className="col-lg-1 col-md-1 d-flex align-items-center">
+                    <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Select Material</label>
-                    </div>
-                    <div className="col-lg-2 col-md-3">
                       <select
                         {...register("materialId")}
-                        className="selectBox text-capitalize"
+                        className="form-control custom_input"
                         style={{ width: "100%" }}
                         onChange={handleMaterialChange}
                         value={selectedMaterial} // Add value prop to control the selected value
@@ -695,18 +691,24 @@ const ReturnMaterial = ({ data }) => {
                         )}
                       </div>
                     </div>
-                    <button
-                      type="button"
-                      onClick={handleAddMaterial}
-                      style={{
-                        height: "28px",
-                        width: "35px",
-                        border: "1px solid #BABABA",
-                        marginBottom: "11px",
-                      }}
-                    >
-                      {/* <Image src={addIcon} alt="add-icon"></Image> */}add
-                    </button>
+
+                    <div className="col-lg-3 col-md-6 input_wrapper">
+                      <label>&nbsp;</label>
+
+                      <button
+                        type="button"
+                        className="mt-4 btn btn-success"
+                        onClick={handleAddMaterial}
+                        // style={{
+                        //   height: "28px",
+                        //   width: "35px",
+                        //   border: "1px solid #BABABA",
+                        //   marginBottom: "11px",
+                        // }}
+                      >
+                        {/* <Image src={addIcon} alt="add-icon"></Image> */}add
+                      </button>
+                    </div>
                   </>
                 )}
                 {materialList.length > 0 && (
@@ -733,41 +735,18 @@ const ReturnMaterial = ({ data }) => {
                   </div>
                 )}
               </div>
-              <div className="row m-0 mt-3 mb-3 ps-5">
-                <div className="col-lg-1 col-md-1  d-flex align-items-center"></div>
-                <div className="col-lg-3 col-md-3 d-flex gap-2">
-                  {roleName != "admin" && (
-                    <button className="savebtn mb-1" type="submit" onClick={handleSubmit(onSubmit)}>
-                      Return
-                    </button>
-                  )}
-                  <button
-                    className="savebtn mb-1"
-                    type="button"
-                    onClick={() => router.back("/admin/dashboard/daily-task/")}
-                  >
-                    {/* <FontAwesomeIcon icon={faAngleLeft} /> */}
-                    Back
-                  </button>
-                </div>
+              <div className="form_button_wrapper">
+                {roleName != "admin" && (
+                  <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
+                )}
+                <CustomBtn
+                  name={"Back"}
+                  onClick={() => setModalStates((prev) => ({ ...prev, modal: false }))}
+                />
+
+                {/* <CustomBtn name={buttonLoader ? <ButtonLoader /> :  handleSubmit(onSubmit) } /> */}
               </div>
             </form>
-
-            <div className="form_button_wrapper">
-              <CustomBtn
-                name={
-                  buttonLoader ? (
-                    <ButtonLoader />
-                  ) : modalStates?.type === "create" ? (
-                    "Create"
-                  ) : (
-                    "Return"
-                  )
-                }
-                onClick={handleSubmit(onSubmit)}
-              />
-              {/* <CustomBtn name={buttonLoader ? <ButtonLoader /> :  handleSubmit(onSubmit) } /> */}
-            </div>
           </div>
         </div>
       </div>

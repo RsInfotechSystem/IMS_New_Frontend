@@ -1976,5 +1976,21 @@ export const communication = {
       throw error;
     }
   },
+  changeStockStatus: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/change-stock-status`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   ////////////////////////////////end////////////////////////////////////////////
 };

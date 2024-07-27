@@ -232,18 +232,16 @@ const DailyTask = () => {
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
         {roleName === "admin" && (
-          <div
-            className="border border-3 mb-2 border-solid border-color-#bababa d-flex align-items-center"
-            style={{ background: "#f5f5f5", width: "15%" }}
-          >
+          <div className="search_box">
             <select
-              className="inputBox"
-              style={{
-                height: "30px",
-                background: "#f5f5f5",
-                border: "none",
-                width: "100%",
-              }}
+              // className="inputBox"
+              className="search_input"
+              // style={{
+              //   height: "30px",
+              //   background: "#f5f5f5",
+              //   border: "none",
+              //   width: "100%",
+              // }}
               // {...register("userId", {
               //   required: "Technician is required",
               // })}
@@ -273,9 +271,9 @@ const DailyTask = () => {
       </div>
       {/* table  */}
       <div className="table_wrapper">
-        <div className="table_main">
+        <div className="table_main" style={{ width: "1500px" }}>
           {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
-          <div className="table_section employee_table">
+          <div className="table_section inventory_table_res">
             {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">
               <button className="table_badge">
                 <h5>Total User</h5>
@@ -286,18 +284,10 @@ const DailyTask = () => {
             </div>} */}
 
             <div className="table_header">
-              <div className="col_7p">
-                {/* <input
-                  type="checkbox"
-                  className="form-check-input"
-                  onChange={(e) => handleSelectAllChange(e)}
-                  checked={selectAllChecked}
-                /> */}
-              </div>
-              <div className="col_10p">
+              <div className="col_20p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_50p">
+              <div className="col_70p">
                 {state.categoryFilter ? (
                   <>
                     <select
@@ -350,7 +340,7 @@ const DailyTask = () => {
                   </>
                 )}
               </div>
-              <div className="col_30p">
+              <div className="col_50p">
                 {state.brandFilter ? (
                   <>
                     <select
@@ -402,7 +392,7 @@ const DailyTask = () => {
                   </>
                 )}
               </div>
-              <div className="col_50p">
+              <div className="col_70p">
                 {state.locationFilter ? (
                   <>
                     <select
@@ -454,7 +444,7 @@ const DailyTask = () => {
                   </>
                 )}
               </div>
-              <div className="col_50p">
+              <div className="col_60p">
                 {state.modelNameFilter ? (
                   <>
                     <select
@@ -555,19 +545,10 @@ const DailyTask = () => {
               <>
                 {material?.map((stockDetails, index) => (
                   <div className="table_data" key={index}>
-                    <div className="col_7p">
-                      {/* <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id={stockDetails._id}
-                        onChange={(e) => handleCheckboxChange(e)}
-                        checked={selectedCheckboxes.includes(stockDetails._id)}
-                      /> */}
-                    </div>
-                    <div className="col_10p">
+                    <div className="col_20p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
-                    <div className="col_50p">
+                    <div className="col_70p">
                       <h6
                         style={{ color: "#0000FF", cursor: "pointer" }}
                         onClick={() =>
@@ -582,18 +563,18 @@ const DailyTask = () => {
                         {stockDetails?.categoryId?.name}
                       </h6>{" "}
                     </div>
-                    <div className="col_30p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.brandId?.name}</h6>
                     </div>
-                    <div className="col_50p">
+                    <div className="col_70p">
                       <h6>{stockDetails?.locationId.name}</h6>
                     </div>
-                    <div className="col_50p">
+                    <div className="col_60p">
                       <h6>{stockDetails?.modelId?.name ? stockDetails?.modelId?.name : "-"}</h6>{" "}
                     </div>
-                    <div className="col_50p">
+                    {/* <div className="col_50p">
                       <h6>{stockDetails?.mobile}</h6>
-                    </div>
+                    </div> */}
                     <div className="col_50p">
                       <h6>{stockDetails?.itemCode ? stockDetails?.itemCode : "-"}</h6>
                       {/* <h6>
