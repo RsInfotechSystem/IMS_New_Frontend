@@ -60,7 +60,7 @@ const Report = () => {
                 {/* tab wrapper */}
                 <div className="my-3 d-flex justify-content-start align-items-start gap-3">
                     <div className="tab_btn" onClick={() => { setActiveTab("attendance"); }}
-                        style={{ backgroundColor: activeTab == "attendance" ? "#79080a" : "#D0D3D9", }} >
+                        style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#D0D3D9", }} >
                         Sell History
                     </div>
                     <div className="tab_btn" onClick={() => {
@@ -68,7 +68,7 @@ const Report = () => {
                     }}
                         style={{
                             backgroundColor:
-                                activeTab == "shift" ? "#79080a" : "#D0D3D9",
+                                activeTab == "shift" ? "#184965" : "#D0D3D9",
                         }}
                     >
                         Stock Analysis

@@ -226,7 +226,7 @@ const RoleList = () => {
                 {roles?.map((roleDetails, index) => {
                   return (
                     <div className="table_data" key={index}>
-                      <div className="col_5p">
+                      <div className="col_7p">
                         <div className="check_box">
                           <input
                             className="form-check-input"

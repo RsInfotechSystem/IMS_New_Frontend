@@ -4,24 +4,24 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  --green_color: #79080a;
+  --green_color: #184965;
   --black_color_dark_shade: #272727;
   --blue_color_dark_shade: #48505e;
   --grey_color_light_shade1: #d0d3d9;
   --grey_color_light_shade2: #f1f5f9;
-  --subtable_data: #e5d9d9;
+  --subtable_data: #1849654f;
   /* --skyblue_color_light_shade1: #dcf4e6; */
   --skyblue_color_light_shade1: #f3df9a;
   --skyblue_color_light_shade2: #f3f8ff;
   --red_color: #dc3545;
-  --yellow_color: #ffc107;
+  --yellow_color: #184965;
   --orange_color: #ff7246;
   --blue_color: #0d6efd;
   --aqua_color: #00cccd;
   --white-color: #ffffff;
   --black_transparent: rgba(0, 0, 0, 0.686);
 }
-
+custom_button:hover
 .support-orange {
   color: var(--orange_color) !important;
 }
@@ -1536,7 +1536,7 @@ div:where(.tab_active, .tab_inactive) {
 }
 
 .custom_button:hover {
-  background-color: #79080a;
+  background-color: #184965;
 }
 
 .custom_input,
