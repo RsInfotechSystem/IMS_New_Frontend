@@ -22,29 +22,49 @@ function CreateBlock({ data }) {
   const [locationList, setLocationList] = useState([]);
   const [locationId, setLocationId] = useState("");
   const [blockId, setBlockId] = useState();
+  const [selectedOption, setSelectedOption] = useState("");
+  const [errorForRackFlag, setErrorRackFlag] = useState("");
+  const [rackList, setRackList] = useState([]);
+  const [propertyType, setPropertyType] = useState([]);
+  const [defaultRack, setDefaultRack] = useState([]);
+
   const {
     register,
     handleSubmit,
     watch,
     reset,
     setValue,
+    getValues,
+
     formState: { errors },
   } = useForm();
   const location = watch("locationId");
 
   const onSubmit = async (values) => {
+    let rackIds = values.rackName ? values.rackName : "";
+    if (selectedOption == "") {
+      setErrorRackFlag("Please confirm one");
+      return;
+    }
     try {
       let payload = {
         locationId: values.locationId,
         blockNo: values.blockNo,
+        isRackAdded: selectedOption === "Yes" ? true : false,
+        rackId: [...propertyType],
       };
+      if (rackIds) {
+        payload.rackId = [rackIds];
+      }
       setLoader(true);
       const serverResponse = await communication.createBlock(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse.data.message);
+        setSelectedOption("");
         setButtonLoader(false);
         setModalStates((prev) => ({ ...prev, modal: false }));
         setIsPageUpdated((prev) => !prev);
+        setPropertyType([]);
         reset();
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.warn(serverResponse.data.message);
@@ -87,9 +107,30 @@ function CreateBlock({ data }) {
         blockId: modalStates?.id,
       });
       if (response?.data?.status === "SUCCESS") {
-        setLocationId(response?.data.block.locationId);
-        setBlockId(response?.data.block?._id);
-        setValue("blockNo", response?.data.block.blockNo);
+        setDefaultRack([...response?.data.block.rackName]);
+        setLocationId(response?.data.block.locationId._id);
+        setBlockId(response?.data?.block?._id);
+        setValue("blockNo", response?.data?.block?.blockNo);
+        setSelectedOption(response?.data?.block?.isRackAdded ? "Yes" : "No");
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.warn(response.data.message);
+        router.push("/");
+      } else {
+        toast.warn(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const getActiveRack = async (locationId) => {
+    try {
+      setLoader(true);
+      let response = await communication.getActiveRack(locationId);
+      if (response?.data?.status === "SUCCESS") {
+        setRackList(response?.data.rack);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -104,14 +145,24 @@ function CreateBlock({ data }) {
   };
 
   const updateExistingBlock = async (values) => {
+    let rackIds = values.rackName ? values.rackName : "";
+    if (selectedOption == "") {
+      setErrorRackFlag("Please confirm one");
+      return;
+    }
     try {
       let payload = {
         blockId: blockId,
         locationId: values.locationId,
         blockNo: values.blockNo,
+        isRackAdded: selectedOption === "Yes" ? true : false,
+        rackId: [...propertyType],
         // isRackAdded: true, //bypass
       };
 
+      if (rackIds) {
+        payload.rackId = [rackIds];
+      }
       setLoader(true);
       const serverResponse = await communication.updateBlock(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -132,18 +183,44 @@ function CreateBlock({ data }) {
       setLoader(false);
     }
   };
+
+  const CheckboxChange = (event) => {
+    setSelectedOption(event.target.value);
+    setErrorRackFlag("");
+  };
+
+  useEffect(() => {
+    const selectedIds = defaultRack.map((selectedRackName) => {
+      const selectedRack = rackList.find((rackData) => rackData.rackName === selectedRackName);
+      return selectedRack ? selectedRack._id : null;
+    });
+
+    const filteredIds = selectedIds.filter((id) => id !== null);
+
+    setPropertyType(filteredIds);
+  }, [defaultRack, rackList.length]);
+
   useEffect(() => {
     if (modalStates?.type === "update") {
       getBlockById();
     }
   }, []);
+
   useEffect(() => {
     setValue("locationId", locationId);
   }, [locationId, locationList.length >= 1]);
+
   useEffect(() => {
     // getBlockById();
     getLocations();
   }, []);
+
+  useEffect(() => {
+    if (selectedOption === "Yes" && location) {
+      getActiveRack(getValues("locationId"));
+    }
+  }, [selectedOption, location]);
+
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
@@ -191,6 +268,129 @@ function CreateBlock({ data }) {
                   errors={errors.blockNo}
                 />
               </div>
+            </div>
+            <div className="row">
+              <label>Want to add rack ? *</label>
+              <div className="check_box col-md-6">
+                <div className="row">
+                  {" "}
+                  <div className="form-check col-12 d-flex gap-3">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value="Yes"
+                      checked={selectedOption === "Yes"}
+                      onChange={CheckboxChange}
+                    />
+                    <label className="form-check-label me-5">Yes</label>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value="No"
+                      checked={selectedOption === "No"}
+                      onChange={CheckboxChange}
+                    />
+                    <label className="form-check-label">No</label>
+                  </div>
+                  {errorForRackFlag && (
+                    <p className="text-danger text-start" style={{ fontSize: "0.8rem" }}>
+                      {errorForRackFlag}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {selectedOption === "Yes" && (
+                <>
+                  <div className="col-lg-2 col-md-2 col-sm-4 p-0 d-flex align-items-center">
+                    <h6>Rack Select</h6>
+                  </div>
+                  <div className="col-lg-4 col-md-4 col-sm-8 p-0">
+                    <Multiselect
+                      isObject={false}
+                      options={rackList.map((rackData) => rackData.rackName)}
+                      onSelect={(selectedList) => {
+                        const selectedIds = selectedList.map((selectedRackName) => {
+                          const selectedRack = rackList.find(
+                            (rackData) => rackData.rackName === selectedRackName
+                          );
+                          return selectedRack ? selectedRack._id : null;
+                        });
+
+                        setPropertyType(selectedIds);
+                      }}
+                      onRemove={(selectedList) => {
+                        const selectedIds = selectedList.map((selectedRackName) => {
+                          const selectedRack = rackList.find(
+                            (rackData) => rackData.rackName === selectedRackName
+                          );
+                          return selectedRack ? selectedRack._id : null;
+                        });
+
+                        setPropertyType(selectedIds);
+                      }}
+                      keepSearchTerm={true}
+                      showCheckbox={true}
+                      showArrow
+                      // customArrow
+                      // className=" inputBox p-0 w-75"
+                      rules={{ required: "Rack name is required" }}
+                      style={{
+                        multiselectContainer: {
+                          width: "120px",
+                          // width: "auto",
+                          position: "absolute",
+                          border: "1px solid #929292",
+                          background: "#fff",
+                          height: "30px",
+                          // overflowX: "hidden",
+                        },
+                        inputField: {
+                          // To change input field position or margin
+                          marginTop: "0",
+                          marginRight: "2px",
+                          marginBottom: "5px",
+                        },
+                        chips: {
+                          background: "blue",
+                        },
+                        optionContainer: {
+                          border: "1px solid #929292",
+                          height: "130px",
+                          scrollbarWidth: "thin",
+                        },
+                        option: {
+                          color: "black",
+                          background: "none",
+                        },
+                        searchBox: {
+                          border: "black",
+                          fontSize: "15px",
+                          height: "40px",
+                          width: "auto",
+                          overflowX: "scroll",
+                          scrollbarWidth: "none",
+                          display: "flex",
+                        },
+                      }}
+                    // style={{
+                    //   position: "absolute",
+                    //   zIndex: 9999, // Adjust the z-index value based on your layout
+                    //   top: "100%", // Position the dropdown below the input box
+                    //   left: 0, // Align with the left edge of the input box
+                    //   width: "100%", // Set the width to match the input box or adjust as needed
+                    // }}
+                    />
+
+                    <div style={{ height: "5px" }}>
+                      {errors.rackName && (
+                        <p className="text-danger text-start" style={{ fontSize: "0.8rem" }}>
+                          {errors.rackName.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
             <div className="form_button_wrapper">
               <CustomBtn

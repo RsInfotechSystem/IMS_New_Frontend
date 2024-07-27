@@ -1124,7 +1124,7 @@ export const communication = {
       throw error;
     }
   },
-///stock management
+  ///stock management
   fetchReturnMaterialList: async (data) => {
     try {
       return await axios.post(
@@ -1535,7 +1535,7 @@ export const communication = {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/get-material-for-approval`,
-data,
+        data,
         {
           headers: {
             "Content-Type": "application/json",
@@ -1603,7 +1603,7 @@ data,
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/change-material-status`,
-        data,   
+        data,
         {
           headers: {
             "Content-Type": "application/json",

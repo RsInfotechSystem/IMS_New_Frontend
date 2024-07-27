@@ -3,7 +3,7 @@ import CustomBtn from "@/common-components/CustomBtn";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
 import { getCookiesData } from "@/utilities/getCookiesData";
@@ -277,6 +277,9 @@ const BlockList = () => {
               <div className="col_35p">
                 <h5>Block Name</h5>
               </div>
+              <div className="col_35p">
+                <h5>Rack Name</h5>
+              </div>
               <div className="col_20p">
                 <h5 className="action_wrraper">Action</h5>
               </div>
@@ -305,6 +308,20 @@ const BlockList = () => {
                     </div>
                     <div className="col_35p">
                       <h6>{blockDetails.blockNo}</h6>
+                    </div>
+                    <div className="col_35p">
+                      {blockDetails.rackId?.length > 0 ? (
+                        <>
+                          {blockDetails?.rackId?.map((item, index) => (
+                            <React.Fragment key={index}>
+                              <h6>{item.rackName}</h6>
+                              {index !== blockDetails.rackId.length - 1 && <span>, </span>}
+                            </React.Fragment>
+                          ))}
+                        </>
+                      ) : (
+                        <h6>-</h6>
+                      )}
                     </div>
                     <div className="col_20p">
                       <h6 className="action_wrraper">
