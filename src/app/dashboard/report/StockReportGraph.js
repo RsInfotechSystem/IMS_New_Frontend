@@ -23,7 +23,7 @@ ChartJS.register(
 
 // Predefined palette of good colors
 const colorPalette = [
-  '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0',
+  '#36A2EB', '#FFCE56', '#4BC0C0',
   '#9966FF', '#FF9F40', '#FFCD56', '#4BC0C0',
   '#F7464A', '#46BFBD', '#FDB45C', '#949FB1',
   '#4D5360', '#AC64AD', '#7DCEA0', '#D7BDE2'
@@ -34,7 +34,7 @@ const getColors = (numColors) => {
   return colorPalette.slice(0, numColors);
 };
 
-const ShiftGraph = () => {
+const StockReportGraph = () => {
   const [CategoryGraphData, setCategoryGraphData] = useState({ labels: [], dataset: [] });
   const [BrandGraphData, setBrandGraphData] = useState({ labels: [], dataset: [] });
   const [StatusGraphData, setStatusGraphData] = useState({ labels: [], dataset: [] });
@@ -54,16 +54,15 @@ const ShiftGraph = () => {
   });
   const handlePieClick = (event, elements) => {
     if (elements.length > 0) {
-        const clickedElementIndex = elements[0].index;
-        // console.log(clickedElementIndex, "clickedElementIndex");
+      const clickedElementIndex = elements[0].index;
+      // console.log(clickedElementIndex, "clickedElementIndex");
 
-        let materialDetails = state._categoryData[clickedElementIndex];
-        router.push(
-          `/dashboard/report/report-details?reportData=${
-            materialDetails._id
-          }&reportType=${"category"}`
-        );
-      }
+      let materialDetails = state._categoryData[clickedElementIndex];
+      router.push(
+        `/dashboard/report/report-details?reportData=${materialDetails._id
+        }&reportType=${"category"}`
+      );
+    }
     // if (elements.length > 0) {
     //   const clickedElementIndex = elements[0].index;
     //   const clickedLabel = event.chart.data.labels[clickedElementIndex]; 
@@ -94,6 +93,137 @@ const ShiftGraph = () => {
     },
     onClick: handlePieClick, // Pass the handler
   });
+
+  const optionsCategory = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Category Wise Stock",
+      },
+      datalabels: {
+        color: 'white',
+        anchor: 'center',
+        align: 'center',
+        font: {
+          weight: 'bold',
+          size: 14,
+        },
+      },
+    },
+    onClick: (event, elements) => {
+      if (elements.length > 0) {
+        const clickedElementIndex = elements[0].index;
+
+        let materialDetails = state._categoryData[clickedElementIndex];
+        router.push(
+          `/dashboard/report/report-details?reportData=${materialDetails._id
+          }&reportType=${"category"}&selectedType=${materialDetails?.category}`
+        );
+      }
+    },
+  };
+
+  const optionsBrand = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Brand Wise Stock",
+      },
+      datalabels: {
+        color: 'white',
+        anchor: 'center',
+        align: 'center',
+        font: {
+          weight: 'bold',
+          size: 14,
+        },
+      },
+    },
+    onClick: (event, elements) => {
+      if (elements.length > 0) {
+        const clickedElementIndex = elements[0].index;
+        console.log(clickedElementIndex, "clickedElementIndex");
+
+        let materialDetails = state._brandData[clickedElementIndex];
+        router.push(
+          `/dashboard/report/report-details?reportData=${materialDetails._id
+          }&reportType=${"brand"}&selectedType=${materialDetails?.brand}`
+        );
+      }
+    },
+  };
+
+  const optionsLocation = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Location Wise Stock",
+      },
+      datalabels: {
+        color: 'white',
+        anchor: 'center',
+        align: 'center',
+        font: {
+          weight: 'bold',
+          size: 14,
+        },
+      },
+    },
+    onClick: (event, elements) => {
+      if (elements.length > 0) {
+        const clickedElementIndex = elements[0].index;
+        let materialDetails = state._locationData[clickedElementIndex];
+        router.push(
+          `/dashboard/report/report-details?reportData=${materialDetails?._id
+          }&reportType=${"location"}&selectedType=${materialDetails?.location}`
+        );
+      }
+    },
+  };
+
+  const optionsStatus = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "Status Wise PO",
+      },
+      datalabels: {
+        color: 'white',
+        anchor: 'center',
+        align: 'center',
+        font: {
+          weight: 'bold',
+          size: 14,
+        },
+      },
+    },
+    onClick: (event, elements) => {
+      if (elements.length > 0) {
+        const clickedElementIndex = elements[0].index;
+        let materialDetails = state._stockStatusData[clickedElementIndex];
+        router.push(
+          `/dashboard/report/report-details?reportData=${materialDetails?._id
+          }&reportType=${"status"}&selectedType=${materialDetails?.stockStatus}`
+        );
+      }
+    },
+  };
 
   async function MaterialByCategory(category) {
     try {
@@ -213,36 +343,8 @@ const ShiftGraph = () => {
       borderWidth: 1,
     }],
   };
-  async function getStockOutCount() {
-    try {
-      const serverResponse = await communication.getStockOutCount({
-        startDate: state.startDate,
-        endDate: state.endDate,
-      });
-      if (serverResponse?.data?.status === "SUCCESS") {
-        // setReport(serverResponse?.data?.report);
-        setState({ _StockOutData: serverResponse.data.report });
-        // setState({ _locationData: serverResponse.data.locationCount });
-        setStockOutGraphData({
-          labels: serverResponse.data.report.map((label) => label.label),
-          count: serverResponse.data.report.map((count) => count.count),
-        });
-      } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message);
-      } else {
-        toast.info(serverResponse.data.message);
-      }
-    } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
-    }
-  }
-  useEffect(() => {
-    if (
-      (state.startDate == null && state.endDate == null) ||
-      (state.startDate && state.endDate && state.isBelow15Days)
-    )
-      getStockOutCount();
-  }, [state.startDate, state.endDate]);
+ 
+
 
   useEffect(() => {
     MaterialByCategory();
@@ -254,22 +356,22 @@ const ShiftGraph = () => {
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
       <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
         <h5 style={{ textAlign: 'center' }}>Category Wise Stock</h5>
-        <Pie data={pieData1} options={options('Category Wise Stock')} />
+        <Pie data={pieData1} options={optionsCategory} />
       </div>
       <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
         <h5 style={{ textAlign: 'center' }}>Brand Wise Stock</h5>
-        <Pie data={pieData2} options={options('Brand Wise Stock')} />
+        <Pie data={pieData2} options={optionsBrand} />
       </div>
       <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
         <h5 style={{ textAlign: 'center' }}>Status Wise Stock</h5>
-        <Pie data={pieData3} options={options('Status Wise Stock')} />
+        <Pie data={pieData3} options={optionsStatus} />
       </div>
       <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
         <h5 style={{ textAlign: 'center' }}>Location Wise Stock</h5>
-        <Pie data={pieData4} options={options('Location Wise Stock')} />
+        <Pie data={pieData4} options={optionsLocation} />
       </div>
     </div>
   );
 };
 
-export default ShiftGraph;
+export default StockReportGraph;

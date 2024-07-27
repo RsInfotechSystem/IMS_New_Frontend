@@ -1,10 +1,12 @@
 "use client";
 import CustomBtn from '@/common-components/CustomBtn';
+import Loader from '@/common-components/Loader';
 import Pagination from '@/common-components/Pagination';
 import Search from '@/common-components/Search';
 import { communication } from '@/services/communication';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useReducer, useState } from 'react';
+import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 
 const ReportDetails = () => {
@@ -19,6 +21,7 @@ const ReportDetails = () => {
   const [pageCount, setPageCount] = useState(1);
   const [timeoutId, setTimeoutId] = useState();
   const [reportType, setReportType] = useState();
+  const [loader, setLoader] = useState(false);
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     reportId: "",
     reportType: "",
@@ -79,28 +82,31 @@ const ReportDetails = () => {
   } = {}) => {
     try {
       let payload = {
-        type: reportType,
+        type: searchParams.get("reportType"),
         searchString: searchString,
-        ...(reportType == "category" && { categoryId: reportId }), //logic one
-        ...(reportType == "status" && { status: reportId }),
-        ...(reportType == "graph" && { date: formatDate(reportId) }),
-        ...(stateFilter.categoryValue.keyType == "category" && {
-          categoryId: stateFilter.categoryValue.keyId,
-        }),
-        ...(stateFilter.brandValue.keyType == "brand" && { brandId: stateFilter.brandValue.keyId }),
-        ...(stateFilter.locationValue.keyType == "location" && {
-          location: stateFilter.locationValue.keyId,
-        }),
-        ...(stateFilter.modelNameValue.keyType == "modelName" && {
-          modelId: stateFilter.modelNameValue.keyId,
-        }),
+        page
       };
-      if (reportType == "brand") {
-        //logic two
-        payload.brandId = reportId;
-      } else if (reportType == "location") {
-        payload.location = reportId;
+      if (searchParams.get("reportType") === "brand") {
+        payload.brandId = searchParams.get("reportData");
       }
+
+      if (searchParams.get("reportType") === "location") {
+        payload.location = searchParams.get("reportData");
+      }
+
+      if (searchParams.get("reportType") === "category") {
+        payload.categoryId = searchParams.get("reportData");
+      }
+
+      if (searchParams.get("reportType") === "status") {
+        payload.status = searchParams.get("reportData");
+      }
+
+      if (searchParams.get("reportType") === "graph") {
+        payload.date = searchParams.get("reportData");
+      }
+      setLoader(true)
+
       const serverResponse = await communication.getReportMaterialList(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setReportDetails(serverResponse?.data?.material);
@@ -145,17 +151,16 @@ const ReportDetails = () => {
           });
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
         router.push("/");
       } else {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
         setReportDetails([]);
       }
+      setLoader(false)
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+      toast.error(error?.response?.data?.message || error.message);
+      setLoader(false)
     }
   };
   const handleSearch = (e) => {
@@ -167,6 +172,7 @@ const ReportDetails = () => {
         reportId: state.reportId,
         reportType: state.reportType,
         searchString: e.target.value,
+        page: 1
       });
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -205,11 +211,10 @@ const ReportDetails = () => {
 
   return (
     <>
-      {/* <h1>Details for {label}</h1>
-      <p>Dataset: {dataset}</p> */}
+      {loader && <Loader text="Fetching Data..." />}
 
       <div className="top_header">
-        <div className="tab_title">{reportType}&nbsp; Overview Report</div>
+        <div className="tab_title" style={{ textTransform: "capitalize" }}>{searchParams?.get("reportType") === "graph" ? `${searchParams.get("reportData")} Stock Out List` : `${searchParams.get("selectedType")} stock List`}</div>
         <div
           className="back_btn"
           onClick={() => {
@@ -243,11 +248,7 @@ const ReportDetails = () => {
         </div>
       </div>
       <div className="search_btn_wrapper">
-        <Search  onChange={(e) => handleSearch(e)} placeholder={"Search"} />
-
-
-
-
+        <Search onChange={(e) => handleSearch(e)} placeholder={"Search"} />
       </div>
 
       {/* table  */}
@@ -266,83 +267,90 @@ const ReportDetails = () => {
                 <h5>Brand</h5>
               </div>
               <div className="col_20p">
+                <h5>Model Name</h5>
+              </div>
+              <div className="col_20p">
                 <h5>Location</h5>
               </div>
               <div className="col_20p">
-                <h5>Model Name</h5>
-              </div>
-              <div className="col_25p">
-                <h5>Stock Status</h5>
-              </div>
-              <div className="col_20p">
                 <h5>Block Name</h5>
-              </div>
-              <div className="col_20p">
-                <h5>Serial No.</h5>
               </div>
               <div className="col_25p">
                 <h5>Condition Type</h5>
               </div>
               <div className="col_20p">
+                <h5>Serial No.</h5>
+              </div>
+
+              <div className="col_20p">
                 <h5>Quantity</h5>
               </div>
-              
-
+              {searchParams?.get("reportType") === "graph" ?
+                <div className="col_25p">
+                  <h5>Stock Out By</h5>
+                </div>
+                :
+                <div className="col_25p">
+                  <h5>Stock Status</h5>
+                </div>
+              }
             </div>
-            {/* {
-                            location?.map((locationDetails, index) => {
-                                return <>
-                                    <div className="table_data" >
-                                        <div className="col_35p">
-                                            <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                                        </div>
+            {
+              reportDetails?.map((data, index) => {
+                return <>
+                  <div className="table_data" >
+                    <div className="col_15p">
+                      <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                    </div>
+                    <div className="col_20p">
+                      <h6>{data?.categoryId?.name}</h6>
+                    </div>
+                    <div className="col_20p">
+                      <h6>{data?.brandId?.name}</h6>
+                    </div>
 
-                                        <div className="col_50p">
-                                            <h6>{locationDetails?.name}</h6>
-                                        </div>
-                                        <div className="col_20p">
-                                            <h6 className="action_wrraper">
-                                                <div title="edit" >
-                                                    <svg
-                                                        title={`${locationDetails.isActive ? "Update" : ""}`}
-                                                        className={`${locationDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
-                                                            }`}
-                                                        onClick={() => { setModalStates((prev) => ({ ...prev, modal: true, type: "update", locationId: locationDetails._id })) }}
-                                                        width="27" height="27" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div className="col_20p">
+                      <h6>{data?.modelId?.name}</h6>
+                    </div>
 
-                                                        <g clip-path="url(#clip0_279_5204)">
-                                                            <path d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10" stroke="#0D6EFD" stroke-linecap="round" stroke-linejoin="round" />
-                                                            <path d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z" stroke="#0D6EFD" stroke-linecap="round" stroke-linejoin="round" />
-                                                        </g>
-                                                        <defs>
-                                                            <clipPath id="clip0_279_5204">
-                                                                <rect width="15" height="15" fill="white" transform="translate(5 5)" />
-                                                            </clipPath>
-                                                        </defs>
-                                                    </svg>
-                                                </div>
-                                                <div className="form-check form-switch ">
-                                                    <input
-                                                        class="form-check-input cursor-pointer"
-                                                        type="checkbox"
-                                                        checked={locationDetails.isActive || false}
-                                                        id={`toggleSwitch${locationDetails._id}`}
-                                                        onChange={(event) =>
-                                                            setModalStates(pre => ({ ...pre, action: locationDetails.isActive ? "disable" : "enable", locationId: locationDetails._id, deleteLocation: true }))
-                                                        }
-                                                        style={{ width: "35px", height: "15px" }}
-                                                    />
-                                                </div>
-                                            </h6>
+                    <div className="col_20p">
+                      <h6>{data?.locationId?.name}</h6>
+                    </div>
 
-                                        </div>
+                    <div className="col_20p">
+                      <h6>{data?.blockId?.blockNo}</h6>
+                    </div>
 
+                    <div className="col_25p">
+                      <h6>{data?.conditionType}</h6>
+                    </div>
 
+                    <div className="col_20p">
+                      <h6>{data?.serialNo ?? "--"}</h6>
+                    </div>
+                    {searchParams?.get("reportType") === "graph" ?
+                      <div className="col_20p">
+                        <h6>{data?.quantity}</h6>
+                      </div>
+                      :
+                      <div className="col_20p">
+                        <h6>{data?.reamainingQuantity}</h6>
+                      </div>
+                    }
 
-                                    </div>
-                                </>
-                            })
-                        } */}
+                    {searchParams?.get("reportType") === "graph" ?
+                      <div className="col_25p">
+                        <h6>{data?.stockOutBy?.name}</h6>
+                      </div>
+                      :
+                      <div className="col_25p">
+                        <h6>{data?.stockStatus}</h6>
+                      </div>
+                    }
+                  </div>
+                </>
+              })
+            }
 
           </div>
 
