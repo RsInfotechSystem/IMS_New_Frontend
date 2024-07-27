@@ -1124,7 +1124,7 @@ export const communication = {
       throw error;
     }
   },
-///stock management
+  ///stock management
   fetchReturnMaterialList: async (data) => {
     try {
       return await axios.post(
@@ -1535,7 +1535,7 @@ export const communication = {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/get-material-for-approval`,
-data,
+        data,
         {
           headers: {
             "Content-Type": "application/json",
@@ -1603,7 +1603,7 @@ data,
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/change-material-status`,
-        data,   
+        data,
         {
           headers: {
             "Content-Type": "application/json",
@@ -1666,7 +1666,39 @@ data,
     }
   },
 
-  //Vijay thalapathy started
+  getStockOutCount: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-stock-out-count`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getReportMaterialList: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-report-material-list`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   deleteStock: async (dataToSend) => {
     try {
       return await axios.post(
@@ -1683,6 +1715,5 @@ data,
       throw error;
     }
   },
-  //viajay end
   ////////////////////////////////end////////////////////////////////////////////
 };
