@@ -88,7 +88,7 @@ function CreateRack({ data }) {
                 rackId: modalStates?.id,
             });
             if (response?.data?.status === "SUCCESS") {
-                setLocationId(response?.data?.rack?.locationId);
+                setLocationId(response?.data?.rack?.locationId._id);
                 setRackId(response?.data.rack?._id);
                 setValue("rackName", response?.data?.rack?.rackName);
                 setValue("partition", response?.data?.rack?.partition);
