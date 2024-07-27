@@ -1665,5 +1665,24 @@ data,
       throw error;
     }
   },
+
+  //Vijay thalapathy started
+  deleteStock: async (dataToSend) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/delete-stock`,
+        dataToSend,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  //viajay end
   ////////////////////////////////end////////////////////////////////////////////
 };

@@ -1,8 +1,9 @@
 import React from "react";
-import StockIn from "./StockIn";
+import CreateStockIn from "./CreateStockIn";
+import StockInList from "./StockInList";
 
 function Page() {
-  return <StockIn />;
+  return <StockInList />;
 }
 
 export default Page;
