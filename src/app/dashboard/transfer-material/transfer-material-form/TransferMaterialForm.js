@@ -7,12 +7,15 @@ import { getLocations } from "@/services/commonApis";
 import { communication } from "@/services/communication";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import { useForm } from "react-hook-form";
+import { faCaretLeft, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "@/common-components/Button";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 const TransferMaterialForm = () => {
   const router = useRouter();
@@ -27,6 +30,8 @@ const TransferMaterialForm = () => {
     formState: { errors },
   } = useForm();
   const [loader, setLoader] = useState(false);
+  const params = useSearchParams();
+
   const [page, setPage] = useState(1);
   const [selectedList, setSelectedList] = useState([]);
   const [selectAllCheckedStock, setSelectAllCheckedStock] = useState(false);
@@ -382,7 +387,7 @@ const TransferMaterialForm = () => {
             <div className="d-flex align-items-center justify-content-between py-2">
               <p>Material List</p>
             </div>
-            <Search value="" onChange={() => {}} placeholder="Search" />
+            <Search value="" onChange={() => { }} placeholder="Search" />
 
             {/* table  */}
             <div className="table_wrapper my-3">
@@ -406,212 +411,212 @@ const TransferMaterialForm = () => {
                       <h5>Sr. No.</h5>
                     </div>
                     <div className="col_50p">
-                      <div className="category_stock d-flex justify-content-between">
-                        {state.categoryFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  categoryValue: {
-                                    keyType: "category",
-                                    keyId: e.target.value,
-                                    keyCount: state.categoryValue.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state.categoryValue.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state.category.map((item, index) => {
-                                return (
-                                  <option value={item.categoryId} key={index}>
-                                    {item.category}
-                                  </option>
-                                );
-                              })}
-                            </select>
+                      {/* <div className="category_stock d-flex justify-content-between"> */}
+                      {state.categoryFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                categoryValue: {
+                                  keyType: "category",
+                                  keyId: e.target.value,
+                                  keyCount: state.categoryValue.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state.categoryValue.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state.category.map((item, index) => {
+                              return (
+                                <option value={item.categoryId} key={index}>
+                                  {item.category}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ categoryFilter: !state.categoryFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Category</h5>
+                          <div>
                             <Image
-                              onClick={() => setState({ categoryFilter: !state.categoryFilter })}
+                              onClick={() => setState({ categoryFilter: true })}
                               className="cursor-pointer"
                               src={filterIcon}
                               width={15}
                               height={15}
                               alt="filter-icon"
                             ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Category</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ categoryFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
+                    </div>
+                    <div className="col_40p">
+                      {/* <div className="commonBlock d-flex justify-content-between"> */}
+                      {state.brandFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                brandValue: {
+                                  keyType: "brand",
+                                  keyId: e.target.value,
+                                  keyCount: state.brandValue.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state.brandValue.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state.brand.map((item, index) => {
+                              return (
+                                <option value={item.brandId} key={index}>
+                                  {item.brand}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ brandFilter: !state.brandFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Brand</h5>
+                          <div>
+                            <Image
+                              onClick={() => setState({ brandFilter: true })}
+                              className="cursor-pointer"
+                              src={filterIcon}
+                              width={15}
+                              height={15}
+                              alt="filter-icon"
+                            ></Image>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
                     </div>
                     <div className="col_50p">
-                      <div className="commonBlock d-flex justify-content-between">
-                        {state.brandFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  brandValue: {
-                                    keyType: "brand",
-                                    keyId: e.target.value,
-                                    keyCount: state.brandValue.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state.brandValue.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state.brand.map((item, index) => {
-                                return (
-                                  <option value={item.brandId} key={index}>
-                                    {item.brand}
-                                  </option>
-                                );
-                              })}
-                            </select>
+                      {/* <div className="item_code d-flex justify-content-between"> */}
+                      {state.locationFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                locationValue: {
+                                  keyType: "location",
+                                  keyId: e.target.value,
+                                  keyCount: state.locationValue.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state.locationValue.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state.location.map((item, index) => {
+                              return (
+                                <option value={item.locationId} key={index}>
+                                  {item.location}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ locationFilter: !state.locationFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Location</h5>
+                          <div>
                             <Image
-                              onClick={() => setState({ brandFilter: !state.brandFilter })}
+                              onClick={() => setState({ locationFilter: true })}
                               className="cursor-pointer"
                               src={filterIcon}
                               width={15}
                               height={15}
                               alt="filter-icon"
                             ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Brand</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ brandFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
                     </div>
                     <div className="col_50p">
-                      <div className="item_code d-flex justify-content-between">
-                        {state.locationFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  locationValue: {
-                                    keyType: "location",
-                                    keyId: e.target.value,
-                                    keyCount: state.locationValue.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state.locationValue.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state.location.map((item, index) => {
-                                return (
-                                  <option value={item.locationId} key={index}>
-                                    {item.location}
-                                  </option>
-                                );
-                              })}
-                            </select>
+                      {/* <div className="commonBlock d-flex justify-content-between"> */}
+                      {state?.modelNameFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                modelNameValue: {
+                                  keyType: "modelName",
+                                  keyId: e.target.value,
+                                  keyCount: state?.modelNameValue?.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state?.modelNameValue?.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state?.modelName?.map((item, index) => {
+                              return (
+                                <option value={item?.modelId} key={index}>
+                                  {item?.modelName}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ modelNameFilter: !state?.modelNameFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Model Name</h5>
+                          <div>
                             <Image
-                              onClick={() => setState({ locationFilter: !state.locationFilter })}
+                              onClick={() => setState({ modelNameFilter: true })}
                               className="cursor-pointer"
                               src={filterIcon}
                               width={15}
                               height={15}
                               alt="filter-icon"
                             ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Location</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ locationFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col_50p">
-                      <div className="commonBlock d-flex justify-content-between">
-                        {state?.modelNameFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  modelNameValue: {
-                                    keyType: "modelName",
-                                    keyId: e.target.value,
-                                    keyCount: state?.modelNameValue?.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state?.modelNameValue?.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state?.modelName?.map((item, index) => {
-                                return (
-                                  <option value={item?.modelId} key={index}>
-                                    {item?.modelName}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                            <Image
-                              onClick={() => setState({ modelNameFilter: !state?.modelNameFilter })}
-                              className="cursor-pointer"
-                              src={filterIcon}
-                              width={15}
-                              height={15}
-                              alt="filter-icon"
-                            ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Model Name</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ modelNameFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
                     </div>
                     <div className="col_50p">
                       <h5>Item Code</h5>
@@ -657,7 +662,7 @@ const TransferMaterialForm = () => {
                           <div className="col_50p">
                             <h6>{materialDetails?.category}</h6>
                           </div>
-                          <div className="col_50p">
+                          <div className="col_40p">
                             <h6>{materialDetails?.brand}</h6>
                           </div>{" "}
                           <div className="col_50p d-flex justify-content-center">
@@ -713,6 +718,26 @@ const TransferMaterialForm = () => {
                               </h6>
                             </div>
                           </div>
+                          {/* <div className="col_25p">
+                            <h6 className='action_wrraper'>
+                              <div className="qty_add_sub_layout">
+                                <div className="qty_decrement" title="-"
+                                  onClick={() => { handleDecrement(data._id) }}
+                                >
+                                  <FontAwesomeIcon icon={faCaretLeft} className="inc_dec_icon" />
+                                </div>
+                                <input type="number" min="0" value={data?.quantity} className="qty_input" onChange={(e) => {
+                                  handleChange(data?._id, Number(e.target.value), data)
+                                }}
+                                  onWheel={(e) => { e.target.blur() }}
+                                />
+                                <div className="qty_increment" title="+"
+                                  onClick={() => { handleIncrement(data?._id, data) }}>
+                                  <FontAwesomeIcon icon={faCaretRight} className="inc_dec_icon" />
+                                </div>
+                              </div>
+                            </h6>
+                          </div> */}
                         </div>
                       ))}
                     </>
@@ -724,6 +749,145 @@ const TransferMaterialForm = () => {
             </div>
           </div>
           {/* <button type="submit">send</button> */}
+          {/* second table start */}
+          <div className="form_list_layout_wrapper mt-3">
+            <div className="d-flex align-items-center justify-content-between py-2">
+              <p>List Preview</p>
+            </div>
+
+            {/* table  */}
+            <div className="table_wrapper my-3">
+              <div className="table_main">
+                {/* Rename the class name "pi_product_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
+                <div className="table_section pi_product_table employee_table" >
+                  <div className="table_header">
+
+                    <div className="col_10p">
+                      <h5>Sr. No.</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Category</h5>
+                    </div>
+                    <div className="col_40p">
+                      <h5>Brand</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Location</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Model Name</h5>
+                    </div>
+
+
+                    <div className="col_50p">
+                      <h5>Item Code</h5>
+                    </div>
+
+                    <div className="col_50p">
+                      <h5>Serial No.</h5>
+                    </div>{" "}
+                    <div className="col_50p">
+                      <h5>Status</h5>
+                    </div>{" "}
+                    <div className="col_50p">
+                      <h5>Quantity</h5>
+                    </div>
+                    <div className="col_20p">
+                      <h5>Action</h5>
+                    </div>
+
+                  </div>
+
+                  <div className="table_data">
+
+                    <div className="col_10p">
+                      <h6>1</h6>
+                    </div>
+
+                    <div className="col_50p">
+                      <h6>Category</h6>
+                    </div>
+                    <div className="col_40p">
+                      <h6>Brand</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>Location</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>Model Name</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>Item Code</h6>
+                    </div>
+
+                    <div className="col_50p">
+                      <h6>Serial No.</h6>
+                    </div>{" "}
+                    <div className="col_50p">
+                      <h6>Status</h6>
+                    </div>{" "}
+                    <div className="col_50p">
+                      <h6>Quantity</h6>
+                    </div>
+                    <div className="col_20p">
+                      <h6>
+                        <FontAwesomeIcon icon={faTrash} />
+
+                      </h6>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+            <div className="d-flex align-items-start justify-content-start gap-4 py-3">
+              <div className="fw-medium text-secondary">
+                <label>Final Amount</label>
+                <InputBox type={"text"}
+                // value={totalSum}
+                // disable={true}
+                />
+              </div>
+              {/* {params.get("type") === "approval" && */}
+              <div className="fw-medium text-secondary">
+                <label>Paid Amount*</label>
+                <InputBox type={"number"}
+                  register={{
+                    ...register("paidAmount", {
+                      required: "Amount to be paid is required",
+                    })
+                  }}
+                  errors={errors.paidAmount}
+                />
+              </div>
+              {/* } */}
+
+              {/* {(params.get("type") === "approval" || getValues("reamainingAmount")) && */}
+              <div className="fw-medium text-secondary">
+                <label>Reamaing Amount*</label>
+                <InputBox type={"number"}
+                  register={{
+                    ...register("reamainingAmount")
+                  }}
+                />
+              </div>
+              {/* } */}
+
+
+
+            </div>
+            {/*  buttons*/}
+            {/* <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+             
+              {params.get("type") !== "approval" && <Button type="submit" onClick={handleSubmit(onSubmit)} name={[undefined, null, ""]?.includes(params.get("poId")) ? "Create" : "Update"} className="button" />}
+              {(params.get("type") === "approval" && modalState.viewPrintBill === false) && <Button type="submit" onClick={handleSubmit(receivePaymentPo)} name={"Receive Payment"} className="button" />}
+              {(params.get("type") === "approval" && modalState.viewPrintBill) && <Button onClick={() => printBill()} name={"Print Bill"} className="button" />}
+              <Button type="submit" onClick={() => router.push("/dashboard/po-management")} name={"Cancel"} className="button" />
+
+            </div> */}
+          </div>
         </div>
       </form>
     </>
