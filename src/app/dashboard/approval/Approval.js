@@ -12,6 +12,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/helper/formatDate";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const Approval = () => {
@@ -124,7 +125,7 @@ const Approval = () => {
       }
       setLoader(false);
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
+      toast.error(error?.message);
       setLoader(false);
     }
   }
@@ -137,21 +138,18 @@ const Approval = () => {
         status: "approved",
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-        Swal.fire({ text: serverResponse.data.message, icon: "success" });
+        toast.success(serverResponse.data.message);
         getMaterialForApproval(1, searchString);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
         router.push("/");
         setLoader(false);
       } else {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+      toast.error(error.message);
       setLoader(false);
     }
   }
@@ -181,6 +179,7 @@ const Approval = () => {
   //     await approvedOrReject(materialData, 1);
   //   }
   // };
+
   const handleSearch = (e) => {
     setSearchString(e.target.value);
     let isSearch = true;
@@ -190,6 +189,7 @@ const Approval = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
+
   useEffect(() => {
     let isSearch = true;
     getMaterialForApproval({
@@ -202,6 +202,7 @@ const Approval = () => {
     state?.locationValue?.keyId,
     state?.modelNameValue?.keyId,
   ]);
+
   useEffect(() => {
     getMaterialForApproval({ currentPage, searchString, isFirstCall: true });
   }, [isPageUpdated]);
@@ -217,6 +218,7 @@ const Approval = () => {
       setState({ isShowSellList: false });
     }
   };
+
   async function approveTransferMaterial() {
     try {
       let payload = {
@@ -229,7 +231,7 @@ const Approval = () => {
           modelId: state.modelNameValue.keyId,
         }),
       };
-      const serverResponse = await communication.approveTransferMaterial(payload);
+      const serverResponse = await communication.getTransferMaterialToApprove(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial([]);
         // console.log(serverResponse.data, "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
@@ -255,6 +257,7 @@ const Approval = () => {
       setLoader(false);
     }
   }
+
   const rejectTransferMaterial = async (id, remark = "") => {
     try {
       setLoader(true);
@@ -264,23 +267,17 @@ const Approval = () => {
       };
       let response = await communication.rejectTransferMaterial(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
+        toast.success(response.data.message);
         approveTransferMaterial({ currentPage, searchString });
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message);
         router.push("/");
       } else {
-        Swal.fire({
-          text: response?.data?.message,
-          icon: "warning",
-        });
+        toast.info(response.data.message);
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+      toast.info(response.data.message);
       setLoader(false);
     }
   };
@@ -307,33 +304,32 @@ const Approval = () => {
       }
     });
   };
-  async function approvedTransferMaterials(id, status) {
+
+  async function approvedTransferMaterials(id) {
     try {
       console.log("Material ID:", id);
       setLoader(true);
       const serverResponse = await communication.approvedTransferMaterials({
         transferMaterialId: id,
-        status: "approved",
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-        Swal.fire({ text: serverResponse.data.message, icon: "success" });
+        toast.success(serverResponse.data.message);
         approveTransferMaterial({ currentPage, searchString });
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
         router.push("/");
         setLoader(false);
       } else {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+      toast.error(response?.data?.message || error.message);
       setLoader(false);
     }
   }
+
+
 
   return (
     <>
@@ -349,126 +345,228 @@ const Approval = () => {
           }}
           placeholder={"Search"}
         />
-         <div className="buttons_wrapper">
-            <CustomBtn
-              name={"Sell List"}
-              onClick={() => {
-                router.push("/dashboard/approval");
-              }}
-              
-            />
-            <CustomBtn
-              name={"Transfer List"}
-              // onClick={() => {
-              //   setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
-              // }}
-             
-              
-            />
-            
-          </div>
-      </div>
-      {/* table  */}
-      <div className="table_wrapper">
-        <div className="table_main">
-          <div className="table_section inventory_table_res">
-            <div className="table_header">
-              <div className="col_20p">
-                <h5>Sr. No.</h5>
-              </div>
-              <div className="col_60p">
-                <h5>Category Name</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Brand Name</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Modal Name</h5>
-              </div>
-              <div className="col_55p">
-                <h5>Location Name</h5>
-              </div>
-              <div className="col_45p">
-                <h5>Item Code</h5>
-              </div>
-              
-              <div className="col_35p">
-                <h5>Serial No.</h5>
-              </div>
-              <div className="col_35p">
-                <h5>Condition Type</h5>
-              </div>
-              <div className="col_35p">
-                <h5>Quantity</h5>
-              </div>
-              <div className="col_20p">
-                <h5 className="action_wrraper">Action</h5>
-              </div>
-            </div>
-            {material?.map((materialDetails, index) => {
-              return (
-            <div className="table_data" key={index}>
-               {console.log("rrrrrrrrrrrrrrrrrr>>>", materialDetails)}
-              <div className="col_20p">
-                <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-              </div>
-              <div className="col_60p">
-
-                <h6>
-                  <strong>{materialDetails?.categoryId?.name}</strong>
-                </h6>
-              </div>
-              <div className="col_50p">
-                <h6>{materialDetails?.brandId?.name}</h6>
-              </div>
-              <div className="col_50p">
-                <h6>{materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}</h6>
-              </div>
-              <div className="col_55p">
-                <h6>{materialDetails?.locationId.name}</h6>
-              </div>
-              <div className="col_45p">
-                <h6>{materialDetails?.itemCode}</h6>
-              </div>
-            
-              <div className="col_35p">
-                <h6>{materialDetails?.serialNo
-                }</h6>
-              </div>
-              <div className="col_35p">
-                <h6>{materialDetails?.conditionType}</h6>
-              </div>
-              <div className="col_35p">
-                <h6>{materialDetails?.quantity}</h6>
-              </div>
-              <div className="col_20p">
-                <h6 className="action_wrraper">
-                 
-                    <button
-                              className="actionbtn"
-                              onClick={(e) => changeMaterialStatus(materialDetails)}
-                            >
-                              Approve
-                            </button>
-                </h6>
-              </div>
-            </div>
-            );
-            })} 
-          </div>
-        </div>
-      </div>
-      {pageCount > 1 && (
-        <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
+        <div className="buttons_wrapper">
+          <CustomBtn
+            name={"Sell List"}
+            onClick={() => handleClick("transferList")}
+          />
+          <CustomBtn
+            name={"Transfer List"}
+            onClick={() => handleClick("anotherButton")}
           />
         </div>
+      </div>
+
+      {/* ============================== Sell Approval================================= */}
+      {state.isShowSellList && (
+        <div className="table_wrapper">
+          <div className="table_main">
+            <div className="table_section inventory_table_res">
+              <div className="table_header">
+                <div className="col_20p">
+                  <h5>Sr. No.</h5>
+                </div>
+                <div className="col_60p">
+                  <h5>Category Name</h5>
+                </div>
+                <div className="col_50p">
+                  <h5>Brand Name</h5>
+                </div>
+                <div className="col_50p">
+                  <h5>Modal Name</h5>
+                </div>
+                <div className="col_55p">
+                  <h5>Location Name</h5>
+                </div>
+                <div className="col_45p">
+                  <h5>Item Code</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Serial No.</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Condition Type</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Quantity</h5>
+                </div>
+                <div className="col_20p">
+                  <h5 className="action_wrraper">Action</h5>
+                </div>
+              </div>
+              {material?.map((materialDetails, index) => {
+                return (
+                  <div className="table_data" key={index}>
+                    <div className="col_20p">
+                      <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                    </div>
+                    <div className="col_60p">
+                      <h6>
+                        <strong>{materialDetails?.categoryId?.name}</strong>
+                      </h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{materialDetails?.brandId?.name}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}</h6>
+                    </div>
+                    <div className="col_55p">
+                      <h6>{materialDetails?.locationId.name}</h6>
+                    </div>
+                    <div className="col_45p">
+                      <h6>{materialDetails?.itemCode}</h6>
+                    </div>
+
+                    <div className="col_35p">
+                      <h6>{materialDetails?.serialNo
+                      }</h6>
+                    </div>
+                    <div className="col_35p">
+                      <h6>{materialDetails?.conditionType}</h6>
+                    </div>
+                    <div className="col_35p">
+                      <h6>{materialDetails?.quantity}</h6>
+                    </div>
+                    <div className="col_20p">
+                      <h6 className="action_wrraper">
+                        <button
+                          className="actionbtn sell_btn"
+                          onClick={(e) => approvedOrReject(materialDetails)}
+                        >
+                          Approve
+                        </button>
+                      </h6>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       )}
+
+      {/* ============================== Transfer Approval================================= */}
+
+      {!state.isShowSellList && (
+        <div className="table_wrapper">
+          <div className="table_main">
+            <div className="table_section inventory_table_res">
+              <div className="table_header">
+                <div className="col_20p">
+                  <h5>Sr. No.</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>From Location</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>To Location</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Transfer By</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Remark</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Status</h5>
+                </div>
+
+                <div className="col_35p">
+                  <h5 className="action_wrraper">Action</h5>
+                </div>
+              </div>
+              {trasferMaterial?.length > 0 ? (
+                trasferMaterial?.map((materialDetails, index) => {
+                  return (<>
+                    <div className="table_data" key={index}>
+                      <div className="col_20p">
+                        <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.fromLocation?.name}</h6>
+                      </div>{" "}
+                      <div className="col_35p">
+                        <h6>{materialDetails?.toLocation?.name}</h6>
+                      </div>
+                      {/* {materialDetails?.materialIds?.map((tarnsferData, materialIndex) =>
+                      (
+                        <>
+                          <div className="col_35p">
+                            <h6>
+                              <strong>{tarnsferData?.categoryId?.name}</strong>
+                            </h6>
+                          </div>
+                          <div className="col_35p">
+                            <h6>{tarnsferData?.brandId?.name}</h6>
+                          </div>
+                          <div className="col_35p">
+                            <h6>{tarnsferData?.modelId?.name ? tarnsferData?.modelId?.name : "-"}</h6>
+                          </div>
+                          <div className="col_35p">
+                            <h6>{tarnsferData?.itemCode}</h6>
+                          </div>
+                          <div className="col_35p">
+                            <h6>{tarnsferData?.serialNo}</h6>
+                          </div>
+                          <div className="col_35p">
+                            <h6>{tarnsferData?.conditionType}</h6>
+                          </div>
+                          <div className="col_35p">
+                            <h6>{tarnsferData?.quantity}</h6>
+                          </div>
+                        </>
+                      ))} */}
+                      <div className="col_35p">
+                        <h6>{materialDetails?.transferBy?.name}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.remark ? materialDetails?.remark : "-"}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.status}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6 className="action_wrraper">
+                          <button
+                            className="actionbtn sell_btn"
+                            onClick={() =>
+                              approvedTransferMaterials(materialDetails._id)
+                            }
+                          >
+                            Approve
+                          </button>
+                          <button
+                            className="actionbtn sell_btn"
+                            onClick={() => showInputDialog(materialDetails._id)}
+                          >
+                            Reject
+                          </button>
+                        </h6>
+                      </div>
+                    </div>
+                  </>)
+                })
+              ) : (
+                <h5>Data Not Available</h5>
+              )}
+            </div>
+          </div>
+        </div >
+      )}
+      {
+        pageCount > 1 && (
+          <div className="pagination_wrapper">
+            <Pagination
+              isPageUpdated={isPageUpdated}
+              setIsPageUpdated={setIsPageUpdated}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+              pageCount={pageCount}
+            />
+          </div>
+        )
+      }
     </>
   );
 };
