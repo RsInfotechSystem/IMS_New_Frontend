@@ -455,7 +455,7 @@ const StockManagement = () => {
           </div>
         </div>
       </div>
-      {pageCount > 1 && (
+      {pageCount >= 1 && (
         <div className="pagination_wrapper">
           <Pagination
             isPageUpdated={isPageUpdated}
