@@ -2,7 +2,7 @@ import React from "react";
 import UpdateStock from "./UpdateStock";
 
 function Page() {
-  return <UpdateStock />;
+  return <></>;
 }
 
 export default Page;

@@ -1,18 +1,41 @@
 "use client";
-import Image from "next/image";
-// import { communication } from "@/apis/communication";
-// import React, { useEffect, useReducer, useState } from "react";
-// import edit from "../../../../../public/images/rolecreate/edit.png";
-// import Swal from "sweetalert2";
-// import { useRouter } from "next/navigation";
-// import search from "../../../../../public/images/rolecreate/search.png";
-// import Pagination from "@/reusable/Pagination";
-// import { getCookie } from "cookies-next";
-// import filterIcon from "../../../../../public/images/filter.png";
 
-const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 4;
+import CustomBtn from "@/common-components/CustomBtn";
+import Pagination from "@/common-components/Pagination";
+import Search from "@/common-components/Search";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useReducer, useRef, useState } from "react";
+import Image from "next/image";
+import { communication } from "@/services/communication";
+import Loader from "@/common-components/Loader";
+import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
+import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import showIcon from "../../../../public/images/showIcon.png";
+import password from "../../../../public/images/password.png";
+import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
+import { getLocations, getParameter } from "@/services/commonApis";
+import filterIcon from "../../../../public/images/filter.png";
+import CreateStockIn from "../stockin/CreateStockIn";
+import { getCookie } from "cookies-next";
+import ReturnMaterial from "./ReturnMaterial";
+
+const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const DailyTask = () => {
+  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "" });
+  const [respondHandlerModalState, setRespondHandlerModalState] = useState({
+    state: false,
+    deleteId: "",
+  });
+  const [respondHandlerActiveModalState, setRespondHandlerActiveModalState] = useState({
+    action: "disable",
+    state: false,
+    userId: "",
+  });
+
   const [page, setPage] = useState(1);
   const router = useRouter();
   const [userId, setUserId] = useState("");
@@ -185,30 +208,29 @@ const DailyTask = () => {
     fetchAssignMaterial({ page: currentPage, searchString, isFirstCall: true });
   }, [isPageUpdated]);
   return (
-    <div className="page_wrapper">
-      {" "}
-      <div className="d-flex gap-3">
-        {/* <div className="col-lg-2 col-md-3 justify-content-center d-flex align-items-center"> */}
-        <div className="border border-3  mb-2 border-solid border-color-#bababa ps-1 d-flex align-items-center w-25">
-          <Image src={search} alt="serchIcon"></Image>
-          <input
-            type="text"
-            value={searchString}
-            onChange={handleSearch}
-            placeholder="search"
-            style={{
-              background: "#f5f5f5",
-              height: "30px",
-              fontSize: 14,
-              fontWeight: 500,
-              width: "100%",
-            }}
-            className="ps-2"
-          />
-          {/* <button className="savebtn mb-1" onClick={() => getRoleList(1, searchString)}>Search</button> */}
-        </div>
-        {/* </div> */}
-        {/* <div className="col-lg-2 col-md-3 justify-content-center d-flex align-items-center"> */}
+    <>
+      {respondHandlerModalState.state && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message="Are you sure you want to delete this Stock?"
+          cancelHandler={cancelHandler}
+          successHandler={() => handleDelete(respondHandlerModalState.deleteId)}
+        />
+      )}
+      {respondHandlerActiveModalState.state && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message={`Are you sure you want to ${respondHandlerActiveModalState.action} the status?`}
+          cancelHandler={cancelHandlerActive}
+          successHandler={() => changeUserStatus(respondHandlerActiveModalState.userId)}
+        />
+      )}
+      {loader && <Loader text="Fetching Data..." />}
+      <div className="top_header">
+        <div className="tab_title">Daily Task</div>
+      </div>
+      <div className="search_btn_wrapper">
+        <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
         {roleName === "admin" && (
           <div
             className="border border-3 mb-2 border-solid border-color-#bababa d-flex align-items-center"
@@ -247,27 +269,40 @@ const DailyTask = () => {
                 </div> */}
           </div>
         )}
-        {/* </div> */}
+        <div className="buttons_wrapper"></div>
       </div>
+      {/* table  */}
       <div className="table_wrapper">
         <div className="table_main">
-          <div className="table_container_inventory">
+          {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
+          <div className="table_section employee_table">
+            {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">
+              <button className="table_badge">
+                <h5>Total User</h5>
+                <div className="badge_count">
+                  <h6>{user.length}</h6>
+                </div>
+              </button>
+            </div>} */}
+
             <div className="table_header">
-              <div className="sr_no">
+              <div className="col_7p">
+                {/* <input
+                  type="checkbox"
+                  className="form-check-input"
+                  onChange={(e) => handleSelectAllChange(e)}
+                  checked={selectAllChecked}
+                /> */}
+              </div>
+              <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
-              {/* <div className="stock_out">
-                <h5>Category</h5>
-              </div>{" "} */}{" "}
-              <div
-                className="category_stock d-flex justify-content-between"
-                style={{ width: "18%" }}
-              >
+              <div className="col_50p">
                 {state.categoryFilter ? (
                   <>
                     <select
                       className="selectBox text-capitalize"
-                      style={{ width: "80%", cursor: "pointer" }}
+                      style={{ width: "80%" }}
                       // onChange={(e) => filterSearch(e, "category")}
                       onChange={(e) =>
                         setState({
@@ -282,7 +317,7 @@ const DailyTask = () => {
                     >
                       <option value="">Select All</option>
                       {state.category.map((item, index) => {
-                        // console.log("checkkk", state);
+                        console.log("checkkk", state.category);
                         return (
                           <option value={item.categoryId} key={index}>
                             {item.category}
@@ -315,10 +350,7 @@ const DailyTask = () => {
                   </>
                 )}
               </div>
-              {/* <div className="stock_out">
-                <h5>Brand Name</h5>
-              </div> */}{" "}
-              <div className="commonBlock d-flex justify-content-between" style={{ width: "18%" }}>
+              <div className="col_30p">
                 {state.brandFilter ? (
                   <>
                     <select
@@ -370,10 +402,7 @@ const DailyTask = () => {
                   </>
                 )}
               </div>
-              {/* <div className="stock_out">
-                <h5>Location</h5>
-              </div> */}
-              <div className="item_code d-flex justify-content-between" style={{ width: "18%" }}>
+              <div className="col_50p">
                 {state.locationFilter ? (
                   <>
                     <select
@@ -425,10 +454,7 @@ const DailyTask = () => {
                   </>
                 )}
               </div>
-              {/* <div className="stock_out">
-                <h5>Model Name</h5>
-              </div> */}
-              <div className="commonBlock d-flex justify-content-between" style={{ width: "18%" }}>
+              <div className="col_50p">
                 {state.modelNameFilter ? (
                   <>
                     <select
@@ -440,7 +466,7 @@ const DailyTask = () => {
                           modelNameValue: {
                             keyType: "modelName",
                             keyId: e.target.value,
-                            keyCount: state.modelNameValue.keyCount + 1,
+                            keyCount: state?.modelNameValue?.keyCount + 1,
                           },
                         })
                       }
@@ -449,14 +475,14 @@ const DailyTask = () => {
                       <option value="">Select All</option>
                       {state.modelName.map((item, index) => {
                         return (
-                          <option value={item.modelId} key={index}>
-                            {item.modelName}
+                          <option value={item?.modelId} key={index}>
+                            {item?.modelName}
                           </option>
                         );
                       })}
                     </select>
                     <Image
-                      onClick={() => setState({ modelNameFilter: !state.modelNameFilter })}
+                      onClick={() => setState({ modelNameFilter: !state?.modelNameFilter })}
                       className="cursor-pointer"
                       src={filterIcon}
                       width={15}
@@ -480,119 +506,160 @@ const DailyTask = () => {
                   </>
                 )}
               </div>
-              <div className="stock_out">
-                <h5>Serial No.</h5>
-              </div>
-              <div className="stock_out">
+              <div className="col_50p">
                 <h5>Item Code</h5>
               </div>
-              <div className="stock_out">
+              <div className="col_50p">
+                <h5>Quantity</h5>
+              </div>
+              <div className="col_50p">
+                <h5>Remaining Quantity</h5>
+              </div>
+              <div className="col_50p">
+                <h5>Block</h5>
+              </div>
+              <div className="col_50p">
+                <h5>Rack</h5>
+              </div>
+              <div className="col_50p">
+                <h5>Serial No.</h5>
+              </div>
+              <div className="col_50p">
                 <h5>Condition Type</h5>
               </div>
-              {/* <div className="stock_out">
-                <h5>Status </h5>
+              <div className="col_50p">
+                <h5>Status</h5>
+              </div>
+              {/* <div className="col_50p action_wrraper">
+                <h5 className="action_wrraper">Action</h5>
               </div> */}
-              <div className="stock_out">
+              <div className="col_50p">
                 <h5>Assigned By</h5>
-              </div>{" "}
+              </div>
               {roleName == "admin" && (
-                <div className="stock_out">
+                <div className="col_50p">
                   <h5>Technician</h5>
                 </div>
               )}
-              <div className="stock_out">
+              <div className="col_50p">
                 <h5>Assigned Quantity</h5>
               </div>
-              <div className="stock_out">
+              <div className="col_50p">
                 <h5>Assigned Date</h5>
               </div>
-              <div className="stock_out_brand">
+              <div className="col_50p">
                 <h5>Remark</h5>
               </div>
-              {/* <div className="action_stock">
-                <h5>Action</h5>
-              </div> */}
             </div>
-            <div className="table_data_wrapper">
-              {material?.length > 0 ? (
-                <>
-                  {material?.map((materialDetails, index) => (
-                    <div className="table_data" key={index}>
-                      <div className="sr_no">
-                        <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                      </div>
-                      <div className="category_stock" style={{ width: "18%" }}>
-                        <h6
-                          style={{ color: "#0000FF", cursor: "pointer" }}
-                          onClick={() =>
-                            router.push(
-                              `/admin/dashboard/daily-task/return-material?materialId=${materialDetails._id}`
-                            )
-                          }
-                        >
-                          {materialDetails?.categoryId?.name}
-                        </h6>
-                      </div>
-                      <div className="commonBlock" style={{ width: "18%" }}>
-                        <h6>{materialDetails?.brandId?.name}</h6>
-                      </div>
-                      <div className="item_code" style={{ width: "18%" }}>
-                        <h6>{materialDetails?.locationId?.name}</h6>
-                      </div>
-                      <div className="commonBlock" style={{ width: "18%" }}>
-                        <h6>
-                          {materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}
-                        </h6>
-                      </div>
-                      <div className="stock_out">
-                        <h6>{materialDetails?.serialNo ? materialDetails?.serialNo : "-"}</h6>
-                      </div>
-                      <div className="stock_out">
-                        <h6>{materialDetails?.itemCode ? materialDetails?.itemCode : "-"}</h6>
-                      </div>
-                      <div className="stock_out">
-                        <h6>{materialDetails?.conditionType}</h6>
-                      </div>
-                      {/* <div className="stock_out">
-                        <h6>{materialDetails?.status}</h6>
-                      </div> */}
-                      <div className="stock_out">
-                        <h6>{materialDetails?.assignedBy?.name}</h6>
-                      </div>
-                      {roleName == "admin" && (
-                        <div className="stock_out">
-                          <h6>{materialDetails?.userId?.name}</h6>
-                        </div>
-                      )}
-                      <div className="stock_out">
-                        <h6>{materialDetails?.assignQuantity}</h6>
-                      </div>
-                      <div className="stock_out">
-                        <h6>{new Date(materialDetails.createdAt).toLocaleDateString()}</h6>
-                      </div>
-                      <div className="stock_out_brand" style={{ display: "flex" }}>
-                        <h6>{materialDetails?.remark ?? "--"}</h6>
-                      </div>
+            {material.length > 0 ? (
+              <>
+                {material?.map((stockDetails, index) => (
+                  <div className="table_data" key={index}>
+                    <div className="col_7p">
+                      {/* <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={stockDetails._id}
+                        onChange={(e) => handleCheckboxChange(e)}
+                        checked={selectedCheckboxes.includes(stockDetails._id)}
+                      /> */}
                     </div>
-                  ))}
-                </>
-              ) : (
-                <div className="data_not_available_wrapper">
-                  <h5>Data Not Available</h5>
-                </div>
-              )}
-            </div>
+                    <div className="col_10p">
+                      <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6
+                        style={{ color: "#0000FF", cursor: "pointer" }}
+                        onClick={() =>
+                          setModalStates((prev) => ({
+                            ...prev,
+                            modal: true,
+                            type: "update",
+                            id: stockDetails?._id,
+                          }))
+                        }
+                      >
+                        {stockDetails?.categoryId?.name}
+                      </h6>{" "}
+                    </div>
+                    <div className="col_30p">
+                      <h6>{stockDetails?.brandId?.name}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.locationId.name}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.modelId?.name ? stockDetails?.modelId?.name : "-"}</h6>{" "}
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.mobile}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.itemCode ? stockDetails?.itemCode : "-"}</h6>
+                      {/* <h6>
+                          {roleDetails?.tab?.join(', ')}
+                        </h6> */}
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.quantity ? stockDetails?.quantity : "-"}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>
+                        {stockDetails?.reamainingQuantity ? stockDetails?.reamainingQuantity : "-"}
+                      </h6>{" "}
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.blockId?.blockNo}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.rackId.rackName ? stockDetails?.rackId.rackName : "-"}</h6>{" "}
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.serialNo ? stockDetails?.serialNo : "-"}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.conditionType}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.status}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.assignedBy?.name}</h6>
+                    </div>
+                    {roleName == "admin" && (
+                      <div className="col_50p">
+                        <h6>{stockDetails?.userId?.name}</h6>
+                      </div>
+                    )}
+                    <div className="col_50p">
+                      <h6>{stockDetails?.assignQuantity}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{new Date(stockDetails.createdAt).toLocaleDateString()}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.remark ?? "--"}</h6>
+                    </div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <p className="no_data">Data Not Available</p>
+            )}
           </div>
         </div>
       </div>
-      <Pagination
-        isPageUpdated={isPageUpdated}
-        setIsPageUpdated={() => {}}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        pageCount={pageCount}
-      />
-    </div>
+      <div className="pagination_wrapper">
+        <Pagination
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
+      </div>
+      {modalStates?.modal && <ReturnMaterial data={{ modalStates, setModalStates }} />}
+    </>
   );
 };
 

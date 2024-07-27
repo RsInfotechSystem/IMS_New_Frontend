@@ -32,14 +32,14 @@ const Search = ({ value, onChange, placeholder }) => {
             <g mask="url(#mask0_279_4430)">
               <path
                 d="M10.5 17C14.0899 17 17 14.0899 17 10.5C17 6.91015 14.0899 4 10.5 4C6.91015 4 4 6.91015 4 10.5C4 14.0899 6.91015 17 10.5 17Z"
-                stroke="#79080a"
+                stroke="#184965"
                 stroke-width="1.5"
                 stroke-linejoin="round"
               />
               <path
                 d="M19.6465 19.6466L15.3536 15.3537L15.3537 15.3536L19.6466 19.6465L19.6465 19.6466Z"
-                fill="#79080a"
-                stroke="#79080a"
+                fill="#184965"
+                stroke="#184965"
               />
             </g>
           </g>

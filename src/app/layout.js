@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "IMS",
-  description: "Seasonable Bussiness Management",
+  description: "Inventory Management System",
 };
 
 export default function RootLayout({ children }) {
