@@ -1813,5 +1813,55 @@ export const communication = {
       throw error;
     }
   },
+
+  getStockOutCount: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-stock-out-count`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getReportMaterialList: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-report-material-list`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteStock: async (dataToSend) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/delete-stock`,
+        dataToSend,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   ////////////////////////////////end////////////////////////////////////////////
 };

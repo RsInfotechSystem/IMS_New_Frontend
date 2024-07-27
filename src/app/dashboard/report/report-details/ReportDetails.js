@@ -2,27 +2,206 @@
 import CustomBtn from '@/common-components/CustomBtn';
 import Pagination from '@/common-components/Pagination';
 import Search from '@/common-components/Search';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import { communication } from '@/services/communication';
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useReducer, useState } from 'react';
+import Swal from 'sweetalert2';
 
 const ReportDetails = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
-  const [label, setLabel] = useState(null);
-  const [dataset, setDataset] = useState(null);
-  const [isPageUpdated, setIsPageUpdated] = useState(false);
+  const [reportDetails, setReportDetails] = useState();
+  const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
+  const [page, setPage] = useState(1);
+  const [searchString, setSearchString] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageCount, setPageCount] = useState(0);
-
-
-
-
-  useEffect(() => {
-    if (router.isReady) {
-      const { label, dataset } = router.query;
-      setLabel(label || 'No label');
-      setDataset(dataset || 'No dataset');
+  const [isPageUpdated, setIsPageUpdated] = useState(false);
+  const [pageCount, setPageCount] = useState(1);
+  const [timeoutId, setTimeoutId] = useState();
+  const [reportType, setReportType] = useState();
+  const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
+    reportId: "",
+    reportType: "",
+  });
+  const [stateFilter, setStateFilter] = useReducer(
+    (state, newState) => ({ ...state, ...newState }),
+    {
+      categoryFilter: false,
+      brandFilter: false,
+      locationFilter: false,
+      modelNameFilter: false,
+      category: [],
+      brand: [],
+      modelName: [],
+      location: [],
+      categoryValue: { keyType: "", keyId: "", keyCount: 0 },
+      brandValue: { keyType: "", keyId: "", keyCount: 0 },
+      modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
+      locationValue: { keyType: "", keyId: "", keyCount: 0 },
     }
-  }, [router.isReady, router.query]);
+  );
+
+  function formatDate(dateString) {
+    const months = {
+      Jan: "01",
+      Feb: "02",
+      Mar: "03",
+      Apr: "04",
+      May: "05",
+      Jun: "06",
+      Jul: "07",
+      Aug: "08",
+      Sep: "09",
+      Oct: "10",
+      Nov: "11",
+      Dec: "12",
+    };
+
+    // Split the date string into parts
+    const parts = dateString.split(" ");
+
+    // Extract the day, month, and year
+    const day = parts[0].padStart(2, "0");
+    const month = months[parts[1]];
+    const year = parts[2];
+
+    // Return the formatted date
+    return `${year}-${month}-${day}`;
+  }
+
+  const getReportMaterialList = async ({
+    reportId,
+    reportType,
+    searchString = "",
+    categoryValue,
+    brandValue,
+    isFirstCall,
+  } = {}) => {
+    try {
+      let payload = {
+        type: reportType,
+        searchString: searchString,
+        ...(reportType == "category" && { categoryId: reportId }), //logic one
+        ...(reportType == "status" && { status: reportId }),
+        ...(reportType == "graph" && { date: formatDate(reportId) }),
+        ...(stateFilter.categoryValue.keyType == "category" && {
+          categoryId: stateFilter.categoryValue.keyId,
+        }),
+        ...(stateFilter.brandValue.keyType == "brand" && { brandId: stateFilter.brandValue.keyId }),
+        ...(stateFilter.locationValue.keyType == "location" && {
+          location: stateFilter.locationValue.keyId,
+        }),
+        ...(stateFilter.modelNameValue.keyType == "modelName" && {
+          modelId: stateFilter.modelNameValue.keyId,
+        }),
+      };
+      if (reportType == "brand") {
+        //logic two
+        payload.brandId = reportId;
+      } else if (reportType == "location") {
+        payload.location = reportId;
+      }
+      const serverResponse = await communication.getReportMaterialList(payload);
+      if (serverResponse?.data?.status === "SUCCESS") {
+        setReportDetails(serverResponse?.data?.material);
+        setPageCount(serverResponse?.data?.totalPages);
+        setPage(page);
+        if (isFirstCall) {
+          setStateFilter({
+            category: Array.from(
+              new Set(
+                serverResponse?.data.material?.map((item) =>
+                  JSON.stringify({
+                    categoryId: item.categoryId._id,
+                    category: item.categoryId.name,
+                  })
+                )
+              )
+            )?.map((item) => JSON.parse(item)),
+            brand: Array.from(
+              new Set(
+                serverResponse?.data?.material?.map((item) =>
+                  JSON.stringify({ brandId: item.brandId._id, brand: item.brandId.name })
+                )
+              )
+            ).map((item) => JSON.parse(item)),
+            modelName: Array.from(
+              new Set(
+                serverResponse?.data?.material?.map((item) =>
+                  JSON.stringify({ modelId: item.modelId._id, modelName: item.modelId.name })
+                )
+              )
+            ).map((item) => JSON.parse(item)),
+            location: Array.from(
+              new Set(
+                serverResponse?.data?.material?.map((item) =>
+                  JSON.stringify({
+                    locationId: item.locationId._id,
+                    location: item.locationId.name,
+                  })
+                )
+              )
+            ).map((item) => JSON.parse(item)),
+          });
+        }
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        router.push("/");
+      } else {
+        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        setReportDetails([]);
+      }
+    } catch (error) {
+      Swal.fire({
+        text: error?.response?.data?.message || error.message,
+        icon: "warning",
+      });
+    }
+  };
+  const handleSearch = (e) => {
+    setSearchString(e.target.value);
+    let isSearch = true;
+    clearTimeout(timeoutId);
+    let _timeOutId = setTimeout(() => {
+      getReportMaterialList({
+        reportId: state.reportId,
+        reportType: state.reportType,
+        searchString: e.target.value,
+      });
+    }, 2000);
+    setTimeoutId(_timeOutId);
+  };
+  useEffect(() => {
+    let isSearch = true;
+    // clearTimeout(timeoutId);
+    // let _timeOutId = setTimeout(() => {
+    getReportMaterialList({
+      page: 1,
+      isSearch,
+      reportId: searchParams.get("reportData"),
+      reportType: searchParams.get("reportType"),
+      searchString,
+    });
+    // }, 2000);
+    // setTimeoutId(_timeOutId);
+  }, [
+    stateFilter.categoryValue.keyId,
+    stateFilter.brandValue.keyId,
+    stateFilter.locationValue.keyId,
+    stateFilter.modelNameValue.keyId,
+  ]);
+  useEffect(() => {
+    getReportMaterialList({
+      reportId: searchParams.get("reportData"),
+      reportType: searchParams.get("reportType"),
+      page: currentPage,
+      searchString,
+      isFirstCall: true,
+    });
+  }, [isPageUpdated]);
+  useEffect(() => {
+    setReportType(searchParams.get("reportType"));
+  }, []);
 
   return (
     <>
@@ -30,7 +209,7 @@ const ReportDetails = () => {
       <p>Dataset: {dataset}</p> */}
 
       <div className="top_header">
-        <div className="tab_title">Category Overview Report</div>
+        <div className="tab_title">{reportType}&nbsp; Overview Report</div>
         <div
           className="back_btn"
           onClick={() => {
