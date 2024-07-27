@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import Loader from "@/common-components/Loader";
 import { stockStatus } from "@/utilities/stock-status-array";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import CustomBtn from "@/common-components/CustomBtn";
 import { toast } from "react-toastify";
 
@@ -373,15 +373,15 @@ const AssignMaterial = () => {
         // <div className=" page_wrapper">
         <div className="kitchen_wrapper">
           <div className="row">
-            <div className="col-12 col-lg-5">
+            <div className="col-12 col-lg-4 col-md-4">
               <div className="form_view pt-0">
                 <form onSubmit={handleSubmit}>
                   <div className="form_title">
                     <h5>Select Material</h5>
                   </div>
-                  <div>
-                    <div className="p-4">
-                      <div className="form_modal_body w-75 py-3"></div>
+                  <div style={{ maxHeight: "260px", overflowY: "auto" }}>
+                    <div className="p-4"  style={{backgroundColor:"white"}}>
+                      {/* <div className="form_modal_body w-75 py-3"></div> */}
                       <div className="row">
                         <div class="col-lg-6 col-md-5 d-flex align-items-center">
                           <label>Serial No./Item Code</label>
@@ -577,7 +577,7 @@ const AssignMaterial = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-5 p-2">
+                  <div className="mt-5 p-2"  style={{backgroundColor:"white"}}>
                     <div style={{ color: "black" }}>
                       <h6>Parameters</h6>
                     </div>
@@ -617,12 +617,12 @@ const AssignMaterial = () => {
                 </form>
               </div>
             </div>
-            <div className="col-12 col-lg-7">
+            <div className="col-12 col-lg-8 col-md-8">
               <div className="row">
                 <div className="col-12 mb-2">
-                  <div className="table_wrapper">
+                  <div className="table_wrapper" style={{height:"95%"}}>
                     <div className="table_main">
-                      <div className="table_section">
+                      <div className="table_section employee_table">
                         {/* <div className="table_container"> */}
                         <div className="table_header">
                           <div className="col_20p">
@@ -713,26 +713,19 @@ const AssignMaterial = () => {
                     </div>
                   </div>
                 </div>
-                <div className="col-12 mb-2" style={{ height: "45%" }}>
+                <div className="col-12 mb-2 mt-4" style={{ height: "49dvh" }}>
                   <div className="table_wrapper">
                     <div className="table_main">
-                      <div className="table_section">
+                      <div className="table_section employee_table">
                         <div className="table_header">
-                          <div className="assign_column">
-                            {/* <input
-                              type="checkbox"
-                              id="selectAllCheckbox"
-                              onChange={(e) => handleSelectAllChangeStock(e)}
-                              checked={selectAllCheckedStock}
-                            /> */}
-                            <h5>Action</h5>
+                         
+                          <div className="col_8p">
+                            <h5></h5>
                           </div>
                           <div className="col_20p">
                             <h5>Sr. No.</h5>
                           </div>
-                          <div className="col_20p">
-                            <h5>Delete</h5>
-                          </div>
+                         
                           <div className="col_20p">
                             <h5>Category</h5>
                           </div>
@@ -760,6 +753,9 @@ const AssignMaterial = () => {
                           <div className="col_20p">
                             <h5>Assign Quantity</h5>
                           </div>
+                          <div className="col_20p">
+                            <h5>Action</h5>
+                          </div>
                           {/* <div className="assign_column">
                             <h5>Assign Quantity</h5>
                           </div>{" "} */}
@@ -767,7 +763,8 @@ const AssignMaterial = () => {
                         {/* <div className="table_data_wrapper"> */}
                         {selectedList.map((materialData, index) => (
                           <div className="table_data" key={index}>
-                            <div className="assign_column">
+                            <div className="col_8p">
+                              <h6>
                               <input
                                 type="checkbox"
                                 id={materialData?._id}
@@ -775,6 +772,7 @@ const AssignMaterial = () => {
                                 // checked={selectedList.includes(materialData._id)}
                                 checked={stockIds.some((item) => item === materialData?._id)}
                               />
+                              </h6>
                             </div>
                             <div className="col_20p">
                               <h6>
@@ -782,16 +780,7 @@ const AssignMaterial = () => {
                                 {/* {Number(pageLimit) * (page - 1) + (index + 1)} */}
                               </h6>
                             </div>
-                            <div className="col_20p text-center">
-                              <button
-                                type="button"
-                                title="delete"
-                                style={{ border: "none" }}
-                                onClick={() => handleDeleteMaterial(materialData._id)}
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </button>
-                            </div>
+                           
                             <div className="col_20p">
                               <h6>{materialData?.categoryId.name}</h6>
                             </div>
@@ -809,7 +798,7 @@ const AssignMaterial = () => {
                                 {materialData?.rackId.rackName
                                   ? materialData?.rackId.rackName
                                   : "-"}
-                              </h6>{" "}
+                              </h6>
                             </div>
                             <div className="col_20p">
                               <h6>{materialData?.serialNo}</h6>
@@ -823,7 +812,7 @@ const AssignMaterial = () => {
                             <div className="col_20p">
                               <h6>
                                 <input
-                                  className="inputBox"
+                                  className="inputBox" style={{width:"100%"}}
                                   value={quantities[materialData?._id]}
                                   onChange={(e) => {
                                     handleQuantityChange(materialData, e.target.value);
@@ -854,6 +843,16 @@ const AssignMaterial = () => {
                                 />
                               </h6>
                             </div>
+                            <div className="col_20p">
+                              <button
+                                type="button"
+                                title="delete"
+                                style={{ border: "none" }}
+                                onClick={() => handleDeleteMaterial(materialData._id)}
+                              >
+                                <FontAwesomeIcon icon={faTrash} />
+                              </button>
+                            </div>
                           </div>
                         ))}
                         {/* </div> */}
@@ -861,14 +860,14 @@ const AssignMaterial = () => {
                     </div>
                   </div>
                 </div>
-                <div className="row d-flex m-0 ps-5" style={{ height: "10%" }}>
+                <div className="row d-flex m-0 ps-5" style={{ height: "10%" }} >
                   <div className="col-lg-5 col-md-4 justify-content-center d-flex align-items-center select_tech">
-                    <h6>Select Technician</h6>
+                    <h6 >Select Technician</h6>
                   </div>
-                  <div className="col-lg-3 col-md-4 d-flex align-items-center">
+                  <div className="col-lg-3 col-md-4 d-flex align-items-center pt-3">
                     <select
                       className="inputBox"
-                      style={{ height: "50%", background: "#f5f5f5", fontSize: "10px" }}
+                      style={{background: "#f5f5f5", fontSize: "15px",border:"1px solid #184965",padding:"10px 12px",borderRadius:"4px"}}
                       // {...register("userId", {
                       //   required: "Technician is required",
                       // })}
