@@ -574,10 +574,10 @@ const StockInList = () => {
         </div>
       </div>
       {/* table  */}
-      <div className="table_wrapper">
-        <div className="table_main">
+      <div className="table_wrapper ">
+        <div className="table_main" style={{ width: "1500px" }}>
           {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
-          <div className="table_section employee_table">
+          <div className="table_section ">
             {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">
               <button className="table_badge">
                 <h5>Total User</h5>
@@ -599,7 +599,7 @@ const StockInList = () => {
               <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_15p">
+              <div className="col_50p">
                 {state.categoryFilter ? (
                   <>
                     <select
@@ -652,7 +652,7 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_30p">
+              <div className="col_40p">
                 {state.brandFilter ? (
                   <>
                     <select
@@ -704,7 +704,7 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_15p">
+              <div className="col_50p">
                 {state.locationFilter ? (
                   <>
                     <select
@@ -756,7 +756,7 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_35p">
+              <div className="col_50p">
                 {state.modelNameFilter ? (
                   <>
                     <select
@@ -808,31 +808,31 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Item Code</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Quantity</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Remaining Quantity</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Block</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Rack</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Serial No.</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Condition Type</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Status</h5>
               </div>
-              <div className="col_20p action_wrraper">
+              <div className="col_50p action_wrraper">
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
@@ -852,7 +852,7 @@ const StockInList = () => {
                     <div className="col_10p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
-                    <div className="col_15p">
+                    <div className="col_50p">
                       <h6
                         style={{ color: "#0000FF", cursor: "pointer" }}
                         onClick={() =>
@@ -866,48 +866,48 @@ const StockInList = () => {
                         {stockDetails?.categoryId?.name}
                       </h6>{" "}
                     </div>
-                    <div className="col_30p">
+                    <div className="col_40p">
                       <h6>{stockDetails?.brandId?.name}</h6>
                     </div>
-                    <div className="col_15p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.locationId.name}</h6>
                     </div>
-                    <div className="col_35p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.modelId?.name ? stockDetails?.modelId?.name : "-"}</h6>{" "}
                     </div>
-                    <div className="col_20p">
+                    {/* <div className="col_50p">
                       <h6>{stockDetails?.mobile}</h6>
-                    </div>
-                    <div className="col_20p">
+                    </div> */}
+                    <div className="col_50p">
                       <h6>{stockDetails?.itemCode ? stockDetails?.itemCode : "-"}</h6>
                       {/* <h6>
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.quantity ? stockDetails?.quantity : "-"}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>
                         {stockDetails?.reamainingQuantity ? stockDetails?.reamainingQuantity : "-"}
                       </h6>{" "}
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.blockId?.blockNo}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.rackId.rackName ? stockDetails?.rackId.rackName : "-"}</h6>{" "}
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.serialNo ? stockDetails?.serialNo : "-"}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.conditionType}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.status}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6 className="action_wrraper">
                         <div
                           title="edit"

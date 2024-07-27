@@ -37,7 +37,7 @@ const Report = () => {
                     }}
                         style={{
                             backgroundColor:
-                                activeTab == "shift" ? "#79080a" : "#D0D3D9",
+                                activeTab == "shift" ? "#184965" : "#D0D3D9",
                         }}
                     >
                         Stock Analysis
@@ -53,21 +53,6 @@ const Report = () => {
             <div className="table_wrapper">
                 <div className="table_main">
                     <div className="table_section">
-                        {/* <div className="dashboard_filter">
-                            <FontAwesomeIcon icon={faCaretLeft} onClick={() => prevDateHandler()} />
-                            <div className="calender_wrapper">
-                                <h6>{new Date(FilteredDate)?.toLocaleDateString("hi") === new Date()?.toLocaleDateString("hi") ? "Today" : new Date(FilteredDate)?.toLocaleDateString("hi")}</h6>
-                                <DatePicker
-                                    id='picker'
-                                    onChange={(date) => setFilteredDate(date)}
-                                    value={FilteredDate}
-                                    maxDate={new Date()}
-                                    clearIcon={null}
-                                    calendarIcon={null}
-                                />
-                            </div>
-                            {new Date(FilteredDate)?.toLocaleDateString("hi") !== new Date()?.toLocaleDateString("hi") && <FontAwesomeIcon icon={faCaretRight} onClick={() => nextDateHandler()} />}
-                        </div> */}
                         {activeTab === "attendance" &&
                             <>
                                 <SellGraph />
