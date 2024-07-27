@@ -13,6 +13,7 @@ import Image from "next/image";
 import { formatDate } from "@/helper/formatDate";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import InventoryView from "./InventoryView";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const Inventory = () => {
@@ -286,7 +287,7 @@ const Inventory = () => {
               <div className="col_35p">
                 <h5>Reamaining Quantity</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_40p">
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
@@ -297,18 +298,19 @@ const Inventory = () => {
                     <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                   </div>
                   <div className="col_60p">
-
                     <h6>
-                      <strong  onClick={() =>
-                                // router.push(
-                                //   `/admin/dashboard/stock/update-stock?stockId=${
-                                //     materialDetails._id
-                                //   }&isView=${true}`
-                                // )
-                                router.push(
-                                  `/dashboard/stockin/update-stock?stockId=${materialDetails._id}&isView=${true}`
-                                )
-                              }>{materialDetails?.categoryId?.name}</strong>
+                      <strong
+                        onClick={() =>
+                          setModalStates((prev) => ({
+                            ...prev,
+                            modal: true,
+                            type: "update",
+                            id: materialDetails?._id,
+                          }))
+                        }
+                      >
+                        {materialDetails?.categoryId?.name}
+                      </strong>
                     </h6>
                   </div>
                   <div className="col_50p">
@@ -334,8 +336,7 @@ const Inventory = () => {
                     <h6>{materialDetails?.partitionName}</h6>
                   </div>
                   <div className="col_35p">
-                    <h6>{materialDetails?.serialNo
-                    }</h6>
+                    <h6>{materialDetails?.serialNo}</h6>
                   </div>
                   <div className="col_35p">
                     <h6>{materialDetails?.status}</h6>
@@ -346,7 +347,7 @@ const Inventory = () => {
                   <div className="col_35p">
                     <h6>{materialDetails?.reamainingQuantity}</h6>
                   </div>
-                  <div className="col_20p">
+                  <div className="col_40p">
                     <h6 className="action_wrraper">
                       {/* <CustomBtn 
                     name={"Sell"}
@@ -357,6 +358,20 @@ const Inventory = () => {
                         onClick={(e) => changeMaterialStatus(materialDetails)}
                       >
                         Sell
+                      </button>
+                      <button
+                        className="actionbtn sell_btn"
+                        style={{ background: "green" }}
+                        onClick={() =>
+                          setModalStates((prev) => ({
+                            ...prev,
+                            modal: true,
+                            type: "update",
+                            id: materialDetails?._id,
+                          }))
+                        }
+                      >
+                        View
                       </button>
                     </h6>
                   </div>
@@ -377,6 +392,7 @@ const Inventory = () => {
           />
         </div>
       )}
+      {modalStates?.modal && <InventoryView data={{ modalStates, setModalStates }} />}
     </>
   );
 };
