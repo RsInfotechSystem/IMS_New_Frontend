@@ -449,19 +449,6 @@ const CreateStockIn = ({ data }) => {
                 )}
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>category Name *</label>
-                  {/* <SelectBox
-                  options={CategoryMapData}
-                  firstOption={"Select Category"}
-                  displayName={"name"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("categoryId", {
-                      required: "Select Category",
-                    }),
-                  }}
-                  errors={errors.categoryId}
-                /> */}
                   <select
                     // name="categoryId"
                     className="form-control custom_input"

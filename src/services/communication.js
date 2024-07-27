@@ -1863,5 +1863,119 @@ export const communication = {
       throw error;
     }
   },
+  //---------------Parameter----------------------
+  createParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/create-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAllParameter: async (page = 1, searchString) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/get-all-parameter`,
+        { page, searchString },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getExportParameter: () => {
+    try {
+      return axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/download-parameter-template`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+          responseType: "blob",
+        }
+      );
+    } catch (error) {
+      Swal.fire({ text: error.message, icon: "warning" });
+    }
+  },
+  importExcelParameterData: (formData) => {
+    try {
+      return axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/import-parameter`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+          // responseType: "blob",
+        }
+      );
+    } catch (error) {
+      Swal.fire({ text: error.message, icon: "error" });
+    }
+  },
+  deleteParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/delete-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getParameterById: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/get-parameter-by-id`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/update-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   ////////////////////////////////end////////////////////////////////////////////
 };

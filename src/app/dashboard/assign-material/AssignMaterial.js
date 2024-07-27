@@ -279,7 +279,7 @@ const AssignMaterial = () => {
 
       let response = await communication.getTechnicianList();
       if (response?.data?.status === "SUCCESS") {
-        toast.success(response.data.message);
+        // toast.success(response.data.message);
         setTechnicianList(response?.data.user);
         // await getRoleList(currentPage, searchString);
       } else if (response?.data?.status === "JWT_INVALID") {
@@ -364,7 +364,14 @@ const AssignMaterial = () => {
       toast.error(error.message);
     }
   };
-
+  useEffect(() => {
+    // const id = getValues("categoryId");
+    const id = formValues.categoryId;
+    if (id) {
+      getCategoryWiseBrand(id, setLoader, router, setBrandsData);
+      fetchMaterial(id);
+    }
+  }, [formValues.categoryId]);
   return (
     <>
       {loader ? (
@@ -380,7 +387,7 @@ const AssignMaterial = () => {
                     <h5>Select Material</h5>
                   </div>
                   <div style={{ maxHeight: "260px", overflowY: "auto" }}>
-                    <div className="p-4"  style={{backgroundColor:"white"}}>
+                    <div className="p-4" style={{ backgroundColor: "white" }}>
                       {/* <div className="form_modal_body w-75 py-3"></div> */}
                       <div className="row">
                         <div class="col-lg-6 col-md-5 d-flex align-items-center">
@@ -577,7 +584,7 @@ const AssignMaterial = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-5 p-2"  style={{backgroundColor:"white"}}>
+                  <div className="mt-5 p-2" style={{ backgroundColor: "white" }}>
                     <div style={{ color: "black" }}>
                       <h6>Parameters</h6>
                     </div>
@@ -620,7 +627,7 @@ const AssignMaterial = () => {
             <div className="col-12 col-lg-8 col-md-8">
               <div className="row">
                 <div className="col-12 mb-2">
-                  <div className="table_wrapper" style={{height:"95%"}}>
+                  <div className="table_wrapper" style={{ height: "95%" }}>
                     <div className="table_main">
                       <div className="table_section employee_table">
                         {/* <div className="table_container"> */}
@@ -718,14 +725,12 @@ const AssignMaterial = () => {
                     <div className="table_main">
                       <div className="table_section employee_table">
                         <div className="table_header">
-                         
                           <div className="col_8p">
                             <h5></h5>
                           </div>
                           <div className="col_20p">
                             <h5>Sr. No.</h5>
                           </div>
-                         
                           <div className="col_20p">
                             <h5>Category</h5>
                           </div>
@@ -765,13 +770,13 @@ const AssignMaterial = () => {
                           <div className="table_data" key={index}>
                             <div className="col_8p">
                               <h6>
-                              <input
-                                type="checkbox"
-                                id={materialData?._id}
-                                onChange={(e) => getStockIds(e, materialData)}
-                                // checked={selectedList.includes(materialData._id)}
-                                checked={stockIds.some((item) => item === materialData?._id)}
-                              />
+                                <input
+                                  type="checkbox"
+                                  id={materialData?._id}
+                                  onChange={(e) => getStockIds(e, materialData)}
+                                  // checked={selectedList.includes(materialData._id)}
+                                  checked={stockIds.some((item) => item === materialData?._id)}
+                                />
                               </h6>
                             </div>
                             <div className="col_20p">
@@ -780,7 +785,7 @@ const AssignMaterial = () => {
                                 {/* {Number(pageLimit) * (page - 1) + (index + 1)} */}
                               </h6>
                             </div>
-                           
+
                             <div className="col_20p">
                               <h6>{materialData?.categoryId.name}</h6>
                             </div>
@@ -812,7 +817,8 @@ const AssignMaterial = () => {
                             <div className="col_20p">
                               <h6>
                                 <input
-                                  className="inputBox" style={{width:"100%"}}
+                                  className="inputBox"
+                                  style={{ width: "100%" }}
                                   value={quantities[materialData?._id]}
                                   onChange={(e) => {
                                     handleQuantityChange(materialData, e.target.value);
@@ -860,14 +866,20 @@ const AssignMaterial = () => {
                     </div>
                   </div>
                 </div>
-                <div className="row d-flex m-0 ps-5" style={{ height: "10%" }} >
+                <div className="row d-flex m-0 ps-5" style={{ height: "10%" }}>
                   <div className="col-lg-5 col-md-4 justify-content-center d-flex align-items-center select_tech">
-                    <h6 >Select Technician</h6>
+                    <h6>Select Technician</h6>
                   </div>
                   <div className="col-lg-3 col-md-4 d-flex align-items-center pt-3">
                     <select
                       className="inputBox"
-                      style={{background: "#f5f5f5", fontSize: "15px",border:"1px solid #184965",padding:"10px 12px",borderRadius:"4px"}}
+                      style={{
+                        background: "#f5f5f5",
+                        fontSize: "15px",
+                        border: "1px solid #184965",
+                        padding: "10px 12px",
+                        borderRadius: "4px",
+                      }}
                       // {...register("userId", {
                       //   required: "Technician is required",
                       // })}
