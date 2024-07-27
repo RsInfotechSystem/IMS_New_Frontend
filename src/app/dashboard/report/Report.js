@@ -8,8 +8,8 @@ import DatePicker from 'react-date-picker';
 import 'react-date-picker/dist/DatePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import CustomDateInput from "@/common-components/CustomDateInput";
-import AttendanceGraph from "./AttendanceGraph";
-import ShiftGraph from "./ShiftGraph";
+import SellGraph from "./SellGraph";
+import StockReportGraph from "./StockReportGraph";
 import { toast } from "react-toastify";
 import { communication } from "@/services/communication";
 import { useRouter } from "next/navigation";
@@ -18,51 +18,20 @@ import Loader from "@/common-components/Loader";
 const Report = () => {
     const router = useRouter();
     const [modalStates, setModalStates] = useState({ modal: false, type: "" });
-    const [activeTab, setActiveTab] = useState("attendance");
+    const [activeTab, setActiveTab] = useState("shift");
     const [loader, setLoader] = useState(false);
-    const [cardCounts, setCardCounts] = useState({});
     const [filterValues, setFilterValues] = useState({
         startDate: "",
         endDate: ""
     });
 
-
-    //get employee counts on initial load
-    // const fetchEmployeeCount = async () => {
-    //     try {
-    //         setLoader(true);
-    //         const serverResponse = await communication.getEmployeeCounts();
-    //         if (serverResponse?.data?.status === "SUCCESS") {
-    //             setLoader(false);
-    //             setCardCounts(serverResponse?.data);
-    //         } else if (serverResponse?.data?.status === "JWT_INVALID") {
-    //             toast.info(serverResponse?.data?.message);
-    //             router.push("/");
-    //         } else {
-    //             setLoader(false);
-    //             setCardCounts({})
-    //         }
-    //     } catch (error) {
-    //         setLoader(false);
-    //         toast.error(error?.message);
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     fetchEmployeeCount();
-    // }, []);
-
     return (
         <div>
             {loader && <Loader text="Fetching Data..." />}
-           
+
             <div className="search_btn_wrapper">
                 {/* tab wrapper */}
                 <div className="my-3 d-flex justify-content-start align-items-start gap-3">
-                    <div className="tab_btn" onClick={() => { setActiveTab("attendance"); }}
-                        style={{ backgroundColor: activeTab == "attendance" ? "#79080a" : "#D0D3D9", }} >
-                        Sell History
-                    </div>
                     <div className="tab_btn" onClick={() => {
                         setActiveTab("shift");
                     }}
@@ -73,6 +42,12 @@ const Report = () => {
                     >
                         Stock Analysis
                     </div>
+
+                    <div className="tab_btn" onClick={() => { setActiveTab("attendance"); }}
+                        style={{ backgroundColor: activeTab == "attendance" ? "#79080a" : "#D0D3D9", }} >
+                        Sell Report
+                    </div>
+
                 </div>
             </div>
             <div className="table_wrapper">
@@ -95,34 +70,17 @@ const Report = () => {
                         </div> */}
                         {activeTab === "attendance" &&
                             <>
-                            <AttendanceGraph />
-                                {/* <div className="dashboard_filter_wrapper">
-                                    <div>
-                                        <label>Start Date</label>
-                                        <CustomDateInput value={filterValues?.startDate} onChange={(date) => { setFilterValues((prev) => ({ ...prev, startDate: date })) }} />
-                                    </div>
-                                    <div>
-                                        <label>End Date</label>
-                                        <CustomDateInput value={filterValues?.endDate} onChange={(date) => { setFilterValues((prev) => ({ ...prev, endDate: date })) }} />
-                                    </div>
-                                </div>
-
-                                <div className="attendance_graph_wrapper">
-                                    <div>
-                                        <AttendanceGraph filterValues={filterValues} />
-                                    </div>
-                                </div> */}
+                                <SellGraph />
                             </>
                         }
                         {activeTab === "shift" &&
                             <div className="shift_graph_wrapper">
-                                <ShiftGraph />
+                                <StockReportGraph />
                             </div>
                         }
                     </div>
                 </div>
             </div>
-            {/* {modalStates?.modal && <UpdateTime data={{ modalStates, setModalStates }} />} */}
         </div >
 
     );
