@@ -19,11 +19,12 @@ import password from "../../../../public/images/password.png";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { getLocations, getParameter } from "@/services/commonApis";
 import filterIcon from "../../../../public/images/filter.png";
+import InventoryView from "../inventory/InventoryView";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const StockInList = () => {
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "" });
+  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", isView: false });
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     deleteId: "",
@@ -307,7 +308,7 @@ const StockInList = () => {
       });
     }
   };
-  async function changeStockStatus(e, stockId) {
+  async function changeStockStatus(stockId) {
     try {
       setLoader(true);
 
@@ -315,20 +316,24 @@ const StockInList = () => {
         stockId: stockId,
       });
       if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
+        // Swal.fire({ text: response.data.message, icon: "success" });
+        toast.success(response.data.message);
         setCheckedStatus((prevStatus) => ({
           ...prevStatus,
           [stockId]: true,
         }));
-        getStockList({ page: 1, searchString });
+        setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+        await getStockList({ currentPage, searchString });
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.warn(response.data.message);
         router.push("/");
       } else {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+
+        toast.error(response.data.message);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "warning" });
+      toast.error(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
@@ -527,7 +532,7 @@ const StockInList = () => {
           status="warning"
           message={`Are you sure you want to ${respondHandlerActiveModalState.action} the status?`}
           cancelHandler={cancelHandlerActive}
-          successHandler={() => changeUserStatus(respondHandlerActiveModalState.userId)}
+          successHandler={() => changeStockStatus(respondHandlerActiveModalState.userId)}
         />
       )}
       {loader && <Loader text="Fetching Data..." />}
@@ -541,7 +546,7 @@ const StockInList = () => {
           <CustomBtn
             name={"Create"}
             onClick={() => {
-              setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
+              setModalStates((prev) => ({ ...prev, modal: true, type: "create", isView: false }));
             }}
             svg={
               <svg
@@ -574,10 +579,10 @@ const StockInList = () => {
         </div>
       </div>
       {/* table  */}
-      <div className="table_wrapper">
-        <div className="table_main">
+      <div className="table_wrapper ">
+        <div className="table_main" style={{ width: "1500px" }}>
           {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
-          <div className="table_section employee_table">
+          <div className="table_section ">
             {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">
               <button className="table_badge">
                 <h5>Total User</h5>
@@ -599,7 +604,7 @@ const StockInList = () => {
               <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_15p">
+              <div className="col_50p">
                 {state.categoryFilter ? (
                   <>
                     <select
@@ -652,7 +657,7 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_30p">
+              <div className="col_40p">
                 {state.brandFilter ? (
                   <>
                     <select
@@ -704,7 +709,7 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_15p">
+              <div className="col_50p">
                 {state.locationFilter ? (
                   <>
                     <select
@@ -756,7 +761,7 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_35p">
+              <div className="col_50p">
                 {state.modelNameFilter ? (
                   <>
                     <select
@@ -808,31 +813,31 @@ const StockInList = () => {
                   </>
                 )}
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Item Code</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Quantity</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Remaining Quantity</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Block</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Rack</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Serial No.</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Condition Type</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_50p">
                 <h5>Status</h5>
               </div>
-              <div className="col_20p action_wrraper">
+              <div className="col_50p action_wrraper">
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
@@ -852,62 +857,71 @@ const StockInList = () => {
                     <div className="col_10p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
-                    <div className="col_15p">
+                    <div className="col_50p">
                       <h6
                         style={{ color: "#0000FF", cursor: "pointer" }}
+                        // onClick={() =>
+                        //   router.push(
+                        //     `/admin/dashboard/stock/update-stock?stockId=${
+                        //       stockDetails._id
+                        //     }&isView=${true}`
+                        //   )
+                        // }
                         onClick={() =>
-                          router.push(
-                            `/admin/dashboard/stock/update-stock?stockId=${
-                              stockDetails._id
-                            }&isView=${true}`
-                          )
+                          setModalStates((prev) => ({
+                            ...prev,
+                            modal: true,
+                            type: "update",
+                            id: stockDetails?._id,
+                            isView: true,
+                          }))
                         }
                       >
                         {stockDetails?.categoryId?.name}
                       </h6>{" "}
                     </div>
-                    <div className="col_30p">
+                    <div className="col_40p">
                       <h6>{stockDetails?.brandId?.name}</h6>
                     </div>
-                    <div className="col_15p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.locationId.name}</h6>
                     </div>
-                    <div className="col_35p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.modelId?.name ? stockDetails?.modelId?.name : "-"}</h6>{" "}
                     </div>
-                    <div className="col_20p">
+                    {/* <div className="col_50p">
                       <h6>{stockDetails?.mobile}</h6>
-                    </div>
-                    <div className="col_20p">
+                    </div> */}
+                    <div className="col_50p">
                       <h6>{stockDetails?.itemCode ? stockDetails?.itemCode : "-"}</h6>
                       {/* <h6>
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.quantity ? stockDetails?.quantity : "-"}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>
                         {stockDetails?.reamainingQuantity ? stockDetails?.reamainingQuantity : "-"}
                       </h6>{" "}
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.blockId?.blockNo}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.rackId.rackName ? stockDetails?.rackId.rackName : "-"}</h6>{" "}
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.serialNo ? stockDetails?.serialNo : "-"}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.conditionType}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.status}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_50p">
                       <h6 className="action_wrraper">
                         <div
                           title="edit"
@@ -917,6 +931,7 @@ const StockInList = () => {
                               modal: true,
                               type: "update",
                               id: stockDetails?._id,
+                              isView: false,
                             }))
                           }
                         >
