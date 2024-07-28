@@ -13,9 +13,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 function CreateParameter({ data }) {
-  const { modalStates, setModalStates, setIsPageUpdated } = data;
+  const { modalStates, setModalStates, setIsPageUpdated,getAllParameter } = data;
   const [buttonLoader, setButtonLoader] = useState(false);
   const [loader, setLoader] = useState(false);
   const [searchString, setSearchString] = useState("");
@@ -26,12 +27,11 @@ function CreateParameter({ data }) {
   // const [isPageUpdated, setIsPageUpdated] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
-  const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
   const [errorForRackFlag, setErrorRackFlag] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
-  const [categoryId, setCategoryId] = useState();
+  const [_categoryId, _setCategoryId] = useState("");
   const router = useRouter();
   const [categoryFillById, setCategoryFillById] = useState();
   const [_parameterList, _setPrameterList] = useState([]);
@@ -48,19 +48,23 @@ function CreateParameter({ data }) {
     watch,
     formState: { errors },
   } = useForm();
+
+  const category = watch("category")
+  
   function addToPrameterList() {
     if (parameterInput) {
       _setPrameterList((prev) => [...prev, parameterInput]);
       setValue("parameter", "");
+      
     } else {
       setError("parameter", {
         message: "Please enter parameter",
       });
     }
   }
-  function deletePrameterList(id) {
-    _setPrameterList(_parameterList.filter((item) => item != id));
-  }
+  // function deletePrameterList(id) {
+  //   _setPrameterList(_parameterList.filter((item) => item != id));
+  // }
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
     if (modalStates?.type !== "create") {
@@ -69,17 +73,18 @@ function CreateParameter({ data }) {
   }
   const _parameterInput = watch("parameter");
 
-  function addToPrameterList() {
-    if (parameterInput) {
-      _setPrameterList((prev) => [...prev, parameterInput]);
-      setValue("parameter", "");
-    } else {
-      setError("parameter", {
-        message: "Please enter parameter",
-      });
-    }
-  }
-  function deletePrameterList(id) {
+
+  // function addToPrameterList() {
+  //   if (parameterInput) {
+  //     _setPrameterList((prev) => [...prev, parameterInput]);
+  //     setValue("parameter", "");
+  //   } else {
+  //     setError("parameter", {
+  //       message: "Please enter parameter",
+  //     });
+  //   }
+  // }
+  function deleteParameterList(id) {
     _setPrameterList(_parameterList.filter((item) => item != id));
   }
   useEffect(() => {
@@ -90,14 +95,13 @@ function CreateParameter({ data }) {
     try {
       setLoader(true);
 
-      let response = await communication.getParameterById({
-        parameterId: searchParams.get("parameterId"),
-      });
+      let response = await communication.getParameterById({ parameterId:modalStates?.id});
       if (response?.data?.status === "SUCCESS") {
         setCategoryFillById(response?.data?.parameter?.categoryId);
         let param = response?.data.parameter.parameter[0];
         setparameterId(response?.data?.parameter_id);
-        setValue("category", ` ${response?.data?.parameter?.categoryId}`);
+        setValue("category", response?.data?.parameter?.categoryId);
+        _setCategoryId(response?.data?.parameter?.categoryId)
         // setValue("parameter", param);
         _setPrameterList([...response?.data?.parameter?.parameter]);
       } else if (response?.data?.status === "JWT_INVALID") {
@@ -106,7 +110,7 @@ function CreateParameter({ data }) {
         router.push("/");
       } else {
         // Swal.fire({ text: response.data.message, icon: "warning" });
-        toast.warn(response.data.message);
+        // toast.warn(response.data.message);
       }
     } catch (error) {
       // Swal.fire({ text: error.message, icon: "warning" });
@@ -115,7 +119,6 @@ function CreateParameter({ data }) {
       setLoader(false);
     }
   };
-  console.log(parameterId, "parameterId");
   const onSubmit = async (values) => {
     if (_parameterList.length == 0 && values.parameter == "") {
       setError("parameter", {
@@ -124,7 +127,9 @@ function CreateParameter({ data }) {
     } else {
       try {
         let payload = {
-          parameterId: parameterId,
+          parameterId: modalStates?.id,
+          // parameterId: searchParams.get("parameterId"),
+
           // parameterId: searchParams.get("parameterId"),
           parameter: [..._parameterList],
           categoryId: values.category,
@@ -132,7 +137,10 @@ function CreateParameter({ data }) {
         setLoader(true);
         const serverResponse = await communication.updateParameter(payload);
         if (serverResponse?.data?.status === "SUCCESS") {
-          router.push("/admin/dashboard/parameter/");
+          // router.push("/admin/dashboard/parameter/");
+          toast.success(serverResponse.data.message)
+          setModalStates((prev) => ({ ...prev, modal: false }))
+          getAllParameter()
         } else if (serverResponse?.data?.status === "JWT_INVALID") {
           toast.warn(serverResponse.data.message);
           // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
@@ -166,10 +174,11 @@ function CreateParameter({ data }) {
         setLoader(true);
         const serverResponse = await communication.createParameter(payload);
         if (serverResponse?.data?.status === "SUCCESS") {
-          toast.warn(serverResponse.data.message);
+          toast.success(serverResponse.data.message);
           // Swal.fire({ text: serverResponse.data.message, icon: "success" });
           reset();
-          _setPrameterList([]);
+          getAllParameter()
+          setModalStates((prev) => ({ ...prev, modal: false }))
           await getAllParameter(currentPage, searchString);
         } else if (serverResponse?.data?.status === "JWT_INVALID") {
           toast.warn(serverResponse.data.message);
@@ -190,18 +199,34 @@ function CreateParameter({ data }) {
       }
     }
   };
+  // useEffect(() => {
+  //   getCategory(setLoader, router, setCategoryList);
+  //   getParameterById();
+  // }, []);
   useEffect(() => {
-    getCategory(setLoader, router, setCategoryList);
+    if (modalStates?.type === "update") {
     getParameterById();
-  }, []);
-  useEffect(() => {
-    if (categoryFillById && categoryList.length > 0) {
-      setValue("category", `${categoryFillById}`);
+    // getCategory(setLoader, router, setCategoryList);
+    }else{
+      _setPrameterList([])
     }
-  }, [categoryFillById && categoryList.length]);
+}, []);
+
+  // useEffect(() => {
+  //   if (categoryFillById && categoryList.length > 0) {
+  //     setValue("category", `${categoryFillById}`);
+  //   }
+  // }, [categoryFillById && categoryList.length]);
   useEffect(() => {
     initialAPICall();
   }, []);
+
+  useEffect(() => {
+    setValue("category", category);
+}, [category, CategoryMapData.length]);
+
+
+
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
@@ -219,19 +244,22 @@ function CreateParameter({ data }) {
           </div>
           <div className="form_modal_body">
             <div className="row d-flex align-items-end">
-              <div className="col-lg-12 col-md-12 input_wrapper">
-                <label>Category*</label>
-                <SelectBox
-                  firstOption="select Category"
-                  options={CategoryMapData}
-                  displayName={"name"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("category"),
-                  }}
-                />
-              </div>
+            <div className="col-lg-12 col-md-12 input_wrapper">
+                                <label >Category*</label>
+                                <SelectBox
+                                    options={CategoryMapData}
+                                    displayName={"name"}
+                                    value={"_id"}
+                                    firstOption={"Select Category"}
+                                    disable={false}
+                                    register={{
+                                        ...register("category", {
+                                            required: "category is required",
+                                        })
+                                    }}
+                                    errors={errors.category}
+                                />
+                            </div>
               <div className="col-lg-12 col-md-12 input_wrapper">
                 <label>Parameter*</label>
                 <InputBox
@@ -245,9 +273,7 @@ function CreateParameter({ data }) {
                 />
               </div>
               <div className="col-lg-4 col-md-4 input_wrapper">
-                <button type="button" className="btn btn-success" onClick={addToPrameterList}>
-                  Add
-                </button>
+                <CustomBtn name="Add" type="button" className="btn btn-success" onClick={addToPrameterList}/>
               </div>
             </div>
             {_parameterList?.map((ele, index) => {
@@ -260,7 +286,7 @@ function CreateParameter({ data }) {
                     <FontAwesomeIcon
                       icon={faTrash}
                       key={index}
-                      onClick={() => deletePrameterList(item)}
+                      onClick={() => deleteParameterList(ele)}
                       className="trash fontAwesome_icon cursor_pointer"
                     />
                   </div>
