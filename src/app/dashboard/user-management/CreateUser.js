@@ -171,7 +171,6 @@ function CreateUser({ data }) {
 
     // handle category mulitiselect data 
     const handleLocationSelect = (selectedOptions) => {
-        console.log("selectedOptions", selectedOptions);
         // if (selectedOptions?.length === 0) {
         //     setValidationMessage('Please select at least one location.');
         // } else {

@@ -26,6 +26,10 @@ const Parameters = () => {
     type: "",
     id: "",
   });
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+  // const [modalStates, setModalStates] = useState({ modal: false, type: "" });
+  const [showModal, setShowModal] = useState({ modal: false });
 
   const [page, setPage] = useState("1");
 
@@ -42,8 +46,8 @@ const Parameters = () => {
   const [isPageUpdated, setIsPageUpdated] = useState(false);
   const [pageCount, setPageCount] = useState(0);
 
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+  // const [selectAllChecked, setSelectAllChecked] = useState(false);
+  // const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
 
   const {
     register,
@@ -82,48 +86,107 @@ const Parameters = () => {
       setLoader(false);
     }
   }
+  // const deleteParameter = async () => {
+  //   if (selectedCheckboxes.length > 0) {
+  //     Swal.fire({
+  //       text: "Are you sure you want to delete this parmeter?",
+  //       icon: "warning",
+  //       showCancelButton: true,
+  //       confirmButtonColor: "#5149E4",
+  //       cancelButtonColor: "#d33",
+  //       confirmButtonText: "Yes, delete it",
+  //       cancelButtonText: "No, cancel",
+  //       reverseButtons: true,
+  //     }).then(async function (result) {
+  //       if (result.isConfirmed) {
+  //         try {
+  //           setLoader(true);
+  //           let payload = {
+  //             parameterIds: [...selectedCheckboxes],
+  //           };
+  //           let response = await communication.deleteParameter(payload);
+  //           if (response?.data?.status === "SUCCESS") {
+  //             setSelectedCheckboxes([]);
+  //             Swal.fire({ text: response.data.message, icon: "success" });
+  //             await getAllParameter(currentPage, searchString);
+  //           } else if (response?.data?.status === "JWT_INVALID") {
+  //             Swal.fire({ text: response.data.message, icon: "warning" });
+  //             router.push("/");
+  //           } else {
+  //             Swal.fire({ text: response.data.message, icon: "warning" });
+  //           }
+  //         } catch (error) {
+  //           Swal.fire({ text: error.message, icon: "warning" });
+  //         } finally {
+  //           setLoader(false);
+  //         }
+  //       } else {
+  //       }
+  //     });
+  //   } else {
+  //     Swal.fire({
+  //       text: "Please select which parameter you want to delete",
+  //       icon: "warning",
+  //     });
+  //   }
+  // };
+
+  const handleCheckboxChange = (e) => {
+    const checkboxId = e.target.id;
+    setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === parameter?.length)))
+    setSelectedCheckboxes((prevSelected) => {
+      if (prevSelected.includes(checkboxId)) {
+        // If the checkbox is already in the array, remove it
+        return prevSelected.filter((id) => id !== checkboxId);
+      } else {
+        // If the checkbox is not in the array, add it
+        return [...prevSelected, checkboxId];
+      }
+    });
+
+  };
+  const handleSelectAllChange = (e) => {
+    setSelectAllChecked(e.target.checked);
+
+    // Update the array of selected checkboxes based on the "Select All" checkbox
+    setSelectedCheckboxes((prevSelected) =>
+      e.target.checked ? parameter.map((brandDetails) => brandDetails._id) : []
+    );
+  };
+
+  const successHandler = async () => {
+    setShowModal((prev) => ({ ...prev, modal: false }));
+    setLoader(true);
+    let payload = {
+      parameterIds: [...selectedCheckboxes],
+    };
+    try {
+      let response = await communication.deleteParameter(payload);
+      if (response?.data?.status === "SUCCESS") {
+        setSelectedCheckboxes([]);
+        toast.success(response.data.message);
+        await getAllParameter(currentPage, searchString);
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response.data.message);
+        router.push("/");
+      } else {
+        toast.info(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const cancelHandler = () => {
+    setShowModal((prev) => ({ ...prev, modal: false }));
+  };
   const deleteParameter = async () => {
     if (selectedCheckboxes.length > 0) {
-      Swal.fire({
-        text: "Are you sure you want to delete this parmeter?",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#5149E4",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it",
-        cancelButtonText: "No, cancel",
-        reverseButtons: true,
-      }).then(async function (result) {
-        if (result.isConfirmed) {
-          try {
-            setLoader(true);
-            let payload = {
-              parameterIds: [...selectedCheckboxes],
-            };
-            let response = await communication.deleteParameter(payload);
-            if (response?.data?.status === "SUCCESS") {
-              setSelectedCheckboxes([]);
-              Swal.fire({ text: response.data.message, icon: "success" });
-              await getAllParameter(currentPage, searchString);
-            } else if (response?.data?.status === "JWT_INVALID") {
-              Swal.fire({ text: response.data.message, icon: "warning" });
-              router.push("/");
-            } else {
-              Swal.fire({ text: response.data.message, icon: "warning" });
-            }
-          } catch (error) {
-            Swal.fire({ text: error.message, icon: "warning" });
-          } finally {
-            setLoader(false);
-          }
-        } else {
-        }
-      });
+      setShowModal((prev) => ({ ...prev, modal: true }));
     } else {
-      Swal.fire({
-        text: "Please select which parameter you want to delete",
-        icon: "warning",
-      });
+      toast.info("Please select which parameter you want to delete");
     }
   };
   //   useEffect(() => {
@@ -145,6 +208,15 @@ const Parameters = () => {
                     cancelHandler={() => { setModalStates((prev) => ({ ...prev, modal: false, action: "", locationId: "", deleteLocation: false })) }}
                 />
             } */}
+            {showModal.modal && (
+              <CustomResponseHandlerModal
+                status="warning"
+                // show={showModal}
+                message="Are you sure you want to delete this parameter?"
+                successHandler={successHandler}
+                cancelHandler={cancelHandler}
+              />
+            )}
       <div className="top_header">
         <div className="tab_title">Parameters</div>
       </div>
@@ -181,7 +253,7 @@ const Parameters = () => {
           <CustomBtn
             name={"Delete"}
             // onClick={deleteUser}
-            // onClick={deleteUser}
+            onClick={deleteParameter}
             svg={<FontAwesomeIcon icon={faTrash} />}
           />
         </div>
@@ -202,9 +274,13 @@ const Parameters = () => {
 
             <div className="table_header">
               <div className="col_10p">
-                {/* <input type="checkbox" className="form-check-input" onChange={(e) => handleSelectAllChange(e)}
-                  checked={selectAllChecked} /> */}
-                <input type="checkbox" className="form-check-input" />
+                <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="selectAllCheckbox"
+                    onChange={(e) => handleSelectAllChange(e)}
+                    checked={selectAllChecked}
+                  />
               </div>
               <div className="col_10p">
                 <h5>Sr. No.</h5>
@@ -226,24 +302,25 @@ const Parameters = () => {
                 <>
                   <div className="table_data" key={index}>
                     <div className="col_10p">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id={parameter?._id}
-                        onChange={(e) => handleCheckboxChange(e)}
-                        checked={selectedCheckboxes.includes(parameter._id)}
-                      />
+                    <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={parameter._id}
+                            onChange={(e) => handleCheckboxChange(e)}
+                            checked={selectedCheckboxes.includes(parameter._id)}
+                          />
                       <label className="form-check-label"></label>
                     </div>
                     <div className="col_10p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+
                     </div>
 
                     <div className="col_30p">
-                      <h6>{parameter.name}</h6>
+                      <h6>{parameter?.name}</h6>
                     </div>
                     <div className="col_40p">
-                      <h6>{parameter.parameter.join(", ")}</h6>
+                      <h6>{parameter?.parameter.join(", ")}</h6>
                     </div>
 
                     <div className="col_10p">
@@ -299,6 +376,7 @@ const Parameters = () => {
           </div>
         </div>
       </div>
+      {pageCount > 0 && (
       <div className="pagination_wrapper">
         <Pagination
           isPageUpdated={isPageUpdated}
@@ -308,8 +386,9 @@ const Parameters = () => {
           pageCount={pageCount}
         />
       </div>
+       )}
       {modalStates?.modal && (
-        <CreateParameter data={{ modalStates, setModalStates, setIsPageUpdated }} />
+        <CreateParameter data={{ modalStates, setModalStates, setIsPageUpdated,getAllParameter }} />
       )}
     </>
   );
