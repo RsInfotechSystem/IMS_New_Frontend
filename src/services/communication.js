@@ -1678,12 +1678,65 @@ export const communication = {
     }
   },
 
-  // aproval ///////
+  // =============================Stock Aproval =========================================
   getMaterialForApproval: async (data) => {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/get-material-for-approval`,
         data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  acceptRejectMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/accept-or-reject-material`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  // ==============Transfer Approval =====================
+  approvedTransferMaterials: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/approve-transfer-material`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  rejectTransferMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/reject-transfer-material`,
+        data,
+
         {
           headers: {
             "Content-Type": "application/json",
@@ -1713,7 +1766,7 @@ export const communication = {
     }
   },
 
-  approveTransferMaterial: async (data) => {
+  getTransferMaterialToApprove: async (data) => {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-tranfer-material-for-approval`,
@@ -1972,6 +2025,152 @@ export const communication = {
           Authorization: `Bearer ${getCookie("inventryToken")}`,
         },
       });
+    } catch (error) {
+      throw error;
+    }
+  },
+  changeStockStatus: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/change-stock-status`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  //---------------Parameter----------------------
+  createParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/create-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getAllParameter: async (page = 1, searchString) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/get-all-parameter`,
+        { page, searchString },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getExportParameter: () => {
+    try {
+      return axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/download-parameter-template`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+          responseType: "blob",
+        }
+      );
+    } catch (error) {
+      Swal.fire({ text: error.message, icon: "warning" });
+    }
+  },
+  importExcelParameterData: (formData) => {
+    try {
+      return axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/import-parameter`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+          // responseType: "blob",
+        }
+      );
+    } catch (error) {
+      Swal.fire({ text: error.message, icon: "error" });
+    }
+  },
+  deleteParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/delete-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getParameterById: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/get-parameter-by-id`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/update-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteParameter: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/delete-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
     } catch (error) {
       throw error;
     }

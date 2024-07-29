@@ -19,11 +19,12 @@ import password from "../../../../public/images/password.png";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { getLocations, getParameter } from "@/services/commonApis";
 import filterIcon from "../../../../public/images/filter.png";
+import InventoryView from "../inventory/InventoryView";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const StockInList = () => {
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "" });
+  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", isView: false });
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     deleteId: "",
@@ -307,7 +308,7 @@ const StockInList = () => {
       });
     }
   };
-  async function changeStockStatus(e, stockId) {
+  async function changeStockStatus(stockId) {
     try {
       setLoader(true);
 
@@ -315,20 +316,24 @@ const StockInList = () => {
         stockId: stockId,
       });
       if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
+        // Swal.fire({ text: response.data.message, icon: "success" });
+        toast.success(response.data.message);
         setCheckedStatus((prevStatus) => ({
           ...prevStatus,
           [stockId]: true,
         }));
-        getStockList({ page: 1, searchString });
+        setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+        await getStockList({ currentPage, searchString });
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.warn(response.data.message);
         router.push("/");
       } else {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+
+        toast.error(response.data.message);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "warning" });
+      toast.error(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
@@ -527,7 +532,7 @@ const StockInList = () => {
           status="warning"
           message={`Are you sure you want to ${respondHandlerActiveModalState.action} the status?`}
           cancelHandler={cancelHandlerActive}
-          successHandler={() => changeUserStatus(respondHandlerActiveModalState.userId)}
+          successHandler={() => changeStockStatus(respondHandlerActiveModalState.userId)}
         />
       )}
       {loader && <Loader text="Fetching Data..." />}
@@ -541,7 +546,7 @@ const StockInList = () => {
           <CustomBtn
             name={"Create"}
             onClick={() => {
-              setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
+              setModalStates((prev) => ({ ...prev, modal: true, type: "create", isView: false }));
             }}
             svg={
               <svg
@@ -855,12 +860,21 @@ const StockInList = () => {
                     <div className="col_50p">
                       <h6
                         style={{ color: "#0000FF", cursor: "pointer" }}
+                        // onClick={() =>
+                        //   router.push(
+                        //     `/admin/dashboard/stock/update-stock?stockId=${
+                        //       stockDetails._id
+                        //     }&isView=${true}`
+                        //   )
+                        // }
                         onClick={() =>
-                          router.push(
-                            `/admin/dashboard/stock/update-stock?stockId=${
-                              stockDetails._id
-                            }&isView=${true}`
-                          )
+                          setModalStates((prev) => ({
+                            ...prev,
+                            modal: true,
+                            type: "update",
+                            id: stockDetails?._id,
+                            isView: true,
+                          }))
                         }
                       >
                         {stockDetails?.categoryId?.name}
@@ -917,6 +931,7 @@ const StockInList = () => {
                               modal: true,
                               type: "update",
                               id: stockDetails?._id,
+                              isView: false,
                             }))
                           }
                         >

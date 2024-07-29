@@ -21,7 +21,7 @@ import { stockStatus } from "@/utilities/stock-status-array";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 
-const CreateStockIn = ({ data }) => {
+const InventoryView = ({ data }) => {
   const { modalStates, setModalStates, setIsPageUpdated, locationsss, roleList, getStockList } =
     data;
 
@@ -302,13 +302,7 @@ const CreateStockIn = ({ data }) => {
       <div className="form_modal_wrapper">
         <div className="form_modal" style={{ width: "55%" }}>
           <div className="form_modal_header">
-            <h5 className="title">
-              {modalStates.isView
-                ? "View Details"
-                : modalStates?.type === "create"
-                ? "Create Stock"
-                : "Update Stock"}
-            </h5>
+            <h5 className="title">View Details</h5>
             <FontAwesomeIcon
               icon={faCircleXmark}
               onClick={() => setModalStates((prev) => ({ ...prev, modal: false }))}
@@ -321,7 +315,7 @@ const CreateStockIn = ({ data }) => {
               {/* <div className="form_main"> */}
               <div className="row">
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Select Location *</label>
+                  <label>Select Location</label>
                   <select
                     name="locationId"
                     className="form-control custom_input"
@@ -329,7 +323,7 @@ const CreateStockIn = ({ data }) => {
                     {...register("locationId", {
                       required: "locationId is required",
                     })}
-                    disabled={modalStates.isView}
+                    disabled
                   >
                     <option value="" className="text-secondary text-lowercase">
                       Select Location
@@ -345,7 +339,7 @@ const CreateStockIn = ({ data }) => {
                   </select>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Select Block *</label>
+                  <label>Select Block</label>
                   {/* <SelectBox
                   options={blocks}
                   firstOption={"Select Block"}
@@ -360,7 +354,7 @@ const CreateStockIn = ({ data }) => {
                   errors={errors.blockId}
                 /> */}
                   <select
-                    disabled={modalStates.isView}
+                    disabled
                     name="blockId"
                     className="form-control custom_input"
                     style={{ width: "100%" }}
@@ -386,7 +380,7 @@ const CreateStockIn = ({ data }) => {
                     <label>Select Rack *</label>
 
                     <select
-                      disabled={modalStates.isView}
+                      disabled
                       {...register("rackId", {
                         required: "Rack is required",
                       })}
@@ -416,7 +410,7 @@ const CreateStockIn = ({ data }) => {
                   <div className="col-lg-3 col-md-6 input_wrapper">
                     <label>Select Partation *</label>
                     <select
-                      disabled={modalStates.isView}
+                      disabled
                       {...register("partitionName", {
                         required: "Partation is required",
                       })}
@@ -444,8 +438,21 @@ const CreateStockIn = ({ data }) => {
                 )}
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>category Name *</label>
+                  {/* <SelectBox
+                  options={CategoryMapData}
+                  firstOption={"Select Category"}
+                  displayName={"name"}
+                  value={"_id"}
+                  disable={false}
+                  register={{
+                    ...register("categoryId", {
+                      required: "Select Category",
+                    }),
+                  }}
+                  errors={errors.categoryId}
+                /> */}
                   <select
-                    disabled={modalStates.isView}
+                    disabled
                     // name="categoryId"
                     className="form-control custom_input"
                     style={{ width: "100%" }}
@@ -489,8 +496,8 @@ const CreateStockIn = ({ data }) => {
                   errors={errors.brandId}
                 /> */}
                   <select
+                    disabled
                     name="brandId"
-                    disabled={modalStates.isView}
                     className="form-control custom_input"
                     style={{ width: "100%" }}
                     {...register("brandId", {
@@ -533,7 +540,7 @@ const CreateStockIn = ({ data }) => {
                   errors={errors.brandId}
                 /> */}
                   <select
-                    disabled={modalStates.isView}
+                    disabled
                     {...register("conditionType", {
                       required: "condition is required",
                     })}
@@ -556,7 +563,7 @@ const CreateStockIn = ({ data }) => {
                   <label>Status *</label>
 
                   <select
-                    disabled={modalStates.isView}
+                    disabled
                     {...register("status", {
                       required: "Status is required",
                     })}
@@ -584,7 +591,7 @@ const CreateStockIn = ({ data }) => {
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Serial No *</label>
                   <InputBox
-                    disable={modalStates.isView}
+                    disable={true}
                     register={{
                       ...register("serialNo", {
                         required: "serialNo is required",
@@ -596,7 +603,7 @@ const CreateStockIn = ({ data }) => {
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Quantity *</label>
                   <InputBox
-                    disable={modalStates.isView}
+                    disable={true}
                     register={{
                       ...register("quantity", {
                         required: "Quantity is required",
@@ -632,7 +639,7 @@ const CreateStockIn = ({ data }) => {
                   <label>Model Name *</label>
 
                   <select
-                    disabled={modalStates.isView}
+                    disabled
                     {...register("modelId", {
                       required: "modelId is required",
                     })}
@@ -663,7 +670,7 @@ const CreateStockIn = ({ data }) => {
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Item Code *</label>
                   <InputBox
-                    disable={modalStates.isView}
+                    disable={true}
                     register={{
                       ...register("itemCode", {
                         required: "itemCode is required",
@@ -706,7 +713,7 @@ const CreateStockIn = ({ data }) => {
                     <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>{item}</label>
                       <input
-                        disabled={modalStates.isView}
+                        disabled
                         type="text"
                         {...register(`parameter[${item}]`)}
                         className="form-control custom_input"
@@ -729,27 +736,24 @@ const CreateStockIn = ({ data }) => {
             </>
             {/* </div> */}
 
-            {!modalStates.isView && (
-              <div className="form_button_wrapper">
-                <CustomBtn
-                  name={
-                    buttonLoader ? (
-                      <ButtonLoader />
-                    ) : modalStates?.type === "create" ? (
-                      "Create"
-                    ) : (
-                      "Update"
-                    )
-                  }
-                  onClick={
-                    modalStates?.type == "create"
-                      ? handleSubmit(stockInDetailsSubmit)
-                      : handleSubmit(onSubmit)
-                  }
-                />
-                {/* <CustomBtn name={buttonLoader ? <ButtonLoader /> :  handleSubmit(onSubmit) } /> */}
-              </div>
-            )}
+            {/* <div className="form_button_wrapper">
+              <CustomBtn
+                name={
+                  buttonLoader ? (
+                    <ButtonLoader />
+                  ) : modalStates?.type === "create" ? (
+                    "Create"
+                  ) : (
+                    "Update"
+                  )
+                }
+                onClick={
+                  modalStates?.type == "create"
+                    ? handleSubmit(stockInDetailsSubmit)
+                    : handleSubmit(onSubmit)
+                }
+              />
+            </div> */}
           </div>
         </div>
       </div>
@@ -757,4 +761,4 @@ const CreateStockIn = ({ data }) => {
   );
 };
 
-export default CreateStockIn;
+export default InventoryView;

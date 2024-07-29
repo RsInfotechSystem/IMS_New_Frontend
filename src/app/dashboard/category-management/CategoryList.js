@@ -69,29 +69,30 @@ const CategoryList = () => {
     setTimeoutId(_timeOutId);
   };
 
-    const handleCheckboxChange = (e) => {
-      const checkboxId = e.target.id;
-      setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === categoryList?.length)))
-      setSelectedCheckboxes((prevSelected) => {
-        if (prevSelected.includes(checkboxId)) {
-          // If the checkbox is already in the array, remove it
-          return prevSelected.filter((id) => id !== checkboxId);
-        } else {
-          // If the checkbox is not in the array, add it
-          return [...prevSelected, checkboxId];
-        }
-      });
-  
-    };
-    const handleSelectAllChange = (e) => {
-      setSelectAllChecked(e.target.checked);
-  
-      // Update the array of selected checkboxes based on the "Select All" checkbox
-      setSelectedCheckboxes((prevSelected) =>
-        e.target.checked ? categoryList.map((brandDetails) => brandDetails._id) : []
-      );
-    };
+  const handleCheckboxChange = (e) => {
+    const checkboxId = e.target.id;
+    setSelectAllChecked(
+      !selectedCheckboxes.includes(checkboxId) &&
+        selectedCheckboxes.length + 1 === categoryList?.length
+    );
+    setSelectedCheckboxes((prevSelected) => {
+      if (prevSelected.includes(checkboxId)) {
+        // If the checkbox is already in the array, remove it
+        return prevSelected.filter((id) => id !== checkboxId);
+      } else {
+        // If the checkbox is not in the array, add it
+        return [...prevSelected, checkboxId];
+      }
+    });
+  };
+  const handleSelectAllChange = (e) => {
+    setSelectAllChecked(e.target.checked);
 
+    // Update the array of selected checkboxes based on the "Select All" checkbox
+    setSelectedCheckboxes((prevSelected) =>
+      e.target.checked ? categoryList.map((brandDetails) => brandDetails._id) : []
+    );
+  };
 
   const deletecategory = async () => {
     if (selectedCheckboxes.length > 0) {
@@ -197,8 +198,8 @@ const CategoryList = () => {
                   <input
                     className="form-check-input"
                     type="checkbox"
-                      onChange={(e) => handleSelectAllChange(e)}
-                      checked={selectAllChecked}
+                    onChange={(e) => handleSelectAllChange(e)}
+                    checked={selectAllChecked}
                   />
                   <label className="form-check-label"></label>
                 </div>
