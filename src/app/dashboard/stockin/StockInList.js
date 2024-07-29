@@ -20,6 +20,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { getLocations, getParameter } from "@/services/commonApis";
 import filterIcon from "../../../../public/images/filter.png";
 import InventoryView from "../inventory/InventoryView";
+import { formatDate } from "@/helper/formatDate";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -84,26 +85,31 @@ const StockInList = () => {
   const rack = watch("blockId");
   const _rackIdForPrtn = watch("rackId");
   const brandId = watch("brandId");
-  const handleCheckboxChange = (e) => {
-    const checkboxId = e.target.id;
 
+    const handleCheckboxChange = (e) => {
+    const checkboxId = e.target.id;
+    setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === stock?.length)))
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
+        // If the checkbox is already in the array, remove it
         return prevSelected.filter((id) => id !== checkboxId);
       } else {
+        // If the checkbox is not in the array, add it
         return [...prevSelected, checkboxId];
       }
     });
-  };
 
+  };
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
 
+    // Update the array of selected checkboxes based on the "Select All" checkbox
     setSelectedCheckboxes((prevSelected) =>
-      e.target.checked ? stock.map((stockDetails) => stockDetails._id) : []
+      e.target.checked ? stock.map((brandDetails) => brandDetails._id) : []
     );
   };
 
+  
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     categoryFilter: false,
     brandFilter: false,
@@ -124,19 +130,19 @@ const StockInList = () => {
       setLoader(true);
       let response = await communication.stockIn(values);
       if (response?.data?.status === "SUCCESS") {
-         toast.success(response?.data?.message);
+        Swal.fire({ text: response.data.message, icon: "success" });
         reset();
         setLoader(true);
         await getStockList({ currentPage, searchString });
         setLoader(false);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message)
+        Swal.fire({ text: response.data.message, icon: "warning" });
         router.push("/");
       } else {
-        toast.info(response.data.message)
+        Swal.fire({ text: response.data.message, icon: "warning" });
       }
     } catch (error) {
-      toast.info(error.message);
+      Swal.fire({ text: error.message, icon: "warning" });
     } finally {
       setLoader(false);
     }
@@ -216,10 +222,10 @@ const StockInList = () => {
         });
         setCheckedStatus(initialCheckedStatus);
       } else if (serverResponse?.data?.status === "FAILED") {
-        toast.info(serverResponse.data.message)
+        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
         setStock([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message)
+        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
         router.push("/");
         setLoader(false);
       } else {
@@ -254,7 +260,10 @@ const StockInList = () => {
             });
             FileSaver.saveAs(file, "stock.xlsx");
           } else {
-            toast.info("Failed to export data in excel");
+            Swal.fire({
+              text: "Failed to export data in excel",
+              icon: "warning",
+            });
           }
         } else {
           return;
@@ -291,15 +300,18 @@ const StockInList = () => {
       formData.append("users", selectedFile);
       const serverResponse = await communication.importExcelStockData(formData);
       if (serverResponse?.data?.status === "SUCCESS") {
-        toast.success({ text: serverResponse?.data?.message, icon: "success" });
+        Swal.fire({ text: serverResponse?.data?.message, icon: "success" });
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse?.data?.message)
+        Swal.fire({ text: serverResponse?.data?.message, icon: "warning" });
         router.push("/");
       } else {
-        toast.info(serverResponse?.data?.message)
+        Swal.fire({ text: serverResponse?.data?.message, icon: "warning" });
       }
     } catch (error) {
-      toast.info(error?.response?.data?.message || error?.message);
+      Swal.fire({
+        text: error?.response?.data?.message || error?.message,
+        icon: "error",
+      });
     }
   };
   async function changeStockStatus(stockId) {
@@ -310,7 +322,7 @@ const StockInList = () => {
         stockId: stockId,
       });
       if (response?.data?.status === "SUCCESS") {
-        //  toast.success(response?.data?.message);
+        // Swal.fire({ text: response.data.message, icon: "success" });
         toast.success(response.data.message);
         setCheckedStatus((prevStatus) => ({
           ...prevStatus,
@@ -323,6 +335,7 @@ const StockInList = () => {
         router.push("/");
       } else {
         setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+
         toast.error(response.data.message);
       }
     } catch (error) {
@@ -403,7 +416,7 @@ const StockInList = () => {
       if (serverResponse?.data?.status === "SUCCESS") {
         setModel(serverResponse?.data?.model);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message)
+        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
         router.push("/");
         props.setLoader(false);
       } else {
@@ -411,8 +424,10 @@ const StockInList = () => {
       }
       // props.setLoader(false);
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
-
+      Swal.fire({
+        text: error?.response?.data?.message || error.message,
+        icon: "warning",
+      });
       // props.setLoader(false);
     }
   }
@@ -828,6 +843,9 @@ const StockInList = () => {
               <div className="col_50p">
                 <h5>Status</h5>
               </div>
+              <div className="col_50p">
+                <h5>Stock In Date</h5>
+              </div>
               <div className="col_50p action_wrraper">
                 <h5 className="action_wrraper">Action</h5>
               </div>
@@ -911,6 +929,9 @@ const StockInList = () => {
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.status}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{formatDate(stockDetails?.createdAt)}</h6>
                     </div>
                     <div className="col_50p">
                       <h6 className="action_wrraper">

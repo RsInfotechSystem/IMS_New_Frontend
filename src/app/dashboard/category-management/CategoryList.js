@@ -180,7 +180,7 @@ const CategoryList = () => {
               <CustomResponseHandlerModal
                 status="warning"
                 // show={showModal}
-                message="Are you sure you want to delete this role?"
+                message="Are you sure you want to delete this category?"
                 successHandler={successHandler}
                 cancelHandler={cancelHandler}
               />
