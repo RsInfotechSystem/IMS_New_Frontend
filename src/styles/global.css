@@ -1275,7 +1275,7 @@ div:where(.tab_active, .tab_inactive) {
 /* search btn wrapper styling end */
 /* pagination */
 .pagination_wrapper {
-  width: 100%;
+  /* width: 100%; */
   display: grid;
   place-items: center;
   height: 7%;
