@@ -501,7 +501,7 @@ const UserManagement = () => {
           pageCount={pageCount}
         />
       </div>
-      {modalStates?.modal && <CreateUser data={{ modalStates, setModalStates, CreateUser, locations, roleList, getUserList }} />}
+      {modalStates?.modal && <CreateUser data={{ modalStates, setModalStates, CreateUser, locations, roleList, getUserList, currentPage, searchString }} />}
     </>
   )
 }
