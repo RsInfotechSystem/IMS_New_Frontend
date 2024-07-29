@@ -16,6 +16,7 @@ import Link from "next/link";
 import { getLocationWiseBlock, getRackPartation } from "@/services/commonApis";
 import { useForm } from "react-hook-form";
 import InputBox from "@/common-components/InputBox";
+import CreateTransferMaterial from "../../transfer-material/CreateTrasferMaterial";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 const ReceiveMaterialAction = () => {
   const router = useRouter();
