@@ -520,7 +520,7 @@ const AcceptMaterial = () => {
 
               {/* <div className="row m-0 mt-2 mb-3 ps-5"> */}
                 {parameter?.map((item, index) => (
-                  <div className="col-lg-3 col-md-6 input_wrapper">
+                  <div className="col-lg-3 col-md-6 input_wrapper" key={index}>
                       <label>{item}</label>
                       <InputBox
                         register={{

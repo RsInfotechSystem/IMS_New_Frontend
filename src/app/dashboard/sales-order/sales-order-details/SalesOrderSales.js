@@ -16,6 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import ViewSalesOrder from "../create-sales-order/ViewSalesOrderPdf";
 // import ViewBill from "../ViewBill";
 
 const SalesOrderSales = () => {

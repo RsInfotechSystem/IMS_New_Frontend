@@ -928,7 +928,7 @@ const TransferMaterialForm = () => {
                   </div>
                   {updatedProducts?.map((data, index) => {
                     return (
-                      <div className="table_data">
+                      <div className="table_data" key={index}>
                         <div className="col_10p">
                           <h6>{index + 1}</h6>
                         </div>
