@@ -97,31 +97,34 @@ const TransferMaterialDetails = () => {
                     fill-rule="evenodd"
                     clip-rule="evenodd"
                     d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
-                    fill="#79080a"
+                    fill="#184965"
                   />
                 </g>
                 <defs>
                   <clipPath id="clip0_1564_1770">
                     <rect width="24" height="24" fill="white" />
                   </clipPath>
+                  
                 </defs>
+            
               </svg>
+          Back
+
             </div>
-            <div>Back</div>
           </div>
         }
       </div>
       {/* table  */}
       <div className="table_wrapper">
         <div className="table_main">
-          <div className="table_section">
+          <div className="table_section employee_table">
             <div className="table_header">
               <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_40p">
                 <h5>From Location</h5>
-              </div>{" "}
+              </div>
               <div className="col_30p">
                 <h5>To Location</h5>
               </div>
@@ -158,7 +161,7 @@ const TransferMaterialDetails = () => {
                       <div className="col_10p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
-                      <div className="col_30p">
+                      <div className="col_40p">
                         <h6>{materialList?.fromLocation?.name}</h6>
                       </div>
                       <div className="col_30p">

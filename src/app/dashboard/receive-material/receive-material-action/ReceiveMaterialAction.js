@@ -251,40 +251,40 @@ const ReceiveMaterialAction = () => {
       {/* table  */}
       <div className="table_wrapper">
         <div className="table_main">
-          <div className="table_section">
+          <div className="table_section employee_table">
             <div className="table_header">
               <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_40p">
                 <h5>Category</h5>
               </div>
               <div className="col_30p">
                 <h5>Brand</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_40p">
                 <h5>Location</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_40p">
                 <h5>Model Name</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_40p">
                 <h5>Item Code</h5>
               </div>
               <div className="col_30p">
                 <h5>Serial No.</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_45p">
                 <h5>Block Name</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_45p">
                 <h5>Rack Name</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_50p">
                 <h5>Partation Name</h5>
               </div>
 
-              <div className="condition_type">
+              <div className="col_30p">
                 <h5>Quantity</h5>
               </div>
             </div>
@@ -296,25 +296,26 @@ const ReceiveMaterialAction = () => {
                       <div className="col_10p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
-                      <div className="col_30p">
-                        <InputBox disable={true} value={material.categoryName} />
+                      <div className="col_40p">
+                        <h6>{material.categoryName}</h6>
                       </div>
                       <div className="col_30p">
-                        <InputBox disable={true} value={material.brand} />
+                        <h6>{material.brand}</h6>
+                      </div>
+                      <div className="col_40p">
+                        <h6>{material.location}</h6>
+                      </div>
+                      <div className="col_40p">
+                        <h6>{material.modelName}</h6>
+                      </div>
+                      <div className="col_40p">
+                      <h6>{material.itemCode}</h6>
                       </div>
                       <div className="col_30p">
-                        <InputBox disable={true} value={material.location} />
+                      <h6>{material.serialNo}</h6>
                       </div>
-                      <div className="col_30p">
-                        <InputBox disable={true} value={material.modelName} />
-                      </div>
-                      <div className="col_30p">
-                        <InputBox disable={true} value={material.itemCode} />
-                      </div>
-                      <div className="col_30p">
-                        <InputBox disable={true} value={material.serialNo} />
-                      </div>
-                      <div className="col_30p">
+                      <div className="col_45p">
+                        <h6>
                         <select
                           //   name="categoryId"
                           value={material.blockId}
@@ -329,8 +330,11 @@ const ReceiveMaterialAction = () => {
                             </option>
                           ))}
                         </select>
+                        </h6>
+                        
                       </div>
-                      <div className="col_30p">
+                      <div className="col_45p">
+                        <h6>
                         <select
                           //   name="categoryId"
                           value={material.rackId}
@@ -347,8 +351,10 @@ const ReceiveMaterialAction = () => {
                             </option>
                           ))}
                         </select>
+                        </h6>
                       </div>
-                      <div className="col_30p">
+                      <div className="col_50p">
+                        <h6>
                         <select
                           //   name="categoryId"
                           value={material.partitionName}
@@ -371,6 +377,7 @@ const ReceiveMaterialAction = () => {
                               ))
                             : null}
                         </select>
+                        </h6>
                       </div>
                       <div className="col_30p">
                         <h6>{material?.quantity}</h6>

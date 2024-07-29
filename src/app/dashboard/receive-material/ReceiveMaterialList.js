@@ -78,7 +78,7 @@ const ReceiveMaterialList = () => {
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
-        {}
+        { }
       </div>
       {/* table  */}
       <div className="table_wrapper">
@@ -114,12 +114,14 @@ const ReceiveMaterialList = () => {
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_30p">
-                        <Link
-                          href={`./receive-material/receive-material-details?materialId=${modelData._id}`}
-                          style={{ textDecoration: "none" }}
-                        >
-                          <h6 style={{ color: "#0000FF" }}>{modelData?.transferId}</h6>
-                        </Link>
+                        <h6>
+                          <Link
+                            href={`./receive-material/receive-material-details?materialId=${modelData._id}`}
+                            style={{ textDecoration: "none" }}
+                          >
+                            <h6 style={{ color: "#0000FF" }}>{modelData?.transferId}</h6>
+                          </Link>
+                        </h6>
                       </div>
                       <div className="col_30p">
                         <h6>{modelData?.fromLocation?.name}</h6>
@@ -130,26 +132,11 @@ const ReceiveMaterialList = () => {
                       <div className="col_30p">
                         <h6>{modelData?.transferBy?.name}</h6>
                       </div>
-                      {modelData?.acceptedBy?.name ? (
-                        <div className="col_30p">
-                          <h6 className="action_wrraper">
-                            <button
-                              disabled
-                              title="Received"
-                              className="btn btn-success"
-                              onClick={() =>
-                                router.push(
-                                  `/dashboard/receive-material/receive-material-action?reciveMaterialId=${modelData?._id}`
-                                )
-                              }
-                            >
-                              Received
-                            </button>
-                          </h6>
-                        </div>
-                      ) : (
-                        <div className="col_30p">
-                          <h6 className="action_wrraper">
+                      <div className="col_30p">
+                        {modelData?.acceptedBy?.name ? (
+                         "--"
+                        ) : (
+                          <h6 >
                             <button
                               className="btn btn-success"
                               onClick={() =>
@@ -161,8 +148,8 @@ const ReceiveMaterialList = () => {
                               Receive
                             </button>
                           </h6>
-                        </div>
-                      )}
+                        )}
+                      </div>
                     </div>
                   </>
                 );

@@ -171,12 +171,14 @@ const TransferMaterialList = () => {
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_30p">
+                        <h6>
                         <Link
                           href={`./transfer-material/transfer-material-details?materialId=${modelData._id}`}
                           style={{ textDecoration: "none" }}
                         >
                           <h6 style={{ color: "#0000FF" }}>{modelData?.transferId}</h6>
                         </Link>
+                        </h6>
                       </div>
                       <div className="col_30p">
                         <h6>{modelData?.fromLocation?.name}</h6>
