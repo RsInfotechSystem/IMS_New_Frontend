@@ -58,7 +58,7 @@ const CreateOrder = () => {
   const createOrder = async (values) => {
     try {
       if (!dateFilter.orderDate || !dateFilter.completeDate) {
-        Swal.fire({ text: "Date is required", icon: "warning" });
+        toast.info("Date is required");
         return;
       }
       setLoader(true);
@@ -85,19 +85,17 @@ const CreateOrder = () => {
       };
       let response = await communication.createSalesOrder(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
+         toast.success(response?.data?.message);
         router.push("/admin/dashboard/sales-order");
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
         router.push("/");
       } else {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
       }
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
     } finally {
       setLoader(false);
     }
@@ -121,7 +119,7 @@ const CreateOrder = () => {
   const addMaterial = () => {
     const { description, quantity, warrenty, note } = getValues();
     if (!description || !quantity) {
-      Swal.fire({ text: "Add Material", icon: "warning" });
+      toast.info("Add Material");
       return;
     } else {
       setState({

@@ -182,8 +182,7 @@ const ReceiveMaterialAction = () => {
           [brandId]: serverResponse?.data?.model,
         }));
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
-        toast.warn(serverResponse.data.message);
+        toast.info(serverResponse.data.message)
         router.push("/");
         setLoader(false);
       } else {
@@ -192,10 +191,8 @@ const ReceiveMaterialAction = () => {
       // props.setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-      //   Swal.fire({
-      //     text: error?.response?.data?.message || error.message,
-      //     icon: "warning",
-      //   });
+           toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   }

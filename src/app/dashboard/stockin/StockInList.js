@@ -124,19 +124,19 @@ const StockInList = () => {
       setLoader(true);
       let response = await communication.stockIn(values);
       if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
+         toast.success(response?.data?.message);
         reset();
         setLoader(true);
         await getStockList({ currentPage, searchString });
         setLoader(false);
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
         router.push("/");
       } else {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "warning" });
+      toast.info(error.message);
     } finally {
       setLoader(false);
     }
@@ -216,10 +216,10 @@ const StockInList = () => {
         });
         setCheckedStatus(initialCheckedStatus);
       } else if (serverResponse?.data?.status === "FAILED") {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         setStock([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         setLoader(false);
       } else {
@@ -254,10 +254,7 @@ const StockInList = () => {
             });
             FileSaver.saveAs(file, "stock.xlsx");
           } else {
-            Swal.fire({
-              text: "Failed to export data in excel",
-              icon: "warning",
-            });
+            toast.info("Failed to export data in excel");
           }
         } else {
           return;
@@ -294,18 +291,15 @@ const StockInList = () => {
       formData.append("users", selectedFile);
       const serverResponse = await communication.importExcelStockData(formData);
       if (serverResponse?.data?.status === "SUCCESS") {
-        Swal.fire({ text: serverResponse?.data?.message, icon: "success" });
+        toast.success({ text: serverResponse?.data?.message, icon: "success" });
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse?.data?.message, icon: "warning" });
+        toast.info(serverResponse?.data?.message)
         router.push("/");
       } else {
-        Swal.fire({ text: serverResponse?.data?.message, icon: "warning" });
+        toast.info(serverResponse?.data?.message)
       }
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error?.message,
-        icon: "error",
-      });
+      toast.info(error?.response?.data?.message || error?.message);
     }
   };
   async function changeStockStatus(stockId) {
@@ -316,7 +310,7 @@ const StockInList = () => {
         stockId: stockId,
       });
       if (response?.data?.status === "SUCCESS") {
-        // Swal.fire({ text: response.data.message, icon: "success" });
+        //  toast.success(response?.data?.message);
         toast.success(response.data.message);
         setCheckedStatus((prevStatus) => ({
           ...prevStatus,
@@ -329,7 +323,6 @@ const StockInList = () => {
         router.push("/");
       } else {
         setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
-
         toast.error(response.data.message);
       }
     } catch (error) {
@@ -410,7 +403,7 @@ const StockInList = () => {
       if (serverResponse?.data?.status === "SUCCESS") {
         setModel(serverResponse?.data?.model);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         props.setLoader(false);
       } else {
@@ -418,10 +411,8 @@ const StockInList = () => {
       }
       // props.setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
       // props.setLoader(false);
     }
   }

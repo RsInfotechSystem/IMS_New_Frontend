@@ -24,7 +24,7 @@ export async function getLocations(setLoader, router, setLocations = []) {
     if (serverResponse?.data?.status === "SUCCESS") {
       setLocations(serverResponse?.data?.result);
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
-      Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+      toast.info(serverResponse.data.message);
       router.push("/");
       setLoader(false);
     } else {
@@ -32,10 +32,7 @@ export async function getLocations(setLoader, router, setLocations = []) {
     }
     setLoader(false);
   } catch (error) {
-    Swal.fire({
-      text: error?.response?.data?.message || error.message,
-      icon: "warning",
-    });
+    toast.info(error?.response?.data?.message || error.message)
     setLoader(false);
   }
 }
@@ -61,7 +58,7 @@ export async function getParameter(setLoader, router, setParameter = []) {
     if (serverResponse?.data?.status === "SUCCESS") {
       setParameter(serverResponse?.data?.parameter);
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
-      Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+      toast.info(serverResponse.data.message)
       router.push("/");
       setLoader(false);
     } else {
@@ -69,10 +66,7 @@ export async function getParameter(setLoader, router, setParameter = []) {
     }
     setLoader(false);
   } catch (error) {
-    Swal.fire({
-      text: error?.response?.data?.message || error.message,
-      icon: "warning",
-    });
+    toast.info(error?.response?.data?.message || error.message);
     setLoader(false);
   }
 }
@@ -142,7 +136,7 @@ export async function getRackPartation(id, setLoader, router, setRackPartation =
     if (serverResponse?.data?.status === "SUCCESS") {
       setRackPartation(serverResponse?.data?.filteredPartitions);
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
-      Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+      toast.info(serverResponse.data.message)
       router.push("/");
       setLoader(false);
     } else {
@@ -150,10 +144,7 @@ export async function getRackPartation(id, setLoader, router, setRackPartation =
     }
     setLoader(false);
   } catch (error) {
-    Swal.fire({
-      text: error?.response?.data?.message || error.message,
-      icon: "warning",
-    });
+    toast.info(error?.response?.data?.message || error.message);
     setLoader(false);
   }
 }

@@ -105,11 +105,10 @@ function CreateParameter({ data }) {
         // setValue("parameter", param);
         _setPrameterList([...response?.data?.parameter?.parameter]);
       } else if (response?.data?.status === "JWT_INVALID") {
-        // Swal.fire({ text: response.data.message, icon: "warning" });
-        toast.warn(response.data.message);
+        toast.info(response.data.message)
         router.push("/");
       } else {
-        // Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
         // toast.warn(response.data.message);
       }
     } catch (error) {
@@ -142,12 +141,10 @@ function CreateParameter({ data }) {
           setModalStates((prev) => ({ ...prev, modal: false }))
           getAllParameter()
         } else if (serverResponse?.data?.status === "JWT_INVALID") {
-          toast.warn(serverResponse.data.message);
-          // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+          toast.info(serverResponse.data.message)
           router.push("/");
         } else {
-          toast.warn(serverResponse.data.message);
-          // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+          toast.info(serverResponse.data.message)
         }
         setLoader(false);
       } catch (error) {
@@ -175,18 +172,16 @@ function CreateParameter({ data }) {
         const serverResponse = await communication.createParameter(payload);
         if (serverResponse?.data?.status === "SUCCESS") {
           toast.success(serverResponse.data.message);
-          // Swal.fire({ text: serverResponse.data.message, icon: "success" });
+          //  toast.success(serverResponse?.data?.message);
           reset();
           getAllParameter()
           setModalStates((prev) => ({ ...prev, modal: false }))
           await getAllParameter(currentPage, searchString);
         } else if (serverResponse?.data?.status === "JWT_INVALID") {
-          toast.warn(serverResponse.data.message);
-          // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+          toast.info(serverResponse.data.message)
           router.push("/");
         } else {
-          toast.warn(serverResponse.data.message);
-          // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+          toast.info(serverResponse.data.message)
         }
         setLoader(false);
       } catch (error) {

@@ -202,20 +202,18 @@ const TransferMaterialForm = () => {
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.warn(serverResponse.data.message);
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
       } else {
         toast.warn(serverResponse.data.message);
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         setMaterial([]);
       }
       setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-      //   Swal.fire({
-      //     text: error?.response?.data?.message || error.message,
-      //     icon: "warning",
-      //   });
+           toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   }

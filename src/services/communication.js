@@ -2091,7 +2091,7 @@ export const communication = {
         }
       );
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "warning" });
+        toast.info(error.message)
     }
   },
   importExcelParameterData: (formData) => {
@@ -2108,7 +2108,7 @@ export const communication = {
         }
       );
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "error" });
+      toast.info(error.message);
     }
   },
   deleteParameter: async (data) => {
