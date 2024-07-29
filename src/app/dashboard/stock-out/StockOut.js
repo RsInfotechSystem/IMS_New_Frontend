@@ -110,19 +110,17 @@ const StockOut = () => {
                     setCurrentPage(1);
                 }
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
-                Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+                toast.info(serverResponse.data.message)
                 router.push("/");
                 setLoader(false);
             } else {
-                // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+                toast.info(serverResponse.data.message)
                 setMaterial([]);
             }
             setLoader(false);
         } catch (error) {
-            Swal.fire({
-                text: error?.response?.data?.message || error.message,
-                icon: "warning",
-            });
+                        toast.info(error?.response?.data?.message || error.message)
+
             setLoader(false);
         }
     }

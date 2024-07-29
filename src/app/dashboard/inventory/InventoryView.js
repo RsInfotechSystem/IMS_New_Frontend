@@ -282,16 +282,14 @@ const InventoryView = ({ data }) => {
         setValue("blockId", stockData?.blockId?._id);
         // setValue("partitionName", stockData?.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: responseFromServer?.data?.message, icon: "warning" });
+        toast.info(responseFromServer?.data?.message)
         router.push("/login");
       } else {
-        Swal.fire({ text: responseFromServer?.data?.message, icon: "warning" });
+        toast.info(responseFromServer?.data?.message)
       }
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
     } finally {
       setLoader(false);
     }

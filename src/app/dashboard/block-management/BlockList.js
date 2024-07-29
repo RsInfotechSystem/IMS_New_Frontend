@@ -59,12 +59,10 @@ const BlockList = () => {
         });
         setCheckedStatus(initialCheckedStatus);
       } else if (serverResponse?.data?.status === "FAILED") {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
-        toast.warn(serverResponse.data.message);
+        toast.info(serverResponse.data.message)
         setBlockList([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
-        toast.warn(serverResponse.data.message);
+        toast.info(serverResponse.data.message)
         router.push("/");
         //setLoader(false);
       } else {

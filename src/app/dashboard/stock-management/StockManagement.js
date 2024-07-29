@@ -14,6 +14,7 @@ import { formatDate } from "@/helper/formatDate";
 import { useForm } from "react-hook-form";
 import RejectModel from "./RejectModel";
 import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const StockManagement = () => {
@@ -111,7 +112,7 @@ const StockManagement = () => {
           setCurrentPage(1);
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         setLoader(false);
       } else if (serverResponse?.data?.status == "FAILED") {
@@ -124,14 +125,12 @@ const StockManagement = () => {
       } else {
         setMaterial([]);
 
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   }
@@ -144,7 +143,7 @@ const StockManagement = () => {
         remark: remark,
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-        Swal.fire({ text: serverResponse.data.message, icon: "success" });
+         toast.success(serverResponse?.data?.message);
         fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
@@ -154,23 +153,18 @@ const StockManagement = () => {
         //   setCurrentPage(1);
         // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         setLoader(false);
       } else if (serverResponse.data.status == "FAILED") {
-        Swal.fire({
-          text: serverResponse?.data?.message,
-          icon: "warning",
-        });
+        toast.info(serverResponse?.data?.message);
       } else {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   }
@@ -183,7 +177,7 @@ const StockManagement = () => {
         remark: remark,
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-        Swal.fire({ text: serverResponse.data.message, icon: "success" });
+         toast.success(serverResponse?.data?.message);
         fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
@@ -193,23 +187,17 @@ const StockManagement = () => {
         //   setCurrentPage(1);
         // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         setLoader(false);
       } else if (serverResponse.data.status == "FAILED") {
-        Swal.fire({
-          text: serverResponse?.data?.message,
-          icon: "warning",
-        });
+        toast.info(serverResponse?.data?.message);
       } else {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+        toast.info(error?.response?.data?.message || error.message)
       setLoader(false);
     }
   }
@@ -249,23 +237,18 @@ const StockManagement = () => {
       };
       let response = await communication.rejectMaterial(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
+         toast.success(response?.data?.message);
         fetchReturnMaterialList(1, searchString);
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
         router.push("/");
       } else {
-        Swal.fire({
-          text: response?.data?.message,
-          icon: "warning",
-        });
+        toast.info(response?.data?.message)
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   };
@@ -300,10 +283,7 @@ const StockManagement = () => {
         if (remark) {
           rejectMaterial(id, status, remark);
         } else {
-          Swal.fire({
-            icon: "error",
-            text: "Remark required if you want to reject.",
-          });
+          toast.info("Remark required if you want to reject.");
         }
       }
     });

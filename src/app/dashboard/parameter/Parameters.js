@@ -71,7 +71,7 @@ const Parameters = () => {
           setCurrentPage(1);
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         setLoader(false);
       } else {
@@ -79,10 +79,7 @@ const Parameters = () => {
       }
       setLoader(false);
     } catch (error) {
-      //   Swal.fire({
-      //     text: error?.response?.data?.message || error.message,
-      //     icon: "warning",
-      //   });
+           toast.info(error?.response?.data?.message || error.message)
       setLoader(false);
     }
   }
@@ -107,13 +104,13 @@ const Parameters = () => {
   //           let response = await communication.deleteParameter(payload);
   //           if (response?.data?.status === "SUCCESS") {
   //             setSelectedCheckboxes([]);
-  //             Swal.fire({ text: response.data.message, icon: "success" });
+  //              toast.success(response?.data?.message);
   //             await getAllParameter(currentPage, searchString);
   //           } else if (response?.data?.status === "JWT_INVALID") {
-  //             Swal.fire({ text: response.data.message, icon: "warning" });
+  //             toast.info(response.data.message)
   //             router.push("/");
   //           } else {
-  //             Swal.fire({ text: response.data.message, icon: "warning" });
+  //             toast.info(response.data.message)
   //           }
   //         } catch (error) {
   //           Swal.fire({ text: error.message, icon: "warning" });

@@ -4,11 +4,13 @@ import Loader from "@/common-components/Loader";
 import { getBrands, getLocations, getLocationWiseBlock, getParameter } from "@/services/commonApis";
 import { communication } from "@/services/communication";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getCookie } from "cookies-next";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 const ReturnMaterial = ({ data }) => {
   const { modalStates, setModalStates } = data;
@@ -107,19 +109,17 @@ const ReturnMaterial = ({ data }) => {
 
       let response = await communication.returnMaterial(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
+         toast.success(response?.data?.message);
         router.push("/admin/dashboard/daily-task/");
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
         router.push("/");
       } else {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message)
       }
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
     } finally {
       setLoader(false);
     }
@@ -143,10 +143,10 @@ const ReturnMaterial = ({ data }) => {
         // });
         // setCheckedStatus(initialCheckedStatus);
       } else if (serverResponse?.data?.status === "FAILED") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         // setBlockList([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         // props.setLoader(false);
       } else {
@@ -154,10 +154,8 @@ const ReturnMaterial = ({ data }) => {
       }
       // props.setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
       // props.setLoader(false);
     }
   }
@@ -199,16 +197,14 @@ const ReturnMaterial = ({ data }) => {
         setValue("brandIds", materialData?.brandId.name);
         setBlockvalue(materialData?.blockId._id);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: responseFromServer?.data?.message, icon: "warning" });
+        toast.info(responseFromServer?.data?.message)
         router.push("/login");
       } else {
-        Swal.fire({ text: responseFromServer?.data?.message, icon: "warning" });
+        toast.info(responseFromServer?.data?.message)
       }
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
     } finally {
       setLoader(false);
     }
@@ -723,11 +719,7 @@ const ReturnMaterial = ({ data }) => {
                             onClick={() => handleRemoveMaterial(index)}
                             className="btn btn-link btn-sm"
                           >
-                            <Image
-                              className="cursor-pointer ms-1"
-                              alt="delete-icon"
-                              src={deleteicon}
-                            ></Image>
+                            <FontAwesomeIcon icon={faTrash} />
                           </button>
                         </li>
                       ))}

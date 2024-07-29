@@ -16,6 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import ViewSalesOrder from "../create-sales-order/ViewSalesOrderPdf";
 // import ViewBill from "../ViewBill";
 
 const SalesOrderSales = () => {
@@ -91,8 +92,7 @@ const SalesOrderSales = () => {
         //   setCurrentPage(1);
         // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
-        toast.warn(serverResponse.data.message);
+        toast.info(serverResponse.data.message)
         router.push("/");
       } else {
         setModelList([]);
@@ -155,18 +155,16 @@ const SalesOrderSales = () => {
         //   setCurrentPage(1);
         // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
       } else {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         setMaterial([]);
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   }
@@ -174,11 +172,11 @@ const SalesOrderSales = () => {
     // console.log("onsubmit", values);
     try {
       if (payloadIds.length < 1) {
-        Swal.fire({ text: "Please attached material.", icon: "warning" });
+        toast.info("Please attached material.");
         return;
       }
       if (payloadIds.length !== modelList?.materialDetails?.length) {
-        Swal.fire({ text: "Please attached all material.", icon: "warning" });
+        toast.info("Please attached all material.");
         return;
       }
       setLoader(true);
@@ -190,23 +188,21 @@ const SalesOrderSales = () => {
       // console.log("payload", payload);
       const serverResponse = await communication.sendReadyMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        Swal.fire({ text: serverResponse.data.message, icon: "success" });
+         toast.success(serverResponse?.data?.message);
         setLoader(false);
         setModelList([]);
         router.push("/admin/dashboard/sales-order");
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
         setLoader(false);
       } else {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+              toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   }

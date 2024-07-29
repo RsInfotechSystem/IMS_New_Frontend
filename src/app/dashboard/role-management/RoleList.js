@@ -46,7 +46,6 @@ const RoleList = () => {
         setRoles([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse?.data?.message);
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
         router.push("/");
         setLoader(false);
       } else {
@@ -54,7 +53,7 @@ const RoleList = () => {
       }
       setLoader(false);
     } catch (error) {
-      toast.error(error?.message);
+      toast.info(error?.response?.data?.message || error.message);
       // Swal.fire({
       //   text: error?.response?.data?.message || error.message,
       //   icon: "warning",
