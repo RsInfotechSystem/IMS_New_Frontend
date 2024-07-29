@@ -44,6 +44,8 @@ const TransferMaterialForm = () => {
   const [activelocations, setActiveLocations] = useState([]);
   const [locationAcess, setLocationAcess] = useState([]);
   const [quantities, setQuantities] = useState({});
+  const [stock, setStock] = useState([]);
+  const [updatedProducts, setUpdatedProducts] = useState([]);
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     categoryFilter: false,
     brandFilter: false,
@@ -62,7 +64,7 @@ const TransferMaterialForm = () => {
     locationValue: { keyType: "", keyId: "", keyCount: 0 },
   });
   const transferForm = async (values) => {
-    console.log("Form submitted with values: ", values);
+    // console.log("Form submitted with values: ", values);
     try {
       setLoader(true);
       const invalidQuantities = selectedList.filter((id) => !quantities[id]);
@@ -281,7 +283,121 @@ const TransferMaterialForm = () => {
       [materialId]: value,
     }));
   };
+  const handleIncrement = (id, materialDetails) => {
+    setStock((prevStock) =>
+      prevStock.map((product) => {
+        if (product._id === id) {
+          if (product.reamainingQuantity === 0) {
+            Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
+            return product;
+          } else if (product.reamainingQuantity === product.quantity) {
+            return { ...product, quantity: product.reamainingQuantity };
+          } else {
+            return { ...product, quantity: product.quantity + 1 };
+          }
+        }
+        return product;
+      })
+    );
 
+    setUpdatedProducts((pre) => {
+      const existingProduct = pre.find((ele) => ele._id === id);
+      if (existingProduct) {
+        return pre.map((ele) => {
+          if (ele._id === id) {
+            if (ele.reamainingQuantity === ele.quantity) {
+              return { ...ele, quantity: ele.reamainingQuantity };
+            } else {
+              return { ...ele, quantity: ele.quantity + 1 };
+            }
+          } else {
+            return ele;
+          }
+        });
+      } else {
+        if (materialDetails.reamainingQuantity === 0) {
+          Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
+          return pre;
+        } else {
+          return [...pre, { ...materialDetails, quantity: 1 }];
+        }
+      }
+    });
+  };
+  const handleDecrement = (id) => {
+    setStock((prevStock) =>
+      prevStock.map((product) => {
+        if (product._id === id) {
+          return { ...product, quantity: product.quantity <= 1 ? 0 : product.quantity - 1 };
+        }
+        return product;
+      })
+    );
+
+    setUpdatedProducts((pre) =>
+      pre
+        .map((ele) => {
+          if (ele._id === id) {
+            return {
+              ...ele,
+              quantity: ele.quantity - 1,
+            };
+          } else {
+            return ele;
+          }
+        })
+        .filter((ele) => ele.quantity >= 1)
+    );
+  };
+  const handleChange = (id, value, materialDetails) => {
+    setStock((prevStock) =>
+      prevStock.map((product) => {
+        if (product._id === id) {
+          if (product.reamainingQuantity === 0) {
+            Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "error");
+            return product;
+          } else if (product.reamainingQuantity < value) {
+            Swal.fire("Error", `Cannot add more than ${product.reamainingQuantity}.`, "warning");
+            return product;
+          } else {
+            return { ...product, quantity: value };
+          }
+        }
+        return product;
+      })
+    );
+
+    setUpdatedProducts((pre) => {
+      const existingProduct = pre.find((ele) => ele._id === id);
+      if (existingProduct) {
+        return pre
+          .map((ele) => {
+            if (ele._id === id) {
+              if (ele.reamainingQuantity < value) {
+                Swal.fire("Error", `Cannot add more than ${ele.reamainingQuantity}.`, "warning");
+                return ele;
+              } else {
+                return { ...ele, quantity: value };
+              }
+            } else {
+              return ele;
+            }
+          })
+          .filter((ele) => ele.quantity > 0);
+      } else {
+        if (materialDetails.reamainingQuantity === 0) {
+          Swal.fire(
+            "Error",
+            `Cannot add more of ${materialDetails.name}, remaining quantity is 0.`,
+            "warning"
+          );
+          return pre;
+        } else {
+          return [...pre, { ...materialDetails, quantity: value }];
+        }
+      }
+    });
+  };
   useEffect(() => {
     getLocations(setLoader, router, setLocations);
     getActiveLocation();
@@ -387,7 +503,7 @@ const TransferMaterialForm = () => {
             <div className="d-flex align-items-center justify-content-between py-2">
               <p>Material List</p>
             </div>
-            <Search value="" onChange={() => { }} placeholder="Search" />
+            <Search value="" onChange={() => {}} placeholder="Search" />
 
             {/* table  */}
             <div className="table_wrapper my-3">
@@ -704,7 +820,7 @@ const TransferMaterialForm = () => {
                                 : materialDetails?.reamainingQuantity}
                             </h6>
                           </div>
-                          <div className="col_50p">
+                          {/* <div className="col_50p">
                             <div className="action_inventary_transfer">
                               <h6>
                                 <InputBox
@@ -717,27 +833,47 @@ const TransferMaterialForm = () => {
                                 />
                               </h6>
                             </div>
-                          </div>
-                          {/* <div className="col_25p">
-                            <h6 className='action_wrraper'>
+                          </div> */}
+                          <div className="col_50p">
+                            <h6 className="action_wrraper">
                               <div className="qty_add_sub_layout">
-                                <div className="qty_decrement" title="-"
-                                  onClick={() => { handleDecrement(data._id) }}
+                                <div
+                                  className="qty_decrement"
+                                  title="-"
+                                  onClick={() => {
+                                    handleDecrement(materialDetails._id);
+                                  }}
                                 >
                                   <FontAwesomeIcon icon={faCaretLeft} className="inc_dec_icon" />
                                 </div>
-                                <input type="number" min="0" value={data?.quantity} className="qty_input" onChange={(e) => {
-                                  handleChange(data?._id, Number(e.target.value), data)
-                                }}
-                                  onWheel={(e) => { e.target.blur() }}
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={materialDetails?.quantity}
+                                  className="qty_input"
+                                  onChange={(e) => {
+                                    handleChange(
+                                      materialDetails?._id,
+                                      Number(e.target.value),
+                                      materialDetails
+                                    );
+                                  }}
+                                  onWheel={(e) => {
+                                    e.target.blur();
+                                  }}
                                 />
-                                <div className="qty_increment" title="+"
-                                  onClick={() => { handleIncrement(data?._id, data) }}>
+                                <div
+                                  className="qty_increment"
+                                  title="+"
+                                  onClick={() => {
+                                    handleIncrement(materialDetails?._id, materialDetails);
+                                  }}
+                                >
                                   <FontAwesomeIcon icon={faCaretRight} className="inc_dec_icon" />
                                 </div>
                               </div>
                             </h6>
-                          </div> */}
+                          </div>
                         </div>
                       ))}
                     </>
@@ -759,9 +895,8 @@ const TransferMaterialForm = () => {
             <div className="table_wrapper my-3">
               <div className="table_main">
                 {/* Rename the class name "pi_product_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
-                <div className="table_section pi_product_table employee_table" >
+                <div className="table_section pi_product_table employee_table">
                   <div className="table_header">
-
                     <div className="col_10p">
                       <h5>Sr. No.</h5>
                     </div>
@@ -777,12 +912,9 @@ const TransferMaterialForm = () => {
                     <div className="col_50p">
                       <h5>Model Name</h5>
                     </div>
-
-
                     <div className="col_50p">
                       <h5>Item Code</h5>
                     </div>
-
                     <div className="col_50p">
                       <h5>Serial No.</h5>
                     </div>{" "}
@@ -795,89 +927,57 @@ const TransferMaterialForm = () => {
                     <div className="col_20p">
                       <h5>Action</h5>
                     </div>
-
                   </div>
-
-                  <div className="table_data">
-
-                    <div className="col_10p">
-                      <h6>1</h6>
-                    </div>
-
-                    <div className="col_50p">
-                      <h6>Category</h6>
-                    </div>
-                    <div className="col_40p">
-                      <h6>Brand</h6>
-                    </div>
-                    <div className="col_50p">
-                      <h6>Location</h6>
-                    </div>
-                    <div className="col_50p">
-                      <h6>Model Name</h6>
-                    </div>
-                    <div className="col_50p">
-                      <h6>Item Code</h6>
-                    </div>
-
-                    <div className="col_50p">
-                      <h6>Serial No.</h6>
-                    </div>{" "}
-                    <div className="col_50p">
-                      <h6>Status</h6>
-                    </div>{" "}
-                    <div className="col_50p">
-                      <h6>Quantity</h6>
-                    </div>
-                    <div className="col_20p">
-                      <h6>
-                        <FontAwesomeIcon icon={faTrash} />
-
-                      </h6>
-                    </div>
-
-                  </div>
-
+                  {updatedProducts?.map((data, index) => {
+                    return (
+                      <div className="table_data">
+                        <div className="col_10p">
+                          <h6>{index + 1}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.category}</h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>{data?.brand}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.location}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.modelId?.name ? data?.modelId?.name : "-"}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.itemCode ? data?.itemCode : "-"}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.serialNo ? data?.serialNo : "-"}</h6>
+                        </div>{" "}
+                        <div className="col_50p">
+                          <h6>{data?.status}</h6>
+                        </div>{" "}
+                        <div className="col_50p">
+                          <h6>{data?.reamainingQuantity === 0 ? "'" : data?.reamainingQuantity}</h6>
+                        </div>
+                        <div className="col_20p">
+                          <h6>
+                            {" "}
+                            {
+                              <FontAwesomeIcon
+                                icon={faTrash}
+                                onClick={() =>
+                                  setUpdatedProducts((pre) => pre.filter((ele, i) => i !== index))
+                                }
+                              />
+                            }{" "}
+                          </h6>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
-
             </div>
-            <div className="d-flex align-items-start justify-content-start gap-4 py-3">
-              <div className="fw-medium text-secondary">
-                <label>Final Amount</label>
-                <InputBox type={"text"}
-                // value={totalSum}
-                // disable={true}
-                />
-              </div>
-              {/* {params.get("type") === "approval" && */}
-              <div className="fw-medium text-secondary">
-                <label>Paid Amount*</label>
-                <InputBox type={"number"}
-                  register={{
-                    ...register("paidAmount", {
-                      required: "Amount to be paid is required",
-                    })
-                  }}
-                  errors={errors.paidAmount}
-                />
-              </div>
-              {/* } */}
 
-              {/* {(params.get("type") === "approval" || getValues("reamainingAmount")) && */}
-              <div className="fw-medium text-secondary">
-                <label>Reamaing Amount*</label>
-                <InputBox type={"number"}
-                  register={{
-                    ...register("reamainingAmount")
-                  }}
-                />
-              </div>
-              {/* } */}
-
-
-
-            </div>
             {/*  buttons*/}
             {/* <div className="d-flex align-items-center justify-content-center gap-3 my-3">
              
