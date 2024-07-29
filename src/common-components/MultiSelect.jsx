@@ -29,7 +29,7 @@ const MultiSelect = ({
       backgroundColor: "#fff",
     },
     chips: {
-      background: "#79080A",
+      background: "#184965",
       color: "#fff",
       borderRadius: "4px",
       margin: "2px",

@@ -85,7 +85,7 @@ function CreateParameter({ data }) {
   //   }
   // }
   function deleteParameterList(id) {
-    _setPrameterList(_parameterList.filter((item) => item != id));
+    _setPrameterList(_parameterList.filter((item,index) => index != id));
   }
   useEffect(() => {
     setParameterInput(_parameterInput);
@@ -226,7 +226,7 @@ function CreateParameter({ data }) {
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="form_modal_wrapper">
-        <div className="form_modal">
+        <div className="form_modal" style={{width: "40%"}}>
           <div className="form_modal_header">
             <h5 className="title">
               {modalStates?.type === "create" ? "Create Parameter" : "Update Parameter"}
@@ -239,7 +239,7 @@ function CreateParameter({ data }) {
           </div>
           <div className="form_modal_body">
             <div className="row d-flex align-items-end">
-            <div className="col-lg-12 col-md-12 input_wrapper">
+            <div className="col-lg-6 col-md-6 input_wrapper">
                                 <label >Category*</label>
                                 <SelectBox
                                     options={CategoryMapData}
@@ -254,24 +254,27 @@ function CreateParameter({ data }) {
                                     }}
                                     errors={errors.category}
                                 />
-                            </div>
-              <div className="col-lg-12 col-md-12 input_wrapper">
-                <label>Parameter*</label>
-                <InputBox
-                  type={"text"}
-                  register={{
-                    ...register("parameter", {
-                      // required: "Parameter is required",
-                    }),
-                  }}
-                  errors={errors.parameter}
-                />
-              </div>
-              <div className="col-lg-4 col-md-4 input_wrapper">
-                <CustomBtn name="Add" type="button" className="btn btn-success" onClick={addToPrameterList}/>
-              </div>
             </div>
-            {_parameterList?.map((ele, index) => {
+
+            </div>
+            <div className="row d-flex align-items-end">
+            <div className="col-lg-6 col-md-6 input_wrapper">
+                  <label>Parameter*</label>
+                  <InputBox
+                    type={"text"}
+                    register={{
+                      ...register("parameter", {
+                        // required: "Parameter is required",
+                      }),
+                    }}
+                    errors={errors.parameter}
+                  />
+                </div>
+                <div className="col-lg-4 col-md-4 input_wrapper">
+                  <CustomBtn name="Add" type="button" className="btn btn-success" onClick={addToPrameterList}/>
+                </div>
+          </div>
+            {/* {_parameterList?.map((ele, index) => {
               return (
                 <div className="row d-flex align-items-end" key={index}>
                   <div className="col-lg-3 col-md-6 input_wrapper">
@@ -280,14 +283,37 @@ function CreateParameter({ data }) {
                   <div className="col-lg-3 col-md-6 input_wrapper">
                     <FontAwesomeIcon
                       icon={faTrash}
-                      key={index}
-                      onClick={() => deleteParameterList(ele)}
+                      onClick={() => deleteParameterList(index)}
                       className="trash fontAwesome_icon cursor_pointer"
                     />
                   </div>
                 </div>
               );
-            })}
+            })} */}
+{/* <div className=""> */}
+  {_parameterList?.reduce((rows, key, index) => {
+    // Create a new row after every 3 items
+    if (index % 3 === 0) rows.push([]);
+    // Add the current item to the last row
+    rows[rows.length - 1].push(key);
+    return rows;
+  }, []).map((row, rowIndex) => (
+    <div className="row d-flex align-items-end" key={rowIndex}>
+      {row.map((ele, colIndex) => (
+        <div className="col-lg-4 col-md-5 d-flex align-items-center input_wrapper" key={colIndex}>
+          <InputBox value={ele}  disable={true}/>
+          <FontAwesomeIcon
+            icon={faTrash}
+            onClick={() => deleteParameterList(rowIndex * 3 + colIndex)}
+            className="trash fontAwesome_icon cursor_pointer ml-2" style={{marginLeft: 8}}
+          />
+        </div>
+      ))}
+    </div>
+  ))}
+{/* </div> */}
+
+
             <div className="form_button_wrapper">
               <CustomBtn
                 name={
