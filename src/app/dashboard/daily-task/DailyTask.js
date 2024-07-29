@@ -1,9 +1,7 @@
 "use client";
 
-import CustomBtn from "@/common-components/CustomBtn";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
-import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useReducer, useRef, useState } from "react";
 import Image from "next/image";
@@ -11,16 +9,11 @@ import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import showIcon from "../../../../public/images/showIcon.png";
-import password from "../../../../public/images/password.png";
-import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-import { getLocations, getParameter } from "@/services/commonApis";
 import filterIcon from "../../../../public/images/filter.png";
-import CreateStockIn from "../stockin/CreateStockIn";
 import { getCookie } from "cookies-next";
 import ReturnMaterial from "./ReturnMaterial";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -135,21 +128,18 @@ const DailyTask = () => {
           setCurrentPage(1);
         }
       } else if (serverResponse?.data?.status === "FAILED") {
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         setMaterial([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
         router.push("/");
         setLoader(false);
       } else {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message);
       }
       setLoader(false);
     } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
+      toast.info(error?.response?.data?.message || error.message);
       setLoader(false);
     }
   }
@@ -159,17 +149,17 @@ const DailyTask = () => {
 
       let response = await communication.getTechnicianList();
       if (response?.data?.status === "SUCCESS") {
-        // Swal.fire({ text: response.data.message, icon: "success" });
+        //  toast.success(response?.data?.message);
         setTechnicianList(response?.data.user);
         // await getRoleList(currentPage, searchString);
       } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message);
         router.push("/");
       } else {
-        Swal.fire({ text: response.data.message, icon: "warning" });
+        toast.info(response.data.message);
       }
     } catch (error) {
-      Swal.fire({ text: error.message, icon: "warning" });
+      toast.info(error.message);
     } finally {
       setLoader(false);
     }
@@ -322,7 +312,8 @@ const DailyTask = () => {
                       width={15}
                       height={15}
                       alt="filter-icon"
-                    ></Image>
+                    ></Image>hjjhjh
+                    <FontAwesomeIcon icon={faFilter} />
                   </>
                 ) : (
                   <>

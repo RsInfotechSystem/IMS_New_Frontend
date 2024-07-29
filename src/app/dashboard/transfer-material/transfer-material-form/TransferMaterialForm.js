@@ -7,12 +7,15 @@ import { getLocations } from "@/services/commonApis";
 import { communication } from "@/services/communication";
 import { getCookie } from "cookies-next";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import { useForm } from "react-hook-form";
+import { faCaretLeft, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "@/common-components/Button";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 const TransferMaterialForm = () => {
   const router = useRouter();
@@ -27,6 +30,8 @@ const TransferMaterialForm = () => {
     formState: { errors },
   } = useForm();
   const [loader, setLoader] = useState(false);
+  const params = useSearchParams();
+
   const [page, setPage] = useState(1);
   const [selectedList, setSelectedList] = useState([]);
   const [selectAllCheckedStock, setSelectAllCheckedStock] = useState(false);
@@ -39,6 +44,8 @@ const TransferMaterialForm = () => {
   const [activelocations, setActiveLocations] = useState([]);
   const [locationAcess, setLocationAcess] = useState([]);
   const [quantities, setQuantities] = useState({});
+  const [stock, setStock] = useState([]);
+  const [updatedProducts, setUpdatedProducts] = useState([]);
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     categoryFilter: false,
     brandFilter: false,
@@ -57,7 +64,7 @@ const TransferMaterialForm = () => {
     locationValue: { keyType: "", keyId: "", keyCount: 0 },
   });
   const transferForm = async (values) => {
-    console.log("Form submitted with values: ", values);
+    // console.log("Form submitted with values: ", values);
     try {
       setLoader(true);
       const invalidQuantities = selectedList.filter((id) => !quantities[id]);
@@ -202,20 +209,18 @@ const TransferMaterialForm = () => {
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.warn(serverResponse.data.message);
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
       } else {
         toast.warn(serverResponse.data.message);
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         setMaterial([]);
       }
       setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-      //   Swal.fire({
-      //     text: error?.response?.data?.message || error.message,
-      //     icon: "warning",
-      //   });
+           toast.info(error?.response?.data?.message || error.message)
+
       setLoader(false);
     }
   }
@@ -276,7 +281,121 @@ const TransferMaterialForm = () => {
       [materialId]: value,
     }));
   };
+  const handleIncrement = (id, materialDetails) => {
+    setStock((prevStock) =>
+      prevStock.map((product) => {
+        if (product._id === id) {
+          if (product.reamainingQuantity === 0) {
+            Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
+            return product;
+          } else if (product.reamainingQuantity === product.quantity) {
+            return { ...product, quantity: product.reamainingQuantity };
+          } else {
+            return { ...product, quantity: product.quantity + 1 };
+          }
+        }
+        return product;
+      })
+    );
 
+    setUpdatedProducts((pre) => {
+      const existingProduct = pre.find((ele) => ele._id === id);
+      if (existingProduct) {
+        return pre.map((ele) => {
+          if (ele._id === id) {
+            if (ele.reamainingQuantity === ele.quantity) {
+              return { ...ele, quantity: ele.reamainingQuantity };
+            } else {
+              return { ...ele, quantity: ele.quantity + 1 };
+            }
+          } else {
+            return ele;
+          }
+        });
+      } else {
+        if (materialDetails.reamainingQuantity === 0) {
+          Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
+          return pre;
+        } else {
+          return [...pre, { ...materialDetails, quantity: 1 }];
+        }
+      }
+    });
+  };
+  const handleDecrement = (id) => {
+    setStock((prevStock) =>
+      prevStock.map((product) => {
+        if (product._id === id) {
+          return { ...product, quantity: product.quantity <= 1 ? 0 : product.quantity - 1 };
+        }
+        return product;
+      })
+    );
+
+    setUpdatedProducts((pre) =>
+      pre
+        .map((ele) => {
+          if (ele._id === id) {
+            return {
+              ...ele,
+              quantity: ele.quantity - 1,
+            };
+          } else {
+            return ele;
+          }
+        })
+        .filter((ele) => ele.quantity >= 1)
+    );
+  };
+  const handleChange = (id, value, materialDetails) => {
+    setStock((prevStock) =>
+      prevStock.map((product) => {
+        if (product._id === id) {
+          if (product.reamainingQuantity === 0) {
+            Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "error");
+            return product;
+          } else if (product.reamainingQuantity < value) {
+            Swal.fire("Error", `Cannot add more than ${product.reamainingQuantity}.`, "warning");
+            return product;
+          } else {
+            return { ...product, quantity: value };
+          }
+        }
+        return product;
+      })
+    );
+
+    setUpdatedProducts((pre) => {
+      const existingProduct = pre.find((ele) => ele._id === id);
+      if (existingProduct) {
+        return pre
+          .map((ele) => {
+            if (ele._id === id) {
+              if (ele.reamainingQuantity < value) {
+                Swal.fire("Error", `Cannot add more than ${ele.reamainingQuantity}.`, "warning");
+                return ele;
+              } else {
+                return { ...ele, quantity: value };
+              }
+            } else {
+              return ele;
+            }
+          })
+          .filter((ele) => ele.quantity > 0);
+      } else {
+        if (materialDetails.reamainingQuantity === 0) {
+          Swal.fire(
+            "Error",
+            `Cannot add more of ${materialDetails.name}, remaining quantity is 0.`,
+            "warning"
+          );
+          return pre;
+        } else {
+          return [...pre, { ...materialDetails, quantity: value }];
+        }
+      }
+    });
+  };
   useEffect(() => {
     getLocations(setLoader, router, setLocations);
     getActiveLocation();
@@ -406,212 +525,212 @@ const TransferMaterialForm = () => {
                       <h5>Sr. No.</h5>
                     </div>
                     <div className="col_50p">
-                      <div className="category_stock d-flex justify-content-between">
-                        {state.categoryFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  categoryValue: {
-                                    keyType: "category",
-                                    keyId: e.target.value,
-                                    keyCount: state.categoryValue.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state.categoryValue.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state.category.map((item, index) => {
-                                return (
-                                  <option value={item.categoryId} key={index}>
-                                    {item.category}
-                                  </option>
-                                );
-                              })}
-                            </select>
+                      {/* <div className="category_stock d-flex justify-content-between"> */}
+                      {state.categoryFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                categoryValue: {
+                                  keyType: "category",
+                                  keyId: e.target.value,
+                                  keyCount: state.categoryValue.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state.categoryValue.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state.category.map((item, index) => {
+                              return (
+                                <option value={item.categoryId} key={index}>
+                                  {item.category}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ categoryFilter: !state.categoryFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Category</h5>
+                          <div>
                             <Image
-                              onClick={() => setState({ categoryFilter: !state.categoryFilter })}
+                              onClick={() => setState({ categoryFilter: true })}
                               className="cursor-pointer"
                               src={filterIcon}
                               width={15}
                               height={15}
                               alt="filter-icon"
                             ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Category</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ categoryFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
+                    </div>
+                    <div className="col_40p">
+                      {/* <div className="commonBlock d-flex justify-content-between"> */}
+                      {state.brandFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                brandValue: {
+                                  keyType: "brand",
+                                  keyId: e.target.value,
+                                  keyCount: state.brandValue.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state.brandValue.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state.brand.map((item, index) => {
+                              return (
+                                <option value={item.brandId} key={index}>
+                                  {item.brand}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ brandFilter: !state.brandFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Brand</h5>
+                          <div>
+                            <Image
+                              onClick={() => setState({ brandFilter: true })}
+                              className="cursor-pointer"
+                              src={filterIcon}
+                              width={15}
+                              height={15}
+                              alt="filter-icon"
+                            ></Image>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
                     </div>
                     <div className="col_50p">
-                      <div className="commonBlock d-flex justify-content-between">
-                        {state.brandFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  brandValue: {
-                                    keyType: "brand",
-                                    keyId: e.target.value,
-                                    keyCount: state.brandValue.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state.brandValue.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state.brand.map((item, index) => {
-                                return (
-                                  <option value={item.brandId} key={index}>
-                                    {item.brand}
-                                  </option>
-                                );
-                              })}
-                            </select>
+                      {/* <div className="item_code d-flex justify-content-between"> */}
+                      {state.locationFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                locationValue: {
+                                  keyType: "location",
+                                  keyId: e.target.value,
+                                  keyCount: state.locationValue.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state.locationValue.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state.location.map((item, index) => {
+                              return (
+                                <option value={item.locationId} key={index}>
+                                  {item.location}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ locationFilter: !state.locationFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Location</h5>
+                          <div>
                             <Image
-                              onClick={() => setState({ brandFilter: !state.brandFilter })}
+                              onClick={() => setState({ locationFilter: true })}
                               className="cursor-pointer"
                               src={filterIcon}
                               width={15}
                               height={15}
                               alt="filter-icon"
                             ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Brand</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ brandFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
                     </div>
                     <div className="col_50p">
-                      <div className="item_code d-flex justify-content-between">
-                        {state.locationFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  locationValue: {
-                                    keyType: "location",
-                                    keyId: e.target.value,
-                                    keyCount: state.locationValue.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state.locationValue.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state.location.map((item, index) => {
-                                return (
-                                  <option value={item.locationId} key={index}>
-                                    {item.location}
-                                  </option>
-                                );
-                              })}
-                            </select>
+                      {/* <div className="commonBlock d-flex justify-content-between"> */}
+                      {state?.modelNameFilter ? (
+                        <>
+                          <select
+                            className="selectBox text-capitalize"
+                            onChange={(e) =>
+                              setState({
+                                modelNameValue: {
+                                  keyType: "modelName",
+                                  keyId: e.target.value,
+                                  keyCount: state?.modelNameValue?.keyCount + 1,
+                                },
+                              })
+                            }
+                            value={state?.modelNameValue?.keyId}
+                          >
+                            <option value="">Select All</option>
+                            {state?.modelName?.map((item, index) => {
+                              return (
+                                <option value={item?.modelId} key={index}>
+                                  {item?.modelName}
+                                </option>
+                              );
+                            })}
+                          </select>
+                          <Image
+                            onClick={() => setState({ modelNameFilter: !state?.modelNameFilter })}
+                            className="cursor-pointer"
+                            src={filterIcon}
+                            width={15}
+                            height={15}
+                            alt="filter-icon"
+                          ></Image>
+                        </>
+                      ) : (
+                        <>
+                          <h5>Model Name</h5>
+                          <div>
                             <Image
-                              onClick={() => setState({ locationFilter: !state.locationFilter })}
+                              onClick={() => setState({ modelNameFilter: true })}
                               className="cursor-pointer"
                               src={filterIcon}
                               width={15}
                               height={15}
                               alt="filter-icon"
                             ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Location</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ locationFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="col_50p">
-                      <div className="commonBlock d-flex justify-content-between">
-                        {state?.modelNameFilter ? (
-                          <>
-                            <select
-                              className="selectBox text-capitalize"
-                              onChange={(e) =>
-                                setState({
-                                  modelNameValue: {
-                                    keyType: "modelName",
-                                    keyId: e.target.value,
-                                    keyCount: state?.modelNameValue?.keyCount + 1,
-                                  },
-                                })
-                              }
-                              value={state?.modelNameValue?.keyId}
-                            >
-                              <option value="">Select All</option>
-                              {state?.modelName?.map((item, index) => {
-                                return (
-                                  <option value={item?.modelId} key={index}>
-                                    {item?.modelName}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                            <Image
-                              onClick={() => setState({ modelNameFilter: !state?.modelNameFilter })}
-                              className="cursor-pointer"
-                              src={filterIcon}
-                              width={15}
-                              height={15}
-                              alt="filter-icon"
-                            ></Image>
-                          </>
-                        ) : (
-                          <>
-                            <h5>Model Name</h5>
-                            <div>
-                              <Image
-                                onClick={() => setState({ modelNameFilter: true })}
-                                className="cursor-pointer"
-                                src={filterIcon}
-                                width={15}
-                                height={15}
-                                alt="filter-icon"
-                              ></Image>
-                            </div>
-                          </>
-                        )}
-                      </div>
+                          </div>
+                        </>
+                      )}
+                      {/* </div> */}
                     </div>
                     <div className="col_50p">
                       <h5>Item Code</h5>
@@ -657,7 +776,7 @@ const TransferMaterialForm = () => {
                           <div className="col_50p">
                             <h6>{materialDetails?.category}</h6>
                           </div>
-                          <div className="col_50p">
+                          <div className="col_40p">
                             <h6>{materialDetails?.brand}</h6>
                           </div>{" "}
                           <div className="col_50p d-flex justify-content-center">
@@ -699,7 +818,7 @@ const TransferMaterialForm = () => {
                                 : materialDetails?.reamainingQuantity}
                             </h6>
                           </div>
-                          <div className="col_50p">
+                          {/* <div className="col_50p">
                             <div className="action_inventary_transfer">
                               <h6>
                                 <InputBox
@@ -712,6 +831,46 @@ const TransferMaterialForm = () => {
                                 />
                               </h6>
                             </div>
+                          </div> */}
+                          <div className="col_50p">
+                            <h6 className="action_wrraper">
+                              <div className="qty_add_sub_layout">
+                                <div
+                                  className="qty_decrement"
+                                  title="-"
+                                  onClick={() => {
+                                    handleDecrement(materialDetails._id);
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faCaretLeft} className="inc_dec_icon" />
+                                </div>
+                                <input
+                                  type="number"
+                                  min="0"
+                                  value={materialDetails?.quantity}
+                                  className="qty_input"
+                                  onChange={(e) => {
+                                    handleChange(
+                                      materialDetails?._id,
+                                      Number(e.target.value),
+                                      materialDetails
+                                    );
+                                  }}
+                                  onWheel={(e) => {
+                                    e.target.blur();
+                                  }}
+                                />
+                                <div
+                                  className="qty_increment"
+                                  title="+"
+                                  onClick={() => {
+                                    handleIncrement(materialDetails?._id, materialDetails);
+                                  }}
+                                >
+                                  <FontAwesomeIcon icon={faCaretRight} className="inc_dec_icon" />
+                                </div>
+                              </div>
+                            </h6>
                           </div>
                         </div>
                       ))}
@@ -724,6 +883,109 @@ const TransferMaterialForm = () => {
             </div>
           </div>
           {/* <button type="submit">send</button> */}
+          {/* second table start */}
+          <div className="form_list_layout_wrapper mt-3">
+            <div className="d-flex align-items-center justify-content-between py-2">
+              <p>List Preview</p>
+            </div>
+
+            {/* table  */}
+            <div className="table_wrapper my-3">
+              <div className="table_main">
+                {/* Rename the class name "pi_product_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
+                <div className="table_section pi_product_table employee_table">
+                  <div className="table_header">
+                    <div className="col_10p">
+                      <h5>Sr. No.</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Category</h5>
+                    </div>
+                    <div className="col_40p">
+                      <h5>Brand</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Location</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Model Name</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Item Code</h5>
+                    </div>
+                    <div className="col_50p">
+                      <h5>Serial No.</h5>
+                    </div>{" "}
+                    <div className="col_50p">
+                      <h5>Status</h5>
+                    </div>{" "}
+                    <div className="col_50p">
+                      <h5>Quantity</h5>
+                    </div>
+                    <div className="col_20p">
+                      <h5>Action</h5>
+                    </div>
+                  </div>
+                  {updatedProducts?.map((data, index) => {
+                    return (
+                      <div className="table_data" key={index}>
+                        <div className="col_10p">
+                          <h6>{index + 1}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.category}</h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>{data?.brand}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.location}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.modelId?.name ? data?.modelId?.name : "-"}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.itemCode ? data?.itemCode : "-"}</h6>
+                        </div>
+                        <div className="col_50p">
+                          <h6>{data?.serialNo ? data?.serialNo : "-"}</h6>
+                        </div>{" "}
+                        <div className="col_50p">
+                          <h6>{data?.status}</h6>
+                        </div>{" "}
+                        <div className="col_50p">
+                          <h6>{data?.reamainingQuantity === 0 ? "'" : data?.reamainingQuantity}</h6>
+                        </div>
+                        <div className="col_20p">
+                          <h6>
+                            {" "}
+                            {
+                              <FontAwesomeIcon
+                                icon={faTrash}
+                                onClick={() =>
+                                  setUpdatedProducts((pre) => pre.filter((ele, i) => i !== index))
+                                }
+                              />
+                            }{" "}
+                          </h6>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/*  buttons*/}
+            {/* <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+             
+              {params.get("type") !== "approval" && <Button type="submit" onClick={handleSubmit(onSubmit)} name={[undefined, null, ""]?.includes(params.get("poId")) ? "Create" : "Update"} className="button" />}
+              {(params.get("type") === "approval" && modalState.viewPrintBill === false) && <Button type="submit" onClick={handleSubmit(receivePaymentPo)} name={"Receive Payment"} className="button" />}
+              {(params.get("type") === "approval" && modalState.viewPrintBill) && <Button onClick={() => printBill()} name={"Print Bill"} className="button" />}
+              <Button type="submit" onClick={() => router.push("/dashboard/po-management")} name={"Cancel"} className="button" />
+
+            </div> */}
+          </div>
         </div>
       </form>
     </>

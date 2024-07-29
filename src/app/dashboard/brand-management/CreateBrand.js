@@ -44,7 +44,7 @@ function CreateBrand({ data }) {
           id: "",
         }))
         // setIsPageUpdated(true)
-        getBrandList()
+        getBrandList(currentPage,searchString)
 
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.info(response.data.message)

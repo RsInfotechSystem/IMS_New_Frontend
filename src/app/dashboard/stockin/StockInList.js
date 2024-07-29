@@ -20,6 +20,7 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { getLocations, getParameter } from "@/services/commonApis";
 import filterIcon from "../../../../public/images/filter.png";
 import InventoryView from "../inventory/InventoryView";
+import { formatDate } from "@/helper/formatDate";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -84,26 +85,31 @@ const StockInList = () => {
   const rack = watch("blockId");
   const _rackIdForPrtn = watch("rackId");
   const brandId = watch("brandId");
-  const handleCheckboxChange = (e) => {
-    const checkboxId = e.target.id;
 
+    const handleCheckboxChange = (e) => {
+    const checkboxId = e.target.id;
+    setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === stock?.length)))
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
+        // If the checkbox is already in the array, remove it
         return prevSelected.filter((id) => id !== checkboxId);
       } else {
+        // If the checkbox is not in the array, add it
         return [...prevSelected, checkboxId];
       }
     });
-  };
 
+  };
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
 
+    // Update the array of selected checkboxes based on the "Select All" checkbox
     setSelectedCheckboxes((prevSelected) =>
-      e.target.checked ? stock.map((stockDetails) => stockDetails._id) : []
+      e.target.checked ? stock.map((brandDetails) => brandDetails._id) : []
     );
   };
 
+  
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     categoryFilter: false,
     brandFilter: false,
@@ -837,6 +843,9 @@ const StockInList = () => {
               <div className="col_50p">
                 <h5>Status</h5>
               </div>
+              <div className="col_50p">
+                <h5>Stock In Date</h5>
+              </div>
               <div className="col_50p action_wrraper">
                 <h5 className="action_wrraper">Action</h5>
               </div>
@@ -920,6 +929,9 @@ const StockInList = () => {
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.status}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{formatDate(stockDetails?.createdAt)}</h6>
                     </div>
                     <div className="col_50p">
                       <h6 className="action_wrraper">

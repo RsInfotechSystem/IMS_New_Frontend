@@ -359,8 +359,6 @@ const UserManagement = () => {
             </div>} */}
 
             <div className="table_header">
-              <div className="payroll_table_non_scroll_section">
-              <div className="payroll_table_non_scroll_row">
               <div className="col_7p">
                 <input type="checkbox" className="form-check-input" onChange={(e) => handleSelectAllChange(e)}
                   checked={selectAllChecked} />
@@ -374,9 +372,6 @@ const UserManagement = () => {
               <div className="col_30p">
                 <h5>User Name</h5>
               </div>
-              </div>
-              </div>
-             
             
               <div className="col_15p">
                 <h5>Role Type</h5>
@@ -401,8 +396,6 @@ const UserManagement = () => {
               <>
             {user?.map((userDetails, index) => (
               <div className="table_data" key={index}>
-                <div className="payroll_table_non_scroll_section">
-                <div className="payroll_table_non_scroll_row">
                 <div className="col_7p">
                   <input
                     className="form-check-input"
@@ -420,8 +413,6 @@ const UserManagement = () => {
                 <div className="col_30p">
                   <h6>{userDetails?.name}</h6>
                 </div>
-                 </div>
-              </div>
                 <div className="col_15p">
                   <h6>{userDetails?.role}</h6>
                 </div>
@@ -510,7 +501,7 @@ const UserManagement = () => {
           pageCount={pageCount}
         />
       </div>
-      {modalStates?.modal && <CreateUser data={{ modalStates, setModalStates, CreateUser, locations, roleList, getUserList }} />}
+      {modalStates?.modal && <CreateUser data={{ modalStates, setModalStates, CreateUser, locations, roleList, getUserList, currentPage, searchString }} />}
     </>
   )
 }
