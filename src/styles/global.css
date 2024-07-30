@@ -21,8 +21,7 @@
   --white-color: #ffffff;
   --black_transparent: rgba(0, 0, 0, 0.686);
 }
-custom_button:hover
-.support-orange {
+custom_button:hover .support-orange {
   color: var(--orange_color) !important;
 }
 
@@ -699,7 +698,7 @@ div:where(.col_100p) {
   column-gap: 35px;
 }
 
-.image_preview_container{
+.image_preview_container {
 }
 .notification_icon_wrapper {
   position: relative;
@@ -1075,13 +1074,13 @@ div:where(.tab_active, .tab_inactive) {
   padding: 25px;
 }
 
-.password{
+.password {
   width: 220px;
   text-align: "center";
   position: relative;
 }
 
-.password h6{
+.password h6 {
   text-transform: none;
 }
 
@@ -1258,7 +1257,8 @@ div:where(.tab_active, .tab_inactive) {
 /* search styling end  */
 /* search btn wrapper styling  */
 .search_btn_wrapper {
-  height: 12%;
+  /* height: 12%; */
+  height: 8%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -4504,7 +4504,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 .general_po_table {
   min-width: 800px;
 }
-.sell_btn{
+.sell_btn {
   border: none;
   background-color: #79080a;
   color: white;
@@ -5277,4 +5277,3 @@ ul .appointment_letter_ul {
   font-weight: 600;
   color: var(--black_color_dark_shade);
 }
-

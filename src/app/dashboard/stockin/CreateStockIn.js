@@ -20,6 +20,7 @@ import Loader from "@/common-components/Loader";
 import { stockStatus } from "@/utilities/stock-status-array";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faAngleDown, faAnglesDown } from "@fortawesome/free-solid-svg-icons";
 
 const CreateStockIn = ({ data }) => {
   const { modalStates, setModalStates, setIsPageUpdated, locationsss, roleList, getStockList } =
@@ -282,14 +283,13 @@ const CreateStockIn = ({ data }) => {
         setValue("blockId", stockData?.blockId?._id);
         // setValue("partitionName", stockData?.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
         router.push("/login");
       } else {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
       }
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
-
+      toast.info(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
@@ -320,87 +320,84 @@ const CreateStockIn = ({ data }) => {
               <div className="row">
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Select Location *</label>
-                  <select
-                    name="locationId"
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                    {...register("locationId", {
-                      required: "locationId is required",
-                    })}
-                    disabled={modalStates.isView}
-                  >
-                    <option value="" className="text-secondary text-lowercase">
-                      Select Location
-                    </option>
-                    {locationList.map((ele, index) => {
-                      return (
-                        <option className="small text-capitalize" value={ele._id} key={index}>
-                          {" "}
-                          {ele.name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Select Block *</label>
-                  {/* <SelectBox
-                  options={blocks}
-                  firstOption={"Select Block"}
-                  displayName={"blockNo"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("blockId", {
-                      required: "Select Block",
-                    }),
-                  }}
-                  errors={errors.blockId}
-                /> */}
-                  <select
-                    disabled={modalStates.isView}
-                    name="blockId"
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                    {...register("blockId", {
-                      required: "blockNo is required",
-                    })}
-                  >
-                    <option value="" className="text-secondary text-lowercase">
-                      Select block
-                    </option>
-                    {blocks.map((ele, index) => {
-                      return (
-                        <option className="small text-capitalize" value={ele._id} key={index}>
-                          {" "}
-                          {ele.blockNo}
-                        </option>
-                      );
-                    })}
-                  </select>
-                </div>
-                {racks.length >= 1 && (
-                  <div className="col-lg-3 col-md-6 input_wrapper">
-                    <label>Select Rack *</label>
-
+                  <div className="position-relative">
                     <select
-                      disabled={modalStates.isView}
-                      {...register("rackId", {
-                        required: "Rack is required",
-                      })}
+                      name="locationId"
                       className="form-control custom_input"
                       style={{ width: "100%" }}
+                      {...register("locationId", {
+                        required: "locationId is required",
+                      })}
+                      disabled={modalStates.isView}
                     >
-                      <option value="">Select Rack</option>
-                      {racks.map((ele, index) => {
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {locationList.map((ele, index) => {
                         return (
-                          <option value={ele._id} key={index}>
+                          <option className="small text-capitalize" value={ele._id} key={index}>
                             {" "}
-                            {ele.rackName}
+                            {ele.name}
                           </option>
                         );
                       })}
                     </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-lg-3 col-md-6 input_wrapper">
+                  <label>Select Block *</label>
+                  <div className="position-relative">
+                    <select
+                      disabled={modalStates.isView}
+                      name="blockId"
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                      {...register("blockId", {
+                        required: "blockNo is required",
+                      })}
+                    >
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {blocks.map((ele, index) => {
+                        return (
+                          <option className="small text-capitalize" value={ele._id} key={index}>
+                            {" "}
+                            {ele.blockNo}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
+                </div>
+                {racks.length >= 1 && (
+                  <div className="col-lg-3 col-md-6 input_wrapper">
+                    <label>Select Rack *</label>{" "}
+                    <div className="position-relative">
+                      <select
+                        disabled={modalStates.isView}
+                        {...register("rackId", {
+                          required: "Rack is required",
+                        })}
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        {racks.map((ele, index) => {
+                          return (
+                            <option value={ele._id} key={index}>
+                              {" "}
+                              {ele.rackName}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
                     <div style={{ height: "5px" }}>
                       {errors.rackId && (
                         <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -413,24 +410,29 @@ const CreateStockIn = ({ data }) => {
                 {rackPartation?.length > 1 && (
                   <div className="col-lg-3 col-md-6 input_wrapper">
                     <label>Select Partation *</label>
-                    <select
-                      disabled={modalStates.isView}
-                      {...register("partitionName", {
-                        required: "Partation is required",
-                      })}
-                      className="form-control custom_input"
-                      style={{ width: "100%" }}
-                    >
-                      <option value="">Select Partation</option>
-                      {rackPartation?.map((ele, index) => {
-                        return (
-                          <option value={ele.partitionName} key={index}>
-                            {" "}
-                            {ele.partitionName}
-                          </option>
-                        );
-                      })}
-                    </select>
+                    <div className="position-relative">
+                      <select
+                        disabled={modalStates.isView}
+                        {...register("partitionName", {
+                          required: "Partation is required",
+                        })}
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                      >
+                        <option value=""></option>
+                        {rackPartation?.map((ele, index) => {
+                          return (
+                            <option value={ele.partitionName} key={index}>
+                              {" "}
+                              {ele.partitionName}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
                     <div style={{ height: "5px" }}>
                       {errors.partitionName && (
                         <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -442,27 +444,30 @@ const CreateStockIn = ({ data }) => {
                 )}
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>category Name *</label>
-                  <select
-                    disabled={modalStates.isView}
-                    // name="categoryId"
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                    {...register("categoryId", {
-                      required: "categoryId is required",
-                    })}
-                  >
-                    <option value="" className="text-secondary text-lowercase">
-                      Select Category*
-                    </option>
-                    {category.map((ele, index) => {
-                      return (
-                        <option value={ele.categoryId} key={index}>
-                          {" "}
-                          {ele.name}
-                        </option>
-                      );
-                    })}
-                  </select>
+                  <div className="position-relative">
+                    <select
+                      disabled={modalStates.isView}
+                      // name="categoryId"
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                      {...register("categoryId", {
+                        required: "categoryId is required",
+                      })}
+                    >
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {category.map((ele, index) => {
+                        return (
+                          <option value={ele.categoryId} key={index}>
+                            {" "}
+                            {ele.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
                   <div style={{ height: "5px" }}>
                     {errors.categoryId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -472,7 +477,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Brand/Make *</label>
+                  <label>Brand *</label>
                   {/* <SelectBox
                   options={brandMapData}
                   firstOption={"Select Brand"}
@@ -486,27 +491,30 @@ const CreateStockIn = ({ data }) => {
                   }}
                   errors={errors.brandId}
                 /> */}
-                  <select
-                    name="brandId"
-                    disabled={modalStates.isView}
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                    {...register("brandId", {
-                      required: "Brand is required",
-                    })}
-                  >
-                    <option value="" className="text-secondary text-lowercase">
-                      Select Brand
-                    </option>
-                    {brandsData?.map((ele, index) => {
-                      return (
-                        <option className="small text-capitalize" value={ele._id} key={index}>
-                          {" "}
-                          {ele.name}
-                        </option>
-                      );
-                    })}
-                  </select>
+                  <div className="position-relative">
+                    <select
+                      name="brandId"
+                      disabled={modalStates.isView}
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                      {...register("brandId", {
+                        required: "Brand is required",
+                      })}
+                    >
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {brandsData?.map((ele, index) => {
+                        return (
+                          <option className="small text-capitalize" value={ele._id} key={index}>
+                            {" "}
+                            {ele.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
                   <div style={{ height: "5px" }}>
                     {errors.brandId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -530,18 +538,23 @@ const CreateStockIn = ({ data }) => {
                   }}
                   errors={errors.brandId}
                 /> */}
-                  <select
-                    disabled={modalStates.isView}
-                    {...register("conditionType", {
-                      required: "condition is required",
-                    })}
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                  >
-                    <option value="">Select Condition</option>
-                    <option value="new">New</option>
-                    <option value="refurbished">Refurbished</option>
-                  </select>
+                  <div className="position-relative">
+                    <select
+                      disabled={modalStates.isView}
+                      {...register("conditionType", {
+                        required: "condition is required",
+                      })}
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                    >
+                      <option value=""></option>
+                      <option value="new">New</option>
+                      <option value="refurbished">Refurbished</option>
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
                   <div style={{ height: "5px" }}>
                     {errors.conditionType && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -551,26 +564,30 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Status *</label>
-
-                  <select
-                    disabled={modalStates.isView}
-                    {...register("status", {
-                      required: "Status is required",
-                    })}
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                  >
-                    <option value="">Select Status</option>
-                    {stockStatus.map((ele, index) => {
-                      return (
-                        <option value={ele} key={index}>
-                          {" "}
-                          {ele}
-                        </option>
-                      );
-                    })}
-                  </select>
+                  <label>Status*</label>
+                  <div className="position-relative">
+                    <select
+                      disabled={modalStates.isView}
+                      {...register("status", {
+                        required: "Status is required",
+                      })}
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                    >
+                      <option value=""></option>
+                      {stockStatus.map((ele, index) => {
+                        return (
+                          <option value={ele} key={index}>
+                            {" "}
+                            {ele}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
                   <div style={{ height: "5px" }}>
                     {errors.status && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -580,7 +597,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Serial No *</label>
+                  <label>Serial No</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{
@@ -592,7 +609,7 @@ const CreateStockIn = ({ data }) => {
                   />
                 </div>{" "}
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Quantity *</label>
+                  <label>Quantity*</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{
@@ -628,28 +645,32 @@ const CreateStockIn = ({ data }) => {
               </div> */}
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Model Name *</label>
-
-                  <select
-                    disabled={modalStates.isView}
-                    {...register("modelId", {
-                      required: "modelId is required",
-                    })}
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                  >
-                    <option value="">Model Name</option>
-                    {model.map((ele, index) => {
-                      return (
-                        <option
-                          value={ele._id}
-                          key={index}
-                          selected={ele._id === getValues("modelId")}
-                        >
-                          {ele.name}
-                        </option>
-                      );
-                    })}
-                  </select>
+                  <div className="position-relative">
+                    <select
+                      disabled={modalStates.isView}
+                      {...register("modelId", {
+                        required: "modelId is required",
+                      })}
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                    >
+                      <option value=""></option>
+                      {model.map((ele, index) => {
+                        return (
+                          <option
+                            value={ele._id}
+                            key={index}
+                            selected={ele._id === getValues("modelId")}
+                          >
+                            {ele.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
                   <div style={{ height: "5px" }}>
                     {errors.modelId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -659,7 +680,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Item Code *</label>
+                  <label>Item Code</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{
@@ -699,20 +720,27 @@ const CreateStockIn = ({ data }) => {
                   errors={errors.displayPrice}
                 />
               </div> */}
-                {parameter?.map((item, index) => (
-                  <React.Fragment key={index}>
-                    <div className="col-lg-3 col-md-6 input_wrapper">
-                      <label>{item}</label>
-                      <input
-                        disabled={modalStates.isView}
-                        type="text"
-                        {...register(`parameter[${item}]`)}
-                        className="form-control custom_input"
-                        // style={{ width: "100%", height: "31px" }}
-                      />
-                    </div>
-                  </React.Fragment>
-                ))}
+              </div>
+              <div className="row">
+                {parameter.length > 0 && (
+                  <>
+                    <h5 className="title">Add Parameters:</h5>
+                    {parameter?.map((item, index) => (
+                      <React.Fragment key={index}>
+                        <div className="col-lg-3 col-md-6 input_wrapper">
+                          <label>{item}</label>
+                          <InputBox
+                            disabled={modalStates.isView}
+                            type="text"
+                            {...register(`parameter[${item}]`)}
+                            // className="form-control custom_input"
+                            // style={{ width: "100%", height: "31px" }}
+                          />
+                        </div>
+                      </React.Fragment>
+                    ))}
+                  </>
+                )}
               </div>
               {/* </div> */}
               <div className="form_button_wrapper gap-2">
