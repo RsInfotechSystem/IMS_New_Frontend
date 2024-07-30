@@ -319,8 +319,7 @@ const DailyTask = () => {
                       width={15}
                       height={15}
                       alt="filter-icon"
-                    ></Image>hjjhjh
-                    <FontAwesomeIcon icon={faFilter} />
+                    ></Image>
                   </>
                 ) : (
                   <>
