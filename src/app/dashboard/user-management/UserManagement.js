@@ -305,6 +305,15 @@ const UserManagement = () => {
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
         <div className="tab_title">User Management</div>
+        <div className="pagination_wrapper">
+        <Pagination
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
+      </div>
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString}
@@ -492,15 +501,7 @@ const UserManagement = () => {
 
         </div>
       </div>
-      <div className="pagination_wrapper">
-        <Pagination
-          isPageUpdated={isPageUpdated}
-          setIsPageUpdated={setIsPageUpdated}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageCount={pageCount}
-        />
-      </div>
+      
       {modalStates?.modal && <CreateUser data={{ modalStates, setModalStates, CreateUser, locations, roleList, getUserList, currentPage, searchString }} />}
     </>
   )

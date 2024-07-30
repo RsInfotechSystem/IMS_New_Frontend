@@ -188,7 +188,14 @@ const BlockList = () => {
         />
       )}
       <div className="top_header">
-        <div className="tab_title">Blocks</div>
+        <div className="tab_title">Block Management</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -402,17 +409,11 @@ const BlockList = () => {
           </div>
         </div>
       </div>
-      {pageCount > 1 && (
+      {/* {pageCount > 1 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && (
         <CreateBlock data={{ modalStates, setModalStates, setIsPageUpdated }} />
       )}

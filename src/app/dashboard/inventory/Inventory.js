@@ -201,7 +201,14 @@ const Inventory = () => {
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
-        <div className="tab_title">Inventory</div>
+        <div className="tab_title">Inventory Look</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -381,17 +388,11 @@ const Inventory = () => {
           </div>
         </div>
       </div>
-      {pageCount > 1 && (
+      {/* {pageCount > 1 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && <InventoryView data={{ modalStates, setModalStates }} />}
     </>
   );

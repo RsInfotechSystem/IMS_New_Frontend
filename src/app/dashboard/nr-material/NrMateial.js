@@ -152,6 +152,13 @@ const NrMateial = () => {
             {loader && <Loader text="Fetching Data..." />}
             <div className="top_header">
                 <div className="tab_title">NR Material</div>
+                <Pagination
+                        isPageUpdated={isPageUpdated}
+                        setIsPageUpdated={setIsPageUpdated}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        pageCount={pageCount}
+                    />
             </div>
             <div className="search_btn_wrapper">
                 <Search
@@ -346,17 +353,11 @@ const NrMateial = () => {
                     </div>
                 </div>
             </div >
-            {pageCount > 1 && (
+            {/* {pageCount > 1 && (
                 <div className="pagination_wrapper">
-                    <Pagination
-                        isPageUpdated={isPageUpdated}
-                        setIsPageUpdated={setIsPageUpdated}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        pageCount={pageCount}
-                    />
+                    
                 </div>
-            )}
+            )} */}
 
         </>
     );

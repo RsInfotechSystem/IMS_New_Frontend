@@ -216,6 +216,13 @@ const Parameters = () => {
             )}
       <div className="top_header">
         <div className="tab_title">Parameters</div>
+        <Pagination
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -373,17 +380,11 @@ const Parameters = () => {
           </div>
         </div>
       </div>
-      {pageCount > 0 && (
+      {/* {pageCount > 0 && (
       <div className="pagination_wrapper">
-        <Pagination
-          isPageUpdated={isPageUpdated}
-          setIsPageUpdated={setIsPageUpdated}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageCount={pageCount}
-        />
+        
       </div>
-       )}
+       )} */}
       {modalStates?.modal && (
         <CreateParameter data={{ modalStates, setModalStates, setIsPageUpdated,getAllParameter }} />
       )}
