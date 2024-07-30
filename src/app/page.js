@@ -56,7 +56,7 @@ const Page = () => {
           </div>
           <div className="content">
             {/* <h3>Welcome to <br /> IMS</h3> */}
-            <h6 className='text-dark'>Powered By <a className='text-dark' href='https://www.rsinfotechsys.com/'>RSIS PVT.LTD.</a></h6>
+            <h6 className='text-dark'>Powered By <br></br> <a className='login_page_rsis' href='https://www.rsinfotechsys.com/'>R S Infotech System P.L.</a></h6>
           </div>
         </div>
         <div className="login_form_section">
