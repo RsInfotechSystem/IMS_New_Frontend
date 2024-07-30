@@ -48,17 +48,15 @@ const TransferMaterialList = () => {
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.warn(serverResponse.data.message);
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+        toast.info(serverResponse.data.message)
         router.push("/");
       } else {
         setMaterialList([]);
       }
       setLoader(false);
     } catch (error) {
-      //   Swal.fire({
-      //     text: error?.response?.data?.message || error.message,
-      //     icon: "warning",
-      //   });
+           toast.info(error?.response?.data?.message || error.message)
+
       toast.error(error?.response?.data?.message || error.message);
       setLoader(false);
     }
@@ -82,6 +80,13 @@ const TransferMaterialList = () => {
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
         <div className="tab_title">Transfer Material</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -207,17 +212,11 @@ const TransferMaterialList = () => {
           </div>
         </div>
       </div>
-      {pageCount > 1 && (
+      {/* {pageCount > 1 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && (
         <CreateTransferMaterial data={{ modalStates, setModalStates, setIsPageUpdated }} />
       )}

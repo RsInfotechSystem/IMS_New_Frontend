@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import Link from "next/link";
+import CreateTransferMaterial from "../transfer-material/CreateTrasferMaterial";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 const ReceiveMaterialList = () => {
   const router = useRouter();
@@ -75,6 +76,13 @@ const ReceiveMaterialList = () => {
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
         <div className="tab_title">Receive Material</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -160,17 +168,11 @@ const ReceiveMaterialList = () => {
           </div>
         </div>
       </div>
-      {pageCount > 1 && (
+      {/* {pageCount > 1 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && (
         <CreateTransferMaterial data={{ modalStates, setModalStates, setIsPageUpdated }} />
       )}

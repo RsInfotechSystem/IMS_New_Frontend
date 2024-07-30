@@ -46,7 +46,6 @@ const RoleList = () => {
         setRoles([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse?.data?.message);
-        // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
         router.push("/");
         setLoader(false);
       } else {
@@ -54,7 +53,7 @@ const RoleList = () => {
       }
       setLoader(false);
     } catch (error) {
-      toast.error(error?.message);
+      toast.info(error?.response?.data?.message || error.message);
       // Swal.fire({
       //   text: error?.response?.data?.message || error.message,
       //   icon: "warning",
@@ -139,7 +138,14 @@ const RoleList = () => {
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
-        <div className="tab_title">Roles</div>
+        <div className="tab_title">Role Management</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -310,17 +316,11 @@ const RoleList = () => {
           </div>
         </div>
       </div>
-      {pageCount > 0 && (
+      {/* {pageCount > 0 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && (
         <CreateRole
           data={{

@@ -132,6 +132,13 @@ const SalesOrderList = () => {
       {console.log(modalState?.data, "modalState?.data")}
       <div className="top_header">
         <div className="tab_title">Sales Order List</div>
+        <Pagination
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -304,15 +311,9 @@ const SalesOrderList = () => {
           </div>
         </div>
       </div>
-      <div className="pagination_wrapper">
-        <Pagination
-          isPageUpdated={isPageUpdated}
-          setIsPageUpdated={setIsPageUpdated}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageCount={pageCount}
-        />
-      </div>
+      {/* <div className="pagination_wrapper">
+        
+      </div> */}
     </>
   );
 };

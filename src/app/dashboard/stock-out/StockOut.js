@@ -110,19 +110,17 @@ const StockOut = () => {
                     setCurrentPage(1);
                 }
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
-                Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+                toast.info(serverResponse.data.message)
                 router.push("/");
                 setLoader(false);
             } else {
-                // Swal.fire({ text: serverResponse.data.message, icon: "warning" });
+                toast.info(serverResponse.data.message)
                 setMaterial([]);
             }
             setLoader(false);
         } catch (error) {
-            Swal.fire({
-                text: error?.response?.data?.message || error.message,
-                icon: "warning",
-            });
+                        toast.info(error?.response?.data?.message || error.message)
+
             setLoader(false);
         }
     }
@@ -152,6 +150,13 @@ const StockOut = () => {
             {/* top header  */}
             <div className="top_header">
                 <div className="tab_title">Stock Out</div>
+                <Pagination
+                    isPageUpdated={isPageUpdated}
+                    setIsPageUpdated={setIsPageUpdated}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    pageCount={pageCount}
+                />
             </div>
             <div className="search_btn_wrapper">
                 <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -258,15 +263,9 @@ const StockOut = () => {
 
                 </div>
             </div >
-            <div className="pagination_wrapper">
-                <Pagination
-                    isPageUpdated={isPageUpdated}
-                    setIsPageUpdated={setIsPageUpdated}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    pageCount={pageCount}
-                />
-            </div>
+            {/* <div className="pagination_wrapper">
+                
+            </div> */}
         </>
     )
 }

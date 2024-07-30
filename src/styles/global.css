@@ -1274,18 +1274,18 @@ div:where(.tab_active, .tab_inactive) {
 
 /* search btn wrapper styling end */
 /* pagination */
-.pagination_wrapper {
+/* .pagination_wrapper {
   width: 100%;
   display: grid;
   place-items: center;
   height: 7%;
   padding-top: 10px;
-}
+} */
 
 .pagination {
   display: flex;
   align-items: center;
-  margin: auto;
+  /* margin: auto; */
   gap: 5px;
   margin-left: auto;
 }

@@ -124,7 +124,7 @@ const CreatePo = () => {
         setStock(prevStock => prevStock.map(product => {
             if (product._id === id) {
                 if (product.reamainingQuantity === 0) {
-                    Swal.fire('Error', `Cannot add more, remaining quantity is 0.`, 'warning');
+                    toast.info("Cannot add more, remaining quantity is 0.");
                     return product;
                 } else if (product.reamainingQuantity === product.quantity) {
                     return { ...product, quantity: product.reamainingQuantity };
@@ -151,7 +151,7 @@ const CreatePo = () => {
                 });
             } else {
                 if (materialDetails.reamainingQuantity === 0) {
-                    Swal.fire('Error', `Cannot add more, remaining quantity is 0.`, 'warning');
+                    toast.info(`Cannot add more, remaining quantity is 0.`);
                     return pre;
                 } else {
                     return [...pre, { ...materialDetails, quantity: 1 }];
@@ -184,10 +184,10 @@ const CreatePo = () => {
         setStock(prevStock => prevStock.map(product => {
             if (product._id === id) {
                 if (product.reamainingQuantity === 0) {
-                    Swal.fire('Error', `Cannot add more, remaining quantity is 0.`, 'error');
+                    toast.info("Cannot add more, remaining quantity is 0.");
                     return product;
                 } else if (product.reamainingQuantity < value) {
-                    Swal.fire('Error', `Cannot add more than ${product.reamainingQuantity}.`, 'warning');
+                    toast.info(`Cannot add more than ${product.reamainingQuantity}.`);
                     return product;
                 } else {
                     return { ...product, quantity: value };
@@ -202,7 +202,7 @@ const CreatePo = () => {
                 return pre.map(ele => {
                     if (ele._id === id) {
                         if (ele.reamainingQuantity < value) {
-                            Swal.fire('Error', `Cannot add more than ${ele.reamainingQuantity}.`, 'warning');
+                            toast.info(`Cannot add more than ${ele.reamainingQuantity}.`);
                             return ele;
                         } else {
                             return { ...ele, quantity: value };
@@ -213,7 +213,7 @@ const CreatePo = () => {
                 }).filter(ele => ele.quantity > 0);
             } else {
                 if (materialDetails.reamainingQuantity === 0) {
-                    Swal.fire('Error', `Cannot add more of ${materialDetails.name}, remaining quantity is 0.`, 'warning');
+                    toast.info(`Cannot add more of ${materialDetails.name}, remaining quantity is 0.`);
                     return pre;
                 } else {
                     return [...pre, { ...materialDetails, quantity: value }];
