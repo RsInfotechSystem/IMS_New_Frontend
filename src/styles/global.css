@@ -26,6 +26,19 @@ custom_button:hover
   color: var(--orange_color) !important;
 }
 
+.custom_button_read {
+  width: 80px;
+  /* background-color: var(--green_color); */
+  /* padding: 0.3rem; */
+  border-radius: 4px;
+  font-weight: 800;
+  color: #000000;
+  cursor: pointer;
+  border: none !important;
+  transition: 0.3s;
+  font-size: 12px;
+}
+
 .support-red {
   color: var(--red_color) !important;
 }
