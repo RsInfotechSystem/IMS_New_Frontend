@@ -140,9 +140,9 @@ const ReceiveMaterialDetails = () => {
               <div className="col_30p">
                 <h5>Quantity</h5>
               </div>
-              <div className="col_30p">
+              {/* <div className="col_30p">
                 <h5>Remaning Quantity</h5>
-              </div>
+              </div> */}
               <div className="col_30p">
                 <h5>Status</h5>
               </div>
@@ -180,9 +180,9 @@ const ReceiveMaterialDetails = () => {
                       <div className="col_30p">
                         <h6>{transferItem?.quantity}</h6>
                       </div>
-                      <div className="col_30p">
+                      {/* <div className="col_30p">
                         <h6>{transferItem?.reamainingQuantity}</h6>
-                      </div>
+                      </div> */}
                       <div className="col_30p">
                         <h6>{transferItem?.storeStatus}</h6>
                       </div>
