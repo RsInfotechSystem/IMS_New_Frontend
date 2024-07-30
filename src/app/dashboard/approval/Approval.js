@@ -21,7 +21,7 @@ const Approval = () => {
   const [loader, setLoader] = useState(false);
   const [material, setMaterial] = useState([]);
   const [trasferMaterial, setTrasferMaterial] = useState([]);
-
+  const [activeTab, setActiveTab] = useState("shift");
   const [searchString, setSearchString] = useState("");
   const [timeoutId, setTimeoutId] = useState();
   const [activeButton, setActiveButton] = useState("transferList");
@@ -213,9 +213,11 @@ const Approval = () => {
     if (buttonName === "transferList") {
       getMaterialForApproval({ currentPage, searchString, isFirstCall: true });
       setState({ isShowSellList: true });
+      setActiveTab("shift");
     } else {
       approveTransferMaterial({ currentPage, searchString });
       setState({ isShowSellList: false });
+      setActiveTab("attendance")
     }
   };
 
@@ -346,14 +348,21 @@ const Approval = () => {
           placeholder={"Search"}
         />
         <div className="buttons_wrapper">
-          <CustomBtn
-            name={"Sell List"}
+          <div
+            className="tab_btn"
+            // name={"Sell List"}
             onClick={() => handleClick("transferList")}
-          />
-          <CustomBtn
+            style={{
+              backgroundColor:
+                activeTab == "shift" ? "#184965" : "#D0D3D9",
+            }}
+          >Sell List</div>
+          <div
+            className="tab_btn"
             name={"Transfer List"}
             onClick={() => handleClick("anotherButton")}
-          />
+            style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#D0D3D9", }}
+          >Transfer List</div>
         </div>
       </div>
 

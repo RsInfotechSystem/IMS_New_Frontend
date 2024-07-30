@@ -62,7 +62,7 @@ function CreateUser({ data }) {
 
     //update department
     const updateExistingUser = async (values) => {
-        if ( selectedLocationId.length<=0) {
+        if (selectedLocationId.length <= 0) {
             // setValidationMessage('Please select at least one location.');
             toast.info("Please select at least one location.")
             return
@@ -71,46 +71,46 @@ function CreateUser({ data }) {
         //     setValidationMessage('Please select at least one location.');
         //     return
         // } 
-            try {
-                const dataToSend = {
-                    name: values.name,
-                    email: values.email,
-                    mobile: values.mobile,
-                    password: values.password,
-                    userId: modalStates?.id,
-                    roleId: values.role,
-                    // locationId: values.locationId,
-                    locationId: selectedLocationId.length>=1? selectedLocationId :defaultLocation.map((item)=>item._id) ,
-                }
+        try {
+            const dataToSend = {
+                name: values.name,
+                email: values.email,
+                mobile: values.mobile,
+                password: values.password,
+                userId: modalStates?.id,
+                roleId: values.role,
+                // locationId: values.locationId,
+                locationId: selectedLocationId.length >= 1 ? selectedLocationId : defaultLocation.map((item) => item._id),
+            }
 
-                setButtonLoader(true);
-                const serverResponse = await communication.updateUser(dataToSend);
-                if (serverResponse?.data?.status === "SUCCESS") {
-                    setButtonLoader(false);
-                    setModalStates((prev) => ({ ...prev, modal: false }));
-                    // setIsPageUpdated((prev) => !prev);
-                    getUserList();
-
-                    toast.success(serverResponse?.data?.message, {
-                        autoClose: 1500 // 1.5 seconds
-                    })
-                } else if (serverResponse?.data?.status === "JWT_INVALID") {
-                    toast.info(serverResponse?.data?.message, {
-                        autoClose: 1500 // 1.5 seconds
-                    });
-                    router.push("/");
-                } else {
-                    setButtonLoader(false);
-                    toast.info(serverResponse?.data?.message, {
-                        autoClose: 1500 // 1.5 seconds
-                    })
-                }
-            } catch (error) {
+            setButtonLoader(true);
+            const serverResponse = await communication.updateUser(dataToSend);
+            if (serverResponse?.data?.status === "SUCCESS") {
                 setButtonLoader(false);
-                toast.error(error.message, {
+                setModalStates((prev) => ({ ...prev, modal: false }));
+                // setIsPageUpdated((prev) => !prev);
+                getUserList();
+
+                toast.success(serverResponse?.data?.message, {
+                    autoClose: 1500 // 1.5 seconds
+                })
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse?.data?.message, {
+                    autoClose: 1500 // 1.5 seconds
+                });
+                router.push("/");
+            } else {
+                setButtonLoader(false);
+                toast.info(serverResponse?.data?.message, {
                     autoClose: 1500 // 1.5 seconds
                 })
             }
+        } catch (error) {
+            setButtonLoader(false);
+            toast.error(error.message, {
+                autoClose: 1500 // 1.5 seconds
+            })
+        }
     }
 
     useEffect(() => {
@@ -174,10 +174,10 @@ function CreateUser({ data }) {
         // if (selectedOptions?.length === 0) {
         //     setValidationMessage('Please select at least one location.');
         // } else {
-            setValidationMessage('');
-            setSelectedLocation(selectedOptions);
-            const selectedIds = selectedOptions?.map(option => option?._id);
-            setSelectedLocationId(selectedIds);
+        setValidationMessage('');
+        setSelectedLocation(selectedOptions);
+        const selectedIds = selectedOptions?.map(option => option?._id);
+        setSelectedLocationId(selectedIds);
         // }
     };
 

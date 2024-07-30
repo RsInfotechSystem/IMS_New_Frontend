@@ -44,7 +44,7 @@ const Report = () => {
                     </div>
 
                     <div className="tab_btn" onClick={() => { setActiveTab("attendance"); }}
-                        style={{ backgroundColor: activeTab == "attendance" ? "#79080a" : "#D0D3D9", }} >
+                        style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#D0D3D9", }} >
                         Sell Report
                     </div>
 
