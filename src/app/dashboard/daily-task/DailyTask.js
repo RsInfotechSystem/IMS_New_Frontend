@@ -218,6 +218,13 @@ const DailyTask = () => {
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
         <div className="tab_title">Daily Task</div>
+        <Pagination
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -621,15 +628,9 @@ const DailyTask = () => {
           </div>
         </div>
       </div>
-      <div className="pagination_wrapper">
-        <Pagination
-          isPageUpdated={isPageUpdated}
-          setIsPageUpdated={setIsPageUpdated}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageCount={pageCount}
-        />
-      </div>
+      {/* <div className="pagination_wrapper">
+        
+      </div> */}
       {modalStates?.modal && <ReturnMaterial data={{ modalStates, setModalStates }} />}
     </>
   );

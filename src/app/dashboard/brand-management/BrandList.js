@@ -133,7 +133,14 @@ const BrandList = () => {
         />
       }
       <div className="top_header">
-        <div className="tab_title">Brands</div>
+        <div className="tab_title">Brand Management</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -281,18 +288,12 @@ const BrandList = () => {
           </div>
         </div>
       </div >
-      {pageCount > 0 && (
+      {/* {pageCount > 0 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
       )
-      }
+      } */}
       {
         modalStates?.modal && (
           <CreateBrand data={{ modalStates, setModalStates, setIsPageUpdated,getBrandList, searchString, currentPage}} />

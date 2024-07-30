@@ -544,6 +544,13 @@ const StockInList = () => {
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
         <div className="tab_title">Stock In</div>
+        <Pagination
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -1010,15 +1017,7 @@ const StockInList = () => {
           </div>
         </div>
       </div>
-      <div className="pagination_wrapper">
-        <Pagination
-          isPageUpdated={isPageUpdated}
-          setIsPageUpdated={setIsPageUpdated}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageCount={pageCount}
-        />
-      </div>
+    
       {modalStates?.modal && (
         <CreateStockIn
           data={{ modalStates, setModalStates, CreateStockIn, locations, getStockList }}

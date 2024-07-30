@@ -158,6 +158,13 @@ const Product = () => {
       )}
       <div className="top_header">
         <div className="tab_title">Model Details</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -335,17 +342,11 @@ const Product = () => {
           </div>
         </div>
       </div>
-      {pageCount > 0 && (
+      {/* {pageCount > 0 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && (
         <CreateProduct data={{ modalStates, setModalStates, getProductList }} />
       )}

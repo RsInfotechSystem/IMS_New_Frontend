@@ -100,7 +100,16 @@ const Location = () => {
                 />
             }
             <div className="top_header">
-                <div className="tab_title">Location</div>
+                <div className="tab_title">Location Management</div>
+                <div className="pagination_wrapper">
+                <Pagination
+                    isPageUpdated={isPageUpdated}
+                    setIsPageUpdated={setIsPageUpdated}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    pageCount={pageCount}
+                />
+            </div>
             </div>
             <div className="search_btn_wrapper">
                 <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -212,15 +221,7 @@ const Location = () => {
 
                 </div>
             </div>
-            <div className="pagination_wrapper">
-                <Pagination
-                    isPageUpdated={isPageUpdated}
-                    setIsPageUpdated={setIsPageUpdated}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    pageCount={pageCount}
-                />
-            </div>
+            
             {modalStates?.modal && <CreateLocation data={{ modalStates, setModalStates, getLocation, }} />}
 
         </>
