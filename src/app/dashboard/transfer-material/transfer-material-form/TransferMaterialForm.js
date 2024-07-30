@@ -63,7 +63,7 @@ const TransferMaterialForm = () => {
   const [fromLocation, setFromLocation] = useState({
     locationValue: { keyType: "", keyId: "", keyCount: 0 },
   });
-  const transferForm = async (values) => {
+  const onSubmit = async (values) => {
     // console.log("Form submitted with values: ", values);
     try {
       setLoader(true);
@@ -71,27 +71,31 @@ const TransferMaterialForm = () => {
       // console.log("rrrrrrrrrrrrrrrrr>>>>>dd", invalidQuantities);
       // const invalidQuantities = selectedList.filter((id) => !quantities[id]);
 
-      if (invalidQuantities.length < 0) {
-        toast.warn("Please provide quantity for all selected materials.");
-        setLoader(false);
-        return;
-      }
-      const selectedMaterials = selectedList.map((id) => ({
-        id,
-        quantity: quantities[id],
-      }));
+      // if (invalidQuantities.length < 0) {
+      //   toast.warn("Please provide quantity for all selected materials.");
+      //   setLoader(false);
+      //   return;
+      // }
+      // const selectedMaterials = selectedList.map((id) => ({
+      //   id,
+      //   quantity: quantities[id],
+      // }));
       if (values.fromLocation == values.toLocation) {
         toast.warn("From location and To location can not be same.");
         setLoader(false);
         return;
       }
-      if (selectedMaterials.length == 0) {
-        toast.warn("Please select one material");
-        setLoader(false);
-        return;
-      }
+      // if (selectedMaterials.length == 0) {
+      //   toast.warn("Please select one material");
+      //   setLoader(false);
+      //   return;
+      // }
       const payload = {
-        materialIds: selectedMaterials,
+        materialIds: updatedProducts.map((product) => ({
+          id: product._id,
+          quantity: product.quantity,
+        })),
+        // materialIds: selectedMaterials,
         fromLocation: values.fromLocation,
         toLocation: values.toLocation,
       };
@@ -144,6 +148,7 @@ const TransferMaterialForm = () => {
     brandValue,
     locationValue,
     isFirstCall,
+    initialItem = [],
   } = {}) {
     try {
       setLoader(true);
@@ -161,7 +166,15 @@ const TransferMaterialForm = () => {
       // console.log(categoryValue, brandValue, "rr");
       const serverResponse = await communication.getInventoryMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        setMaterial(serverResponse?.data.stock.filter((item) => item.reamainingQuantity > 0));
+        const updatedStock = serverResponse?.data?.stock?.map((item) => ({
+          ...item,
+          quantity:
+            initialItem.length > 0
+              ? initialItem?.find((ele) => ele._id === item._id)?.quantity ?? 0
+              : updatedProducts?.find((ele) => ele._id === item._id)?.quantity ?? 0,
+        }));
+        setMaterial(updatedStock);
+        // setMaterial(serverResponse?.data.stock.filter((item) => item.reamainingQuantity > 0));
         setPageCount(serverResponse?.data?.totalPages);
         setLoader(false);
         if (isFirstCall) {
@@ -209,17 +222,14 @@ const TransferMaterialForm = () => {
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.warn(serverResponse.data.message);
-        toast.info(serverResponse.data.message)
         router.push("/");
       } else {
         toast.warn(serverResponse.data.message);
-        toast.info(serverResponse.data.message)
         setMaterial([]);
       }
       setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-           toast.info(error?.response?.data?.message || error.message)
 
       setLoader(false);
     }
@@ -282,11 +292,12 @@ const TransferMaterialForm = () => {
     }));
   };
   const handleIncrement = (id, materialDetails) => {
-    setStock((prevStock) =>
+    setMaterial((prevStock) =>
       prevStock.map((product) => {
         if (product._id === id) {
           if (product.reamainingQuantity === 0) {
-            Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
+            toast.warn("Cannot add more, remaining quantity is 0.");
+            // Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
             return product;
           } else if (product.reamainingQuantity === product.quantity) {
             return { ...product, quantity: product.reamainingQuantity };
@@ -314,7 +325,8 @@ const TransferMaterialForm = () => {
         });
       } else {
         if (materialDetails.reamainingQuantity === 0) {
-          Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
+          toast.warn("Cannot add more, remaining quantity is 0.");
+          // Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "warning");
           return pre;
         } else {
           return [...pre, { ...materialDetails, quantity: 1 }];
@@ -323,7 +335,7 @@ const TransferMaterialForm = () => {
     });
   };
   const handleDecrement = (id) => {
-    setStock((prevStock) =>
+    setMaterial((prevStock) =>
       prevStock.map((product) => {
         if (product._id === id) {
           return { ...product, quantity: product.quantity <= 1 ? 0 : product.quantity - 1 };
@@ -348,14 +360,16 @@ const TransferMaterialForm = () => {
     );
   };
   const handleChange = (id, value, materialDetails) => {
-    setStock((prevStock) =>
+    setMaterial((prevStock) =>
       prevStock.map((product) => {
         if (product._id === id) {
           if (product.reamainingQuantity === 0) {
-            Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "error");
+            toast.warn("Cannot add more, remaining quantity is 0.");
+            // Swal.fire("Error", `Cannot add more, remaining quantity is 0.`, "error");
             return product;
           } else if (product.reamainingQuantity < value) {
-            Swal.fire("Error", `Cannot add more than ${product.reamainingQuantity}.`, "warning");
+            toast.warn(`Cannot add more than ${product.reamainingQuantity}.`);
+            // Swal.fire("Error", `Cannot add more than ${product.reamainingQuantity}.`, "warning");
             return product;
           } else {
             return { ...product, quantity: value };
@@ -384,11 +398,12 @@ const TransferMaterialForm = () => {
           .filter((ele) => ele.quantity > 0);
       } else {
         if (materialDetails.reamainingQuantity === 0) {
-          Swal.fire(
-            "Error",
-            `Cannot add more of ${materialDetails.name}, remaining quantity is 0.`,
-            "warning"
-          );
+          toast.warn(`Cannot add more of ${materialDetails.name}, remaining quantity is 0.`);
+          // Swal.fire(
+          //   "Error",
+          //   `Cannot add more of ${materialDetails.name}, remaining quantity is 0.`,
+          //   "warning"
+          // );
           return pre;
         } else {
           return [...pre, { ...materialDetails, quantity: value }];
@@ -404,16 +419,16 @@ const TransferMaterialForm = () => {
   useEffect(() => {
     getStatusWiseMaterialList({ page: currentPage, searchString, isFirstCall: true });
   }, [isPageUpdated]);
-  console.log(errors, "rrrrrrrr  eeeeeee");
+  // console.log(errors, "rrrrrrrr  eeeeeee");
   return (
     <>
       {loader && <Loader text={"Loading..."} />}
-      <form onSubmit={handleSubmit(transferForm)}>
+      <form>
         <div className="top_header">
           <div className="tab_title">Transfer Material Form</div>
           <div className="search_btn_wrapper">
             <div className="buttons_wrapper">
-              <CustomBtn
+              {/* <CustomBtn
                 name={"Send"}
                 type="submit"
                 svg={
@@ -436,16 +451,16 @@ const TransferMaterialForm = () => {
                     />
                   </svg>
                 }
-              />
+              /> */}
               {/* <button onClick={handleSubmit((value) => transferForm(value))}>Send</button> */}
               {/* <button type="submit">send</button> */}
 
-              <CustomBtn
+              {/* <CustomBtn
                 name={"back"}
                 onClick={() => {
                   router.back();
                 }}
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -509,7 +524,7 @@ const TransferMaterialForm = () => {
                 {/* Rename the class name "pi_product_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
                 <div className="table_section pi_product_table" style={{ minWidth: "2000px" }}>
                   <div className="table_header">
-                    <div className="col_20p">
+                    {/* <div className="col_20p">
                       {" "}
                       <div className="check_box">
                         <input
@@ -520,7 +535,7 @@ const TransferMaterialForm = () => {
                           checked={selectAllCheckedStock}
                         />
                       </div>
-                    </div>
+                    </div> */}
                     <div className="col_10p">
                       <h5>Sr. No.</h5>
                     </div>
@@ -761,7 +776,7 @@ const TransferMaterialForm = () => {
                     <>
                       {material?.map((materialDetails, index) => (
                         <div className="table_data" key={index}>
-                          <div className="col_20p">
+                          {/* <div className="col_20p">
                             <div className="check_box">
                               <input
                                 type="checkbox"
@@ -769,7 +784,7 @@ const TransferMaterialForm = () => {
                                 checked={selectedList.includes(materialDetails._id)}
                               />
                             </div>
-                          </div>
+                          </div> */}
                           <div className="col_10p">
                             <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                           </div>
@@ -954,7 +969,8 @@ const TransferMaterialForm = () => {
                           <h6>{data?.status}</h6>
                         </div>{" "}
                         <div className="col_50p">
-                          <h6>{data?.reamainingQuantity === 0 ? "'" : data?.reamainingQuantity}</h6>
+                          <h6>{data?.quantity}</h6>
+                          {/* <h6>{data?.reamainingQuantity === 0 ? "'" : data?.reamainingQuantity}</h6> */}
                         </div>
                         <div className="col_20p">
                           <h6>
@@ -977,14 +993,24 @@ const TransferMaterialForm = () => {
             </div>
 
             {/*  buttons*/}
-            {/* <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-             
-              {params.get("type") !== "approval" && <Button type="submit" onClick={handleSubmit(onSubmit)} name={[undefined, null, ""]?.includes(params.get("poId")) ? "Create" : "Update"} className="button" />}
-              {(params.get("type") === "approval" && modalState.viewPrintBill === false) && <Button type="submit" onClick={handleSubmit(receivePaymentPo)} name={"Receive Payment"} className="button" />}
-              {(params.get("type") === "approval" && modalState.viewPrintBill) && <Button onClick={() => printBill()} name={"Print Bill"} className="button" />}
-              <Button type="submit" onClick={() => router.push("/dashboard/po-management")} name={"Cancel"} className="button" />
-
-            </div> */}
+            <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+              {params.get("type") !== "approval" && (
+                <Button
+                  type="submit"
+                  onClick={handleSubmit(onSubmit)}
+                  name={[undefined, null, ""]?.includes(params.get("poId")) ? "Transfer" : "Update"}
+                  className="button"
+                />
+              )}
+              {/* {(params.get("type") === "approval" && modalState.viewPrintBill === false) && <Button type="submit" onClick={handleSubmit(receivePaymentPo)} name={"Receive Payment"} className="button" />} */}
+              {/* {(params.get("type") === "approval" && modalState.viewPrintBill) && <Button onClick={() => printBill()} name={"Print Bill"} className="button" />} */}
+              <Button
+                type="submit"
+                onClick={() => router.push("/dashboard/transfer-material")}
+                name={"Cancel"}
+                className="button"
+              />
+            </div>
           </div>
         </div>
       </form>
