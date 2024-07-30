@@ -580,7 +580,7 @@ const StockInList = () => {
       </div>
       {/* table  */}
       <div className="table_wrapper ">
-        <div className="table_main" style={{ width: "1500px" }}>
+        <div className="table_main" style={{ minWidth: "2100px" }}>
           {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
           <div className="table_section ">
             {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">

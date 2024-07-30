@@ -304,10 +304,10 @@ const AssignMaterial = () => {
         toast.warn("Please Select Technician");
         return;
       }
-      if (output.length <= 0) {
-        toast.warn("Please Select At least one material");
-        return;
-      }
+      // if (output.length <= 0) {
+      //   toast.warn("Please Select At least one material");
+      //   return;
+      // }
       setLoader(true);
       let payload = {
         materialDetails: output,
@@ -628,7 +628,7 @@ const AssignMaterial = () => {
               <div className="row">
                 <div className="col-12 mb-2">
                   <div className="table_wrapper" style={{ height: "95%" }}>
-                    <div className="table_main">
+                    <div className="table_main" style={{ minWidth: "1500px" }}>
                       <div className="table_section employee_table">
                         {/* <div className="table_container"> */}
                         <div className="table_header">
@@ -669,65 +669,81 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {material.map((materialData, index) => (
-                          <div className="table_data" key={index}>
-                            <div className="col_20p">
-                              {" "}
-                              <div className="check_box">
-                                <input
-                                  type="checkbox"
-                                  id={materialData._id}
-                                  onChange={(e) => handleCheckboxChange(e, materialData)}
-                                  checked={selectedList.some(
-                                    (item) => item._id === materialData._id
-                                  )}
-                                />
+                        {material.length > 0 ? (
+                          <>
+                            {" "}
+                            {material.map((materialData, index) => (
+                              <div className="table_data" key={index}>
+                                <div className="col_20p">
+                                  {" "}
+                                  <div className="check_box">
+                                    <input
+                                      type="checkbox"
+                                      id={materialData._id}
+                                      onChange={(e) => handleCheckboxChange(e, materialData)}
+                                      checked={selectedList.some(
+                                        (item) => item._id === materialData._id
+                                      )}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{index + 1}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.locationId.name}</h6>
+                                </div>{" "}
+                                <div className="col_20p">
+                                  <h6>{materialData.blockId.blockNo}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>
+                                    {materialData?.rackId.rackName
+                                      ? materialData?.rackId.rackName
+                                      : "-"}
+                                  </h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.serialNo}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.modelId?.name}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.categoryId.name}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.reamainingQuantity}</h6>
+                                </div>
                               </div>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{index + 1}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.locationId.name}</h6>
-                            </div>{" "}
-                            <div className="col_20p">
-                              <h6>{materialData.blockId.blockNo}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>
-                                {materialData?.rackId.rackName
-                                  ? materialData?.rackId.rackName
-                                  : "-"}
-                              </h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.serialNo}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.modelId?.name}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.categoryId.name}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.reamainingQuantity}</h6>
-                            </div>
-                          </div>
-                        ))}
+                            ))}
+                          </>
+                        ) : (
+                          <p className="no_data">Data Not Available</p>
+                        )}
+
                         {/* </div> */}
                         {/* </div> */}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="col-12 mb-2 mt-4" style={{ height: "49dvh" }}>
-                  <div className="table_wrapper">
-                    <div className="table_main">
+                <div className="col-12 mb-2 mt-4">
+                  <div className="table_wrapper" style={{ height: "95%" }}>
+                    <div className="table_main" style={{ minWidth: "1500px" }}>
                       <div className="table_section employee_table">
                         <div className="table_header">
-                          <div className="col_8p">
-                            <h5></h5>
-                          </div>
+                          {/* <div className="col_20p">
+                            <div className="check_box">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id="selectAllCheckbox"
+                                onChange={(e) => handleSelectAllChange(e)}
+                                checked={selectAllChecked}
+                              />
+                            </div>
+                          </div> */}
                           <div className="col_20p">
                             <h5>Sr. No.</h5>
                           </div>
@@ -766,101 +782,109 @@ const AssignMaterial = () => {
                           </div>{" "} */}
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {selectedList.map((materialData, index) => (
-                          <div className="table_data" key={index}>
-                            <div className="col_8p">
-                              <h6>
-                                <input
-                                  type="checkbox"
-                                  id={materialData?._id}
-                                  onChange={(e) => getStockIds(e, materialData)}
-                                  // checked={selectedList.includes(materialData._id)}
-                                  checked={stockIds.some((item) => item === materialData?._id)}
-                                />
-                              </h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>
-                                {index + 1}
-                                {/* {Number(pageLimit) * (page - 1) + (index + 1)} */}
-                              </h6>
-                            </div>
+                        {selectedList.length > 0 ? (
+                          <>
+                            {" "}
+                            {selectedList.map((materialData, index) => (
+                              <div className="table_data" key={index}>
+                                {/* <div className="col_8p">
+                                  <h6>
+                                    <input
+                                      type="checkbox"
+                                      id={materialData?._id}
+                                      onChange={(e) => getStockIds(e, materialData)}
+                                      // checked={selectedList.includes(materialData._id)}
+                                      checked={stockIds.some((item) => item === materialData?._id)}
+                                    />
+                                  </h6>
+                                </div> */}
+                                <div className="col_20p">
+                                  <h6>
+                                    {index + 1}
+                                    {/* {Number(pageLimit) * (page - 1) + (index + 1)} */}
+                                  </h6>
+                                </div>
 
-                            <div className="col_20p">
-                              <h6>{materialData?.categoryId.name}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.brandId.name}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.locationId.name}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData.blockId.blockNo}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>
-                                {materialData?.rackId.rackName
-                                  ? materialData?.rackId.rackName
-                                  : "-"}
-                              </h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.serialNo}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.modelId?.name}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>{materialData?.reamainingQuantity}</h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6>
-                                <input
-                                  className="inputBox"
-                                  style={{ width: "100%" }}
-                                  value={quantities[materialData?._id]}
-                                  onChange={(e) => {
-                                    handleQuantityChange(materialData, e.target.value);
-                                  }}
-                                  onFocus={(e) => e.target.select()}
-                                  onBlur={(e) => {
-                                    let newQuantity = e.target.value;
-                                    if (!/^\d+$/.test(newQuantity)) {
-                                      // Swal.fire({
-                                      //   text: "Please enter a valid number",
-                                      //   icon: "warning",
-                                      // });
-                                      return;
-                                    }
-                                    if (newQuantity > materialData.reamainingQuantity) {
-                                      // Swal.fire({
-                                      //   text: "Assign quantity cannot greater than quantity",
-                                      //   icon: "warning",
-                                      // });
-                                    } else if (newQuantity < 1) {
-                                      // Swal.fire({
-                                      //   text: "It should be at least one or more",
-                                      //   icon: "warning",
-                                      // });
-                                    }
-                                    // newQuantity > materialData.reamainingQuantity || newQuantity < 1 ? 1 :
-                                  }}
-                                />
-                              </h6>
-                            </div>
-                            <div className="col_20p">
-                              <button
-                                type="button"
-                                title="delete"
-                                style={{ border: "none" }}
-                                onClick={() => handleDeleteMaterial(materialData._id)}
-                              >
-                                <FontAwesomeIcon icon={faTrash} />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
+                                <div className="col_20p">
+                                  <h6>{materialData?.categoryId.name}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.brandId.name}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.locationId.name}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData.blockId.blockNo}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>
+                                    {materialData?.rackId.rackName
+                                      ? materialData?.rackId.rackName
+                                      : "-"}
+                                  </h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.serialNo}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.modelId?.name}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{materialData?.reamainingQuantity}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>
+                                    <input
+                                      className="inputBox"
+                                      style={{ width: "100%" }}
+                                      value={quantities[materialData?._id]}
+                                      onChange={(e) => {
+                                        handleQuantityChange(materialData, e.target.value);
+                                      }}
+                                      onFocus={(e) => e.target.select()}
+                                      onBlur={(e) => {
+                                        let newQuantity = e.target.value;
+                                        if (!/^\d+$/.test(newQuantity)) {
+                                          // Swal.fire({
+                                          //   text: "Please enter a valid number",
+                                          //   icon: "warning",
+                                          // });
+                                          return;
+                                        }
+                                        if (newQuantity > materialData.reamainingQuantity) {
+                                          // Swal.fire({
+                                          //   text: "Assign quantity cannot greater than quantity",
+                                          //   icon: "warning",
+                                          // });
+                                        } else if (newQuantity < 1) {
+                                          // Swal.fire({
+                                          //   text: "It should be at least one or more",
+                                          //   icon: "warning",
+                                          // });
+                                        }
+                                        // newQuantity > materialData.reamainingQuantity || newQuantity < 1 ? 1 :
+                                      }}
+                                    />
+                                  </h6>
+                                </div>
+                                <div className="col_20p">
+                                  <button
+                                    type="button"
+                                    title="delete"
+                                    style={{ border: "none" }}
+                                    onClick={() => handleDeleteMaterial(materialData._id)}
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} />
+                                  </button>
+                                </div>
+                              </div>
+                            ))}
+                          </>
+                        ) : (
+                          <p className="no_data">Data Not Available</p>
+                        )}
+
                         {/* </div> */}
                       </div>
                     </div>
@@ -921,9 +945,10 @@ const AssignMaterial = () => {
                   <div className="form_button_wrapper gap-2 col-lg-4 col-md-4 d-flex align-items-center">
                     <CustomBtn
                       name="Assign material"
-                      onClick={() =>
-                        stockIds.length >= 1 ? handleAssign() : toast.warn("Please Select Stock")
-                      }
+                      // onClick={() =>
+                      //   stockIds.length >= 1 ? handleAssign() : toast.warn("Please Select Stock")
+                      // }
+                      onClick={() => handleAssign()}
                     />
                   </div>
                 </div>

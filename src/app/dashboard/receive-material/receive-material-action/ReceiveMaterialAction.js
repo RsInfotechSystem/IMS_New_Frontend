@@ -56,7 +56,7 @@ const ReceiveMaterialAction = () => {
       }
       setLoader(true);
       const dataToSend = {
-        transferMaterialId: searchParams.get("transferMaterialId"),
+        transferMaterialId: searchParams.get("reciveMaterialId"),
         materialIds: materialList.map((material) => ({
           id: material.materialId,
           blockId: material.blockId,
@@ -70,7 +70,7 @@ const ReceiveMaterialAction = () => {
       if (response?.data?.status === "SUCCESS") {
         toast.success(response.data.message);
         setLoader(false);
-        router.push("/admin/dashboard/receive-material");
+        router.push("/dashboard/receive-material");
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -312,74 +312,73 @@ const ReceiveMaterialAction = () => {
                         <h6>{material.modelName}</h6>
                       </div>
                       <div className="col_40p">
-                      <h6>{material.itemCode}</h6>
+                        <h6>{material.itemCode}</h6>
                       </div>
                       <div className="col_30p">
-                      <h6>{material.serialNo}</h6>
+                        <h6>{material.serialNo}</h6>
                       </div>
                       <div className="col_45p">
                         <h6>
-                        <select
-                          //   name="categoryId"
-                          value={material.blockId}
-                          onChange={(e) => handleChange(e, index, "blockId")}
-                          className="form-control custom_input"
-                          style={{ width: "100%" }}
-                        >
-                          <option value="">Select Block</option>
-                          {blocks.map((block, idx) => (
-                            <option value={block._id} key={idx} className="small text-capitalize">
-                              {block.blockNo}
-                            </option>
-                          ))}
-                        </select>
+                          <select
+                            //   name="categoryId"
+                            value={material.blockId}
+                            onChange={(e) => handleChange(e, index, "blockId")}
+                            className="form-control custom_input"
+                            style={{ width: "100%" }}
+                          >
+                            <option value="">Select Block</option>
+                            {blocks.map((block, idx) => (
+                              <option value={block._id} key={idx} className="small text-capitalize">
+                                {block.blockNo}
+                              </option>
+                            ))}
+                          </select>
                         </h6>
-                        
                       </div>
                       <div className="col_45p">
                         <h6>
-                        <select
-                          //   name="categoryId"
-                          value={material.rackId}
-                          onChange={(e) => handleChange(e, index, "rackId")}
-                          className="form-control custom_input"
-                          style={{ width: "100%" }}
-                        >
-                          <option value="" className="text-secondary text-lowercase">
-                            Select Rack
-                          </option>
-                          {racks[material.blockId]?.map((rack, idx) => (
-                            <option className="small text-capitalize" value={rack._id} key={idx}>
-                              {rack.rackName}
+                          <select
+                            //   name="categoryId"
+                            value={material.rackId}
+                            onChange={(e) => handleChange(e, index, "rackId")}
+                            className="form-control custom_input"
+                            style={{ width: "100%" }}
+                          >
+                            <option value="" className="text-secondary text-lowercase">
+                              Select Rack
                             </option>
-                          ))}
-                        </select>
+                            {racks[material.blockId]?.map((rack, idx) => (
+                              <option className="small text-capitalize" value={rack._id} key={idx}>
+                                {rack.rackName}
+                              </option>
+                            ))}
+                          </select>
                         </h6>
                       </div>
                       <div className="col_50p">
                         <h6>
-                        <select
-                          //   name="categoryId"
-                          value={material.partitionName}
-                          onChange={(e) => handleChange(e, index, "partitionName")}
-                          className="form-control custom_input"
-                          style={{ width: "100%" }}
-                        >
-                          <option value="" className="text-secondary text-lowercase">
-                            Select Partition
-                          </option>
-                          {rackPartation[material.rackId]
-                            ? rackPartation[material.rackId].map((partition, idx) => (
-                                <option
-                                  value={partition.partitionName}
-                                  className="small text-capitalize"
-                                  key={idx}
-                                >
-                                  {partition.partitionName}
-                                </option>
-                              ))
-                            : null}
-                        </select>
+                          <select
+                            //   name="categoryId"
+                            value={material.partitionName}
+                            onChange={(e) => handleChange(e, index, "partitionName")}
+                            className="form-control custom_input"
+                            style={{ width: "100%" }}
+                          >
+                            <option value="" className="text-secondary text-lowercase">
+                              Select Partition
+                            </option>
+                            {rackPartation[material.rackId]
+                              ? rackPartation[material.rackId].map((partition, idx) => (
+                                  <option
+                                    value={partition.partitionName}
+                                    className="small text-capitalize"
+                                    key={idx}
+                                  >
+                                    {partition.partitionName}
+                                  </option>
+                                ))
+                              : null}
+                          </select>
                         </h6>
                       </div>
                       <div className="col_30p">
