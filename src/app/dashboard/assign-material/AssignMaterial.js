@@ -62,6 +62,7 @@ const AssignMaterial = () => {
   };
   // Handler for quantity change
   const handleQuantityChange = (materialData, newQuantity) => {
+    console.log((materialData, "eleeeeeeeeeeeee"));
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
       [materialData._id]: newQuantity,
@@ -628,7 +629,7 @@ const AssignMaterial = () => {
               <div className="row">
                 <div className="col-12 mb-2">
                   <div className="table_wrapper" style={{ height: "95%" }}>
-                    <div className="table_main" style={{ minWidth: "1500px" }}>
+                    <div className="table_main" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
                         {/* <div className="table_container"> */}
                         <div className="table_header">
@@ -678,6 +679,7 @@ const AssignMaterial = () => {
                                   {" "}
                                   <div className="check_box">
                                     <input
+                                      className="form-check-input"
                                       type="checkbox"
                                       id={materialData._id}
                                       onChange={(e) => handleCheckboxChange(e, materialData)}
@@ -730,10 +732,10 @@ const AssignMaterial = () => {
                 </div>
                 <div className="col-12 mb-2 mt-4">
                   <div className="table_wrapper" style={{ height: "95%" }}>
-                    <div className="table_main" style={{ minWidth: "1500px" }}>
+                    <div className="table_main" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
                         <div className="table_header">
-                          {/* <div className="col_20p">
+                          <div className="col_8p">
                             <div className="check_box">
                               <input
                                 className="form-check-input"
@@ -743,8 +745,8 @@ const AssignMaterial = () => {
                                 checked={selectAllChecked}
                               />
                             </div>
-                          </div> */}
-                          <div className="col_20p">
+                          </div>
+                          <div className="col_10p">
                             <h5>Sr. No.</h5>
                           </div>
                           <div className="col_20p">
@@ -787,18 +789,19 @@ const AssignMaterial = () => {
                             {" "}
                             {selectedList.map((materialData, index) => (
                               <div className="table_data" key={index}>
-                                {/* <div className="col_8p">
-                                  <h6>
+                                <div className="col_8p">
+                                  <div className="check_box">
                                     <input
+                                      className="form-check-input"
                                       type="checkbox"
                                       id={materialData?._id}
                                       onChange={(e) => getStockIds(e, materialData)}
                                       // checked={selectedList.includes(materialData._id)}
                                       checked={stockIds.some((item) => item === materialData?._id)}
                                     />
-                                  </h6>
-                                </div> */}
-                                <div className="col_20p">
+                                  </div>
+                                </div>
+                                <div className="col_10p">
                                   <h6>
                                     {index + 1}
                                     {/* {Number(pageLimit) * (page - 1) + (index + 1)} */}
