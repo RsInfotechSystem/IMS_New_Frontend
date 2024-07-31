@@ -4,9 +4,9 @@ import ReadySalesMaterial from "./ReadySalesMaterial";
 const page = () => {
   return (
     <>
-     <ReadySalesMaterial/>
+      <ReadySalesMaterial />
     </>
-  )
+  );
 };
 
 export default page;

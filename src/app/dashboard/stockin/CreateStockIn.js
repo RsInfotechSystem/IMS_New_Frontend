@@ -478,19 +478,6 @@ const CreateStockIn = ({ data }) => {
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Brand *</label>
-                  {/* <SelectBox
-                  options={brandMapData}
-                  firstOption={"Select Brand"}
-                  displayName={"name"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("brandId", {
-                      required: "Select Brand",
-                    }),
-                  }}
-                  errors={errors.brandId}
-                /> */}
                   <div className="position-relative">
                     <select
                       name="brandId"
@@ -525,19 +512,6 @@ const CreateStockIn = ({ data }) => {
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Condition Type *</label>
-                  {/* <SelectBox
-                  options={brandMapData}
-                  firstOption={"Select Brand"}
-                  displayName={"name"}
-                  value={"_id"}
-                  disable={false}
-                  register={{
-                    ...register("brandId", {
-                      required: "Select Brand",
-                    }),
-                  }}
-                  errors={errors.brandId}
-                /> */}
                   <div className="position-relative">
                     <select
                       disabled={modalStates.isView}
@@ -732,7 +706,12 @@ const CreateStockIn = ({ data }) => {
                           <InputBox
                             disabled={modalStates.isView}
                             type="text"
-                            {...register(`parameter[${item}]`)}
+                            register={{
+                              ...register(`parameter[${item}]`, {
+                                // required: "itemCode is required",
+                              }),
+                            }}
+                            // {...register(`parameter[${item}]`)}
                             // className="form-control custom_input"
                             // style={{ width: "100%", height: "31px" }}
                           />
