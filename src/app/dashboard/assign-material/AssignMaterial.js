@@ -384,12 +384,14 @@ const AssignMaterial = () => {
             <div className="col-12 col-lg-4 col-md-4">
               <div className="form_view pt-0">
                 <form onSubmit={handleSubmit}>
-                  <div className="form_title">
-                    <h5>Select Material</h5>
-                  </div>
-                  <div style={{ maxHeight: "260px", overflowY: "auto" }}>
-                    <div className="p-4" style={{ backgroundColor: "white" }}>
+                
+                  <div style={{ maxHeight: "40dvh", overflowY: "auto" }}>
+
+                    <div className="px-3 py-1" style={{ backgroundColor: "white" }}>
                       {/* <div className="form_modal_body w-75 py-3"></div> */}
+                      <div className="pb-2">
+                    <h6>Select Material</h6>
+                  </div>
                       <div className="row">
                         <div class="col-lg-6 col-md-5 d-flex align-items-center">
                           <label>Serial No./Item Code</label>
@@ -400,10 +402,10 @@ const AssignMaterial = () => {
                             name="searchString"
                             value={formValues.searchString}
                             onChange={handleChange}
-                            className="form-control custom_input"
+                            className="form_control_assign custom_input"
                             style={{ width: "100%" }}
                             // style={{ paddingLeft: lefIcon ? 45 : "auto" }}
-                            // className={`form-control custom_input ${className}`}
+                            // className={`form_control_assign custom_input ${className}`}
                           />
                           <div style={{ height: "5px" }}>
                             {errors.searchString && (
@@ -415,7 +417,7 @@ const AssignMaterial = () => {
                         </div>
                       </div>
                       <div className="row">
-                        <h6 className="d-flex align-items-center justify-content-center">OR</h6>
+                        <h6 className="d-flex align-items-center justify-content-center assign_or_font">OR</h6>
                       </div>
                       <div class="row">
                         <div className="input_wrapper col-6">
@@ -426,7 +428,7 @@ const AssignMaterial = () => {
                             name="categoryId"
                             value={formValues.categoryId}
                             onChange={handleChange}
-                            className="form-control custom_input"
+                            className="form_control_assign custom_input"
                             style={{ width: "100%" }}
                           >
                             <option value="" className="text-secondary text-lowercase">
@@ -462,7 +464,7 @@ const AssignMaterial = () => {
                         </div>
                       </div>
 
-                      <div className="row mt-2">
+                      <div className="row">
                         <div className="input_wrapper col-6">
                           <label>Brand</label>
                         </div>
@@ -474,7 +476,7 @@ const AssignMaterial = () => {
                             name="brandId"
                             value={formValues.brandId}
                             onChange={handleChange}
-                            className="form-control custom_input"
+                            className="form_control_assign custom_input"
                             style={{ width: "100%" }}
                           >
                             <option value="" className="text-secondary text-lowercase">
@@ -501,7 +503,7 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row mt-2">
+                      <div className="row">
                         <div className="col-lg-6 col-md-5 d-flex align-items-center ">
                           <label>Select Status</label>
                         </div>
@@ -510,7 +512,7 @@ const AssignMaterial = () => {
                             name="status"
                             value={formValues.status}
                             onChange={handleChange}
-                            className="form-control custom_input"
+                            className="form_control_assign custom_input"
                             style={{ width: "100%" }}
                           >
                             <option value="" className="text-secondary text-lowercase">
@@ -534,7 +536,7 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row mt-2">
+                      <div className="row">
                         <div className="col-lg-6 col-md-5 d-flex align-items-center">
                           <label>Condition Type</label>
                         </div>
@@ -546,7 +548,7 @@ const AssignMaterial = () => {
                             name="conditionType"
                             value={formValues.conditionType}
                             onChange={handleChange}
-                            className="form-control custom_input"
+                            className="form_control_assign custom_input"
                             style={{ width: "100%" }}
                           >
                             <option value="" className="text-secondary text-lowercase">
@@ -576,16 +578,16 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row mt-3">
+                      <div className="row">
                         <div className="col-12 d-flex align-items-center justify-content-center">
-                          <div className="form_button_wrapper gap-2">
+                          <div className="pt-1 gap-2">
                             <CustomBtn name="Search" onClick={() => handleSubmit()} />
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="mt-5 p-2" style={{ backgroundColor: "white" }}>
+                  <div className="mt-4 p-2" style={{ backgroundColor: "white" }}>
                     <div style={{ color: "black" }}>
                       <h6>Parameters</h6>
                     </div>
@@ -627,8 +629,8 @@ const AssignMaterial = () => {
             </div>
             <div className="col-12 col-lg-8 col-md-8">
               <div className="row">
-                <div className="col-12 mb-2">
-                  <div className="table_wrapper" style={{ height: "95%" }}>
+                <div className="col-12 mb-1"  style={{ height: "40dvh" }}>
+                  <div className="table_wrapper table_wrapper_assign">
                     <div className="table_main" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
                         {/* <div className="table_container"> */}
@@ -731,7 +733,7 @@ const AssignMaterial = () => {
                   </div>
                 </div>
                 <div className="col-12 mb-2 mt-4">
-                  <div className="table_wrapper" style={{ height: "95%" }}>
+                  <div className="table_wrapper" style={{ height: "30dvh" }}>
                     <div className="table_main" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
                         <div className="table_header">
@@ -895,7 +897,7 @@ const AssignMaterial = () => {
                 </div>
                 <div className="row d-flex m-0 ps-5" style={{ height: "10%" }}>
                   <div className="col-lg-5 col-md-4 justify-content-center d-flex align-items-center select_tech">
-                    <h6>Select Technician</h6>
+                    <h6 className="">Select Technician</h6>
                   </div>
                   <div className="col-lg-3 col-md-4 d-flex align-items-center pt-3">
                     <select
@@ -903,9 +905,10 @@ const AssignMaterial = () => {
                       style={{
                         background: "#f5f5f5",
                         fontSize: "15px",
-                        border: "1px solid #184965",
-                        padding: "10px 12px",
+                        border: "0.5px solid grey",
+                        padding: "6px 12px",
                         borderRadius: "4px",
+                        cursor:"pointer",
                       }}
                       // {...register("userId", {
                       //   required: "Technician is required",
@@ -914,10 +917,10 @@ const AssignMaterial = () => {
                     >
                       {/* <option>Roshan</option>
                   <option>Roshan 2</option> */}
-                      <option value="">Select Technician</option>
+                      <option value="" className="">Select Technician</option>
                       {TechnicianList.map((ele, index) => {
                         return (
-                          <option style={{ fontSize: "20px" }} value={ele._id} key={index}>
+                          <option className="" style={{ fontSize: "14px" }} value={ele._id} key={index}>
                             {ele.name}
                           </option>
                         );
@@ -948,9 +951,7 @@ const AssignMaterial = () => {
                   <div className="form_button_wrapper gap-2 col-lg-4 col-md-4 d-flex align-items-center">
                     <CustomBtn
                       name="Assign material"
-                      // onClick={() =>
-                      //   stockIds.length >= 1 ? handleAssign() : toast.warn("Please Select Stock")
-                      // }
+                  
                       onClick={() => handleAssign()}
                     />
                   </div>
