@@ -249,7 +249,7 @@ const SalesOrderSales = () => {
                   fill-rule="evenodd"
                   clip-rule="evenodd"
                   d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
-                  fill="#198754"
+                  fill="#184965"
                 />
               </g>
               <defs>
@@ -337,7 +337,7 @@ const SalesOrderSales = () => {
       </div>
       <form>
         <div>
-          {loader && <Loader />}
+          {/* {loader && <Loader />} */}
           {/* Add sales order material */}
           {/* <div className="form_wrapper"> */}
           <div className="form_list_layout_wrapper">
@@ -389,7 +389,8 @@ const SalesOrderSales = () => {
                   <div className="col-lg-3 col-md-6 input_wrapper">
                     <button
                       type="button"
-                      className="btn btn-success"
+                      className="btn"
+                      style={{backgroundColor:"#184965",color:"#FFF"}}
                       // onClick={addMaterial}
                     >
                       Add

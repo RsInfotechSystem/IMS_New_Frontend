@@ -184,7 +184,7 @@ const CreateOrder = () => {
                   fill-rule="evenodd"
                   clip-rule="evenodd"
                   d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
-                  fill="#198754"
+                  fill="#184965"
                 />
               </g>
               <defs>
@@ -194,7 +194,7 @@ const CreateOrder = () => {
               </defs>
             </svg>
           </div>
-          <div>Back</div>
+          <div style={{color:"#184965"}}>Back</div>
         </div>
       </div>
       {/* tab wrapper */}
@@ -204,7 +204,7 @@ const CreateOrder = () => {
           onClick={() => {
             setActiveTab("INFO");
           }}
-          style={{ backgroundColor: activeTab == "INFO" ? "#198754" : "#D0D3D9" }}
+          style={{ backgroundColor: activeTab == "INFO" ? "#184965" : "#D0D3D9" }}
         >
           <svg
             width="24"
@@ -239,7 +239,7 @@ const CreateOrder = () => {
         <div
           //   onClick={handleSubmit(handleVendorInformation)}
           className="tab_btn"
-          style={{ backgroundColor: activeTab == "SUPPLY" ? "#198754" : "#D0D3D9" }}
+          style={{ backgroundColor: activeTab == "SUPPLY" ? "#184965" : "#D0D3D9" }}
         >
           {" "}
           <svg
@@ -353,7 +353,20 @@ const CreateOrder = () => {
                     disable={false}
                   />
                 </div>
-                <div className="col-lg-3 d-none d-lg-block"></div>
+                <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
+                  <label>Order Taken By*</label>
+                  <InputBox
+                    type={"text"}
+                    register={{
+                      ...register("orderTakenBy", {
+                        required: "Order Taken By is required",
+                      }),
+                    }}
+                    errors={errors.city}
+                    placeholder={""}
+                    disable={false}
+                  />
+                </div>
                 {/* <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
                 <label>Completion Time</label>
                 <InputBox
@@ -398,20 +411,7 @@ const CreateOrder = () => {
                     errors={errors.userId}
                   />
                 </div>
-                <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
-                  <label>Order Taken By*</label>
-                  <InputBox
-                    type={"text"}
-                    register={{
-                      ...register("orderTakenBy", {
-                        required: "Order Taken By is required",
-                      }),
-                    }}
-                    errors={errors.city}
-                    placeholder={""}
-                    disable={false}
-                  />
-                </div>
+           
               </div>
             </div>
             {/* point of contact person */}
@@ -510,7 +510,7 @@ const CreateOrder = () => {
               </div>
             </div>
             {/* vendor bank details form */}
-            {/* <div className="form_wrapper">
+            {/* <div className="form_wrapper_sale">
               <div className="form_heading">
                 <div>
                   <svg
@@ -609,21 +609,20 @@ const CreateOrder = () => {
           <div>
             {loader && <Loader />}
             {/* create add recipe order form  */}
-            <div className="form_wrapper">
+            <div className="">
               <div className="form_list_layout_wrapper">
                 <div className="d-flex align-items-center justify-content-between py-2">
                   <div className="form_layout">
-                    <div className="row">
-                      <div className="input_wrapper col-12 col-md-12 col-lg-6 ">
+                    
+                    <div className="row d-flex align-items-end">
+                    <div className="col-lg-3 col-md-6 input_wrapper ">
                         <label>Description</label>
                         <textarea
                           {...register("description")}
                           className="form-control custom_input"
-                          rows="3"
+                          rows="1"
                         ></textarea>
                       </div>
-                    </div>
-                    <div className="row d-flex align-items-end">
                       <div className="col-lg-3 col-md-6 input_wrapper">
                         <label>Quantity*</label>
                         <InputBox
@@ -661,7 +660,19 @@ const CreateOrder = () => {
                         />
                       </div>
                       <div className="col-lg-3 col-md-6 input_wrapper">
-                        <button type="button" className="btn btn-success" onClick={addMaterial}>
+                        <label>Remarks *</label>
+                        <InputBox
+                          // type={"number"}
+                          register={{
+                            ...register("remarks", {
+                              // required: "Remarks Name is required",
+                            }),
+                          }}
+                          errors={errors.remarks}
+                        />
+                      </div>
+                      <div className="col-lg-3 col-md-6 input_wrapper">
+                        <button type="button" className="btn" onClick={addMaterial} style={{backgroundColor:"#184965",color:"#fff"}}>
                           Add
                         </button>
                       </div>
