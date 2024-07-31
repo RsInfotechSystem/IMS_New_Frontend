@@ -193,6 +193,9 @@
     .approval_card {
         width: 100%;
     }
+    .search_btn_wrapper {
+        height: 12%;
+    }
 }
 
 @media only screen and (max-width:768px) {
