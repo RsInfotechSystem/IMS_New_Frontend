@@ -456,7 +456,7 @@ const CreateOrder = () => {
                   /> */}
                 <CustomDateInput
                   value={filterValues?.orderDate}
-                  maxDate={`31-12-${new Date()?.getFullYear()}`}
+                  maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
                   onChange={(date) => {
                     setFilterValues((prev) => ({ ...prev, orderDate: date }));
                   }}
@@ -480,7 +480,7 @@ const CreateOrder = () => {
                     disable={false}
                   /> */}
                 <CustomDateInput
-                  maxDate={`31-12-${new Date()?.getFullYear()}`}
+                  maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
                   value={filterValues?.orderCompleteDate}
                   onChange={(date) => {
                     setFilterValues((prev) => ({ ...prev, orderCompleteDate: date }));
@@ -562,8 +562,7 @@ const CreateOrder = () => {
           </div>
         </div>
       )}
-      {/* </form>
-      <form> */}
+
       {activeTab === "SUPPLY" && (
         <div>
           {loader && <Loader />}
@@ -630,7 +629,7 @@ const CreateOrder = () => {
               </div>
             </div>
           </div>
-          {/*// Sales Order Preview*/}
+          {/* Sales Order Preview */}
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Sales Order Item Preview</p>
@@ -710,12 +709,12 @@ const CreateOrder = () => {
               type="submit"
               className="btn btn-success"
               onClick={handleSubmit(createOrder)}
-              // onClick={() => handleSubmit(createOrder)}
+            // onClick={() => handleSubmit(createOrder)}
             ></Button>
           </div>
         </div>
       )}
-      {/* </form> */}
+
     </>
   );
 };
