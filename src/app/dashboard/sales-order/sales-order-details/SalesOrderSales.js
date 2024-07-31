@@ -534,14 +534,7 @@ const SalesOrderSales = () => {
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-6 input_wrapper">
-                    <button
-                      type="button"
-                      className="btn"
-                      style={{backgroundColor:"#184965",color:"#FFF"}}
-                      // onClick={addMaterial}
-                    >
-                      Add
-                    </button>
+                   
                     <label>Model Name *</label>
                     <div className="position-relative">
                       <select
@@ -576,7 +569,18 @@ const SalesOrderSales = () => {
                         </p>
                       )}
                     </div>
+                    
                   </div>
+                  <div className="col-lg-3 col-md-6 mb-4">
+                  <button
+                      type="button"
+                      className="btn"
+                      style={{backgroundColor:"#184965",color:"#FFF"}}
+                    >
+                      Add
+                    </button>
+                  </div>
+                  
                 </div>
                 <div className="row">
                   <div className="col-12" style={{ maxHeight: "300px", overflowY: "auto" }}>
@@ -708,15 +712,14 @@ const SalesOrderSales = () => {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6">
+                {/* <div className="col-lg-3 col-md-6">
                   <button
                     type="button"
                     className="btn btn-success"
-                    // onClick={addMaterial}
                   >
                     Add
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

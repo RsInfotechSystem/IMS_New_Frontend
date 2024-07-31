@@ -20,13 +20,14 @@ const MultiSelect = ({
   register,
   errors,
 }) => {
-  const multiselectStyling = {
+  const multiselectStyling = { 
     option: {
       // Style for options
-      padding: "8px",
+      padding: "4px",
       borderBottom: "1px solid #D0D3D9",
       color: "#272727",
       backgroundColor: "#fff",
+      fontSize:"14px", 
     },
     chips: {
       background: "#184965",
@@ -37,6 +38,9 @@ const MultiSelect = ({
     },
     chip: {
       marginRight: "2px",
+    },
+    ul:{
+      maxHeight:"50px",
     },
   };
   return (
