@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import { communication } from "./communication";
 import Swal from "sweetalert2";
 
-export async function getCategory(setLoader, router, setCategory = []) {
+export async function getCategory(setLoader, router = [], setCategory = []) {
   try {
     const serverResponse = await communication.getActiveCategory();
     if (serverResponse?.data?.status === "SUCCESS") {
@@ -74,7 +74,7 @@ export async function getParameter(setLoader, router, setParameter = []) {
 
 export async function getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData = []) {
   try {
-    
+
     const serverResponse = await communication.getCategoryWiseBrand(categoryId);
     if (serverResponse?.data?.status === "SUCCESS") {
       setBrandsData(serverResponse?.data?.brand);
@@ -146,5 +146,26 @@ export async function getRackPartation(id, setLoader, router, setRackPartation =
   } catch (error) {
     toast.info(error?.response?.data?.message || error.message);
     setLoader(false);
+  }
+}
+
+
+export async function getBrandWiseModel(brandId,setModel,router) {
+  try {
+    // props.setLoader(true);
+    const payload = {
+      brandId: brandId,
+    };
+    const serverResponse = await communication.brandWiseModel(payload);
+    if (serverResponse?.data?.status === "SUCCESS") {
+      setModel(serverResponse?.data?.model);
+    } else if (serverResponse?.data?.status === "JWT_INVALID") {
+      toast.warn(serverResponse.data.message);
+      router.push("/");
+    } else {
+      setModel([]);
+    }
+  } catch (error) {
+    toast.error(error?.response?.data?.message || error.message);
   }
 }

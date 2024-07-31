@@ -21,11 +21,12 @@ import { getLocations, getParameter } from "@/services/commonApis";
 import filterIcon from "../../../../public/images/filter.png";
 import InventoryView from "../inventory/InventoryView";
 import { formatDate } from "@/helper/formatDate";
+import StockFilter from "@/common-components/StockFilter";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const StockInList = () => {
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", isView: false });
+  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", filter: false, isView: false });
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     deleteId: "",
@@ -86,7 +87,7 @@ const StockInList = () => {
   const _rackIdForPrtn = watch("rackId");
   const brandId = watch("brandId");
 
-    const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
     setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === stock?.length)))
     setSelectedCheckboxes((prevSelected) => {
@@ -109,64 +110,21 @@ const StockInList = () => {
     );
   };
 
-  
-  const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
-    categoryFilter: false,
-    brandFilter: false,
-    locationFilter: false,
-    modelNameFilter: false,
-    category: [],
-    brand: [],
-    modelName: [],
-    location: [],
-    categoryValue: { keyType: "", keyId: "", keyCount: 0 },
-    brandValue: { keyType: "", keyId: "", keyCount: 0 },
-    modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
-    locationValue: { keyType: "", keyId: "", keyCount: 0 },
-  });
 
-  const onSubmit = async (values) => {
-    try {
-      setLoader(true);
-      let response = await communication.stockIn(values);
-      if (response?.data?.status === "SUCCESS") {
-        Swal.fire({ text: response.data.message, icon: "success" });
-        reset();
-        setLoader(true);
-        await getStockList({ currentPage, searchString });
-        setLoader(false);
-      } else if (response?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: response.data.message, icon: "warning" });
-        router.push("/");
-      } else {
-        Swal.fire({ text: response.data.message, icon: "warning" });
-      }
-    } catch (error) {
-      Swal.fire({ text: error.message, icon: "warning" });
-    } finally {
-      setLoader(false);
-    }
-  };
+  const [filter, setFilter] = useState({});
 
-  async function getStockList({
-    page = 1,
-    searchString,
-    isSearch = false,
-    categoryValue,
-    brandValue,
-    isFirstCall,
-  } = {}) {
+
+
+  async function getStockList({ page = 1, searchString, isSearch = false, isFirstCall, location, categoryId, brandId, modelId } = {}) {
     try {
       setLoader(true);
       let payload = {
         page,
         searchString: searchString,
-        ...(state.categoryValue.keyType == "category" && { categoryId: state.categoryValue.keyId }),
-        ...(state.brandValue.keyType == "brand" && { brandId: state.brandValue.keyId }),
-        ...(state.locationValue.keyType == "location" && { location: state.locationValue.keyId }),
-        ...(state.modelNameValue.keyType == "modelName" && {
-          modelId: state?.modelNameValue?.keyId,
-        }),
+        location,
+        categoryId,
+        brandId,
+        modelId
       };
       const serverResponse = await communication.getStockList(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -174,44 +132,6 @@ const StockInList = () => {
         setStock(serverResponse?.data.stock);
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
-        if (isFirstCall) {
-          setState({
-            category: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({
-                    categoryId: item.categoryId?._id,
-                    category: item.categoryId?.name,
-                  })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            brand: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({ brandId: item.brandId?._id, brand: item.brandId?.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            modelName: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({ modelId: item.modelId._id, modelName: item.modelId.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            location: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({
-                    locationId: item.locationId?._id,
-                    location: item.locationId?.name,
-                  })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-          });
-        }
         if (isSearch) {
           setCurrentPage(1);
         }
@@ -269,7 +189,7 @@ const StockInList = () => {
           return;
         }
       });
-    } catch (error) {}
+    } catch (error) { }
   };
   const handleFileChange = (event) => {
     alert("Under Maintainance");
@@ -440,9 +360,7 @@ const StockInList = () => {
         page: 1,
         searchString: e.target.value,
         isSearch,
-        // categoryValue: keyType === "category" ? keyId : state.categoryValue,
-        // brandValue: keyType === "brand" ? keyId : state.brandValue,
-        // locationValue: keyType === "location" ? keyId : state.locationValue,
+        ...filter
       });
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -451,19 +369,7 @@ const StockInList = () => {
   // useEffect(() => {
   //   getStockList(currentPage, searchString);
   // }, [isPageUpdated]);
-  useEffect(() => {
-    let isSearch = true;
 
-    getStockList({
-      page: 1,
-      isSearch,
-    });
-  }, [
-    state.categoryValue.keyId,
-    state.brandValue.keyId,
-    state.locationValue.keyId,
-    state.modelNameValue.keyId,
-  ]);
 
   useEffect(() => {
     const id = getValues("locationId");
@@ -542,6 +448,8 @@ const StockInList = () => {
         />
       )}
       {loader && <Loader text="Fetching Data..." />}
+      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getStockList} filter={filter} setFilter={setFilter} />}
+
       <div className="top_header">
         <div className="tab_title">Stock In</div>
         <Pagination
@@ -556,6 +464,21 @@ const StockInList = () => {
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
 
         <div className="buttons_wrapper">
+          <CustomBtn
+            name={"Filter"}
+            onClick={() => {
+              setModalStates((prev) => ({ ...prev, filter: true }));
+            }}
+            svg={
+              <svg xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 512 512" fill="#fff">
+                <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+              </svg>
+            }
+          />
+
           <CustomBtn
             name={"Create"}
             onClick={() => {
@@ -618,213 +541,16 @@ const StockInList = () => {
                 <h5>Sr. No.</h5>
               </div>
               <div className="col_50p">
-                {state.categoryFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "category")}
-                      onChange={(e) =>
-                        setState({
-                          categoryValue: {
-                            keyType: "category",
-                            keyId: e.target.value,
-                            keyCount: state.categoryValue.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.categoryValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.category.map((item, index) => {
-                        console.log("checkkk", state.category);
-                        return (
-                          <option value={item.categoryId} key={index}>
-                            {item.category}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ categoryFilter: !state.categoryFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <>
-                    <h5>Category</h5>
-                    <div>
-                      <Image
-                        onClick={() => setState({ categoryFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )}
+                <h5>Category</h5>
               </div>
               <div className="col_40p">
-                {state.brandFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "brand")}
-                      onChange={(e) =>
-                        setState({
-                          brandValue: {
-                            keyType: "brand",
-                            keyId: e.target.value,
-                            keyCount: state.brandValue.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.brandValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.brand.map((item, index) => {
-                        return (
-                          <option value={item.brandId} key={index}>
-                            {item.brand}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ brandFilter: !state.brandFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <>
-                    <h5>Brand</h5>
-                    <div>
-                      <Image
-                        onClick={() => setState({ brandFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )}
+                <h5>Brand</h5>
               </div>
               <div className="col_50p">
-                {state.locationFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "brand")}
-                      onChange={(e) =>
-                        setState({
-                          locationValue: {
-                            keyType: "location",
-                            keyId: e.target.value,
-                            keyCount: state.locationValue.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.locationValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.location.map((item, index) => {
-                        return (
-                          <option value={item.locationId} key={index}>
-                            {item.location}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ locationFilter: !state.locationFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <>
-                    <h5>Location</h5>
-                    <div>
-                      <Image
-                        onClick={() => setState({ locationFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )}
+                <h5>Location</h5>
               </div>
               <div className="col_50p">
-                {state.modelNameFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "brand")}
-                      onChange={(e) =>
-                        setState({
-                          modelNameValue: {
-                            keyType: "modelName",
-                            keyId: e.target.value,
-                            keyCount: state?.modelNameValue?.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.modelNameValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.modelName.map((item, index) => {
-                        return (
-                          <option value={item?.modelId} key={index}>
-                            {item?.modelName}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ modelNameFilter: !state?.modelNameFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <>
-                    <h5>Model Name</h5>
-                    <div>
-                      <Image
-                        onClick={() => setState({ modelNameFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )}
+                <h5>Model Name</h5>
               </div>
               <div className="col_50p">
                 <h5>Item Code</h5>
@@ -1017,7 +743,7 @@ const StockInList = () => {
           </div>
         </div>
       </div>
-    
+
       {modalStates?.modal && (
         <CreateStockIn
           data={{ modalStates, setModalStates, CreateStockIn, locations, getStockList }}
