@@ -14,12 +14,12 @@ import { formatDate } from "@/helper/formatDate";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import InventoryView from "./InventoryView";
+import StockFilter from "@/common-components/StockFilter";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const Inventory = () => {
   const router = useRouter();
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "" });
-  const [departmentList, setDepartmentList] = useState([]);
+  const [modalStates, setModalStates] = useState({ filter: false, modal: false });
   const [searchString, setSearchString] = useState("");
   const [loader, setLoader] = useState(false);
   // pagination states
@@ -30,80 +30,24 @@ const Inventory = () => {
   const [page, setPage] = useState(1);
   const [material, setMaterial] = useState([]);
   const [timeoutId, setTimeoutId] = useState();
+  const [filter, setFilter] = useState({});
 
-  const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
-    categoryFilter: false,
-    brandFilter: false,
-    locationFilter: false,
-    modelNameFilter: false,
-    category: [],
-    brand: [],
-    modelName: [],
-    location: [],
-    categoryValue: { keyType: "", keyId: "", keyCount: 0 },
-    brandValue: { keyType: "", keyId: "", keyCount: 0 },
-    modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
-    locationValue: { keyType: "", keyId: "", keyCount: 0 },
-  });
 
-  async function getStatusWiseMaterialList({
-    page = 1,
-    searchString,
-    isSearch = false,
-    categoryValue,
-    brandValue,
-    isFirstCall,
-  } = {}) {
+  async function getStatusWiseMaterialList({ page = 1, searchString, isSearch = false, isFirstCall, location, categoryId, brandId, modelId } = {}) {
     try {
       setLoader(true);
       let payload = {
         page,
         searchString: searchString,
-        ...(state.categoryValue.keyType == "category" && { categoryId: state.categoryValue.keyId }),
-        ...(state.brandValue.keyType == "brand" && { brandId: state.brandValue.keyId }),
-        ...(state.locationValue.keyType == "location" && { location: state.locationValue.keyId }),
-        ...(state?.modelNameValue?.keyType == "modelName" && {
-          modelId: state?.modelNameValue?.keyId,
-        }),
+        location,
+        categoryId,
+        brandId,
+        modelId
       };
-      // console.log(categoryValue, brandValue, "rr");
       const serverResponse = await communication.getInventoryMaterial(payload);
-
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.stock);
         setPageCount(serverResponse?.data?.totalPages);
-        if (isFirstCall) {
-          setState({
-            category: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({ categoryId: item.categoryId, category: item.category })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            brand: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({ brandId: item.brandId, brand: item.brand })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            modelName: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({ modelId: item?.modelId?._id, modelName: item?.modelId?.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            location: Array.from(
-              new Set(
-                serverResponse?.data.stock.map((item) =>
-                  JSON.stringify({ locationId: item.locationId, location: item.location })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-          });
-        }
         setPage(page);
         if (isSearch) {
           setCurrentPage(1);
@@ -112,7 +56,6 @@ const Inventory = () => {
         toast.info(serverResponse.data.message);
         router.push("/");
       } else {
-        // toast.info(serverResponse.data.message);
         setMaterial([]);
       }
       setLoader(false);
@@ -187,7 +130,7 @@ const Inventory = () => {
     let isSearch = true;
     clearTimeout(timeoutId);
     let _timeOutId = setTimeout(() => {
-      getStatusWiseMaterialList({ page: 1, searchString: e.target.value, isSearch });
+      getStatusWiseMaterialList({ page: 1, searchString: e.target.value, isSearch, ...filter });
       setCurrentPage(1);
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -200,15 +143,16 @@ const Inventory = () => {
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
+      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getStatusWiseMaterialList} filter={filter} setFilter={setFilter} />}
       <div className="top_header">
         <div className="tab_title">Inventory Look</div>
         <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -219,35 +163,22 @@ const Inventory = () => {
           placeholder={"Search"}
         />
         {
-          // configAccess?.access === "Write" &&
-          //   <div className="buttons_wrapper">
-          //     <CustomBtn
-          //       name={"Create"}
-          //       onClick={() => {
-          //         setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
-          //       }}
-          //       svg={
-          //         <svg
-          //           width="24"
-          //           height="24"
-          //           viewBox="0 0 24 24"
-          //           fill="none"
-          //           xmlns="http://www.w3.org/2000/svg"
-          //         >
-          //           <path
-          //             d="M12.75 9C12.75 8.58579 12.4142 8.25 12 8.25C11.5858 8.25 11.25 8.58579 11.25 9V11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H11.25V15C11.25 15.4142 11.5858 15.75 12 15.75C12.4142 15.75 12.75 15.4142 12.75 15V12.75H15C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H12.75V9Z"
-          //             fill="#F3F8FF"
-          //           />
-          //           <path
-          //             fill-rule="evenodd"
-          //             clip-rule="evenodd"
-          //             d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
-          //             fill="#F3F8FF"
-          //           />
-          //         </svg>
-          //       }
-          //     />
-          //   </div>
+          <div className="buttons_wrapper">
+            <CustomBtn
+              name={"Filter"}
+              onClick={() => {
+                setModalStates((prev) => ({ ...prev, filter: true }));
+              }}
+              svg={
+                <svg xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 512 512" fill="#fff">
+                  <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+                </svg>
+              }
+            />
+          </div>
         }
       </div>
       {/* table  */}
@@ -360,7 +291,7 @@ const Inventory = () => {
                     name={"Sell"}
                     onClick={() => { setModalStates((prev) => ({ ...prev, modal: true, type: "sell" })) }}
                    /> */}
-                      {/* <button
+                  {/* <button
                         className="actionbtn sell_btn"
                         onClick={(e) => changeMaterialStatus(materialDetails)}
                       >
