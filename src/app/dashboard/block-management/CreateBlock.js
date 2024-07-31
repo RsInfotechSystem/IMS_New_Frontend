@@ -7,7 +7,7 @@ import SelectBox from "@/common-components/Select";
 import { communication } from "@/services/communication";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Multiselect from "multiselect-react-dropdown";
+import Multiselect from '@/common-components/MultiSelect';
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -107,7 +107,7 @@ function CreateBlock({ data }) {
         blockId: modalStates?.id,
       });
       if (response?.data?.status === "SUCCESS") {
-        setDefaultRack([...response?.data.block.rackName]);
+        setDefaultRack([...response?.data?.block?.rackName]);
         setLocationId(response?.data.block.locationId._id);
         setBlockId(response?.data?.block?._id);
         setValue("blockNo", response?.data?.block?.blockNo);
@@ -156,7 +156,7 @@ function CreateBlock({ data }) {
         locationId: values.locationId,
         blockNo: values.blockNo,
         isRackAdded: selectedOption === "Yes" ? true : false,
-        rackId: [...propertyType],
+        rackId: selectedOption === "Yes" ? [...propertyType] : [],
         // isRackAdded: true, //bypass
       };
 
@@ -170,7 +170,7 @@ function CreateBlock({ data }) {
         setButtonLoader(false);
         setModalStates((prev) => ({ ...prev, modal: false }));
         setIsPageUpdated((prev) => !prev);
-        router.push("dashboard/block-management");
+        router.push("block-management");
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.warn(serverResponse.data.message);
         router.push("/");
@@ -301,13 +301,14 @@ function CreateBlock({ data }) {
               </div>
               {selectedOption === "Yes" && (
                 <>
-                  <div className="col-lg-2 col-md-2 col-sm-4 p-0 d-flex align-items-center">
-                    <h6>Rack Select</h6>
-                  </div>
-                  <div className="col-lg-4 col-md-4 col-sm-8 p-0">
+                  <div className="col-md-4">
+                    <label >Rack Select*</label>
                     <Multiselect
-                      isObject={false}
+                      placeholder="Select Rack"
                       options={rackList.map((rackData) => rackData.rackName)}
+                      displayValue={"name"}
+                      selectedValues={modalStates?.type === "create" ? defaultRack : [...propertyType]}
+                      keepSearchTerm={true}
                       onSelect={(selectedList) => {
                         const selectedIds = selectedList.map((selectedRackName) => {
                           const selectedRack = rackList.find(
@@ -328,57 +329,9 @@ function CreateBlock({ data }) {
 
                         setPropertyType(selectedIds);
                       }}
-                      keepSearchTerm={true}
                       showCheckbox={true}
-                      showArrow
-                      // customArrow
-                      // className=" inputBox p-0 w-75"
                       rules={{ required: "Rack name is required" }}
-                      style={{
-                        multiselectContainer: {
-                          width: "120px",
-                          // width: "auto",
-                          position: "absolute",
-                          border: "1px solid #929292",
-                          background: "#fff",
-                          height: "30px",
-                          // overflowX: "hidden",
-                        },
-                        inputField: {
-                          // To change input field position or margin
-                          marginTop: "0",
-                          marginRight: "2px",
-                          marginBottom: "5px",
-                        },
-                        chips: {
-                          background: "blue",
-                        },
-                        optionContainer: {
-                          border: "1px solid #929292",
-                          height: "130px",
-                          scrollbarWidth: "thin",
-                        },
-                        option: {
-                          color: "black",
-                          background: "none",
-                        },
-                        searchBox: {
-                          border: "black",
-                          fontSize: "15px",
-                          height: "40px",
-                          width: "auto",
-                          overflowX: "scroll",
-                          scrollbarWidth: "none",
-                          display: "flex",
-                        },
-                      }}
-                    // style={{
-                    //   position: "absolute",
-                    //   zIndex: 9999, // Adjust the z-index value based on your layout
-                    //   top: "100%", // Position the dropdown below the input box
-                    //   left: 0, // Align with the left edge of the input box
-                    //   width: "100%", // Set the width to match the input box or adjust as needed
-                    // }}
+                      {...register("location")}
                     />
 
                     <div style={{ height: "5px" }}>
