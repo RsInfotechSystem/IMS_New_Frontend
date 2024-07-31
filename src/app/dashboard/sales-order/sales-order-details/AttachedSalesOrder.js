@@ -372,7 +372,7 @@ const AttachedSalesOrder = () => {
                   fill-rule="evenodd"
                   clip-rule="evenodd"
                   d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
-                  fill="#198754"
+                  fill="#184965"
                 />
               </g>
               <defs>
@@ -485,8 +485,8 @@ const AttachedSalesOrder = () => {
       </div>
       <form>
         <div>
-          {loader && <Loader />}
-          {/* sales order material */}
+          {/* {loader && <Loader />} */}
+          {/* Add sales order material */}
           {/* <div className="form_wrapper"> */}
           <div className="form_list_layout_wrapper">
             <div className="d-flex align-items-center justify-content-between py-2">
@@ -561,6 +561,7 @@ const AttachedSalesOrder = () => {
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-6 input_wrapper">
+                   
                     <label>Model Name *</label>
                     <div className="position-relative">
                       <select
@@ -595,7 +596,18 @@ const AttachedSalesOrder = () => {
                         </p>
                       )}
                     </div>
+                    
                   </div>
+                  <div className="col-lg-3 col-md-6 mb-4">
+                  <button
+                      type="button"
+                      className="btn"
+                      style={{backgroundColor:"#184965",color:"#FFF"}}
+                    >
+                      Add
+                    </button>
+                  </div>
+                  
                 </div>
                 <div className="row">
                   <div className="col-12" style={{ maxHeight: "300px", overflowY: "auto" }}>
@@ -732,15 +744,14 @@ const AttachedSalesOrder = () => {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6">
+                {/* <div className="col-lg-3 col-md-6">
                   <button
                     type="button"
                     className="btn btn-success"
-                    // onClick={addMaterial}
                   >
                     Add
                   </button>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

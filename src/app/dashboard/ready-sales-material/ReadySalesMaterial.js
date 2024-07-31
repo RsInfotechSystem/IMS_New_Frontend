@@ -125,7 +125,7 @@ const ReadySalesMaterial = () => {
             onClick={() => {
               setActiveTab("ready_sales_order");
             }}
-            style={{ backgroundColor: activeTab == "ready_sales_order" ? "#198754" : "#D0D3D9" }}
+            style={{ backgroundColor: activeTab == "ready_sales_order" ? "#184965" : "#D0D3D9" }}
           >
             Ready sales order
           </div>
@@ -135,7 +135,7 @@ const ReadySalesMaterial = () => {
             }}
             //   onClick={handleSubmit(handleVendorInformation)}
             className="tab_btn"
-            style={{ backgroundColor: activeTab == "sales_order" ? "#198754" : "#D0D3D9" }}
+            style={{ backgroundColor: activeTab == "sales_order" ? "#184965" : "#D0D3D9" }}
           >
             Sales order
           </div>

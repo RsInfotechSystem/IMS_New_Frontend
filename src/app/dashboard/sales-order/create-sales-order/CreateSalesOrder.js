@@ -185,7 +185,7 @@ const CreateOrder = () => {
                   fill-rule="evenodd"
                   clip-rule="evenodd"
                   d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
-                  fill="#198754"
+                  fill="#184965"
                 />
               </g>
               <defs>
@@ -205,95 +205,18 @@ const CreateOrder = () => {
           onClick={() => {
             setActiveTab("INFO");
           }}
-          style={{ backgroundColor: activeTab == "INFO" ? "#198754" : "#D0D3D9" }}
+          style={{ backgroundColor: activeTab == "INFO" ? "#184965" : "#D0D3D9" }}
         >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_330_3549)">
-              <path
-                d="M12.0004 22.8274C17.98 22.8274 22.8279 17.9795 22.8279 11.9999C22.8279 6.0203 17.98 1.17285 12.0004 1.17285C6.02079 1.17285 1.17285 6.0203 1.17285 11.9999C1.17285 17.9795 6.02079 22.8274 12.0004 22.8274Z"
-                stroke="#F3F8FF"
-                stroke-width="0.600238"
-              />
-              <path
-                d="M13.8457 18.917V9.58105H8.625V10.6008H10.1532V18.917H8.625V19.9363H15.3739V18.917H13.8457Z"
-                fill="#F3F8FF"
-              />
-              <path
-                d="M11.9991 8.52502C13.2654 8.52502 14.2916 7.4988 14.2916 6.23248C14.2916 4.96617 13.2654 3.93945 11.9991 3.93945C10.7323 3.93945 9.70605 4.96617 9.70605 6.23248C9.70605 7.4988 10.7323 8.52502 11.9991 8.52502Z"
-                fill="#F3F8FF"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_330_3549">
-                <rect width="24" height="24" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
+         
           Order Information
         </div>
         <div
           //   onClick={handleSubmit(handleVendorInformation)}
           className="tab_btn"
-          style={{ backgroundColor: activeTab == "SUPPLY" ? "#198754" : "#D0D3D9" }}
+          style={{ backgroundColor: activeTab == "SUPPLY" ? "#184965" : "#D0D3D9" }}
         >
           {" "}
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_330_3557)">
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M22 7L12 2L2 7V17L12 22L22 17V7Z"
-                stroke="#F3F8FF"
-                stroke-width="1.2"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M2 7L12 12"
-                stroke="#F3F8FF"
-                stroke-width="1.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M12 22V12"
-                stroke="#F3F8FF"
-                stroke-width="1.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M22 7L12 12"
-                stroke="#F3F8FF"
-                stroke-width="1.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M17 4.5L7 9.5"
-                stroke="#F3F8FF"
-                stroke-width="1.2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_330_3557">
-                <rect width="24" height="24" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
+       
           Order Item
         </div>
       </div>
@@ -456,7 +379,7 @@ const CreateOrder = () => {
                   /> */}
                 <CustomDateInput
                   value={filterValues?.orderDate}
-                  maxDate={`31-12-${new Date()?.getFullYear()}`}
+                  maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
                   onChange={(date) => {
                     setFilterValues((prev) => ({ ...prev, orderDate: date }));
                   }}
@@ -480,14 +403,27 @@ const CreateOrder = () => {
                     disable={false}
                   /> */}
                 <CustomDateInput
-                  maxDate={`31-12-${new Date()?.getFullYear()}`}
+                  maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
                   value={filterValues?.orderCompleteDate}
                   onChange={(date) => {
                     setFilterValues((prev) => ({ ...prev, orderCompleteDate: date }));
                   }}
                 />
               </div>
-              <div className="col-lg-3 d-none d-lg-block"></div>
+              <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
+                <label>Order Taken By*</label>
+                <InputBox
+                  type={"text"}
+                  register={{
+                    ...register("orderTakenBy", {
+                      required: "Order Taken By is required",
+                    }),
+                  }}
+                  errors={errors.orderTakenBy}
+                  placeholder={""}
+                  disable={false}
+                />
+              </div>
               {/* <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
                 <label>Completion Time</label>
                 <InputBox
@@ -533,27 +469,14 @@ const CreateOrder = () => {
                   errors={errors.userId}
                 />
               </div>
-              <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
-                <label>Order Taken By*</label>
-                <InputBox
-                  type={"text"}
-                  register={{
-                    ...register("orderTakenBy", {
-                      required: "Order Taken By is required",
-                    }),
-                  }}
-                  errors={errors.orderTakenBy}
-                  placeholder={""}
-                  disable={false}
-                />
-              </div>
+             
             </div>
           </div>
 
           {/* next btn  */}
           <div className="d-flex align-items-center justify-content-center">
             <Button
-              name={"Next"}
+              name={"Save & Next"}
               //   onClick={handleSubmit(handleVendorInformation)}
               onClick={() => {
                 setActiveTab("SUPPLY");
@@ -562,27 +485,27 @@ const CreateOrder = () => {
           </div>
         </div>
       )}
-      {/* </form>
-      <form> */}
+
       {activeTab === "SUPPLY" && (
         <div>
           {loader && <Loader />}
           {/* create add recipe order form  */}
-          <div className="form_wrapper">
+          <div className="">
             <div className="form_list_layout_wrapper">
               <div className="d-flex align-items-center justify-content-between py-2">
                 <div className="form_layout">
                   <div className="row">
-                    <div className="input_wrapper col-12 col-md-12 col-lg-6 ">
+                   
+                  </div>
+                  <div className="row d-flex align-items-end">
+                  <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Description</label>
                       <textarea
                         {...register("description")}
                         className="form-control custom_input"
-                        rows="3"
+                        rows="1"
                       ></textarea>
                     </div>
-                  </div>
-                  <div className="row d-flex align-items-end">
                     <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Quantity*</label>
                       <InputBox
@@ -620,9 +543,21 @@ const CreateOrder = () => {
                       />
                     </div>
                     <div className="col-lg-3 col-md-6 input_wrapper">
-                      <button type="button" className="btn btn-success" onClick={addMaterial}>
-                        Add
-                      </button>
+                      <label>Remarks *</label>
+                      <InputBox
+                        // type={"number"}
+                        register={{
+                          ...register("remarks", {
+                            // required: "Remarks Name is required",
+                          }),
+                        }}
+                        errors={errors.remarks}
+                      />
+                    </div>
+                    <div className="col-lg-3 col-md-6 input_wrapper">
+                      <Button name={"Add"} type="button" className="" onClick={addMaterial}>
+                        {/* Add */}
+                      </Button>
                     </div>
                   </div>
                   <div className="row d-flex align-items-end"></div>
@@ -630,7 +565,7 @@ const CreateOrder = () => {
               </div>
             </div>
           </div>
-          {/*// Sales Order Preview*/}
+          {/* Sales Order Preview */}
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Sales Order Item Preview</p>
@@ -710,12 +645,12 @@ const CreateOrder = () => {
               type="submit"
               className="btn btn-success"
               onClick={handleSubmit(createOrder)}
-              // onClick={() => handleSubmit(createOrder)}
+            // onClick={() => handleSubmit(createOrder)}
             ></Button>
           </div>
         </div>
       )}
-      {/* </form> */}
+
     </>
   );
 };
