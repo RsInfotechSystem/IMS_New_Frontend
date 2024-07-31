@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import icon from "../../public/images/rakshabandhan-new.png";
+import icon from "../../public/images/login-image.png";
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
@@ -56,7 +56,7 @@ const Page = () => {
           </div>
           <div className="content">
             {/* <h3>Welcome to <br /> IMS</h3> */}
-            <h6 className='text-dark'>Powered By <br></br> <a className='login_page_rsis' href='https://www.rsinfotechsys.com/'>R S Infotech System P.L.</a></h6>
+            <h6 className='text-secondary'>Powered By <br></br> <a className='login_page_rsis' href='https://www.rsinfotechsys.com/'>R S Infotech System P.L.</a></h6>
           </div>
         </div>
         <div className="login_form_section">

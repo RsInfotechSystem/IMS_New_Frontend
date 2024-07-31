@@ -45,7 +45,7 @@ function SideNav() {
         )}
       </div>
       <div className="footer ms-2">
-        <h6 className="text-secondary">Powered By <br></br> <a style={{ color: "#79080a" }} target="_blank" href="https://www.rsinfotechsys.com/">R S Infotech System P.L.</a></h6>
+        <h6 className="text-secondary">Powered By <br></br> <a style={{ color: "#184965" }} target="_blank" href="https://www.rsinfotechsys.com/">R S Infotech System P.L.</a></h6>
       </div>
     </div>
   );
