@@ -1,8 +1,8 @@
 import React from "react";
-import SalesOrderSales from "./SalesOrderSales";
+import AttachedSalesOrder from "./AttachedSalesOrder";
 
 const page = () => {
-  return <SalesOrderSales />;
+  return <AttachedSalesOrder />;
 };
 
 export default page;

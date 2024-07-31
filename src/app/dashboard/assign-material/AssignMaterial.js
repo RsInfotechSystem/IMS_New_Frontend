@@ -45,7 +45,7 @@ const AssignMaterial = () => {
   const location = watch("locationId");
   const categoryId = watch("categoryId");
   const brandId = watch("brandId");
-
+  const [selectedModels, setSelectedModels] = useState([]);
   const searchString = watch("searchString");
   const [expandedModals, setExpandedModals] = useState([]);
   const [quantities, setQuantities] = useState([]);
@@ -213,6 +213,11 @@ const AssignMaterial = () => {
           status: formValues.status,
           brandId: formValues.brandId,
           conditionType: formValues.conditionType,
+          parameters: Object.keys(selectedModels).map((modelName) => ({
+            modelName,
+            parameterList: selectedModels[modelName],
+          })),
+          // parameter: selectedModels,
         };
 
     await submitForm(payload);
@@ -365,6 +370,25 @@ const AssignMaterial = () => {
       toast.error(error.message);
     }
   };
+  const handleCheckboxSelect = (e, modalName, param) => {
+    const { checked } = e.target;
+
+    setSelectedModels((prevSelectedModels) => {
+      const modalSelectedModels = prevSelectedModels[modalName] || [];
+
+      if (checked) {
+        return {
+          ...prevSelectedModels,
+          [modalName]: [...modalSelectedModels, param],
+        };
+      } else {
+        return {
+          ...prevSelectedModels,
+          [modalName]: modalSelectedModels.filter((model) => model !== param),
+        };
+      }
+    });
+  };
   useEffect(() => {
     // const id = getValues("categoryId");
     const id = formValues.categoryId;
@@ -384,14 +408,12 @@ const AssignMaterial = () => {
             <div className="col-12 col-lg-4 col-md-4">
               <div className="form_view pt-0">
                 <form onSubmit={handleSubmit}>
-                
                   <div style={{ maxHeight: "40dvh", overflowY: "auto" }}>
-
                     <div className="p-3" style={{ backgroundColor: "white" }}>
                       {/* <div className="form_modal_body w-75 py-3"></div> */}
                       <div className="pb-2">
-                    <h6>Select Material</h6>
-                  </div>
+                        <h6>Select Material</h6>
+                      </div>
                       <div className="row">
                         <div class="col-lg-6 col-md-5 d-flex align-items-center">
                           <label>Serial No./Item Code</label>
@@ -417,7 +439,9 @@ const AssignMaterial = () => {
                         </div>
                       </div>
                       <div className="row">
-                        <h6 className="d-flex align-items-center justify-content-center assign_or_font">OR</h6>
+                        <h6 className="d-flex align-items-center justify-content-center assign_or_font">
+                          OR
+                        </h6>
                       </div>
                       <div class="row">
                         <div className=" col-6">
@@ -614,10 +638,18 @@ const AssignMaterial = () => {
                             <ul className="parameter-list" style={{ listStyle: "none" }}>
                               {modal.parameterList.map((param, paramIndex) => (
                                 <li key={paramIndex}>
-                                  <input type="checkbox" className="me-3" />
+                                  <input
+                                    type="checkbox"
+                                    className="me-3"
+                                    id={`modelName:${modal?.modelName}value:${param}`}
+                                    onChange={(e) =>
+                                      handleCheckboxSelect(e, modal.modelName, param)
+                                    }
+                                  />
                                   {param}
                                 </li>
                               ))}
+                              {console.log("eeeeeeeeee", selectedModels)}
                             </ul>
                           )}
                         </div>
@@ -629,7 +661,7 @@ const AssignMaterial = () => {
             </div>
             <div className="col-12 col-lg-8 col-md-8">
               <div className="row">
-                <div className="col-12 mb-1"  style={{ height: "40dvh" }}>
+                <div className="col-12 mb-1" style={{ height: "40dvh" }}>
                   <div className="table_wrapper table_wrapper_assign">
                     <div className="table_main" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
@@ -696,7 +728,7 @@ const AssignMaterial = () => {
                                 </div>
                                 <div className="col_20p">
                                   <h6>{materialData?.locationId.name}</h6>
-                                </div>{" "}
+                                </div>
                                 <div className="col_20p">
                                   <h6>{materialData.blockId.blockNo}</h6>
                                 </div>
@@ -908,7 +940,7 @@ const AssignMaterial = () => {
                         border: "0.5px solid grey",
                         padding: "6px 12px",
                         borderRadius: "4px",
-                        cursor:"pointer",
+                        cursor: "pointer",
                       }}
                       // {...register("userId", {
                       //   required: "Technician is required",
@@ -917,10 +949,17 @@ const AssignMaterial = () => {
                     >
                       {/* <option>Roshan</option>
                   <option>Roshan 2</option> */}
-                      <option value="" className="">Select Technician</option>
+                      <option value="" className="">
+                        Select Technician
+                      </option>
                       {TechnicianList.map((ele, index) => {
                         return (
-                          <option className="" style={{ fontSize: "14px" }} value={ele._id} key={index}>
+                          <option
+                            className=""
+                            style={{ fontSize: "14px" }}
+                            value={ele._id}
+                            key={index}
+                          >
                             {ele.name}
                           </option>
                         );
@@ -949,11 +988,7 @@ const AssignMaterial = () => {
                 </button>
               </div> */}
                   <div className="form_button_wrapper gap-2 col-lg-4 col-md-4 d-flex align-items-center">
-                    <CustomBtn
-                      name="Assign material"
-                  
-                      onClick={() => handleAssign()}
-                    />
+                    <CustomBtn name="Assign material" onClick={() => handleAssign()} />
                   </div>
                 </div>
               </div>

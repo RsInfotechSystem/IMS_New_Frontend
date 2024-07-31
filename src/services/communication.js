@@ -1460,7 +1460,7 @@ export const communication = {
   getLocationWiseMaterial: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-location-wise-material`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/get-material-for-sell-order`,
         data,
 
         {
@@ -2091,7 +2091,7 @@ export const communication = {
         }
       );
     } catch (error) {
-        toast.info(error.message)
+      toast.info(error.message);
     }
   },
   importExcelParameterData: (formData) => {

@@ -12,7 +12,7 @@ import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import ViewSalesOrder from "../create-sales-order/ViewSalesOrderPdf";
-const SalesOrderSales = () => {
+const AttachedSalesOrder = () => {
   const router = useRouter();
   const {
     register,
@@ -54,6 +54,7 @@ const SalesOrderSales = () => {
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     materials: [],
   });
+  const [selectedModels, setSelectedModels] = useState([]);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
   const [selectedList, setSelectedList] = useState([]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
@@ -63,6 +64,7 @@ const SalesOrderSales = () => {
   const [expandedModals, setExpandedModals] = useState([]);
   const categoryId = watch("categoryId");
   const brandId = watch("brandId");
+  const modelId = watch("modelId");
   async function getBrandWiseModel() {
     try {
       // props.setLoader(true);
@@ -202,12 +204,15 @@ const SalesOrderSales = () => {
         categoryId: categoryId,
         brandId: brandId,
         modelId: modelId,
-        parameter: parameter,
+        parameters: Object.keys(selectedModels).map((modelName) => ({
+          modelName,
+          parameterList: selectedModels[modelName],
+        })),
       };
       const serverResponse = await communication.getLocationWiseMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.material);
-        setPageCount(serverResponse?.data?.totalPages);
+        // setPageCount(serverResponse?.data?.totalPages);
         setState({ materialLists: serverResponse?.data.material });
         if (isFirstCall) {
           setState({
@@ -255,6 +260,9 @@ const SalesOrderSales = () => {
       setLoader(false);
     }
   }
+  useEffect(() => {
+    if (location && categoryId && selectedModels) getLocationWiseMaterial({ isFirstCall: true });
+  }, [location, categoryId, selectedModels]);
   async function sendReadyMaterial(values) {
     // console.log("onsubmit", values);
     try {
@@ -313,6 +321,25 @@ const SalesOrderSales = () => {
     //   await getBrandById();
     // }
   }
+  const handleCheckboxSelect = (e, modalName, param) => {
+    const { checked } = e.target;
+
+    setSelectedModels((prevSelectedModels) => {
+      const modalSelectedModels = prevSelectedModels[modalName] || [];
+
+      if (checked) {
+        return {
+          ...prevSelectedModels,
+          [modalName]: [...modalSelectedModels, param],
+        };
+      } else {
+        return {
+          ...prevSelectedModels,
+          [modalName]: modalSelectedModels.filter((model) => model !== param),
+        };
+      }
+    });
+  };
   useEffect(() => {
     initialAPICall();
   }, []);
@@ -474,7 +501,7 @@ const SalesOrderSales = () => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                         {...register("categoryId", {
-                          required: "categoryId is required",
+                          required: "Category is required",
                         })}
                       >
                         <option value="" className="text-secondary text-lowercase"></option>
@@ -594,7 +621,12 @@ const SalesOrderSales = () => {
                           <ul className="parameter-list" style={{ listStyle: "none" }}>
                             {modal.parameterList.map((param, paramIndex) => (
                               <li key={paramIndex}>
-                                <input type="checkbox" className="me-3" />
+                                <input
+                                  type="checkbox"
+                                  className="me-3"
+                                  id={`modelName:${modal?.modelName}value:${param}`}
+                                  onChange={(e) => handleCheckboxSelect(e, modal.modelName, param)}
+                                />
                                 {param}
                               </li>
                             ))}
@@ -815,4 +847,4 @@ const SalesOrderSales = () => {
   );
 };
 
-export default SalesOrderSales;
+export default AttachedSalesOrder;
