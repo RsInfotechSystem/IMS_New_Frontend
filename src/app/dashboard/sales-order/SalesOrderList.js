@@ -197,9 +197,7 @@ const SalesOrderList = () => {
               <div className="col_25p">
                 <h5>Completion Date</h5>
               </div>
-              {/* <div className="col_20p">
-                <h5>Completion Time</h5>
-              </div> */}
+
               <div className="col_20p">
                 <h5>Location</h5>
               </div>
