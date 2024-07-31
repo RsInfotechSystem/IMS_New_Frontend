@@ -59,7 +59,7 @@ const Parameters = () => {
     formState: { errors },
   } = useForm();
   //   const _parameterInput = watch("parameter");
-  async function getAllParameter(page, searchString, isSearch = false) {
+  async function getAllParameter(page=1, searchString, isSearch = false) {
     try {
       setLoader(true);
       const serverResponse = await communication.getAllParameter(page, searchString);
