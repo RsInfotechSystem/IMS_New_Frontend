@@ -1364,6 +1364,12 @@ div:where(.tab_active, .tab_inactive) {
   height: 80%;
   overflow: auto;
 }
+.table_wrapper_assign {
+  background-color: var(--white-color);
+  border-radius: 8px;
+  height: 100%;
+  overflow: auto;
+}
 
 .hrm_config_table_wrapper {
   height: 83%;
@@ -5289,4 +5295,28 @@ ul .appointment_letter_ul {
   font-size: 0.74rem;
   font-weight: 600;
   color: var(--black_color_dark_shade);
+}
+.form_control_assign{
+  display: block;
+  width: 100%;
+  padding: 0.2rem .75rem;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.assign_or_font{
+  font-size: 12px;
+  font-weight: 600;
+}
+.font_label{
+  font-family: 12px;
 }
