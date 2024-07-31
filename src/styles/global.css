@@ -11,7 +11,7 @@
   --grey_color_light_shade2: #f1f5f9;
   --subtable_data: #1849654f;
   /* --skyblue_color_light_shade1: #dcf4e6; */
-  --skyblue_color_light_shade1: #f3df9a;
+  --skyblue_color_light_shade1: #b7c7cf;
   --skyblue_color_light_shade2: #f3f8ff;
   --red_color: #dc3545;
   --yellow_color: #184965;
@@ -24,6 +24,19 @@
 custom_button:hover
 .support-orange {
   color: var(--orange_color) !important;
+}
+
+.custom_button_read {
+  width: 80px;
+  /* background-color: var(--green_color); */
+  /* padding: 0.3rem; */
+  border-radius: 4px;
+  font-weight: 800;
+  color: #000000;
+  cursor: pointer;
+  border: none !important;
+  transition: 0.3s;
+  font-size: 12px;
 }
 
 .support-red {
@@ -1097,7 +1110,7 @@ div:where(.tab_active, .tab_inactive) {
 }
 
 .page_wrapper {
-  padding: 20px;
+  padding: 10px 20px 20px 20px;
 }
 
 .hotel_image_wrapper {
@@ -1263,7 +1276,7 @@ div:where(.tab_active, .tab_inactive) {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 0;
+  padding: 0.5rem 0;
 }
 
 .search_btn_wrapper .buttons_wrapper {
@@ -1274,18 +1287,18 @@ div:where(.tab_active, .tab_inactive) {
 
 /* search btn wrapper styling end */
 /* pagination */
-.pagination_wrapper {
+/* .pagination_wrapper {
   width: 100%;
   display: grid;
   place-items: center;
   height: 7%;
   padding-top: 10px;
-}
+} */
 
 .pagination {
   display: flex;
   align-items: center;
-  margin: auto;
+  /* margin: auto; */
   gap: 5px;
   margin-left: auto;
 }
@@ -1348,7 +1361,7 @@ div:where(.tab_active, .tab_inactive) {
 .table_wrapper {
   background-color: var(--white-color);
   border-radius: 8px;
-  height: 76%;
+  height: 80%;
   overflow: auto;
 }
 
@@ -1528,6 +1541,7 @@ div:where(.tab_active, .tab_inactive) {
   padding: 0.5rem 1rem;
   border-radius: 4px;
   font-weight: 500;
+  font-size: 13px;
   color: #fff;
   cursor: pointer;
   min-width: 100px;

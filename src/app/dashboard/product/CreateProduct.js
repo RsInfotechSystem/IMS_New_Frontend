@@ -22,6 +22,10 @@ function CreateProduct({ data }) {
   const [_brandId, _setBrandId] = useState("");
   const router = useRouter();
   const [profile, setProfile] = useState([]);
+  //
+  const [document, setDocument] = useState([]);
+  const [otherDocuments, setOtherDocuments] = useState([]);
+  //
   const {
     register,
     handleSubmit,
@@ -34,7 +38,51 @@ function CreateProduct({ data }) {
   let categoryId = watch("categoryId");
   const brandId = watch("brandId");
 
-  console.log("profile",profile);
+
+
+  // select document 
+  const selectFile = async (event) => {
+    const selectedFile = event.target.files[0];
+    if (event.target.files.length === 0) {
+      setOtherDocuments([])
+      return false;
+    } else {
+      if (selectedFile?.size > 2000000) {
+        toast.info("The selected image exceeds a size of 2 mb");
+        return false;
+      } else if (otherDocuments.length > 3) {
+        toast.info("The document upload limit is restricted to only 4.");
+        return false
+      } else {
+        if (["image/png", "image/jpg", "image/jpeg", "application/pdf"].includes(selectedFile?.type)) {
+          setOtherDocuments((prev) => [...prev, {
+            fieldName: "otherDocuments",
+            documentName: selectedFile.name,
+            fileUrl: selectedFile,
+            isNew: true
+          }]);
+          setDocument((prev) => [...prev, ...otherDocuments]);
+        } else {
+          toast.info("Only JPG, JPEG, PNG, and PDF files are allowed");
+          return false;
+        }
+      }
+    }
+  }
+  const deleteDocument = (indexToDelete) => {
+    // Make a copy of the current state of otherDocuments
+    const updatedDocuments = [...otherDocuments];
+
+    // Remove the document at the specified index
+    updatedDocuments.splice(indexToDelete, 1);
+    if (updatedDocuments?.length < 1) {
+    }
+    // Update the state with the modified array
+    setOtherDocuments(updatedDocuments);
+    setDocument((prev) => [...prev, ...updatedDocuments])
+
+  }
+
 
   async function onSubmit(values) {
     try {
@@ -48,22 +96,31 @@ function CreateProduct({ data }) {
         brandId: values.brandId,
       };
       if (modalStates?.type === "create") {
-        if (profile.length === 0) {
+        if (otherDocuments.length === 0) {
           toast.info("Please select the product Image(s)");
           return;
         }
-        profile.forEach((file) => {
+        otherDocuments.forEach((file) => {
           formData.append("files", file.fileUrl);
         });
         formData.append("modelDetails", JSON.stringify(dataToSend));
         response = await communication.createProduct(formData);
       } else {
-        let isFileAttached = profile.length > 0;
+        let isFileAttached = otherDocuments.length > 0;
         dataToSend.modelId = modalStates.productId;
+        // if (isFileAttached) {
+        //   profile.forEach((file) => {
+        //     formData.append("files", file.fileUrl);
+        //   });
         if (isFileAttached) {
-          profile.forEach((file) => {
-            formData.append("files", file.fileUrl);
-          });
+          otherDocuments?.map((ele) => {
+            formData.append("otherDocuments", ele?.fileUrl);
+          })
+          // if (otherDocuments?.length > 0) {
+          //           otherDocuments?.map((ele) => {
+          //               formData.append("otherDocuments", ele?.fileUrl);
+          //           })
+          //       }
           formData.append("modelDetails", JSON.stringify(dataToSend));
         } else {
           formData = dataToSend;
@@ -99,13 +156,13 @@ function CreateProduct({ data }) {
       });
       if (responseFromServer?.data?.status === "SUCCESS") {
         const modelData = responseFromServer?.data?.model;
-        setValue("name", modelData.name);
+        setValue("name", modelData?.name);
         setValue("categoryId", modelData?.categoryId?._id);
         _setBrandId(modelData.brandId._id);
-        await getCategoryWiseBrand(modelData?.categoryId?._id,setLoader, router, setBrandsData);
+        await getCategoryWiseBrand(modelData?.categoryId?._id, setLoader, router, setBrandsData);
         setValue("brandId", modelData?.brandId?._id);
         setValue("description", modelData.description);
-        setProfile(modelData?.files);
+        setOtherDocuments(modelData?.files);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -118,6 +175,8 @@ function CreateProduct({ data }) {
       setLoader(false);
     }
   };
+
+  console.log(otherDocuments, "otherDocuments");
 
   async function initialAPICall() {
     setCategoryList(await getCategory(router));
@@ -237,61 +296,75 @@ function CreateProduct({ data }) {
                   errors={errors.description}
                 />
               </div>
+              {/* <div className="col-lg-6 col-md-6 input_wrapper"> */}
 
-              <div className="input_wrapper col-lg-12">
-                <div className="document_picker_wrapper">
-                  <h6>Model Photo(s)*</h6>
-                  <label htmlFor={"photo"}>
-                    <div className="document_picker">
-                      <input
-                        accept="image/*,.png"
-                        type="file"
-                        className="d-none"
-                        id={"photo"}
-                        multiple
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files);
-                          if (files.length > 0) {
-                            const updatedFiles = files.map((file) => ({
-                              fieldName: "photo",
-                              documentName: file.name,
-                              fileUrl: file,
-                            }));
-                            setProfile((prev) => [...prev, ...updatedFiles]);
-                          }
-                        }}
-                      />
-                      {profile.length > 0 ? (
-                        <div className="image_preview_container">
-                          {profile.map((file, index) => (
-                            <div key={index} className="image_preview">
-                              <Image
-                                alt={file.documentName}
-                                width={100}
-                                height={100}
-                                src={
-                                  typeof file.fileUrl === "object"
-                                    ? URL.createObjectURL(file.fileUrl)
-                                    : `${getServerUrl()}/getFiles/${file.fileUrl}`
-                                }
-                              />
-                              <p>
-                                {file.documentName?.split(".")[0]?.slice(0, 10)}.
-                                {file.documentName?.split(".")[1]}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <FontAwesomeIcon icon={faCirclePlus} className="icon fontAwesome_icon" />
-                      )}
-                    </div>
-                  </label>
-                </div>
+              <div className="col-12 mt-3 input_wrapper">
+                <label>Model Photos*</label>
               </div>
+              {/* other */}
+
+              {otherDocuments.length > 0 && (
+                otherDocuments?.map((file, index) => {
+                  return (
+                    <div className="col-lg-2 col-md-4 mt-1" key={index}>
+                      <div className="document_picker_wrapper">
+                        <div className="document_picker overflow-visible">
+                          <Image
+                            alt={file.documentName}
+                            width={100}
+                            height={100}
+                            src={
+                              typeof file.fileUrl === "object"
+                                ? URL.createObjectURL(file.fileUrl)
+                                : `${getServerUrl()}/getFiles/${file.fileUrl}`
+                            }
+                          />
+                          <p>
+                            {file.documentName?.split(".")[0]?.slice(0, 10)}.
+                            {file.documentName?.split(".")[1]}
+                          </p>
+                          <span className='p-1 document_delete' onClick={() => { deleteDocument(index) }} title='delete'>
+                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <g clip-path="url(#clip0_5168_20178)">
+                                <rect x="11.3135" width="16" height="16" rx="8" transform="rotate(45 11.3135 0)" fill="#DC3545" />
+                                <path d="M13.0812 10.253C13.2765 10.0578 13.2765 9.74119 13.0812 9.54593C12.886 9.35068 12.5694 9.35067 12.3741 9.54593L11.3135 10.6066L10.2528 9.54593C10.0576 9.35067 9.74097 9.35068 9.54571 9.54593C9.35045 9.74119 9.35045 10.0578 9.54571 10.253L10.6064 11.3137L9.54571 12.3744C9.35045 12.5696 9.35045 12.8862 9.54571 13.0815C9.74097 13.2767 10.0576 13.2767 10.2528 13.0815L11.3135 12.0208L12.3741 13.0815C12.5694 13.2767 12.886 13.2767 13.0812 13.0815C13.2765 12.8862 13.2765 12.5696 13.0812 12.3744L12.0206 11.3137L13.0812 10.253Z" fill="#F3F8FF" />
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M16.3811 6.24611C13.5823 3.44735 9.04464 3.44735 6.24588 6.24611C3.4471 9.04489 3.44712 13.5826 6.24588 16.3813C9.04465 19.1801 13.5823 19.1801 16.3811 16.3813C19.1798 13.5826 19.1799 9.04489 16.3811 6.24611ZM6.95299 6.95322C9.36122 4.54499 13.2657 4.54499 15.674 6.95322C18.0822 9.36143 18.0822 13.266 15.674 15.6742C13.2658 18.0824 9.3612 18.0824 6.95299 15.6742C4.54475 13.266 4.54477 9.36143 6.95299 6.95322Z" fill="#F3F8FF" />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_5168_20178">
+                                  <rect x="11.3135" width="16" height="16" rx="8" transform="rotate(45 11.3135 0)" fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                  )
+                }))
+              }
+              {
+                otherDocuments.length < 4 ?
+                  (<div className="col-lg-2 col-md-4 mt-1">
+                    <div className="document_picker_wrapper">
+                      <label for="otherDocument">
+                        <div className="document_picker">
+                          <input type="file" className="d-none" id={"otherDocument"} onChange={(event) => { selectFile(event) }} />
+                          <FontAwesomeIcon icon={faCirclePlus} className="icon fontAwesome_icon" />
+                          <p>Add</p>
+                        </div>
+                      </label>
+                    </div>
+                  </div>) : (<></>)
+              }
+
             </div>
 
-            <div className="form_button_wrapper">
+            {/* </div> */}
+
+            <div className="form_button_wrapper mt-2">
               <CustomBtn
                 name={modalStates?.type === "create" ? "Create" : "Update"}
                 onClick={handleSubmit(onSubmit)}

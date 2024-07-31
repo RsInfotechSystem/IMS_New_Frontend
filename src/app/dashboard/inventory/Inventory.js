@@ -201,7 +201,14 @@ const Inventory = () => {
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
-        <div className="tab_title">Inventory</div>
+        <div className="tab_title">Inventory Look</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -287,9 +294,9 @@ const Inventory = () => {
               <div className="col_35p">
                 <h5>Reamaining Quantity</h5>
               </div>
-              <div className="col_40p">
+              {/* <div className="col_40p">
                 <h5 className="action_wrraper">Action</h5>
-              </div>
+              </div> */}
             </div>
             {material?.map((materialDetails, index) => {
               return (
@@ -347,13 +354,13 @@ const Inventory = () => {
                   <div className="col_35p">
                     <h6>{materialDetails?.reamainingQuantity}</h6>
                   </div>
-                  <div className="col_40p">
+                  {/* <div className="col_40p">
                     <h6 className="action_wrraper">
                       {/* <CustomBtn 
                     name={"Sell"}
                     onClick={() => { setModalStates((prev) => ({ ...prev, modal: true, type: "sell" })) }}
                    /> */}
-                      <button
+                      {/* <button
                         className="actionbtn sell_btn"
                         onClick={(e) => changeMaterialStatus(materialDetails)}
                       >
@@ -373,25 +380,19 @@ const Inventory = () => {
                       >
                         View
                       </button>
-                    </h6>
-                  </div>
+                    </h6> 
+                  </div> */}
                 </div>
               );
             })}
           </div>
         </div>
       </div>
-      {pageCount > 1 && (
+      {/* {pageCount > 1 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && <InventoryView data={{ modalStates, setModalStates }} />}
     </>
   );

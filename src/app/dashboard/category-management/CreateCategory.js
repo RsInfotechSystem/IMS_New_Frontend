@@ -51,7 +51,6 @@ function CreateCategory({ data }) {
       setButtonLoader(true);
       const serverResponse = await communication.createCategory(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        toast.success(serverResponse.data.message);
         setSelectedOption("");
         setErrorRackFlag("");
         reset();

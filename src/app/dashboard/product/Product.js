@@ -14,6 +14,9 @@ import Image from "next/image";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faImage } from "@fortawesome/free-regular-svg-icons";
+import CustomImgModal from "@/common-components/CustomImgModal";
+import CustomResponseReadMoreModal from "@/common-components/CustomResponseReadMoreModal";
 
 const Product = () => {
   const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
@@ -23,6 +26,14 @@ const Product = () => {
     modal: false,
     type: "",
     productId: "",
+    showReadMoreText: "",
+    showReadMore: ""
+  });
+  const [modalImageStates, setModalImageStates] = useState({
+    modal: false,
+    type: "",
+    showImg: "",
+    url: "",
   });
   const [productList, setProductList] = useState([]);
   const [searchString, setSearchString] = useState("");
@@ -144,10 +155,11 @@ const Product = () => {
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
+      {modalImageStates?.showImg && <CustomImgModal url={modalImageStates?.url} setModalImageStates={setModalImageStates} />}
       {modalStates.deleteProduct && (
         <CustomResponseHandlerModal
           status="warning"
-          message={"Do you want to delete Product?"}
+          message={"Do you want to delete model?"}
           successHandler={() => {
             deleteProduct();
           }}
@@ -156,8 +168,27 @@ const Product = () => {
           }}
         />
       )}
+      {
+        modalStates?.showReadMore && (
+          <CustomResponseReadMoreModal
+            status="warning"
+            message={modalStates?.showReadMoreText}
+            cancelButton={"Cancel"}
+            cancelHandler={() => {
+              setModalStates((prev) => ({ ...prev, showReadMore: false, showReadMoreText: "" }));
+            }}
+          />
+        )
+      }
       <div className="top_header">
         <div className="tab_title">Model Details</div>
+        <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -237,7 +268,9 @@ const Product = () => {
               <div className="col_35p">
                 <h5>Description</h5>
               </div>
-
+              <div className="col_20p">
+                <h5 className="action_wrraper">File</h5>
+              </div>
               <div className="col_20p">
                 <h5 className="action_wrraper">Action</h5>
               </div>
@@ -278,9 +311,25 @@ const Product = () => {
                     <h6>{data?.brandId?.name}</h6>
                   </div>
                   <div className="col_35p">
-                    <h6>{data?.description}</h6>
+                    {/* <h6>{data?.description}</h6> */}
+                    <h6>{data?.description.substring(0, 100)}
+                      {(data.description?.length > 120) && <div className="custom_button_read" onClick={() => setModalStates(pre => ({ ...pre, showReadMore: true, showReadMoreText: data.description }))}> {data.description?.length > 120 && "Read More"}</div>
+                      }</h6>
                   </div>
-
+                  <div className="col_20p">
+                  {data?.files?.map((img,index)=>(
+                    <div key={index} style={{marginRight:5, backgroundColor: "white"}}>
+                        <div title={img?.documentName}>
+                        <FontAwesomeIcon  icon={faImage} style={{width: 20, height: 20} }
+                      onClick={() => setModalImageStates(pre => ({ ...pre, showImg: true, url: `${img?.fileUrl}` }))}
+                      />
+                        </div>
+                    </div>
+                  ))
+                  
+                              
+                  }
+                  </div>
                   <div className="col_20p">
                     <h6 className="action_wrraper">
                       <div
@@ -329,23 +378,18 @@ const Product = () => {
                       </div>
                     </h6>
                   </div>
+                 
                 </div>
               );
             })}
           </div>
         </div>
       </div>
-      {pageCount > 0 && (
+      {/* {pageCount > 0 && (
         <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          
         </div>
-      )}
+      )} */}
       {modalStates?.modal && (
         <CreateProduct data={{ modalStates, setModalStates, getProductList }} />
       )}
