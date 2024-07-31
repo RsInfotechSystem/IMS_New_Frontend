@@ -27,6 +27,7 @@ function CreateBlock({ data }) {
   const [rackList, setRackList] = useState([]);
   const [propertyType, setPropertyType] = useState([]);
   const [defaultRack, setDefaultRack] = useState([]);
+  const [_locationId, _setlocationId] = useState("")
 
   const {
     register,
@@ -39,7 +40,7 @@ function CreateBlock({ data }) {
     formState: { errors },
   } = useForm();
   const location = watch("locationId");
-
+  console.log("rahjwal", getValues(locationId))
   const onSubmit = async (values) => {
     let rackIds = values.rackName ? values.rackName : "";
     if (selectedOption == "") {
@@ -51,11 +52,11 @@ function CreateBlock({ data }) {
         locationId: values.locationId,
         blockNo: values.blockNo,
         isRackAdded: selectedOption === "Yes" ? true : false,
-        rackId: [...propertyType],
+        rackId: propertyType.map(ele => (ele._id)),
       };
-      if (rackIds) {
-        payload.rackId = [rackIds];
-      }
+      // if (rackIds) {
+      //   payload.rackId = [rackIds];
+      // }
       setLoader(true);
       const serverResponse = await communication.createBlock(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -107,11 +108,17 @@ function CreateBlock({ data }) {
         blockId: modalStates?.id,
       });
       if (response?.data?.status === "SUCCESS") {
-        setDefaultRack([...response?.data?.block?.rackName]);
+        // setDefaultRack([...response?.data?.block?.rackName]);
         setLocationId(response?.data.block.locationId._id);
         setBlockId(response?.data?.block?._id);
         setValue("blockNo", response?.data?.block?.blockNo);
         setSelectedOption(response?.data?.block?.isRackAdded ? "Yes" : "No");
+        if (response?.data?.block?.isRackAdded) {
+          setPropertyType(response?.data?.block?.rackId)
+          await getActiveRack(response?.data.block.locationId._id)
+        } else {
+          setPropertyType([])
+        }
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -156,7 +163,7 @@ function CreateBlock({ data }) {
         locationId: values.locationId,
         blockNo: values.blockNo,
         isRackAdded: selectedOption === "Yes" ? true : false,
-        rackId: selectedOption === "Yes" ? [...propertyType] : [],
+        rackId: selectedOption === "Yes" ? propertyType.map(ele => (ele._id)) : [],
         // isRackAdded: true, //bypass
       };
 
@@ -189,16 +196,16 @@ function CreateBlock({ data }) {
     setErrorRackFlag("");
   };
 
-  useEffect(() => {
-    const selectedIds = defaultRack.map((selectedRackName) => {
-      const selectedRack = rackList.find((rackData) => rackData.rackName === selectedRackName);
-      return selectedRack ? selectedRack._id : null;
-    });
+  // useEffect(() => {
+  //   const selectedIds = defaultRack.map((selectedRackName) => {
+  //     const selectedRack = rackList.find((rackData) => rackData.rackName === selectedRackName);
+  //     return selectedRack ? selectedRack._id : null;
+  //   });
 
-    const filteredIds = selectedIds.filter((id) => id !== null);
+  //   const filteredIds = selectedIds.filter((id) => id !== null);
 
-    setPropertyType(filteredIds);
-  }, [defaultRack, rackList.length]);
+  //   setPropertyType(filteredIds);
+  // }, [defaultRack, rackList.length]);
 
   useEffect(() => {
     if (modalStates?.type === "update") {
@@ -216,10 +223,11 @@ function CreateBlock({ data }) {
   }, []);
 
   useEffect(() => {
-    if (selectedOption === "Yes" && location) {
-      getActiveRack(getValues("locationId"));
+    if (selectedOption === "Yes") {
+      getActiveRack(_locationId);
     }
-  }, [selectedOption, location]);
+  }, [_locationId]);
+  console.log("rajjjjjj", _locationId)
 
   return (
     <>
@@ -253,6 +261,8 @@ function CreateBlock({ data }) {
                       required: "location is required",
                     }),
                   }}
+                  onChange={(e) => _setlocationId(e.target.value)
+                  }
                   errors={errors.locationId}
                 />
               </div>
@@ -305,30 +315,12 @@ function CreateBlock({ data }) {
                     <label >Rack Select*</label>
                     <Multiselect
                       placeholder="Select Rack"
-                      options={rackList.map((rackData) => rackData.rackName)}
-                      displayValue={"name"}
+                      options={rackList}
                       selectedValues={modalStates?.type === "create" ? defaultRack : [...propertyType]}
                       keepSearchTerm={true}
-                      onSelect={(selectedList) => {
-                        const selectedIds = selectedList.map((selectedRackName) => {
-                          const selectedRack = rackList.find(
-                            (rackData) => rackData.rackName === selectedRackName
-                          );
-                          return selectedRack ? selectedRack._id : null;
-                        });
-
-                        setPropertyType(selectedIds);
-                      }}
-                      onRemove={(selectedList) => {
-                        const selectedIds = selectedList.map((selectedRackName) => {
-                          const selectedRack = rackList.find(
-                            (rackData) => rackData.rackName === selectedRackName
-                          );
-                          return selectedRack ? selectedRack._id : null;
-                        });
-
-                        setPropertyType(selectedIds);
-                      }}
+                      displayValue={"rackName"}
+                      onSelect={(event) => setPropertyType(event)}
+                      onRemove={(event) => setPropertyType(event)}
                       showCheckbox={true}
                       rules={{ required: "Rack name is required" }}
                       {...register("location")}
