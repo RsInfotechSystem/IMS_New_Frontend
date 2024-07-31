@@ -962,7 +962,9 @@ div:where(.tab_active, .tab_inactive) {
   width: 40%;
   height: 100%;
   border-radius: 10px;
-  background-image: url("/images/login-bg.png");
+  /* background-image: url("/images/login-bg.png"); */
+  background: rgb(238,174,202);
+  background: linear-gradient(105deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -980,7 +982,7 @@ div:where(.tab_active, .tab_inactive) {
 .login_info_section .icon {
   position: absolute;
   top: 48%;
-  left: 50%;
+  left: 48%;
   transform: translate(-50%, -50%);
 }
 
@@ -5289,4 +5291,7 @@ ul .appointment_letter_ul {
   font-size: 0.74rem;
   font-weight: 600;
   color: var(--black_color_dark_shade);
+}
+.login_page_rsis{
+  color: #184965;
 }
