@@ -387,7 +387,7 @@ const AssignMaterial = () => {
                 
                   <div style={{ maxHeight: "40dvh", overflowY: "auto" }}>
 
-                    <div className="px-3 py-1" style={{ backgroundColor: "white" }}>
+                    <div className="p-3" style={{ backgroundColor: "white" }}>
                       {/* <div className="form_modal_body w-75 py-3"></div> */}
                       <div className="pb-2">
                     <h6>Select Material</h6>
@@ -420,7 +420,7 @@ const AssignMaterial = () => {
                         <h6 className="d-flex align-items-center justify-content-center assign_or_font">OR</h6>
                       </div>
                       <div class="row">
-                        <div className="input_wrapper col-6">
+                        <div className=" col-6">
                           <label>Select Category</label>
                         </div>
                         <div class="col-lg-6 col-md-7 ">
@@ -465,7 +465,7 @@ const AssignMaterial = () => {
                       </div>
 
                       <div className="row">
-                        <div className="input_wrapper col-6">
+                        <div className=" col-6">
                           <label>Brand</label>
                         </div>
                         <div className="col-lg-6 col-md-7">
@@ -540,7 +540,7 @@ const AssignMaterial = () => {
                         <div className="col-lg-6 col-md-5 d-flex align-items-center">
                           <label>Condition Type</label>
                         </div>
-                        <div className="col-lg-6 col-md-7 mt-2">
+                        <div className="col-lg-6 col-md-7">
                           <select
                             // {...register("conditionType", {
                             //   // required: "condition is required",
@@ -580,7 +580,7 @@ const AssignMaterial = () => {
                       </div>
                       <div className="row">
                         <div className="col-12 d-flex align-items-center justify-content-center">
-                          <div className="pt-1 gap-2">
+                          <div className="py-2 gap-2">
                             <CustomBtn name="Search" onClick={() => handleSubmit()} />
                           </div>
                         </div>
