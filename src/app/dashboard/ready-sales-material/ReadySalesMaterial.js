@@ -177,7 +177,7 @@ const ReadySalesMaterial = () => {
               {salesOrder.length > 0 ? (
                 salesOrder.map((data, index) => (
                   <React.Fragment key={data._id}>
-                    {data?.formStatus == "generate" && (
+                    {data?.formStatus == "ready" && (
                       <>
                         <div className="table_data" key={index}>
                           <div className="col_10p">

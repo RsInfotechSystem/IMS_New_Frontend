@@ -116,7 +116,7 @@ const Product = () => {
     const checkboxId = e.target.id;
     setSelectAllChecked(
       !selectedCheckboxes.includes(checkboxId) &&
-        selectedCheckboxes.length + 1 === productList.length
+      selectedCheckboxes.length + 1 === productList.length
     );
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
@@ -151,7 +151,7 @@ const Product = () => {
     getProductList(currentPage, searchString);
   }, [isPageUpdated]);
 
-  
+
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
@@ -183,12 +183,12 @@ const Product = () => {
       <div className="top_header">
         <div className="tab_title">Model Details</div>
         <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -317,18 +317,18 @@ const Product = () => {
                       }</h6>
                   </div>
                   <div className="col_20p">
-                  {data?.files?.map((img,index)=>(
-                    <div key={index} style={{marginRight:5, backgroundColor: "white"}}>
+                    {data?.files?.map((img, index) => (
+                      <div key={index} style={{ marginRight: 5, backgroundColor: "white" }}>
                         <div title={img?.documentName}>
-                        <FontAwesomeIcon  icon={faImage} style={{width: 20, height: 20} }
-                      onClick={() => setModalImageStates(pre => ({ ...pre, showImg: true, url: `${img?.fileUrl}` }))}
-                      />
+                          <FontAwesomeIcon icon={faImage} style={{ width: 20, height: 20 }}
+                            onClick={() => setModalImageStates(pre => ({ ...pre, showImg: true, url: `${img?.fileUrl}` }))}
+                          />
                         </div>
-                    </div>
-                  ))
-                  
-                              
-                  }
+                      </div>
+                    ))
+
+
+                    }
                   </div>
                   <div className="col_20p">
                     <h6 className="action_wrraper">
@@ -378,7 +378,7 @@ const Product = () => {
                       </div>
                     </h6>
                   </div>
-                 
+
                 </div>
               );
             })}
