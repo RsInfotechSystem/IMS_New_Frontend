@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 function CreateUser({ data }) {
-    const { modalStates, setModalStates, setIsPageUpdated, locations, roleList, getUserList } = data;
+    const { modalStates, setModalStates, setIsPageUpdated, locations, roleList, getUserList,searchString,currentPage } = data;
     const [propertyType, setPropertyType] = useState([]);
     const [userById, setUserById] = useState("")
     const [selectedLocation, setSelectedLocation] = useState([]);
@@ -89,7 +89,7 @@ function CreateUser({ data }) {
                 setButtonLoader(false);
                 setModalStates((prev) => ({ ...prev, modal: false }));
                 // setIsPageUpdated((prev) => !prev);
-                getUserList();
+                getUserList(currentPage, searchString);
 
                 toast.success(serverResponse?.data?.message, {
                     autoClose: 1500 // 1.5 seconds
@@ -145,7 +145,7 @@ function CreateUser({ data }) {
                     });
                     setButtonLoader(false);
                     setModalStates((prev) => ({ ...prev, modal: false }));
-                    getUserList();
+                    getUserList(currentPage, searchString);
                 } else if (response?.data?.status === "JWT_INVALID") {
                     toast.info(response.data.message, {
                         autoClose: 1500 // 1.5 seconds

@@ -2867,6 +2867,10 @@ div:where(.access_sudo_class) {
   padding: 1rem;
 }
 
+.optionListContainer{
+  z-index: 0 !important;
+  position:unset !important; 
+}
 .form_tabs_wrapper {
   display: flex;
   align-items: center;
