@@ -271,7 +271,7 @@ export const sideNavTabArray = [
   },
   {
     tab: "Ready Sales Order",
-    activeUrl: "ready-sales-order",
+    activeUrl: "ready-sales-material",
     tabName: "Ready Sales Order",
     url: "/dashboard/ready-sales-material",
     icon: (

@@ -20,6 +20,7 @@ import Loader from "@/common-components/Loader";
 import { stockStatus } from "@/utilities/stock-status-array";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 
 const InventoryView = ({ data }) => {
   const { modalStates, setModalStates, setIsPageUpdated, locationsss, roleList, getStockList } =
