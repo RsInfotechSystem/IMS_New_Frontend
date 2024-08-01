@@ -14,11 +14,13 @@ import { getCookie } from "cookies-next";
 import ReturnMaterial from "./ReturnMaterial";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import CustomBtn from "@/common-components/CustomBtn";
+import StockFilter from "@/common-components/StockFilter";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const DailyTask = () => {
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "" });
+  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", filter: false, isView: false });
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     deleteId: "",
@@ -28,6 +30,7 @@ const DailyTask = () => {
     state: false,
     userId: "",
   });
+  const [filter, setFilter] = useState({});
 
   const [page, setPage] = useState(1);
   const router = useRouter();
@@ -58,25 +61,20 @@ const DailyTask = () => {
     locationValue: { keyType: "", keyId: "", keyCount: 0 },
   });
   async function fetchAssignMaterial({
-    page,
+    page = 1,
     searchString,
     userId,
-    isSearch = false,
-    categoryValue,
-    brandValue,
-    isFirstCall,
+    isSearch = false, isFirstCall, location, categoryId, brandId, modelId
   } = {}) {
     try {
       setLoader(true);
       let payload = {
-        page: page,
+        page,
         searchString: searchString,
-        ...(state.categoryValue.keyType == "category" && { categoryId: state.categoryValue.keyId }),
-        ...(state.brandValue.keyType == "brand" && { brandId: state.brandValue.keyId }),
-        ...(state.locationValue.keyType == "location" && { location: state.locationValue.keyId }),
-        ...(state.modelNameValue.keyType == "modelName" && {
-          modelId: state.modelNameValue.keyId,
-        }),
+        location,
+        categoryId,
+        brandId,
+        modelId,
       };
       if (userId) {
         payload.userId = userId;
@@ -86,44 +84,44 @@ const DailyTask = () => {
         setMaterial(serverResponse?.data.material);
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
-        if (isFirstCall) {
-          setState({
-            category: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({
-                    categoryId: item.categoryId?._id,
-                    category: item.categoryId?.name,
-                  })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            brand: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({ brandId: item.brandId?._id, brand: item.brandId?.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            modelName: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({ modelId: item.modelId?._id, modelName: item.modelId?.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            location: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({
-                    locationId: item.locationId?._id,
-                    location: item.locationId?.name,
-                  })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-          });
-        }
+        // if (isFirstCall) {
+        //   setState({
+        //     category: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({
+        //             categoryId: item.categoryId?._id,
+        //             category: item.categoryId?.name,
+        //           })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //     brand: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({ brandId: item.brandId?._id, brand: item.brandId?.name })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //     modelName: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({ modelId: item.modelId?._id, modelName: item.modelId?.name })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //     location: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({
+        //             locationId: item.locationId?._id,
+        //             location: item.locationId?.name,
+        //           })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //   });
+        // }
         if (isSearch) {
           setCurrentPage(1);
         }
@@ -174,7 +172,7 @@ const DailyTask = () => {
     let isSearch = true;
     clearTimeout(timeoutId);
     let _timeOutId = setTimeout(() => {
-      fetchAssignMaterial({ page: currentPage, searchString: e.target.value, isSearch });
+      fetchAssignMaterial({ page: 1, searchString: e.target.value, isSearch , ...filter});
     }, 2000);
     setTimeoutId(_timeOutId);
   };
@@ -185,6 +183,7 @@ const DailyTask = () => {
     fetchAssignMaterial({
       page: 1,
       isSearch,
+       ...filter
     });
     // }, 2000);
     // setTimeoutId(_timeOutId);
@@ -195,7 +194,7 @@ const DailyTask = () => {
     state.modelNameValue.keyId,
   ]);
   useEffect(() => {
-    fetchAssignMaterial({ page: currentPage, searchString, isFirstCall: true });
+    fetchAssignMaterial({ page: currentPage, searchString, isFirstCall: true ,...filter});
   }, [isPageUpdated]);
   return (
     <>
@@ -216,6 +215,7 @@ const DailyTask = () => {
         />
       )}
       {loader && <Loader text="Fetching Data..." />}
+      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={fetchAssignMaterial} filter={filter} setFilter={setFilter} />}
       <div className="top_header">
         <div className="tab_title">Daily Task</div>
         <Pagination
@@ -264,7 +264,29 @@ const DailyTask = () => {
                 </div> */}
           </div>
         )}
-        <div className="buttons_wrapper"></div>
+        <div className="buttons_wrapper">
+        <CustomBtn
+            name={"Filter"}
+            onClick={() => {
+              setModalStates((prev) => ({ ...prev, filter: true }));
+            }}
+            svg={
+              <svg xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 512 512" fill="#fff">
+                <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+              </svg>
+            }
+          />
+        <CustomBtn
+            name={"Reset Filter"}
+            onClick={() => {
+              fetchAssignMaterial();
+            }}
+           
+          />
+        </div>
       </div>
       {/* table  */}
       <div className="table_wrapper">
@@ -285,7 +307,7 @@ const DailyTask = () => {
                 <h5>Sr. No.</h5>
               </div>
               <div className="col_70p">
-                {state.categoryFilter ? (
+                {/* {state.categoryFilter ? (
                   <>
                     <select
                       className="selectBox text-capitalize"
@@ -322,9 +344,9 @@ const DailyTask = () => {
                     ></Image>
                   </>
                 ) : (
-                  <>
+                  <> */}
                     <h5>Category</h5>
-                    <div>
+                    {/* <div>
                       <Image
                         onClick={() => setState({ categoryFilter: true })}
                         className="cursor-pointer"
@@ -335,10 +357,10 @@ const DailyTask = () => {
                       ></Image>
                     </div>
                   </>
-                )}
+                )} */}
               </div>
               <div className="col_50p">
-                {state.brandFilter ? (
+                {/* {state.brandFilter ? (
                   <>
                     <select
                       className="selectBox text-capitalize"
@@ -374,9 +396,9 @@ const DailyTask = () => {
                     ></Image>
                   </>
                 ) : (
-                  <>
+                  <> */}
                     <h5>Brand</h5>
-                    <div>
+                    {/* <div>
                       <Image
                         onClick={() => setState({ brandFilter: true })}
                         className="cursor-pointer"
@@ -387,10 +409,10 @@ const DailyTask = () => {
                       ></Image>
                     </div>
                   </>
-                )}
+                )} */}
               </div>
               <div className="col_70p">
-                {state.locationFilter ? (
+                {/* {state.locationFilter ? (
                   <>
                     <select
                       className="selectBox text-capitalize"
@@ -426,9 +448,9 @@ const DailyTask = () => {
                     ></Image>
                   </>
                 ) : (
-                  <>
+                  <> */}
                     <h5>Location</h5>
-                    <div>
+                    {/* <div>
                       <Image
                         onClick={() => setState({ locationFilter: true })}
                         className="cursor-pointer"
@@ -439,10 +461,10 @@ const DailyTask = () => {
                       ></Image>
                     </div>
                   </>
-                )}
+                )} */}
               </div>
               <div className="col_60p">
-                {state.modelNameFilter ? (
+                {/* {state.modelNameFilter ? (
                   <>
                     <select
                       className="selectBox text-capitalize"
@@ -478,9 +500,9 @@ const DailyTask = () => {
                     ></Image>
                   </>
                 ) : (
-                  <>
+                  <> */}
                     <h5>Model Name</h5>
-                    <div>
+                    {/* <div>
                       <Image
                         onClick={() => setState({ modelNameFilter: true })}
                         className="cursor-pointer"
@@ -491,7 +513,7 @@ const DailyTask = () => {
                       ></Image>
                     </div>
                   </>
-                )}
+                )} */}
               </div>
               <div className="col_50p">
                 <h5>Item Code</h5>

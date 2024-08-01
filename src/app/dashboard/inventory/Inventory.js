@@ -178,6 +178,13 @@ const Inventory = () => {
                 </svg>
               }
             />
+             <CustomBtn
+            name={"Reset Filter"}
+            onClick={() => {
+              getStatusWiseMaterialList();
+            }}
+           
+          />
           </div>
         }
       </div>
