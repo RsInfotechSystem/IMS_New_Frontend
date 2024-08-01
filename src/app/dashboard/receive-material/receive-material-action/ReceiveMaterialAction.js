@@ -331,6 +331,7 @@ const ReceiveMaterialAction = () => {
                               </option>
                             ))}
                           </select>
+                          
                         </h6>
                       </div>
                       <div className="col_45p">

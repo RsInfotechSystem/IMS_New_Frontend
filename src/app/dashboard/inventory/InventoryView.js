@@ -635,6 +635,7 @@ const InventoryView = ({ data }) => {
               </div> */}
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Model Name *</label>
+                  <div className="position-relative">
 
                   <select
                     disabled
@@ -657,6 +658,11 @@ const InventoryView = ({ data }) => {
                       );
                     })}
                   </select>
+                  <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                  </div>
+
                   <div style={{ height: "5px" }}>
                     {errors.modelId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
