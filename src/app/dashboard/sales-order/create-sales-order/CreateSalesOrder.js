@@ -88,7 +88,7 @@ const CreateOrder = () => {
       let response = await communication.createSalesOrder(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);
-        router.push("/admin/dashboard/sales-order");
+        router.push("/dashboard/sales-order");
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.info(response.data.message);
         router.push("/");
@@ -207,7 +207,6 @@ const CreateOrder = () => {
           }}
           style={{ backgroundColor: activeTab == "INFO" ? "#184965" : "#D0D3D9" }}
         >
-         
           Order Information
         </div>
         <div
@@ -216,7 +215,6 @@ const CreateOrder = () => {
           style={{ backgroundColor: activeTab == "SUPPLY" ? "#184965" : "#D0D3D9" }}
         >
           {" "}
-       
           Order Item
         </div>
       </div>
@@ -469,7 +467,6 @@ const CreateOrder = () => {
                   errors={errors.userId}
                 />
               </div>
-             
             </div>
           </div>
 
@@ -494,11 +491,9 @@ const CreateOrder = () => {
             <div className="form_list_layout_wrapper">
               <div className="d-flex align-items-center justify-content-between py-2">
                 <div className="form_layout">
-                  <div className="row">
-                   
-                  </div>
+                  <div className="row"></div>
                   <div className="row d-flex align-items-end">
-                  <div className="col-lg-3 col-md-6 input_wrapper">
+                    <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Description</label>
                       <textarea
                         {...register("description")}
@@ -645,12 +640,11 @@ const CreateOrder = () => {
               type="submit"
               className="btn btn-success"
               onClick={handleSubmit(createOrder)}
-            // onClick={() => handleSubmit(createOrder)}
+              // onClick={() => handleSubmit(createOrder)}
             ></Button>
           </div>
         </div>
       )}
-
     </>
   );
 };

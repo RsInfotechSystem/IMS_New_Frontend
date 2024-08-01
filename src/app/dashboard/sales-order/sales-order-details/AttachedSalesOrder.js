@@ -30,19 +30,9 @@ const AttachedSalesOrder = () => {
   const [loader, setLoader] = useState(false);
   const [payloadIds, setPayloadIds] = useState([]);
   const [roleName, setRoleName] = useState("");
-  const [quantities, setQuantities] = useState([]);
-  const type = watch("type");
-  const [category, setCategory] = useState([]);
   const [stock, setStock] = useState([]);
   const [CategoryMapData, setCategoryMapData] = useState([]);
-  const [brand, setBrand] = useState([]);
-  const [updatedProducts, setUpdatedProducts] = useState([]);
   const [location, setLocation] = useState();
-  const [filter, setFilter] = useState({
-    searchString: "",
-    categoryId: "",
-    brandId: "",
-  });
   const [modalState, setModalStates] = useState({
     viewPdf: false,
     data: "",
@@ -54,6 +44,7 @@ const AttachedSalesOrder = () => {
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     materials: [],
   });
+  const [checkBox, setCheckBox] = useState("");
   const [selectedModels, setSelectedModels] = useState([]);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
   const [selectedList, setSelectedList] = useState([]);
@@ -62,6 +53,11 @@ const AttachedSalesOrder = () => {
   const [brandsData, setBrandsData] = useState([]);
   const [model, setModel] = useState([]);
   const [expandedModals, setExpandedModals] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
+  const [attachedMaterials, setAttachedMaterials] = useState([]);
+  const [materialsPayload, setMaterialPayload] = useState([]);
+  const [materialDetails, setMaterialDetails] = useState([]);
+  const [materialIDS, setMaterialIDS] = useState(null);
   const categoryId = watch("categoryId");
   const brandId = watch("brandId");
   const modelId = watch("modelId");
@@ -117,6 +113,8 @@ const AttachedSalesOrder = () => {
 
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
+    setCheckBox(checkboxId);
+
     setSelectAllChecked(
       !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === stock?.length
     );
@@ -130,6 +128,7 @@ const AttachedSalesOrder = () => {
       }
     });
   };
+  // console.log("checkboxId", selectedCheckboxes);
   useEffect(() => {
     const fetchMaterial = async () => {
       const id = getValues("categoryId");
@@ -211,41 +210,41 @@ const AttachedSalesOrder = () => {
       };
       const serverResponse = await communication.getLocationWiseMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        setMaterial(serverResponse?.data.material);
+        setMaterial(serverResponse?.data.stock);
         // setPageCount(serverResponse?.data?.totalPages);
         setState({ materialLists: serverResponse?.data.material });
-        if (isFirstCall) {
-          setState({
-            category: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({ categoryId: item.categoryId, category: item.category })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            brand: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({ brandId: item.brandId, brand: item.brand })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            modelName: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({ modelId: item?.modelId?._id, modelName: item?.modelId?.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-            location: Array.from(
-              new Set(
-                serverResponse?.data.material.map((item) =>
-                  JSON.stringify({ locationId: item.locationId, location: item.location })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-          });
-        }
+        // if (isFirstCall) {
+        //   setState({
+        //     category: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({ categoryId: item.categoryId, category: item.category })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //     brand: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({ brandId: item.brandId, brand: item.brand })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //     modelName: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({ modelId: item?.modelId?._id, modelName: item?.modelId?.name })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //     location: Array.from(
+        //       new Set(
+        //         serverResponse?.data.material.map((item) =>
+        //           JSON.stringify({ locationId: item.locationId, location: item.location })
+        //         )
+        //       )
+        //     ).map((item) => JSON.parse(item)),
+        //   });
+        // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -260,26 +259,24 @@ const AttachedSalesOrder = () => {
       setLoader(false);
     }
   }
-  useEffect(() => {
-    if (location && categoryId && selectedModels) getLocationWiseMaterial({ isFirstCall: true });
-  }, [location, categoryId, selectedModels]);
+
   async function sendReadyMaterial(values) {
-    // console.log("onsubmit", values);
     try {
-      if (payloadIds.length < 1) {
-        toast.info("Please attached material.");
+      if (attachedMaterials.length === 0) {
+        toast.info("Please attach materials.");
         return;
       }
-      if (payloadIds.length !== modelList?.materialDetails?.length) {
-        toast.info("Please attached all material.");
-        return;
-      }
+      // if (payloadIds.length !== modelList?.materialDetails?.length) {
+      //   toast.info("Please attached all material.");
+      //   return;
+      // }
       setLoader(true);
+      setMaterialPayload(attachedMaterials.map((_id) => _id._id));
       let payload = {
         orderId: searchParams.get("orderId"),
-        materialDetails: payloadIds,
+        materialDetails: materialDetails,
       };
-
+      console.log("payload", payload);
       // console.log("payload", payload);
       const serverResponse = await communication.sendReadyMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -317,9 +314,6 @@ const AttachedSalesOrder = () => {
   }, [_location]);
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
-    // if (modalStates?.type !== "create") {
-    //   await getBrandById();
-    // }
   }
   const handleCheckboxSelect = (e, modalName, param) => {
     const { checked } = e.target;
@@ -340,9 +334,45 @@ const AttachedSalesOrder = () => {
       }
     });
   };
+  const handleMaterialSelect = (materialId) => {
+    setSelectedMaterials((prev) =>
+      prev.includes(materialId) ? prev.filter((id) => id !== materialId) : [...prev, materialId]
+    );
+  };
+
+  const handleAttachMaterials = () => {
+    const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m._id));
+    setAttachedMaterials((prev) => [...prev, ...newAttachedMaterials]);
+    setSelectedMaterials([]);
+    setMaterialIDS(
+      material.filter((m) => selectedMaterials.includes(m._id)).map((item) => item._id)
+    );
+    setTimeout(() => {
+      setCheckBox("");
+      setMaterialIDS(null);
+    }, 600);
+  };
+  // console.log("sssss", attachedMaterials);
+  const handleRemoveAttachedMaterial = (materialId) => {
+    setAttachedMaterials((prev) => prev.filter((m) => m._id !== materialId));
+    // let materialArray = materialDetails.map((data) =>
+    //   data.materialIds.filter((material) => materialId !== material)
+    // );
+    // setMaterialDetails(materialDetails.map((data) => !data.materialIds.includes(materialId)));
+    // console.log(materialArray, "materialArray");
+  };
+
   useEffect(() => {
     initialAPICall();
   }, []);
+  useEffect(() => {
+    if (materialIDS) {
+      setMaterialDetails((prev) => [...prev, { detailId: checkBox, materialIds: materialIDS }]);
+    }
+  }, [materialIDS]);
+  useEffect(() => {
+    if (location && categoryId && selectedModels) getLocationWiseMaterial({ isFirstCall: true });
+  }, [location, categoryId, selectedModels]);
   return (
     <>
       {loader && <Loader text={"Loading..."} />}
@@ -350,7 +380,7 @@ const AttachedSalesOrder = () => {
         <ViewSalesOrder pdfData={modalState?.data} setModalStates={setModalStates} />
       )}
 
-      {/* top header  */}
+      {/* ------------------------------- top header ----------------------------------------------- */}
       <div className="top_header">
         <div className="tab_title">Attach Ready Material for Sales Order</div>
         <div
@@ -385,7 +415,8 @@ const AttachedSalesOrder = () => {
           <div>Back</div>
         </div>
       </div>
-      {/* ---------------------------sales order list ----------------------------------------------------------*/}
+      {/* ------------------------------- top header end ----------------------------------------------- */}
+      {/* ---------------------------sales order list of discription----------------------------------------------------------*/}
       <div className="form_list_layout_wrapper my-4">
         <div className="d-flex align-items-center justify-content-between">
           <p>Sales Order List</p>
@@ -483,11 +514,10 @@ const AttachedSalesOrder = () => {
           </div>
         </div>
       </div>
+      {/* ---------------------------sales order list of discription end----------------------------------------------------------*/}
       <form>
         <div>
-          {/* {loader && <Loader />} */}
-          {/* Add sales order material */}
-          {/* <div className="form_wrapper"> */}
+          {/* ---------------------------filter for material----------------------------------------------------------*/}
           <div className="form_list_layout_wrapper">
             <div className="d-flex align-items-center justify-content-between py-2">
               <div className="form_layout">
@@ -535,7 +565,7 @@ const AttachedSalesOrder = () => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                         {...register("brandId", {
-                          required: "Brand is required",
+                          // required: "Brand is required",
                         })}
                       >
                         <option value="" className="text-secondary text-lowercase"></option>
@@ -561,13 +591,12 @@ const AttachedSalesOrder = () => {
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-6 input_wrapper">
-                   
                     <label>Model Name *</label>
                     <div className="position-relative">
                       <select
                         // disabled={modalStates.isView}/
                         {...register("modelId", {
-                          required: "modelId is required",
+                          // required: "modelId is required",
                         })}
                         className="form-control custom_input"
                         style={{ width: "100%" }}
@@ -596,18 +625,16 @@ const AttachedSalesOrder = () => {
                         </p>
                       )}
                     </div>
-                    
                   </div>
                   <div className="col-lg-3 col-md-6 mb-4">
-                  <button
+                    <button
                       type="button"
                       className="btn"
-                      style={{backgroundColor:"#184965",color:"#FFF"}}
+                      style={{ backgroundColor: "#184965", color: "#FFF" }}
                     >
                       Add
                     </button>
                   </div>
-                  
                 </div>
                 <div className="row">
                   <div className="col-12" style={{ maxHeight: "300px", overflowY: "auto" }}>
@@ -648,7 +675,7 @@ const AttachedSalesOrder = () => {
                     ))}
                   </div>
                 </div>
-                {/* ---------------------------sales order Item Preview ----------------------------------------------------------*/}
+                {/* ---------------------------list of material----------------------------------------------------------*/}
                 <div className="form_list_layout_wrapper my-4">
                   <div className="d-flex align-items-center justify-content-between">
                     <p>Sales Order Item Preview</p>
@@ -688,62 +715,61 @@ const AttachedSalesOrder = () => {
                             <h5 className="action_wrraper">Item Code</h5>
                           </div>
                         </div>
-                        {/* {state.materials?.length > 0 ? (
-                      state.materials?.map((product, index) => {
-                        return (
-                          <div className="table_data" key={index}>
-                           <div className="col_20p">
-                        {" "}
-                        <div className="check_box">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={product._id}
-                            onChange={(e) => handleCheckboxChange(e)}
-                            checked={selectedCheckboxes.includes(product._id)}
-                            // checked={selectedList.some((item) => item._id === product._id)}
-                          />
-                        </div>
-                      </div>
-                            <div className="col_25p">
-                              <h6>{index + 1}</h6>
-                            </div>
+                        {material?.length > 0 ? (
+                          material?.map((product, index) => {
+                            return (
+                              <div className="table_data" key={index}>
+                                <div className="col_20p">
+                                  {" "}
+                                  <div className="check_box">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      checked={selectedMaterials.includes(product._id)}
+                                      onChange={() => handleMaterialSelect(product._id)}
+                                      // id={product._id}
+                                      // onChange={(e) => handleCheckboxChange(e)}
+                                      // checked={selectedCheckboxes.includes(product._id)}
+                                      // checked={selectedList.some((item) => item._id === product._id)}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{index + 1}</h6>
+                                </div>
 
-                            <div className="col_25p">
-                              <h6>{product?.materialDescription}</h6>
-                            </div>
-                            <div className="col_25p">
-                              <h6>{product?.quantity ? product?.quantity : "--"}</h6>
-                            </div>
-                            <div className="col_25p">
-                              <h6>{product?.note ? product?.note : "--"}</h6>
-                            </div>
-                            <div className="col_25p">
-                              <h6 className="action_wrraper">
-                                {product?.warranty ? product?.warranty : "--"}
-                              </h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6 className="action_wrraper ">
-                                <FontAwesomeIcon
-                                  icon={faTrash}
-                                  // onClick={() => deleteProduct(index)}
-                                  className="trash"
-                                />
-                              </h6>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <small className="text-center text-secondary p-2 small d-block">
-                        Add order to see list
-                      </small>
-                    )} */}
+                                <div className="col_25p">
+                                  <h6>{product?.category}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.brand}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.modelId}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6 className="action_wrraper">{product?.serialNo}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6 className="action_wrraper ">{product?.itemCode}</h6>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <small className="text-center text-secondary p-2 small d-block">
+                            Add order to see list
+                          </small>
+                        )}
                       </div>
                     </div>
                   </div>
                 </div>
+                <Button
+                  onClick={handleAttachMaterials}
+                  disabled={selectedMaterials.length === 0}
+                  name={" Attach Selected Materials"}
+                ></Button>
                 {/* <div className="col-lg-3 col-md-6">
                   <button
                     type="button"
@@ -755,8 +781,9 @@ const AttachedSalesOrder = () => {
               </div>
             </div>
           </div>
-          {/* </div> */}
-          {/*// Sales Order Preview*/}
+          {/* ---------------------------filter for material end----------------------------------------------------------*/}
+          {/* ---------------------------attached material----------------------------------------------------------*/}
+
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Sales Order Item Preview</p>
@@ -766,90 +793,109 @@ const AttachedSalesOrder = () => {
               <div className="table_main">
                 <div className="table_section pi_product_table">
                   <div className="table_header">
+                    <div className="col_20p">
+                      <div className="check_box">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          // id="selectAllCheckbox"
+                          // onChange={(e) => handleSelectAllChange(e)}
+                          // checked={selectAllChecked}
+                        />
+                      </div>
+                    </div>
                     <div className="col_25p">
                       <h5>Sr. No.</h5>
                     </div>
                     <div className="col_25p">
-                      <h5>Description</h5>
-                    </div>
-
-                    <div className="col_25p">
-                      <h5>Quantity</h5>
+                      <h5>Category</h5>
                     </div>
                     <div className="col_25p">
-                      <h5>Warranty</h5>
+                      <h5>Brand</h5>
                     </div>
                     <div className="col_25p">
-                      <h5 className="action_wrraper">Note</h5>
+                      <h5>Model</h5>
                     </div>
-
+                    <div className="col_25p">
+                      <h5 className="action_wrraper">Serial No</h5>
+                    </div>
+                    <div className="col_20p">
+                      <h5 className="action_wrraper">Item Code</h5>
+                    </div>
                     <div className="col_20p">
                       <h5 className="action_wrraper">Action</h5>
                     </div>
                   </div>
-                  {/* {state.materials?.length > 0 ? (
-                      state.materials?.map((product, index) => {
-                        return (
-                          <div className="table_data" key={index}>
-                            <div className="col_25p">
-                              <h6>{index + 1}</h6>
-                            </div>
-
-                            <div className="col_25p">
-                              <h6>{product?.materialDescription}</h6>
-                            </div>
-                            <div className="col_25p">
-                              <h6>{product?.quantity ? product?.quantity : "--"}</h6>
-                            </div>
-                            <div className="col_25p">
-                              <h6>{product?.note ? product?.note : "--"}</h6>
-                            </div>
-                            <div className="col_25p">
-                              <h6 className="action_wrraper">
-                                {product?.warranty ? product?.warranty : "--"}
-                              </h6>
-                            </div>
-                            <div className="col_20p">
-                              <h6 className="action_wrraper ">
-                                <FontAwesomeIcon
-                                  icon={faTrash}
-                                  // onClick={() => deleteProduct(index)}
-                                  className="trash"
-                                />
-                              </h6>
+                  {attachedMaterials?.length > 0 ? (
+                    attachedMaterials?.map((item, index) => {
+                      return (
+                        <div className="table_data" key={index}>
+                          <div className="col_20p">
+                            {" "}
+                            <div className="check_box">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                // checked={selectedMaterials.includes(product._id)}
+                                // onChange={() => handleMaterialSelect(product._id)}
+                                // id={product._id}
+                                // onChange={(e) => handleCheckboxChange(e)}
+                                // checked={selectedCheckboxes.includes(product._id)}
+                                // checked={selectedList.some((item) => item._id === product._id)}
+                              />
                             </div>
                           </div>
-                        );
-                      })
-                    ) : (
-                      <small className="text-center text-secondary p-2 small d-block">
-                        Add order to see list
-                      </small>
-                    )} */}
+                          <div className="col_25p">
+                            <h6>{index + 1}</h6>
+                          </div>
+
+                          <div className="col_25p">
+                            <h6>{item?.category}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{item?.brand}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{item?.modelId}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6 className="action_wrraper">{item?.serialNo}</h6>
+                          </div>
+                          <div className="col_20p">
+                            <h6 className="action_wrraper ">{item?.itemCode}</h6>
+                          </div>
+                          <div className="col_20p">
+                            <Button
+                              onClick={() => handleRemoveAttachedMaterial(item._id)}
+                              name={"Delete"}
+                              className="btn-danger"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <small className="text-center text-secondary p-2 small d-block">
+                      Add order to see list
+                    </small>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-          <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-            {/* <button type="button" onClick={""} className="btn btn-success">
-                   Send
-                 </button> */}
+          {/* ---------------------------attached material end----------------------------------------------------------*/}
 
-            <CustomBtn
+          {/* ---------------------------send attached material----------------------------------------------------------*/}
+          <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+            <Button
+              onClick={handleSubmit(sendReadyMaterial)}
+              // onClick={sendReadyMaterial}
+              className="btn-success"
+              disabled={attachedMaterials.length === 0}
               name={"Send Material"}
-              // name={
-              //   buttonLoader ? (
-              //     <ButtonLoader />
-              //   ) : [undefined, null, ""]?.includes(recipeId) ? (
-              //     "Create"
-              //   ) : (
-              //     "Update"
-              //   )
-              // }
-              type="submit"
-              className="btn btn-success"
-              onClick={sendReadyMaterial}
-            ></CustomBtn>
+            ></Button>
           </div>
         </div>
         {/* )} */}
