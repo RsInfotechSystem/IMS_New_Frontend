@@ -204,6 +204,8 @@ const AcceptMaterial = () => {
             <div className="row">
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Select Location </label>
+                <div className="position-relative">
+
                 <select
                   name="locationId"
                   className="form-control custom_input"
@@ -229,6 +231,11 @@ const AcceptMaterial = () => {
                     );
                   })}
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                      </div>
+
                 <div style={{ height: "5px" }}>
                     {errors.locationId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -239,6 +246,8 @@ const AcceptMaterial = () => {
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Select Block </label>
+                <div className="position-relative">
+
                 <select
                   name="blockId"
                   className="form-control custom_input"
@@ -263,6 +272,10 @@ const AcceptMaterial = () => {
                     );
                   })}
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                      </div>
                 <div style={{ height: "5px" }}>
                     {errors.blockId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -273,7 +286,8 @@ const AcceptMaterial = () => {
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Select Rack </label>
-          
+                <div className="position-relative">
+
                 <select
                   name="rackId"
                   className="form-control custom_input"
@@ -298,6 +312,10 @@ const AcceptMaterial = () => {
                     );
                   })}
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                      </div>
                 <div style={{ height: "5px" }}>
                         {errors.rackId && (
                           <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -308,6 +326,8 @@ const AcceptMaterial = () => {
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Select Partation </label>
+                <div className="position-relative">
+
                 <select
                   name="partitionName"
                   className="form-control custom_input"
@@ -332,6 +352,10 @@ const AcceptMaterial = () => {
                     );
                   })}
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                      </div>
                 <div style={{ height: "5px" }}>
                         {errors.partitionName && (
                           <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -343,6 +367,8 @@ const AcceptMaterial = () => {
 
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Category </label>
+                <div className="position-relative">
+
                 <select
                   name="categoryId"
                   className="form-control custom_input"
@@ -368,6 +394,10 @@ const AcceptMaterial = () => {
                     );
                   })}
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                      </div>
                 <div style={{ height: "5px" }}>
                     {errors.categoryId && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -417,6 +447,8 @@ const AcceptMaterial = () => {
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Condition Type</label>
+                <div className="position-relative">
+
                 <select
                   name="conditionType"
                   className="form-control custom_input"
@@ -430,6 +462,10 @@ const AcceptMaterial = () => {
                     <option value="new">New</option>
                     <option value="refurbished">Refurbished</option>
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                      </div>
                 <div style={{ height: "5px" }}>
                     {errors.conditionType && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
@@ -440,6 +476,8 @@ const AcceptMaterial = () => {
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Status </label>
+                <div className="position-relative">
+
                 <select
                   name="status"
                   className="form-control custom_input"
@@ -464,6 +502,10 @@ const AcceptMaterial = () => {
                     );
                   })}
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                      </div>
                 <div style={{ height: "5px" }}>
                     {errors.status && (
                       <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>

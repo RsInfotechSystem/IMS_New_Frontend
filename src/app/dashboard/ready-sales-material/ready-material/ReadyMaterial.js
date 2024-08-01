@@ -7,6 +7,7 @@ import { communication } from "@/services/communication";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const ReadyMaterial = () => {
   const searchParams = useSearchParams();
@@ -109,6 +110,45 @@ const ReadyMaterial = () => {
     }
   }
 
+  const deleteSaleOrder = async () => {
+    debugger
+    Swal.fire({
+      text: "Are you sure you want to delete this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#5149E4",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "No, cancel",
+      reverseButtons: true,
+    }).then(async function (result) {
+      if (result.isConfirmed) {
+        try {
+          setLoader(true);
+          let payload = {
+            orderId: searchParams.get("orderId"),
+          };
+          let response = await communication.deleteSaleOrder(payload);
+          if (response?.data?.status === "SUCCESS") {
+            toast.success(response.data.message);
+            // await getMaterialById(currentPage, searchString);
+            router.push("/admin/dashboard/sales-order");
+          } else if (response?.data?.status === "JWT_INVALID") {
+            toast.info(response.data.message);
+            router.push("/");
+          } else {
+            toast.info(response.data.message);
+          }
+        } catch (error) {
+          toast.info(error.message);
+        } finally {
+          setLoader(false);
+        }
+      } else {
+      }
+    });
+  };
+
 
   return (
     <div>
@@ -152,16 +192,16 @@ const ReadyMaterial = () => {
               <div className="col_25p">
                 <h5>Description</h5>
               </div>
-                <div className="col_25p">
-                  <h5>Quantity</h5>
-                </div>
+              <div className="col_25p">
+                <h5>Quantity</h5>
+              </div>
               <div className="col_25p">
                 <h5>Warranty</h5>
               </div>
               {attachedMaterial.formStatus == "ready" &&
-              <div className="col_25p">
-                <h5>Selling Quantity</h5>
-              </div>
+                <div className="col_25p">
+                  <h5>Selling Quantity</h5>
+                </div>
               }
               <div className="col_25p">
                 <h5 className="action_wrraper">Note</h5>
@@ -215,7 +255,7 @@ const ReadyMaterial = () => {
                       </div>
                     }
                     <div className="col_25p">
-                      <h6>{product?.note ? product?.note : "--"}</h6>
+                      <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
                     </div>
                   </div>
                 );
@@ -234,15 +274,12 @@ const ReadyMaterial = () => {
         }}/>
         <CustomBtn name="Sell" onClick={salesOrderSell}/>
       </div> */}
-      <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-        <CustomBtn name="Cancel" onClick={() => {
-          router.back()
-        }} />
-        <CustomBtn name="Sell" onClick={salesOrderSell} />
-
-
-
-      </div>
+      {attachedMaterial.formStatus == "ready" &&
+        <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+          <CustomBtn name="Cancel Sell Order" onClick={deleteSaleOrder} />
+          <CustomBtn name="Accept Sell Order" onClick={salesOrderSell} />
+        </div>
+      }
     </div>
   );
 };
