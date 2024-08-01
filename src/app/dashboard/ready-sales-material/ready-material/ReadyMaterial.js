@@ -111,7 +111,6 @@ const ReadyMaterial = () => {
   }
 
   const deleteSaleOrder = async () => {
-    debugger
     Swal.fire({
       text: "Are you sure you want to delete this order?",
       icon: "warning",
