@@ -42,7 +42,7 @@ const SellGraph = () => {
     const [state, setState] = useState();
 
 
-    const chartRef = useRef();
+    // const chartRef = useRef();
 
     async function fetchStockOutCount() {
         try {
@@ -116,7 +116,6 @@ const SellGraph = () => {
             },
         },
         onClick: (event, elements) => {
-            console.log(event, elements);
             if (elements.length > 0) {
                 const clickedElementIndex = elements[0].index;
                 let stockDetails = state[clickedElementIndex];
@@ -159,7 +158,9 @@ const SellGraph = () => {
             </div>
             <div className="attendance_graph_wrapper">
                 <div>
-                    <Bar ref={chartRef} options={options} data={graphData} style={{ cursor: "pointer" }} />
+                    <Bar options={options} data={graphData}  />
+                    {/* <Bar ref={chartRef} options={options} data={graphData}  /> */}
+
                 </div>
             </div>
         </>
