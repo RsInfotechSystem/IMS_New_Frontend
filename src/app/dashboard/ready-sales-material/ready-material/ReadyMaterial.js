@@ -1,9 +1,10 @@
 "use client";
 import CustomBtn from "@/common-components/CustomBtn";
+import InputBox from "@/common-components/InputBox";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
 import { communication } from "@/services/communication";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -14,6 +15,11 @@ const ReadyMaterial = () => {
   const [isPageUpdated, setIsPageUpdated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+  const [quantities, setQuantities] = useState([]);
+  const router = useRouter()
+
   const getMaterialById = async () => {
     try {
       setLoader(true);
@@ -22,24 +28,88 @@ const ReadyMaterial = () => {
       });
       if (response?.data?.status === "SUCCESS") {
         setAttachedMaterial(response.data?.salesorder);
+        console.log("wdef", response.data?.salesorder);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
-        // Swal.fire({ text: response.data.message, icon: "warning" });
         router.push("/");
       } else {
         toast.warn(response.data.message);
-        // Swal.fire({ text: response.data.message, icon: "warning" });
       }
       setLoader(false);
     } catch (error) {
       toast.warn(error.message);
-      // Swal.fire({ text: error.message, icon: "warning" });
       setLoader(false);
     }
   };
   useEffect(() => {
     getMaterialById();
   }, []);
+
+  const handleCheckboxChange = (e) => {
+    const checkboxId = e.target.id;
+    setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes?.length + 1 === attachedMaterial?.materialDetails?.length)))
+    setSelectedCheckboxes((prevSelected) => {
+      if (prevSelected.includes(checkboxId)) {
+        // If the checkbox is already in the array, remove it
+        return prevSelected.filter((id) => id !== checkboxId);
+      } else {
+        // If the checkbox is not in the array, add it
+        return [...prevSelected, checkboxId];
+      }
+    });
+
+  };
+  const handleSelectAllChange = (e) => {
+    setSelectAllChecked(e.target.checked);
+
+    // Update the array of selected checkboxes based on the "Select All" checkbox
+    setSelectedCheckboxes((prevSelected) =>
+      e.target.checked ? attachedMaterial?.materialDetails?.map((brandDetails) => brandDetails._id) : []
+    );
+  };
+
+  const handleQuantityChange = (materialData, value) => {
+    console.log(materialData);
+    setQuantities([
+      ...quantities,
+      {
+        materialIds: materialData?.materialIds?.map(e => e._id),
+        sellingQuantity: value,
+        detailId: materialData?._id,
+      },
+    ]);
+  };
+
+  async function salesOrderSell() {
+    try {
+      if (quantities.length < 1) {
+        toast.info("Add quantity for sell");
+        return;
+      }
+      setLoader(true);
+      const serverResponse = await communication.SalesOrderSells({
+        orderId: searchParams.get("orderId"),
+        materialDetails: quantities,
+      });
+      if (serverResponse?.data?.status === "SUCCESS") {
+        toast.success(serverResponse.data.message);
+        // getStatusWiseMaterialList({ page: 1, searchString });
+        router.back()
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        toast.info(serverResponse.data.message);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
+
+
   return (
     <div>
       <div className="top_header">
@@ -52,50 +122,28 @@ const ReadyMaterial = () => {
           pageCount={pageCount}
         />
       </div>
-      <div
-        className="back_btn"
+      <CustomBtn
+        name="Back"
         onClick={() => {
-          Router.back();
+          router.back()
         }}
-      >
-        <div>
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_1564_1770)">
-              <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
-                d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
-                fill="#198754"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_1564_1770">
-                <rect width="24" height="24" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-        </div>
-        <div>Back</div>
-      </div>
+      />
+
       <div className="table_wrapper my-3">
         <div className="table_main">
           <div className="table_section pi_product_table">
             <div className="table_header">
               <div className="col_20p">
                 <div className="check_box">
-                  <input
+                  {/* <input
                     className="form-check-input"
                     type="checkbox"
                     id="selectAllCheckbox"
-                    // onChange={(e) => handleSelectAllChange(e)}
-                    // checked={selectAllChecked}
-                  />
+                    onChange={(e) => handleSelectAllChange(e)}
+                    checked={selectAllChecked}
+                  /> */}
+                  <input type="checkbox" className="form-check-input" onChange={(e) => handleSelectAllChange(e)}
+                    checked={selectAllChecked} />
                 </div>
               </div>
               <div className="col_25p">
@@ -104,62 +152,96 @@ const ReadyMaterial = () => {
               <div className="col_25p">
                 <h5>Description</h5>
               </div>
-
-              <div className="col_25p">
-                <h5>Quantity</h5>
-              </div>
+                <div className="col_25p">
+                  <h5>Quantity</h5>
+                </div>
               <div className="col_25p">
                 <h5>Warranty</h5>
               </div>
+              {attachedMaterial.formStatus == "ready" &&
+              <div className="col_25p">
+                <h5>Selling Quantity</h5>
+              </div>
+              }
               <div className="col_25p">
                 <h5 className="action_wrraper">Note</h5>
               </div>
             </div>
-            {/* {modelList?.materialDetails?.length > 0 ? (
-        modelList?.materialDetails?.map((product, index) => {
-          return (
-            <div className="table_data" key={index}>
-              <div className="col_20p">
-                {" "}
-                <div className="check_box">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={product._id}
-                    onChange={(e) => handleCheckboxChange(e)}
-                    checked={selectedCheckboxes.includes(product._id)}
-                    // checked={selectedList.some((item) => item._id === product._id)}
-                  />
-                </div>
-              </div>
-              <div className="col_25p">
-                <h6>{index + 1}</h6>
-              </div>
+            {attachedMaterial?.materialDetails?.length > 0 ? (
+              attachedMaterial?.materialDetails?.map((product, index) => {
+                return (
+                  <div className="table_data" key={index}>
+                    <div className="col_20p">
+                      {" "}
+                      <div className="check_box">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={product._id}
+                          onChange={(e) => handleCheckboxChange(e)}
+                          checked={selectedCheckboxes.includes(product._id)}
+                        // checked={selectedCheckboxes.includes(product._id)}
+                        // checked={selectedList.some((item) => item._id === product._id)}
+                        />
+                      </div>
+                    </div>
+                    <div className="col_25p">
+                      <h6>{index + 1}</h6>
+                    </div>
 
-              <div className="col_25p">
-                <h6>{product?.materialDescription}</h6>
-              </div>
-              <div className="col_25p">
-                <h6>{product?.quantity ? product?.quantity : "--"}</h6>
-              </div>
-              <div className="col_25p">
-                <h6>{product?.note ? product?.note : "--"}</h6>
-              </div>
-              <div className="col_25p">
-                <h6 className="action_wrraper">
-                  {product?.warranty ? product?.warranty : "--"}
-                </h6>
-              </div>
-            </div>
-          );
-        })
-      ) : (
-        <small className="text-center text-secondary p-2 small d-block">
-          Add order to see list
-        </small>
-      )} */}
+                    <div className="col_25p">
+                      <h6>{product?.materialDescription}</h6>
+                    </div>
+                    <div className="col_25p">
+                      <h6>{product?.quantity ? product?.quantity : "--"}</h6>
+                    </div>
+                    <div className="col_25p">
+                      <h6>
+                        {product?.warranty ? product?.warranty : "--"}
+                      </h6>
+                    </div>
+                    {attachedMaterial.formStatus == "ready" &&
+                      <div className="col_25p">
+                        <h6>
+                          <InputBox
+                            className="inputBox"
+                            type="number"
+                            placeholder="Enter Quantity"
+                            onChange={(e) => {
+                              handleQuantityChange(product, e.target.value);
+                            }}
+                          />
+                        </h6>
+                      </div>
+                    }
+                    <div className="col_25p">
+                      <h6>{product?.note ? product?.note : "--"}</h6>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <small className="text-center text-secondary p-2 small d-block">
+                Add order to see list
+              </small>
+            )}
           </div>
         </div>
+      </div>
+      {/* <div className="buttons_wrapper row">
+        <CustomBtn name="Cancel"  onClick={() => {
+          router.back()
+        }}/>
+        <CustomBtn name="Sell" onClick={salesOrderSell}/>
+      </div> */}
+      <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+        <CustomBtn name="Cancel" onClick={() => {
+          router.back()
+        }} />
+        <CustomBtn name="Sell" onClick={salesOrderSell} />
+
+
+
       </div>
     </div>
   );

@@ -102,6 +102,9 @@ const AttachedSalesOrder = () => {
   useMemo(() => {
     handleCategory();
   }, [categoryId]);
+
+
+
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
 
@@ -113,6 +116,7 @@ const AttachedSalesOrder = () => {
 
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
+    console.log(e.target.id);
     setCheckBox(checkboxId);
 
     setSelectAllChecked(
@@ -826,6 +830,7 @@ const AttachedSalesOrder = () => {
                       <h5 className="action_wrraper">Action</h5>
                     </div>
                   </div>
+                  {console.log(attachedMaterials,"erfe")}
                   {attachedMaterials?.length > 0 ? (
                     attachedMaterials?.map((item, index) => {
                       return (
