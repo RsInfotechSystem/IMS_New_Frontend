@@ -318,7 +318,7 @@ const BlockList = () => {
                       {blockDetails.rackId?.length > 0 ? (
                         <h6>
                           {blockDetails?.rackId?.map((item, index) => (
-                              <span>{item.rackName}{index !== blockDetails?.rackId?.length - 1 && <span>, </span>}</span>
+                              <span key={index}>{item.rackName}{index !== blockDetails?.rackId?.length - 1 && <span>, </span>}</span>
                           ))}
                         </h6>
                       ) : (
