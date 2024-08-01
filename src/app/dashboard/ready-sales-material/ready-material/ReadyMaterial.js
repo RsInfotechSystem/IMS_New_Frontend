@@ -70,9 +70,9 @@ const ReadyMaterial = () => {
   };
 
   const handleQuantityChange = (materialData, value) => {
-    console.log(materialData);
+
     setQuantities([
-      ...quantities,
+      // ...quantities,
       {
         materialIds: materialData?.materialIds?.map(e => e._id),
         sellingQuantity: value,
@@ -111,7 +111,6 @@ const ReadyMaterial = () => {
   }
 
   const deleteSaleOrder = async () => {
-    debugger
     Swal.fire({
       text: "Are you sure you want to delete this order?",
       icon: "warning",
@@ -132,7 +131,7 @@ const ReadyMaterial = () => {
           if (response?.data?.status === "SUCCESS") {
             toast.success(response.data.message);
             // await getMaterialById(currentPage, searchString);
-            router.push("/admin/dashboard/sales-order");
+            router.back();
           } else if (response?.data?.status === "JWT_INVALID") {
             toast.info(response.data.message);
             router.push("/");
@@ -154,13 +153,13 @@ const ReadyMaterial = () => {
     <div>
       <div className="top_header">
         <div className="tab_title">Ready Sales Material</div>
-        <Pagination
+        {(pageCount > 1) && <Pagination
           isPageUpdated={isPageUpdated}
           setIsPageUpdated={setIsPageUpdated}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
           pageCount={pageCount}
-        />
+        />}
       </div>
       <CustomBtn
         name="Back"
@@ -233,12 +232,13 @@ const ReadyMaterial = () => {
                       <h6>{product?.materialDescription}</h6>
                     </div>
                     <div className="col_25p">
-                      <h6>{product?.quantity ? product?.quantity : "--"}</h6>
+                      <h6>{product?.quantity}</h6>
                     </div>
                     <div className="col_25p">
                       <h6>
                         {product?.warranty ? product?.warranty : "--"}
                       </h6>
+
                     </div>
                     {attachedMaterial.formStatus == "ready" &&
                       <div className="col_25p">
@@ -276,7 +276,7 @@ const ReadyMaterial = () => {
       </div> */}
       {attachedMaterial.formStatus == "ready" &&
         <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-          <CustomBtn name="Cancel Sell Order" onClick={deleteSaleOrder} />
+          <CustomBtn name="Delete Sell Order" onClick={deleteSaleOrder} />
           <CustomBtn name="Accept Sell Order" onClick={salesOrderSell} />
         </div>
       }
