@@ -59,7 +59,7 @@ function CreateProduct({ data }) {
             fieldName: "otherDocuments",
             documentName: selectedFile.name,
             fileUrl: selectedFile,
-            isNew: true
+            isNew: true,
           }]);
           setDocument((prev) => [...prev, ...otherDocuments]);
         } else {
@@ -106,21 +106,18 @@ function CreateProduct({ data }) {
         formData.append("modelDetails", JSON.stringify(dataToSend));
         response = await communication.createProduct(formData);
       } else {
-        let isFileAttached = otherDocuments.length > 0;
+        let isFileAttached = false;
         dataToSend.modelId = modalStates.productId;
-        // if (isFileAttached) {
-        //   profile.forEach((file) => {
-        //     formData.append("files", file.fileUrl);
-        //   });
+        for (let i = 0; i < otherDocuments.length; i++) {
+          const element = otherDocuments[i];
+          if (element?.isNew && typeof (element?.fileUrl) !== "string") {
+            isFileAttached = true;
+            formData.append("files", element?.fileUrl)
+          }
+        }
+        dataToSend.otherDocuments = otherDocuments.filter(ele => !ele?.isNew);
+
         if (isFileAttached) {
-          otherDocuments?.map((ele) => {
-            formData.append("otherDocuments", ele?.fileUrl);
-          })
-          // if (otherDocuments?.length > 0) {
-          //           otherDocuments?.map((ele) => {
-          //               formData.append("otherDocuments", ele?.fileUrl);
-          //           })
-          //       }
           formData.append("modelDetails", JSON.stringify(dataToSend));
         } else {
           formData = dataToSend;
