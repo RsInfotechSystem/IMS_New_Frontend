@@ -375,6 +375,7 @@ const CreateOrder = () => {
                     placeholder={""}
                     disable={false}
                   /> */}
+                 { console.log(filterValues?.orderDate)}
                 <CustomDateInput
                   value={filterValues?.orderDate}
                   maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}

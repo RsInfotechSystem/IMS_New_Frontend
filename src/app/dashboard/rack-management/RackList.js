@@ -86,27 +86,27 @@ const RackList = () => {
 
     const handleCheckboxChange = (e) => {
         const checkboxId = e.target.id;
-        setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === blockList?.length)))
+        setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === rackList?.length)))
         setSelectedCheckboxes((prevSelected) => {
-            if (prevSelected.includes(checkboxId)) {
-                // If the checkbox is already in the array, remove it
-                return prevSelected.filter((id) => id !== checkboxId);
-            } else {
-                // If the checkbox is not in the array, add it
-                return [...prevSelected, checkboxId];
-            }
+          if (prevSelected.includes(checkboxId)) {
+            // If the checkbox is already in the array, remove it
+            return prevSelected.filter((id) => id !== checkboxId);
+          } else {
+            // If the checkbox is not in the array, add it
+            return [...prevSelected, checkboxId];
+          }
         });
-
-    };
-
-    const handleSelectAllChange = (e) => {
+    
+      };
+      const handleSelectAllChange = (e) => {
         setSelectAllChecked(e.target.checked);
-
+    
         // Update the array of selected checkboxes based on the "Select All" checkbox
         setSelectedCheckboxes((prevSelected) =>
-            e.target.checked ? blockList.map((brandDetails) => brandDetails._id) : []
+          e.target.checked ? rackList.map((brandDetails) => brandDetails._id) : []
         );
-    };
+      };
+    
 
     const handleEnableDisable = async (rackId) => {
         // console.log((blockId, "blcokId"));
@@ -310,7 +310,7 @@ const RackList = () => {
                                                     type="checkbox"
                                                     id={rackDetails._id}
                                                     onChange={(e) => handleCheckboxChange(e)}
-                                                    checked={selectedCheckboxes.includes(rackDetails._id)}
+                                                    checked={selectedCheckboxes.includes(rackDetails?._id)}
                                                 />
                                                 <label className="form-check-label"></label>
                                             </div>

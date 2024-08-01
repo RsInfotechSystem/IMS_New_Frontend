@@ -316,14 +316,11 @@ const BlockList = () => {
                     </div>
                     <div className="col_35p">
                       {blockDetails.rackId?.length > 0 ? (
-                        <>
+                        <h6>
                           {blockDetails?.rackId?.map((item, index) => (
-                            <React.Fragment key={index}>
-                              <h6>{item.rackName}</h6>
-                              {index !== blockDetails.rackId.length - 1 && <span>, </span>}
-                            </React.Fragment>
+                              <span>{item.rackName}{index !== blockDetails?.rackId?.length - 1 && <span>, </span>}</span>
                           ))}
-                        </>
+                        </h6>
                       ) : (
                         <h6>-</h6>
                       )}

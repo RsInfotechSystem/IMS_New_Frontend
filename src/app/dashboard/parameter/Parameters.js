@@ -193,6 +193,17 @@ const Parameters = () => {
     getAllParameter(currentPage, searchString);
     getCategory(setLoader, router, setCategoryList);
   }, [isPageUpdated]);
+
+  const handleSearch = (e) => {
+    setSearchString(e.target.value);
+    let isSearch = true;
+    clearTimeout(timeoutId);
+    let _timeOutId = setTimeout(() => {
+      getAllParameter(1, e.target.value, isSearch);
+    }, 2000);
+    setTimeoutId(_timeOutId);
+  };
+
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}

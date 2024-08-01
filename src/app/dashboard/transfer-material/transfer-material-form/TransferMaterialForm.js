@@ -96,7 +96,7 @@ const TransferMaterialForm = () => {
           quantity: product.quantity,
         })),
         // materialIds: selectedMaterials,
-        fromLocation: values.fromLocation,
+        fromLocation: values.fromLocation ,
         toLocation: values.toLocation,
       };
       console.log("payload", payload);
@@ -419,6 +419,13 @@ const TransferMaterialForm = () => {
   useEffect(() => {
     getStatusWiseMaterialList({ page: currentPage, searchString, isFirstCall: true });
   }, [isPageUpdated]);
+
+
+  const handleBack = () =>{
+      router.push("/dashboard/transfer-material")
+      router.back()
+      return
+  }
   // console.log(errors, "rrrrrrrr  eeeeeee");
   return (
     <>
@@ -1005,8 +1012,8 @@ const TransferMaterialForm = () => {
               {/* {(params.get("type") === "approval" && modalState.viewPrintBill === false) && <Button type="submit" onClick={handleSubmit(receivePaymentPo)} name={"Receive Payment"} className="button" />} */}
               {/* {(params.get("type") === "approval" && modalState.viewPrintBill) && <Button onClick={() => printBill()} name={"Print Bill"} className="button" />} */}
               <Button
-                type="submit"
-                onClick={() => router.push("/dashboard/transfer-material")}
+                type="button"
+                onClick={handleBack}
                 name={"Cancel"}
                 className="button"
               />
