@@ -6,7 +6,7 @@ import SelectBox from "@/common-components/Select";
 import { getCategory, getCategoryWiseBrand } from "@/services/commonApis";
 import { communication, getServerUrl } from "@/services/communication";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -227,6 +227,8 @@ function CreateProduct({ data }) {
               </div>
               <div className="input_wrapper col-lg-4">
                 <label>Category*</label>
+                <div className="position-relative">
+
                 <select
                   name="categoryId"
                   className="form-control custom_input"
@@ -252,34 +254,47 @@ function CreateProduct({ data }) {
                     );
                   })}
                 </select>
+                <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                </div>
+
               </div>
 
               <div className="input_wrapper col-lg-4">
                 <label>Brand*</label>
-                <select
-                  name="categoryId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("brandId", {
-                    required: "Brand is required",
-                  })}
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Brand
-                  </option>
-                  {brandsData.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele._id}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.name}
-                      </option>
-                    );
-                  })}
-                </select>
+                <div className="position-relative">
+
+                  <select
+                    name="categoryId"
+                    className="form-control custom_input"
+                    style={{ width: "100%" }}
+                    {...register("brandId", {
+                      required: "Brand is required",
+                    })}
+                  >
+                    <option value="" className="text-secondary text-lowercase">
+                      Select Brand
+                    </option>
+                    {brandsData.map((ele, index) => {
+                      return (
+                        <option
+                          className="small text-capitalize"
+                          value={ele._id}
+                          key={index}
+                        >
+                          {" "}
+                          {ele.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <div className="select_box_arrow">
+                    <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                  </div>
+                  <div />
+                </div>
+
               </div>
               <div className="input_wrapper col-lg-12">
                 <label>Description*</label>
