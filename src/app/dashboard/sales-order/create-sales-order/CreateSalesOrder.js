@@ -154,6 +154,12 @@ const CreateOrder = () => {
   useEffect(() => {
     callAPIs();
   }, []);
+
+
+  const deleteProduct = (id) => {
+    setState({ materials: state.materials.filter((_, index) => index !== id) });
+  };
+
   return (
     <>
       {loader && <Loader text={"Loading..."} />}
@@ -607,18 +613,19 @@ const CreateOrder = () => {
                             <h6>{product?.quantity ? product?.quantity : "--"}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6>{product?.note ? product?.note : "--"}</h6>
-                          </div>
-                          <div className="col_25p">
-                            <h6 className="action_wrraper">
+                          <h6 >
                               {product?.warranty ? product?.warranty : "--"}
                             </h6>
+                          </div>
+                          <div className="col_25p">
+                          <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+
                           </div>
                           <div className="col_20p">
                             <h6 className="action_wrraper ">
                               <FontAwesomeIcon
                                 icon={faTrash}
-                                // onClick={() => deleteProduct(index)}
+                                onClick={() => deleteProduct(index)}
                                 className="trash"
                               />
                             </h6>
