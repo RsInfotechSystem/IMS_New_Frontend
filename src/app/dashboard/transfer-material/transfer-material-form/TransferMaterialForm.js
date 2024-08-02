@@ -1013,10 +1013,11 @@ const TransferMaterialForm = () => {
               {/* {(params.get("type") === "approval" && modalState.viewPrintBill) && <Button onClick={() => printBill()} name={"Print Bill"} className="button" />} */}
               <Button
                 type="button"
-                onClick={handleBack}
+                onClick={()=> { router.back()}}
                 name={"Cancel"}
                 className="button"
               />
+              
             </div>
           </div>
         </div>

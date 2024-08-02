@@ -1490,6 +1490,22 @@ export const communication = {
       throw error;
     }
   },
+  allMaterialOrderSells: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/sell-all-order-material`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   getAttachedMaterialById: async (data) => {
     try {
       return await axios.post(
