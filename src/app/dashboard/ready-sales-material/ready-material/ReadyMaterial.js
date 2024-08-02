@@ -1,5 +1,6 @@
 "use client";
 import CustomBtn from "@/common-components/CustomBtn";
+import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import InputBox from "@/common-components/InputBox";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
@@ -10,6 +11,12 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
 const ReadyMaterial = () => {
+  const [modalStates, setModalStates] = useState({
+    deleteOrder: false,
+    modal: false,
+    type: "",
+    id: "",
+  });
   const searchParams = useSearchParams();
   const [attachedMaterial, setAttachedMaterial] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -70,10 +77,6 @@ const ReadyMaterial = () => {
   };
 
   const handleQuantityChange = (materialData, value, product) => {
-    console.log(materialData, "materialData");
-    console.log(product, "product");
-    console.log(value, "value");
-
     clearTimeout(timeoutId);
     let _timeOutId = setTimeout(() => {
       setQuantities((prev) => [
@@ -120,47 +123,46 @@ const ReadyMaterial = () => {
   }
 
   const deleteSaleOrder = async () => {
-    Swal.fire({
-      text: "Are you sure you want to delete this order?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#5149E4",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it",
-      cancelButtonText: "No, cancel",
-      reverseButtons: true,
-    }).then(async function (result) {
-      if (result.isConfirmed) {
-        try {
-          setLoader(true);
-          let payload = {
-            orderId: searchParams.get("orderId"),
-          };
-          let response = await communication.deleteSaleOrder(payload);
-          if (response?.data?.status === "SUCCESS") {
-            toast.success(response.data.message);
-            router.back();
-          } else if (response?.data?.status === "JWT_INVALID") {
-            toast.info(response.data.message);
-            router.push("/");
-          } else {
-            toast.info(response.data.message);
-          }
-        } catch (error) {
-          toast.info(error.message);
-        } finally {
-          setLoader(false);
-        }
+    try {
+      setLoader(true);
+      setModalStates((prev) => ({ ...prev, deleteOrder: false }));
+      let payload = {
+        orderId: searchParams.get("orderId"),
+      };
+      let response = await communication.deleteSaleOrder(payload);
+      if (response?.data?.status === "SUCCESS") {
+        toast.success(response.data.message);
+        router.push("dashboard/ready-sales-material");
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response.data.message);
+        router.push("/");
       } else {
+        toast.info(response.data.message);
       }
-    });
+    } catch (error) {
+      toast.info(error.message);
+    } finally {
+      setLoader(false);
+    }
   };
 
   return (
     <div>
+      {modalStates.deleteOrder && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message={`Do you want to delete Order?`}
+          successHandler={() => {
+            deleteSaleOrder();
+          }}
+          cancelHandler={() => {
+            setModalStates((prev) => ({ ...prev, deleteOrder: false }));
+          }}
+        />
+      )}
       <div className="top_header">
-        <div className="tab_title">Ready Sales Material</div>
-        {pageCount > 1 && (
+        <div className="tab_title">Ready Sales Material for sales</div>
+        {/* {pageCount > 1 && (
           <Pagination
             isPageUpdated={isPageUpdated}
             setIsPageUpdated={setIsPageUpdated}
@@ -168,20 +170,45 @@ const ReadyMaterial = () => {
             setCurrentPage={setCurrentPage}
             pageCount={pageCount}
           />
-        )}
+        )} */}
+        <div
+          className="back_btn"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_1564_1770)">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
+                  fill="#184965"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_1564_1770">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+          <div>Back</div>
+        </div>
       </div>
-      <CustomBtn
-        name="Back"
-        onClick={() => {
-          router.back();
-        }}
-      />
 
       <div className="table_wrapper my-3">
         <div className="table_main">
           <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
             <div className="table_header">
-              <div className="col_20p">
+              {/* <div className="col_20p">
                 <div className="check_box">
                   <input
                     type="checkbox"
@@ -190,8 +217,8 @@ const ReadyMaterial = () => {
                     checked={selectAllChecked}
                   />
                 </div>
-              </div>
-              <div className="col_25p">
+              </div> */}
+              <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
               <div className="col_25p">
@@ -225,7 +252,7 @@ const ReadyMaterial = () => {
               attachedMaterial?.materialDetails?.map((product, index) => {
                 return product?.materialIds?.map((material, materialIndex) => (
                   <div className="table_data" key={material._id}>
-                    <div className="col_20p">
+                    {/* <div className="col_20p">
                       <div className="check_box">
                         <input
                           className="form-check-input"
@@ -235,8 +262,8 @@ const ReadyMaterial = () => {
                           checked={selectedCheckboxes.includes(material._id)}
                         />
                       </div>
-                    </div>
-                    <div className="col_25p">
+                    </div> */}
+                    <div className="col_10p">
                       <h6>
                         {index + 1}.{materialIndex + 1}
                       </h6>
@@ -289,7 +316,13 @@ const ReadyMaterial = () => {
       {attachedMaterial.formStatus == "ready" && (
         <div className="d-flex align-items-center justify-content-center gap-3 my-3">
           <CustomBtn name="Partial Sell" onClick={salesOrderSell} />
-          <CustomBtn name="Delete" onClick={deleteSaleOrder} className="btn-danger" />
+          <CustomBtn
+            name="Delete"
+            onClick={() => {
+              setModalStates((prev) => ({ ...prev, deleteOrder: true }));
+            }}
+            className="btn-danger"
+          />
         </div>
       )}
     </div>
