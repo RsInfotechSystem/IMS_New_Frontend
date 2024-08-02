@@ -211,6 +211,7 @@ const BrandList = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
+            {brandList.length > 0 ? (<>
             {brandList?.map((data, index) => {
               return (<>
                 <div
@@ -285,6 +286,11 @@ const BrandList = () => {
                 </div >
               </>)
             })}
+            </>
+            ):(
+              <p className="no_data">Data Not Available</p>
+            )
+            }
           </div>
         </div>
       </div >

@@ -289,6 +289,8 @@ const BlockList = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
+            {blockList.length > 0 ?(<>
+            
             {blockList?.map((blockDetails, index) => {
               return (
                 <>
@@ -403,6 +405,11 @@ const BlockList = () => {
                 </>
               );
             })}
+            </>
+            ):(
+              <p className="no_data">Data Not Available</p>
+            )
+          }
           </div>
         </div>
       </div>
