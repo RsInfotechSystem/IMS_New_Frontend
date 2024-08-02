@@ -357,7 +357,7 @@ const UserManagement = () => {
       <div className="table_wrapper">
         <div className="table_main">
           {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
-          <div className="table_section">
+          <div className="table_section employee_table">
             {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">
               <button className="table_badge">
                 <h5>Total User</h5>
@@ -382,7 +382,7 @@ const UserManagement = () => {
                 <h5>User Name</h5>
               </div>
             
-              <div className="col_15p">
+              <div className="col_30p">
                 <h5>Role Type</h5>
               </div>
               <div className="col_35p">
@@ -394,7 +394,7 @@ const UserManagement = () => {
               <div className="col_20p">
                 <h5>Location</h5>
               </div>
-              <div className="password">
+              <div className="col_25p">
                 <h5>Password</h5>
               </div>
               <div className="col_20p action_wrraper">
@@ -422,7 +422,7 @@ const UserManagement = () => {
                 <div className="col_30p">
                   <h6>{userDetails?.name}</h6>
                 </div>
-                <div className="col_15p">
+                <div className="col_30p">
                   <h6>{userDetails?.role}</h6>
                 </div>
                 <div className="col_35p" >
@@ -439,7 +439,7 @@ const UserManagement = () => {
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}
                 </div>
-                <div className="password">
+                <div className="col_25p">
                   {
                     passwordVisibility[userDetails._id] ?
                          <h6 style={{ display: 'inline-flex', alignItems: 'center' }}>
