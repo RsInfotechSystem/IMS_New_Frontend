@@ -103,8 +103,6 @@ const AttachedSalesOrder = () => {
     handleCategory();
   }, [categoryId]);
 
-
-
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
 
@@ -475,7 +473,7 @@ const AttachedSalesOrder = () => {
                             id={product._id}
                             onChange={(e) => handleCheckboxChange(e)}
                             checked={selectedCheckboxes.includes(product._id)}
-                          // checked={selectedList.some((item) => item._id === product._id)}
+                            // checked={selectedList.some((item) => item._id === product._id)}
                           />
                         </div>
                       </div>
@@ -630,7 +628,7 @@ const AttachedSalesOrder = () => {
                       )}
                     </div>
                   </div>
-                  <div className="col-lg-3 col-md-6 mb-4">
+                  {/* <div className="col-lg-3 col-md-6 mb-4">
                     <button
                       type="button"
                       className="btn"
@@ -638,7 +636,7 @@ const AttachedSalesOrder = () => {
                     >
                       Add
                     </button>
-                  </div>
+                  </div> */}
                 </div>
                 <div className="row">
                   <div className="col-12" style={{ maxHeight: "300px", overflowY: "auto" }}>
@@ -694,14 +692,17 @@ const AttachedSalesOrder = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                              // id="selectAllCheckbox"
-                              // onChange={(e) => handleSelectAllChange(e)}
-                              // checked={selectAllChecked}
+                                // id="selectAllCheckbox"
+                                // onChange={(e) => handleSelectAllChange(e)}
+                                // checked={selectAllChecked}
                               />
                             </div>
                           </div>
                           <div className="col_25p">
                             <h5>Sr. No.</h5>
+                          </div>
+                          <div className="col_25p">
+                            <h5>Location</h5>
                           </div>
                           <div className="col_25p">
                             <h5>Category</h5>
@@ -710,13 +711,22 @@ const AttachedSalesOrder = () => {
                             <h5>Brand</h5>
                           </div>
                           <div className="col_25p">
+                            <h5>Block</h5>
+                          </div>
+                          <div className="col_25p">
+                            <h5>Rack</h5>
+                          </div>
+                          <div className="col_25p">
                             <h5>Model</h5>
                           </div>
                           <div className="col_25p">
-                            <h5 className="action_wrraper">Serial No</h5>
+                            <h5>Serial No</h5>
                           </div>
                           <div className="col_20p">
-                            <h5 className="action_wrraper">Item Code</h5>
+                            <h5>Item Code</h5>
+                          </div>
+                          <div className="col_20p">
+                            <h5>Quantity</h5>
                           </div>
                         </div>
                         {material?.length > 0 ? (
@@ -731,17 +741,19 @@ const AttachedSalesOrder = () => {
                                       type="checkbox"
                                       checked={selectedMaterials.includes(product._id)}
                                       onChange={() => handleMaterialSelect(product._id)}
-                                    // id={product._id}
-                                    // onChange={(e) => handleCheckboxChange(e)}
-                                    // checked={selectedCheckboxes.includes(product._id)}
-                                    // checked={selectedList.some((item) => item._id === product._id)}
+                                      // id={product._id}
+                                      // onChange={(e) => handleCheckboxChange(e)}
+                                      // checked={selectedCheckboxes.includes(product._id)}
+                                      // checked={selectedList.some((item) => item._id === product._id)}
                                     />
                                   </div>
                                 </div>
                                 <div className="col_25p">
                                   <h6>{index + 1}</h6>
                                 </div>
-
+                                <div className="col_25p">
+                                  <h6>{product?.location}</h6>
+                                </div>
                                 <div className="col_25p">
                                   <h6>{product?.category}</h6>
                                 </div>
@@ -749,13 +761,22 @@ const AttachedSalesOrder = () => {
                                   <h6>{product?.brand}</h6>
                                 </div>
                                 <div className="col_25p">
+                                  <h6>{product?.block}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.rack}</h6>
+                                </div>
+                                <div className="col_25p">
                                   <h6>{product?.modelId}</h6>
                                 </div>
                                 <div className="col_25p">
-                                  <h6 className="action_wrraper">{product?.serialNo}</h6>
+                                  <h6>{product?.serialNo}</h6>
                                 </div>
                                 <div className="col_20p">
-                                  <h6 className="action_wrraper ">{product?.itemCode}</h6>
+                                  <h6>{product?.itemCode}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{product?.quantity}</h6>
                                 </div>
                               </div>
                             );
@@ -802,9 +823,9 @@ const AttachedSalesOrder = () => {
                         <input
                           className="form-check-input"
                           type="checkbox"
-                        // id="selectAllCheckbox"
-                        // onChange={(e) => handleSelectAllChange(e)}
-                        // checked={selectAllChecked}
+                          // id="selectAllCheckbox"
+                          // onChange={(e) => handleSelectAllChange(e)}
+                          // checked={selectAllChecked}
                         />
                       </div>
                     </div>
@@ -841,12 +862,12 @@ const AttachedSalesOrder = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                              // checked={selectedMaterials.includes(product._id)}
-                              // onChange={() => handleMaterialSelect(product._id)}
-                              // id={product._id}
-                              // onChange={(e) => handleCheckboxChange(e)}
-                              // checked={selectedCheckboxes.includes(product._id)}
-                              // checked={selectedList.some((item) => item._id === product._id)}
+                                // checked={selectedMaterials.includes(product._id)}
+                                // onChange={() => handleMaterialSelect(product._id)}
+                                // id={product._id}
+                                // onChange={(e) => handleCheckboxChange(e)}
+                                // checked={selectedCheckboxes.includes(product._id)}
+                                // checked={selectedList.some((item) => item._id === product._id)}
                               />
                             </div>
                           </div>
