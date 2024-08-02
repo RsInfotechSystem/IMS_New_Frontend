@@ -141,12 +141,12 @@ const ReceiveMaterialList = () => {
                         <h6>{modelData?.transferBy?.name}</h6>
                       </div>
                       <div className="col_30p">
-                        {modelData?.acceptedBy?.name ? (
+                        {(modelData?.acceptedBy?.name) ? (
                          "--"
                         ) : (
-                          <h6 >
+                          <h6 className="action_wrraper">
                             <button
-                              className="btn btn-success"
+                              className="actionbtn sell_btn"
                               onClick={() =>
                                 router.push(
                                   `/dashboard/receive-material/receive-material-action?reciveMaterialId=${modelData?._id}`
