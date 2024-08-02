@@ -482,7 +482,7 @@ const TransferMaterialForm = () => {
                 // })}
                 register={{
                   ...register("fromLocation", {
-                    required: "fromLocation is required",
+                    required: "From Location is required",
                   }),
                 }}
                 onChange={(e) =>
@@ -512,7 +512,7 @@ const TransferMaterialForm = () => {
                 disable={false}
                 register={{
                   ...register("toLocation", {
-                    required: "toLocation is required",
+                    required: "To Location is required",
                   }),
                 }}
                 errors={errors.toLocation}

@@ -46,6 +46,8 @@ const CreateStockIn = ({ data }) => {
   const [isPartationPresent, setIsPartationPresent] = useState("");
   const [modelId, setModelId] = useState("");
 
+
+  console.log(blocks,"sdfg");
   const {
     register,
     handleSubmit,
@@ -282,7 +284,7 @@ const CreateStockIn = ({ data }) => {
     if (id) {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
-  }, [locationList.lenghth >=1 && location]);
+  }, [locationList.length >=1 && location]);
 
   useMemo(() => {
     handleCategory();
@@ -348,6 +350,13 @@ const CreateStockIn = ({ data }) => {
                       <FontAwesomeIcon icon={faAngleDown} className="icon" />
                     </div>
                   </div>
+                  <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
+                    </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Select Block *</label>
@@ -375,6 +384,13 @@ const CreateStockIn = ({ data }) => {
                       <FontAwesomeIcon icon={faAngleDown} className="icon" />
                     </div>
                   </div>
+                  <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
+                    </div>
                 </div>
                 {racks.length >= 1 && (
                   <div className="col-lg-3 col-md-6 input_wrapper">
@@ -404,7 +420,7 @@ const CreateStockIn = ({ data }) => {
                     </div>
                     <div style={{ height: "5px" }}>
                       {errors.rackId && (
-                        <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                           {errors.rackId.message}
                         </p>
                       )}
@@ -439,7 +455,7 @@ const CreateStockIn = ({ data }) => {
                     </div>
                     <div style={{ height: "5px" }}>
                       {errors.partitionName && (
-                        <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                           {errors.partitionName.message}
                         </p>
                       )}
@@ -447,7 +463,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 )}
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>category Name *</label>
+                  <label>Category Name *</label>
                   <div className="position-relative">
                     <select
                       disabled={modalStates.isView}
@@ -474,7 +490,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.categoryId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.categoryId.message}
                       </p>
                     )}
@@ -496,7 +512,6 @@ const CreateStockIn = ({ data }) => {
                       {brandsData?.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
-                            {" "}
                             {ele.name}
                           </option>
                         );
@@ -508,7 +523,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.brandId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.brandId.message}
                       </p>
                     )}
@@ -535,7 +550,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.conditionType && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.conditionType.message}
                       </p>
                     )}
@@ -568,7 +583,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.status && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.status.message}
                       </p>
                     )}
@@ -651,7 +666,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.modelId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.modelId.message}
                       </p>
                     )}

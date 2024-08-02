@@ -292,7 +292,7 @@ function Notification() {
                   </div>
 
                   <div className="col_20p">
-                    <h6>{data?.name}</h6>
+                    <h6>{data?.title}</h6>
                   </div>
 
                   <div className="col_45p">

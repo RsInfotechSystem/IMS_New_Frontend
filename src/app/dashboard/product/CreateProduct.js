@@ -85,6 +85,7 @@ function CreateProduct({ data }) {
 
 
   async function onSubmit(values) {
+    
     try {
       setLoader(true);
       let response;
@@ -258,7 +259,13 @@ function CreateProduct({ data }) {
                         <FontAwesomeIcon icon={faAngleDown} className="icon" />
                       </div>
                 </div>
-
+                <div style={{ height: "5px" }}>
+                      {errors.categoryId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.categoryId.message}
+                        </p>
+                      )}
+                    </div>
               </div>
 
               <div className="input_wrapper col-lg-4">
@@ -293,6 +300,13 @@ function CreateProduct({ data }) {
                     <FontAwesomeIcon icon={faAngleDown} className="icon" />
                   </div>
                   <div />
+                  <div style={{ height: "5px" }}>
+                      {errors.brandId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.brandId.message}
+                        </p>
+                      )}
+                    </div>
                 </div>
 
               </div>

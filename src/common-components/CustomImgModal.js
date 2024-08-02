@@ -17,7 +17,7 @@ function CustomImgModal({ url, setModalImageStates }) {
                         <FontAwesomeIcon icon={faCircleXmark} onClick={() => setModalImageStates((prev) => ({ ...prev, showImg: false, url: "" }))} className="close_modal_icon" />
                     </div>
                     <div className="form_modal_body">
-                        <Image src={`${getServerUrl()}/getFiles/${url}`} width={810} height={400}  alt="sbm" />
+                        <Image src={`${getServerUrl()}/getFiles/${url}`} width={810} height={400}  alt="sbm"/>
                     </div>
                 </div>
             </div>
