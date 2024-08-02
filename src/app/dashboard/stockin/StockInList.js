@@ -562,9 +562,9 @@ const StockInList = () => {
               <div className="col_50p">
                 <h5>Item Code</h5>
               </div>
-              <div className="col_50p">
+              {/* <div className="col_50p">
                 <h5>Quantity</h5>
-              </div>
+              </div> */}
               <div className="col_50p">
                 <h5>Remaining Quantity</h5>
               </div>
@@ -647,9 +647,9 @@ const StockInList = () => {
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}
                     </div>
-                    <div className="col_50p">
+                    {/* <div className="col_50p">
                       <h6>{stockDetails?.quantity ? stockDetails?.quantity : "-"}</h6>
-                    </div>
+                    </div> */}
                     <div className="col_50p">
                       <h6>
                         {stockDetails?.reamainingQuantity ? stockDetails?.reamainingQuantity : "-"}

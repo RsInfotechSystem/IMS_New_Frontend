@@ -220,15 +220,19 @@ const SalesOrderList = () => {
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
                     <div className="col_20p">
-                      <h6
-                        onClick={() => {
-                          router.push(
-                            `/dashboard/sales-order/sales-order-details?orderId=${data._id}`
-                          );
-                        }}
-                      >
-                        <strong style={{ textDecoration: "none" }}>{data?.salesOrderNo}</strong>
-                      </h6>
+                      {data?.formStatus == "ready" ? (
+                        <h6>{data?.salesOrderNo}</h6>
+                      ) : (
+                        <h6
+                          onClick={() => {
+                            router.push(
+                              `/dashboard/sales-order/sales-order-details?orderId=${data._id}`
+                            );
+                          }}
+                        >
+                          <strong style={{ textDecoration: "none" }}>{data?.salesOrderNo}</strong>
+                        </h6>
+                      )}
                       {/* <h6>{data?.salesOrderNo}</h6> */}
                     </div>
                     <div className="col_20p">

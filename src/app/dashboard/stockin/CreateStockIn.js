@@ -7,6 +7,7 @@ import InputBox from "@/common-components/InputBox";
 import SelectBox from "@/common-components/Select";
 
 import {
+  getBrandWiseModel,
   getCategory,
   getCategoryWiseBrand,
   getLocationWiseBlock,
@@ -46,6 +47,8 @@ const CreateStockIn = ({ data }) => {
   const [isPartationPresent, setIsPartationPresent] = useState("");
   const [modelId, setModelId] = useState("");
 
+
+  console.log(blocks,"sdfg");
   const {
     register,
     handleSubmit,
@@ -162,28 +165,28 @@ const CreateStockIn = ({ data }) => {
       setLoader(false);
     }
   }
-  async function getBrandWiseModel() {
-    try {
-      // props.setLoader(true);
-      const payload = {
-        brandId: brandId,
-      };
-      const serverResponse = await communication.brandWiseModel(payload);
-      if (serverResponse?.data?.status === "SUCCESS") {
-        setModel(serverResponse?.data?.model);
-      } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.warn(serverResponse.data.message);
-        router.push("/");
-        setLoader(false);
-      } else {
-        setModel([]);
-      }
-      // props.setLoader(false);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || error.message);
-      // props.setLoader(false);
-    }
-  }
+  // async function getBrandWiseModel() {
+  //   try {
+  //     // props.setLoader(true);
+  //     const payload = {
+  //       brandId: brandId,
+  //     };
+  //     const serverResponse = await communication.brandWiseModel(payload);
+  //     if (serverResponse?.data?.status === "SUCCESS") {
+  //       setModel(serverResponse?.data?.model);
+  //     } else if (serverResponse?.data?.status === "JWT_INVALID") {
+  //       toast.warn(serverResponse.data.message);
+  //       router.push("/");
+  //       setLoader(false);
+  //     } else {
+  //       setModel([]);
+  //     }
+  //     // props.setLoader(false);
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message || error.message);
+  //     // props.setLoader(false);
+  //   }
+  // }
   const onSubmit = async (values) => {
     try {
       setLoader(true);
@@ -271,18 +274,33 @@ const CreateStockIn = ({ data }) => {
   };
 
   useEffect(() => {
-    const id = getValues("brandId");
+    const id = getValues("categoryId");
     if (id) {
-      getBrandWiseModel(id);
+      getCategoryWiseBrand(id,setLoader, router, setBrandsData);
     }
-  }, [brandsData?.length >=1 && brandId ]);
+  }, [category?.length >=1 && categoryId ]);
 
   useEffect(() => {
     const id = getValues("locationId");
     if (id) {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
-  }, [locationList.lenghth >=1 && location]);
+  }, [locationList.length >=1 && location]);
+
+  useEffect(() => {
+    const id = getValues("brandId");
+    if (id) {
+      getBrandWiseModel(id,setLoader,router,setModel);
+    }
+  }, [brandId, brandsData?.length>=1]);
+
+  // useEffect(() => {
+  //   const id = getValues("brandId");
+  //   if (id) {
+  //     getBrandWiseModel(id, setLoader, router, setModel);
+  //   }
+  // }, [model?.length >=1 && brandId]);
+  
 
   useMemo(() => {
     handleCategory();
@@ -348,6 +366,13 @@ const CreateStockIn = ({ data }) => {
                       <FontAwesomeIcon icon={faAngleDown} className="icon" />
                     </div>
                   </div>
+                  <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
+                    </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Select Block *</label>
@@ -375,6 +400,13 @@ const CreateStockIn = ({ data }) => {
                       <FontAwesomeIcon icon={faAngleDown} className="icon" />
                     </div>
                   </div>
+                  <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
+                    </div>
                 </div>
                 {racks.length >= 1 && (
                   <div className="col-lg-3 col-md-6 input_wrapper">
@@ -404,7 +436,7 @@ const CreateStockIn = ({ data }) => {
                     </div>
                     <div style={{ height: "5px" }}>
                       {errors.rackId && (
-                        <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                           {errors.rackId.message}
                         </p>
                       )}
@@ -439,7 +471,7 @@ const CreateStockIn = ({ data }) => {
                     </div>
                     <div style={{ height: "5px" }}>
                       {errors.partitionName && (
-                        <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                           {errors.partitionName.message}
                         </p>
                       )}
@@ -447,7 +479,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 )}
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>category Name *</label>
+                  <label>Category Name *</label>
                   <div className="position-relative">
                     <select
                       disabled={modalStates.isView}
@@ -474,7 +506,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.categoryId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.categoryId.message}
                       </p>
                     )}
@@ -496,7 +528,6 @@ const CreateStockIn = ({ data }) => {
                       {brandsData?.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
-                            {" "}
                             {ele.name}
                           </option>
                         );
@@ -508,7 +539,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.brandId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.brandId.message}
                       </p>
                     )}
@@ -535,7 +566,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.conditionType && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.conditionType.message}
                       </p>
                     )}
@@ -568,7 +599,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.status && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.status.message}
                       </p>
                     )}
@@ -651,7 +682,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                   <div style={{ height: "5px" }}>
                     {errors.modelId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                         {errors.modelId.message}
                       </p>
                     )}

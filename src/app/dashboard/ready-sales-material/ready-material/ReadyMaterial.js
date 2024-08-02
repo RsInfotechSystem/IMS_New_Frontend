@@ -1,5 +1,6 @@
 "use client";
 import CustomBtn from "@/common-components/CustomBtn";
+import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import InputBox from "@/common-components/InputBox";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
@@ -10,6 +11,12 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
 const ReadyMaterial = () => {
+  const [modalStates, setModalStates] = useState({
+    deleteOrder: false,
+    modal: false,
+    type: "",
+    id: "",
+  });
   const searchParams = useSearchParams();
   const [attachedMaterial, setAttachedMaterial] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -19,7 +26,12 @@ const ReadyMaterial = () => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
   const [quantities, setQuantities] = useState([]);
-  const router = useRouter()
+  const router = useRouter();
+  const [timeoutId, setTimeoutId] = useState();
+  const [respondHandlerModalState, setRespondHandlerModalState] = useState({
+    state: false,
+    deleteId: "",
+  });
 
   const getMaterialById = async () => {
     try {
@@ -29,7 +41,7 @@ const ReadyMaterial = () => {
       });
       if (response?.data?.status === "SUCCESS") {
         setAttachedMaterial(response.data?.salesorder);
-        console.log("wdef", response.data?.salesorder);
+        // console.log("wdef", resssponse.data?.salesorder);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -48,7 +60,10 @@ const ReadyMaterial = () => {
 
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
-    setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes?.length + 1 === attachedMaterial?.materialDetails?.length)))
+    setSelectAllChecked(
+      !selectedCheckboxes.includes(checkboxId) &&
+        selectedCheckboxes?.length + 1 === attachedMaterial?.materialDetails?.length
+    );
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
         return prevSelected.filter((id) => id !== checkboxId);
@@ -56,24 +71,56 @@ const ReadyMaterial = () => {
         return [...prevSelected, checkboxId];
       }
     });
-
   };
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
     setSelectedCheckboxes((prevSelected) =>
-      e.target.checked ? attachedMaterial?.materialDetails?.map((brandDetails) => brandDetails._id) : []
+      e.target.checked
+        ? attachedMaterial?.materialDetails?.map((brandDetails) => brandDetails._id)
+        : []
     );
   };
 
-  const handleQuantityChange = (materialData, value) => {
-    setQuantities([
-      {
-        materialIds: materialData?.materialIds?.map(e => e._id),
-        sellingQuantity: value,
-        detailId: materialData?._id,
-      },
-    ]);
+  const handleQuantityChange = (materialData, value, product) => {
+    clearTimeout(timeoutId);
+    let _timeOutId = setTimeout(() => {
+      setQuantities((prev) => [
+        ...prev,
+        {
+          detailId: product?._id,
+          materialIds: [
+            {
+              id: materialData?._id,
+              sellingQuantity: Number(value),
+            },
+          ],
+        },
+      ]);
+    }, 2000);
+    setTimeoutId(_timeOutId);
   };
+
+  async function allsalesOrderSell() {
+    try {
+      setLoader(true);
+      let payload = { orderId: searchParams.get("orderId") };
+      const serverResponse = await communication.allMaterialOrderSells(payload);
+      if (serverResponse?.data?.status === "SUCCESS") {
+        toast.success(serverResponse.data.message);
+        router.back();
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        toast.info(serverResponse.data.message);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
 
   async function salesOrderSell() {
     try {
@@ -82,13 +129,12 @@ const ReadyMaterial = () => {
         return;
       }
       setLoader(true);
-      const serverResponse = await communication.SalesOrderSells({
-        orderId: searchParams.get("orderId"),
-        materialDetails: quantities,
-      });
+      let payload = { orderId: searchParams.get("orderId"), materialDetails: quantities };
+      console.log(payload, "payload");
+      const serverResponse = await communication.SalesOrderSells(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse.data.message);
-        router.back()
+        router.back();
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -104,72 +150,113 @@ const ReadyMaterial = () => {
   }
 
   const deleteSaleOrder = async () => {
-    Swal.fire({
-      text: "Are you sure you want to delete this order?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#5149E4",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it",
-      cancelButtonText: "No, cancel",
-      reverseButtons: true,
-    }).then(async function (result) {
-      if (result.isConfirmed) {
-        try {
-          setLoader(true);
-          let payload = {
-            orderId: searchParams.get("orderId"),
-          };
-          let response = await communication.deleteSaleOrder(payload);
-          if (response?.data?.status === "SUCCESS") {
-            toast.success(response.data.message);
-            router.back();
-          } else if (response?.data?.status === "JWT_INVALID") {
-            toast.info(response.data.message);
-            router.push("/");
-          } else {
-            toast.info(response.data.message);
-          }
-        } catch (error) {
-          toast.info(error.message);
-        } finally {
-          setLoader(false);
-        }
+    try {
+      setLoader(true);
+      setModalStates((prev) => ({ ...prev, deleteOrder: false }));
+      let payload = {
+        orderId: searchParams.get("orderId"),
+      };
+      let response = await communication.deleteSaleOrder(payload);
+      if (response?.data?.status === "SUCCESS") {
+        toast.success(response.data.message);
+        router.push("dashboard/ready-sales-material");
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response.data.message);
+        router.push("/");
       } else {
+        toast.info(response.data.message);
       }
-    });
+    } catch (error) {
+      toast.info(error.message);
+    } finally {
+      setLoader(false);
+    }
+  };
+  const cancelHandler = () => {
+    setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
   };
 
   return (
     <div>
+      {modalStates.deleteOrder && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message={`Do you want to delete Order?`}
+          successHandler={() => {
+            deleteSaleOrder();
+          }}
+          cancelHandler={() => {
+            setModalStates((prev) => ({ ...prev, deleteOrder: false }));
+          }}
+        />
+      )}
+      {respondHandlerModalState.state && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message="Are you sure you want to sell all items?"
+          cancelHandler={cancelHandler}
+          successHandler={() => allsalesOrderSell()}
+        />
+      )}
       <div className="top_header">
-        <div className="tab_title">Ready Sales Material</div>
-        {(pageCount > 1) && <Pagination
-          isPageUpdated={isPageUpdated}
-          setIsPageUpdated={setIsPageUpdated}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageCount={pageCount}
-        />}
+        <div className="tab_title">Ready Sales Material for sales</div>
+        {/* {pageCount > 1 && (
+          <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
+        )} */}
+        <div
+          className="back_btn"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_1564_1770)">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
+                  fill="#184965"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_1564_1770">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+          <div>Back</div>
+        </div>
       </div>
-      <CustomBtn
-        name="Back"
-        onClick={() => {
-          router.back()
-        }}
-      />
 
       <div className="table_wrapper my-3">
         <div className="table_main">
-          <div className="table_section pi_product_table">
+          <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
             <div className="table_header">
-              <div className="col_20p">
+              {/* <div className="col_20p">
                 <div className="check_box">
-                  <input type="checkbox" className="form-check-input" onChange={(e) => handleSelectAllChange(e)}
-                    checked={selectAllChecked} />
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    onChange={(e) => handleSelectAllChange(e)}
+                    checked={selectAllChecked}
+                  />
                 </div>
-              </div>
-              <div className="col_25p">
+              </div> */}
+              <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
               <div className="col_25p">
@@ -181,102 +268,107 @@ const ReadyMaterial = () => {
               <div className="col_25p">
                 <h5>Warranty</h5>
               </div>
-              <div className="col_25p">
-                <h5>Attached Material</h5>
+              <div className="col_35p">
+                <h5>Category</h5>
               </div>
-              {attachedMaterial.formStatus == "ready" &&
-                <div className="col_25p">
-                  <h5>Selling Quantity</h5>
-                </div>
-              }
+              <div className="col_35p">
+                <h5>Brand</h5>
+              </div>
+              <div className="col_35p">
+                <h5>Model</h5>
+              </div>
+              {/* {attachedMaterial.formStatus == "ready" && ( */}
+              <div className="col_50p">
+                <h5>Selling Quantity</h5>
+              </div>
+              {/* )} */}
               <div className="col_25p">
                 <h5 className="action_wrraper">Note</h5>
               </div>
             </div>
             {attachedMaterial?.materialDetails?.length > 0 ? (
               attachedMaterial?.materialDetails?.map((product, index) => {
-                return (
-                  product?.materialIds?.map((material, materialIndex) => (
-                    <div className="table_data" key={material._id}>
-                      <div className="col_20p">
-                        <div className="check_box">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={material._id}
-                            onChange={(e) => handleCheckboxChange(e)}
-                            checked={selectedCheckboxes.includes(material._id)}
-                          />
-                        </div>
+                return product?.materialIds?.map((material, materialIndex) => (
+                  <div className="table_data" key={material._id}>
+                    {/* <div className="col_20p">
+                      <div className="check_box">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={material._id}
+                          onChange={(e) => handleCheckboxChange(e)}
+                          checked={selectedCheckboxes.includes(material._id)}
+                        />
                       </div>
-                      <div className="col_25p">
-                        <h6>{index + 1}.{materialIndex + 1}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6>{product?.materialDescription}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6>{product?.quantity}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6>{product?.warranty ? product?.warranty : "--"}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <div className="description_modal">
-                          <h6>{material?.categoryId?.name}, </h6>
-                        </div>
-                        <div className="modal_name">
-                          <h6>{material?.brandId?.name}, </h6>
-                        </div>
-                        <div className="modal_name">
-                          <h6>{material?.parameterId?.name}, </h6>
-                        </div>
-                        <div className="modal_name">
-                          <h6>{material?.modelId?.name}</h6>
-                        </div>
-                      </div>
-                      {attachedMaterial.formStatus == "ready" &&
-                        <div className="col_25p">
-                          <h6>
-                            <InputBox
-                              className="inputBox"
-                              type="number"
-                              placeholder="Enter Quantity"
-                              onChange={(e) => {
-                                handleQuantityChange(product, e.target.value);
-                              }}
-                            />
-                          </h6>
-                        </div>
-                      }
-                      <div className="col_25p">
-                        <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
-                      </div>
+                    </div> */}
+                    <div className="col_10p">
+                      <h6>
+                        {index + 1}.{materialIndex + 1}
+                      </h6>
                     </div>
-                  ))
-                );
+                    <div className="col_25p">
+                      <h6>{product?.materialDescription}</h6>
+                    </div>
+                    <div className="col_25p">
+                      <h6>{product?.quantity}</h6>
+                    </div>
+                    <div className="col_25p">
+                      <h6>{product?.warranty ? product?.warranty : "--"}</h6>
+                    </div>
+                    {/* <div className="col_25p"></div> */}
+                    <div className="col_35p">
+                      <h6>{material?.categoryId?.name}, </h6>
+                    </div>
+                    <div className="col_35p">
+                      <h6>{material?.brandId?.name}, </h6>
+                    </div>
+                    <div className="col_35p">
+                      <h6>{material?.modelId?.name}</h6>
+                    </div>
+                    {/* {attachedMaterial.formStatus == "ready" && ( */}
+                    <div className="col_50p">
+                      <h6>
+                        <InputBox
+                          className="inputBox"
+                          type="number"
+                          placeholder="Enter Quantity"
+                          onChange={(e) => {
+                            handleQuantityChange(material, e.target.value, product);
+                          }}
+                        />
+                      </h6>
+                    </div>
+                    {/* )} */}
+                    <div className="col_25p">
+                      <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+                    </div>
+                  </div>
+                ));
               })
             ) : (
-              <small className="text-center text-secondary py-2">
-                No Records Found
-              </small>
+              <small className="text-center text-secondary py-2">No Records Found</small>
             )}
           </div>
         </div>
       </div>
-      {attachedMaterial.formStatus == "ready" &&
+      {attachedMaterial.formStatus == "ready" && (
         <div className="d-flex align-items-center justify-content-center gap-3 my-3">
           <CustomBtn
-            name="Sell"
-            onClick={salesOrderSell}
+            name="All Sell"
+            onClick={() => {
+              setRespondHandlerModalState({ state: true });
+            }}
           />
+          <CustomBtn name="Partial Sell" onClick={salesOrderSell} />
           <CustomBtn
             name="Delete"
-            onClick={deleteSaleOrder}
+            onClick={() => {
+              setModalStates((prev) => ({ ...prev, deleteOrder: true }));
+            }}
             className="btn-danger"
           />
         </div>
-      }
+      )}
     </div>
   );
 };
