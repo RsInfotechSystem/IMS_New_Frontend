@@ -404,7 +404,7 @@ const UserManagement = () => {
               <div className="col_25p">
                 <h5>Password</h5>
               </div>
-              <div className="col_20p action_wrraper">
+              <div className="col_20p">
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
@@ -430,7 +430,7 @@ const UserManagement = () => {
                     <div className="col_30p">
                       <h6>{userDetails?.name}</h6>
                     </div>
-                    <div className="col_15p">
+                    <div className="col_30p">
                       <h6>{userDetails?.role}</h6>
                     </div>
                     <div className="col_35p">
@@ -445,7 +445,7 @@ const UserManagement = () => {
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}
                     </div>
-                    <div className="password">
+                    <div className="col_25p">
                       {passwordVisibility[userDetails._id] ? (
                         <h6 style={{ display: "inline-flex", alignItems: "center" }}>
                           {userDetails.password}
