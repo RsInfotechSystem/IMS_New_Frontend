@@ -221,6 +221,8 @@ const CategoryList = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
+            {categoryList.length > 0 ?(
+              <>
             {categoryList?.map((category, index) => {
               return (
                 <>
@@ -293,6 +295,11 @@ const CategoryList = () => {
                 </>
               );
             })}
+            </>
+          ):(
+            <p className="no_data">Data Not Available</p>
+          )
+        }
           </div>
         </div>
       </div>

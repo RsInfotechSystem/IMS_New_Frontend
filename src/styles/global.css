@@ -1485,9 +1485,9 @@ div:where(.tab_active, .tab_inactive) {
 
 #toggler {
   width: 35px;
-  height: 20px;
+  height: 15px;
   border-radius: 20px;
-  padding: 2px 3px;
+  padding: 2px 2px;
   position: relative;
   cursor: pointer;
   display: flex;
@@ -1506,8 +1506,8 @@ div:where(.tab_active, .tab_inactive) {
 }
 
 .toggle_switch {
-  width: 15px;
-  height: 15px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   transition: all 0.5s;
 }
@@ -5328,4 +5328,7 @@ ul .appointment_letter_ul {
 }
 .font_label{
   font-family: 12px;
+}
+.multiSelectContainer ul {
+  max-height: 60px !important;
 }

@@ -311,7 +311,9 @@ const Parameters = () => {
                 <h6>Action</h6>
               </div>
             </div>
-
+            {parameter.length > 0 ?(
+              <>
+           
             {parameter?.map((parameter, index) => {
               return (
                 <>
@@ -388,6 +390,11 @@ const Parameters = () => {
                 </>
               );
             })}
+             </>
+             ):(
+              <p className="no_data">Data Not Available</p>
+             )
+            }
           </div>
         </div>
       </div>

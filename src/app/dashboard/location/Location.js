@@ -191,7 +191,7 @@ const Location = () => {
                                                             </defs>
                                                         </svg>
                                                     </div>
-                                                    <div className="form-check form-switch ">
+                                                    <div className="form-switch ">
                                                         <input
                                                             class="form-check-input cursor-pointer"
                                                             type="checkbox"

@@ -272,7 +272,7 @@ const RackList = () => {
                     <div className="table_section">
                         <div className="table_header">
                             <div className="col_7p">
-                                <div className="check_box">
+                                {/* <div className="check_box"> */}
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
@@ -281,7 +281,7 @@ const RackList = () => {
                                         checked={selectAllChecked}
                                     />
                                     <label className="form-check-label"></label>
-                                </div>
+                                {/* </div> */}
                             </div>
                             <div className="col_10p">
                                 <h5>Sr. No.</h5>
@@ -299,12 +299,15 @@ const RackList = () => {
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
                         </div>
+                        {rackList.length > 0 ? (
+                            <>
+                       
                         {rackList?.map((rackDetails, index) => {
                             return (
                                 <>
                                     <div className="table_data" key={index}>
                                         <div className="col_7p">
-                                            <div className="check_box">
+                                            {/* <div className="check_box"> */}
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
@@ -313,7 +316,7 @@ const RackList = () => {
                                                     checked={selectedCheckboxes.includes(rackDetails?._id)}
                                                 />
                                                 <label className="form-check-label"></label>
-                                            </div>
+                                            {/* </div> */}
                                         </div>
                                         <div className="col_10p">
                                             <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
@@ -415,6 +418,11 @@ const RackList = () => {
                                 </>
                             );
                         })}
+                         </>
+                         ):(
+                           <p className="no_data">Data Not Available</p>
+                         )
+                        }
                     </div>
                 </div>
             </div>

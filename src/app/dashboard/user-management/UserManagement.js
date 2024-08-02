@@ -475,9 +475,9 @@ const UserManagement = () => {
                         </defs>
                       </svg>
                     </div>
-                    <div className="form-check form-switch " title="enable/disable" >
+                    <div className="form-switch " title="enable/disable" >
                       <input
-                        class="form-check-input cursor-pointer"
+                        className="form-check-input cursor-pointer"
                         type="checkbox"
                         checked={userDetails?.isActive}
                         id={`toggleSwitch${userDetails._id}`}
