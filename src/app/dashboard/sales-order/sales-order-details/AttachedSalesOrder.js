@@ -141,12 +141,12 @@ const AttachedSalesOrder = () => {
         let payload = {
           categoryId: id,
         };
-        if (id) {
-          let response = await communication.getCategoryWiseParameter(payload);
-          if (response?.data?.status === "SUCCESS") {
-            setParameter(response?.data?.parameter);
-          }
-        }
+        // if (id) {
+        //   let response = await communication.getCategoryWiseParameter(payload);
+        //   if (response?.data?.status === "SUCCESS") {
+        //     setParameter(response?.data?.parameter);
+        //   }
+        // }
       } catch (error) {
         toast.warn(error.message);
       }
@@ -287,7 +287,7 @@ const AttachedSalesOrder = () => {
         toast.success(serverResponse?.data?.message);
         setLoader(false);
         setModelList([]);
-        router.push("/admin/dashboard/sales-order");
+        router.back();
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -475,7 +475,7 @@ const AttachedSalesOrder = () => {
                             id={product._id}
                             onChange={(e) => handleCheckboxChange(e)}
                             checked={selectedCheckboxes.includes(product._id)}
-                            // checked={selectedList.some((item) => item._id === product._id)}
+                          // checked={selectedList.some((item) => item._id === product._id)}
                           />
                         </div>
                       </div>
@@ -694,9 +694,9 @@ const AttachedSalesOrder = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                // id="selectAllCheckbox"
-                                // onChange={(e) => handleSelectAllChange(e)}
-                                // checked={selectAllChecked}
+                              // id="selectAllCheckbox"
+                              // onChange={(e) => handleSelectAllChange(e)}
+                              // checked={selectAllChecked}
                               />
                             </div>
                           </div>
@@ -731,10 +731,10 @@ const AttachedSalesOrder = () => {
                                       type="checkbox"
                                       checked={selectedMaterials.includes(product._id)}
                                       onChange={() => handleMaterialSelect(product._id)}
-                                      // id={product._id}
-                                      // onChange={(e) => handleCheckboxChange(e)}
-                                      // checked={selectedCheckboxes.includes(product._id)}
-                                      // checked={selectedList.some((item) => item._id === product._id)}
+                                    // id={product._id}
+                                    // onChange={(e) => handleCheckboxChange(e)}
+                                    // checked={selectedCheckboxes.includes(product._id)}
+                                    // checked={selectedList.some((item) => item._id === product._id)}
                                     />
                                   </div>
                                 </div>
@@ -802,9 +802,9 @@ const AttachedSalesOrder = () => {
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          // id="selectAllCheckbox"
-                          // onChange={(e) => handleSelectAllChange(e)}
-                          // checked={selectAllChecked}
+                        // id="selectAllCheckbox"
+                        // onChange={(e) => handleSelectAllChange(e)}
+                        // checked={selectAllChecked}
                         />
                       </div>
                     </div>
@@ -830,7 +830,7 @@ const AttachedSalesOrder = () => {
                       <h5 className="action_wrraper">Action</h5>
                     </div>
                   </div>
-                  {console.log(attachedMaterials,"erfe")}
+                  {console.log(attachedMaterials, "erfe")}
                   {attachedMaterials?.length > 0 ? (
                     attachedMaterials?.map((item, index) => {
                       return (
@@ -841,12 +841,12 @@ const AttachedSalesOrder = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                // checked={selectedMaterials.includes(product._id)}
-                                // onChange={() => handleMaterialSelect(product._id)}
-                                // id={product._id}
-                                // onChange={(e) => handleCheckboxChange(e)}
-                                // checked={selectedCheckboxes.includes(product._id)}
-                                // checked={selectedList.some((item) => item._id === product._id)}
+                              // checked={selectedMaterials.includes(product._id)}
+                              // onChange={() => handleMaterialSelect(product._id)}
+                              // id={product._id}
+                              // onChange={(e) => handleCheckboxChange(e)}
+                              // checked={selectedCheckboxes.includes(product._id)}
+                              // checked={selectedList.some((item) => item._id === product._id)}
                               />
                             </div>
                           </div>

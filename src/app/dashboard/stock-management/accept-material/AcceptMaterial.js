@@ -13,6 +13,8 @@ import ButtonLoader from "@/common-components/ButtonLoader";
 import Loader from "@/common-components/Loader";
 import Swal from "sweetalert2";
 import { stockStatus } from "@/helper/stockStatusArray";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const AcceptMaterial = () => {
   const router = useRouter();
