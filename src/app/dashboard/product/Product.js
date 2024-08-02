@@ -63,7 +63,7 @@ const Product = () => {
         router.push("/");
         setLoader(false);
       } else {
-        setBrandList([]);
+        setProductList([]);
         setLoader(false);
       }
     } catch (error) {
