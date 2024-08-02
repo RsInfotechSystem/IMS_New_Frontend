@@ -98,22 +98,10 @@ const ReadySalesMaterial = () => {
         />
         {
           // configAccess?.access === "Write" &&
-          <div className="buttons_wrapper">
-            <CustomBtn
-              name={"Return To Inventory"}
-              //   onClick={() => {
-              //     setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
-              //   }}
-            />
-            <CustomBtn
-              name={"Sold"}
-              // onClick={() => {
-              //   setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
-              // }}
-              //   svg={<FontAwesomeIcon icon={faTrash} />}
-              //   onClick={deleteRole}
-            />
-          </div>
+          // <div className="buttons_wrapper">
+          //   <CustomBtn name={"Return To Inventory"} />
+          //   <CustomBtn name={"Sold"} />
+          // </div>
         }
       </div>
 
@@ -307,7 +295,7 @@ const ReadySalesMaterial = () => {
                 ))
               ) : (
                 <div className="no_data">
-                  <h6>No recipes found</h6>
+                  <h6>Data not available</h6>
                 </div>
               )}
             </div>

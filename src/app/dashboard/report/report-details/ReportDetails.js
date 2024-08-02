@@ -1,13 +1,13 @@
 "use client";
-import CustomBtn from '@/common-components/CustomBtn';
-import Loader from '@/common-components/Loader';
-import Pagination from '@/common-components/Pagination';
-import Search from '@/common-components/Search';
-import { communication } from '@/services/communication';
-import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useReducer, useState } from 'react';
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
+import CustomBtn from "@/common-components/CustomBtn";
+import Loader from "@/common-components/Loader";
+import Pagination from "@/common-components/Pagination";
+import Search from "@/common-components/Search";
+import { communication } from "@/services/communication";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useReducer, useState } from "react";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const ReportDetails = () => {
   const searchParams = useSearchParams();
@@ -84,7 +84,7 @@ const ReportDetails = () => {
       let payload = {
         type: searchParams.get("reportType"),
         searchString: searchString,
-        page
+        page,
       };
       if (searchParams.get("reportType") === "brand") {
         payload.brandId = searchParams.get("reportData");
@@ -105,7 +105,7 @@ const ReportDetails = () => {
       if (searchParams.get("reportType") === "graph") {
         payload.date = searchParams.get("reportData");
       }
-      setLoader(true)
+      setLoader(true);
 
       const serverResponse = await communication.getReportMaterialList(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -157,10 +157,10 @@ const ReportDetails = () => {
         toast.info(serverResponse.data.message);
         setReportDetails([]);
       }
-      setLoader(false)
+      setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-      setLoader(false)
+      setLoader(false);
     }
   };
   const handleSearch = (e) => {
@@ -172,7 +172,7 @@ const ReportDetails = () => {
         reportId: state.reportId,
         reportType: state.reportType,
         searchString: e.target.value,
-        page: 1
+        page: 1,
       });
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -214,7 +214,11 @@ const ReportDetails = () => {
       {loader && <Loader text="Fetching Data..." />}
 
       <div className="top_header">
-        <div className="tab_title" style={{ textTransform: "capitalize" }}>{searchParams?.get("reportType") === "graph" ? `${searchParams.get("reportData")} Stock Out List` : `${searchParams.get("selectedType")} stock List`}</div>
+        <div className="tab_title" style={{ textTransform: "capitalize" }}>
+          {searchParams?.get("reportType") === "graph"
+            ? `${searchParams.get("reportData")} Stock Out List`
+            : `${searchParams.get("selectedType")} stock List`}
+        </div>
         <div
           className="back_btn"
           onClick={() => {
@@ -249,14 +253,22 @@ const ReportDetails = () => {
       </div>
       <div className="search_btn_wrapper">
         <Search onChange={(e) => handleSearch(e)} placeholder={"Search"} />
+        <div className="pagination_wrapper">
+          <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
+        </div>
       </div>
 
       {/* table  */}
       <div className="table_wrapper">
-        <div className="table_main" >
+        <div className="table_main">
           <div className="table_section employee_table">
-            <div className="table_header" >
-
+            <div className="table_header">
               <div className="col_15p">
                 <h5>Sr. No.</h5>
               </div>
@@ -285,20 +297,20 @@ const ReportDetails = () => {
               <div className="col_20p">
                 <h5>Quantity</h5>
               </div>
-              {searchParams?.get("reportType") === "graph" ?
+              {searchParams?.get("reportType") === "graph" ? (
                 <div className="col_25p">
                   <h5>Stock Out By</h5>
                 </div>
-                :
+              ) : (
                 <div className="col_25p">
                   <h5>Stock Status</h5>
                 </div>
-              }
+              )}
             </div>
-            {
-              reportDetails?.map((data, index) => {
-                return <>
-                  <div className="table_data" >
+            {reportDetails?.map((data, index) => {
+              return (
+                <>
+                  <div className="table_data">
                     <div className="col_15p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
@@ -328,42 +340,31 @@ const ReportDetails = () => {
                     <div className="col_20p">
                       <h6>{data?.serialNo ?? "--"}</h6>
                     </div>
-                    {searchParams?.get("reportType") === "graph" ?
+                    {searchParams?.get("reportType") === "graph" ? (
                       <div className="col_20p">
                         <h6>{data?.quantity}</h6>
                       </div>
-                      :
+                    ) : (
                       <div className="col_20p">
                         <h6>{data?.reamainingQuantity}</h6>
                       </div>
-                    }
+                    )}
 
-                    {searchParams?.get("reportType") === "graph" ?
+                    {searchParams?.get("reportType") === "graph" ? (
                       <div className="col_25p">
                         <h6>{data?.stockOutBy?.name}</h6>
                       </div>
-                      :
+                    ) : (
                       <div className="col_25p">
                         <h6>{data?.stockStatus}</h6>
                       </div>
-                    }
+                    )}
                   </div>
                 </>
-              })
-            }
-
+              );
+            })}
           </div>
-
         </div>
-      </div>
-      <div className="pagination_wrapper">
-        <Pagination
-          isPageUpdated={isPageUpdated}
-          setIsPageUpdated={setIsPageUpdated}
-          currentPage={currentPage}
-          setCurrentPage={setCurrentPage}
-          pageCount={pageCount}
-        />
       </div>
     </>
   );
