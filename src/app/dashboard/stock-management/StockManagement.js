@@ -391,6 +391,9 @@ const StockManagement = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
+            {material.length > 0 ? (
+            <>
+           
             {material?.map((materialDetails, index) => {
               return (
                 <div className="table_data" key={index}>
@@ -439,6 +442,11 @@ const StockManagement = () => {
                 </div>
               );
             })}
+            </>
+            ):(
+              <p className="no_data">Data Not Available</p>
+            )
+          }
           </div>
         </div>
       </div>

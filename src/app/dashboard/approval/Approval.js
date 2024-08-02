@@ -13,6 +13,7 @@ import Image from "next/image";
 import { formatDate } from "@/helper/formatDate";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import StockFilter from "@/common-components/StockFilter";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const Approval = () => {
@@ -44,30 +45,24 @@ const Approval = () => {
     isShowSellList: true,
     // isShowTransferList: false,
   });
+  const [filter,setFilter] = useState({});
+  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", filter: false, isView: false });
   // ----------------------SELL API------------------------------------
   async function getMaterialForApproval({
     page = 1,
-    searchString,
-    isSearch = false,
-    categoryValue,
-    brandValue,
-    isFirstCall,
+        searchString,
+        userId,
+        isSearch = false, isFirstCall, location, categoryId, brandId, modelId
   } = {}) {
     try {
       setLoader(true);
       let payload = {
         page,
         searchString: searchString,
-        ...(state.categoryValue.keyType == "category" && {
-          categoryId: state?.categoryValue?.keyId,
-        }),
-        ...(state.brandValue.keyType == "brand" && { brandId: state?.brandValue?.keyId }),
-        ...(state.locationValue.keyType == "location" && {
-          locationId: state?.locationValue?.keyId,
-        }),
-        ...(state?.modelNameValue?.keyType == "modelName" && {
-          modelId: state?.modelNameValue?.keyId,
-        }),
+        location,
+        categoryId,
+        brandId,
+        modelId,
       };
       const serverResponse = await communication.getMaterialForApproval(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -185,7 +180,12 @@ const Approval = () => {
     let isSearch = true;
     clearTimeout(timeoutId);
     let _timeOutId = setTimeout(() => {
-      getMaterialForApproval(1, e.target.value, isSearch);
+      getMaterialForApproval({
+        page: 1,
+        searchString: e.target.value,
+        isSearch,
+        ...filter
+      });
     }, 2000);
     setTimeoutId(_timeOutId);
   };
@@ -330,6 +330,7 @@ const Approval = () => {
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
+      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getMaterialForApproval} filter={filter} setFilter={setFilter} />}
       <div className="top_header">
         <div className="tab_title">Approval</div>
         <Pagination
@@ -349,6 +350,27 @@ const Approval = () => {
           placeholder={"Search"}
         />
         <div className="buttons_wrapper">
+        <CustomBtn
+            name={"Filter"}
+            onClick={() => {
+              setModalStates((prev) => ({ ...prev, filter: true }));
+            }}
+            svg={
+              <svg xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 512 512" fill="#fff">
+                <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+              </svg>
+            }
+          />
+        <CustomBtn
+            name={"Reset Filter"}
+            onClick={() => {
+              getMaterialForApproval();
+            }}
+           
+          />
           <div
             className="tab_btn"
             // name={"Sell List"}
