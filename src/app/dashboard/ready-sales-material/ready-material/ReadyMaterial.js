@@ -20,7 +20,7 @@ const ReadyMaterial = () => {
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
   const [quantities, setQuantities] = useState([]);
   const router = useRouter();
-
+  const [timeoutId, setTimeoutId] = useState();
   const getMaterialById = async () => {
     try {
       setLoader(true);
@@ -29,7 +29,7 @@ const ReadyMaterial = () => {
       });
       if (response?.data?.status === "SUCCESS") {
         setAttachedMaterial(response.data?.salesorder);
-        console.log("wdef", response.data?.salesorder);
+        // console.log("wdef", resssponse.data?.salesorder);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -69,14 +69,27 @@ const ReadyMaterial = () => {
     );
   };
 
-  const handleQuantityChange = (materialData, value) => {
-    setQuantities([
-      {
-        materialIds: materialData?.materialIds?.map((e) => e._id),
-        sellingQuantity: value,
-        detailId: materialData?._id,
-      },
-    ]);
+  const handleQuantityChange = (materialData, value, product) => {
+    console.log(materialData, "materialData");
+    console.log(product, "product");
+    console.log(value, "value");
+
+    clearTimeout(timeoutId);
+    let _timeOutId = setTimeout(() => {
+      setQuantities((prev) => [
+        ...prev,
+        {
+          detailId: product?._id,
+          materialIds: [
+            {
+              id: materialData?._id,
+              sellingQuantity: Number(value),
+            },
+          ],
+        },
+      ]);
+    }, 2000);
+    setTimeoutId(_timeOutId);
   };
 
   async function salesOrderSell() {
@@ -86,10 +99,9 @@ const ReadyMaterial = () => {
         return;
       }
       setLoader(true);
-      const serverResponse = await communication.SalesOrderSells({
-        orderId: searchParams.get("orderId"),
-        materialDetails: quantities,
-      });
+      let payload = { orderId: searchParams.get("orderId"), materialDetails: quantities };
+      console.log(payload, "payload");
+      const serverResponse = await communication.SalesOrderSells(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse.data.message);
         router.back();
@@ -167,7 +179,7 @@ const ReadyMaterial = () => {
 
       <div className="table_wrapper my-3">
         <div className="table_main">
-          <div className="table_section pi_product_table">
+          <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
             <div className="table_header">
               <div className="col_20p">
                 <div className="check_box">
@@ -191,14 +203,20 @@ const ReadyMaterial = () => {
               <div className="col_25p">
                 <h5>Warranty</h5>
               </div>
-              <div className="col_25p">
-                <h5>Attached Material</h5>
+              <div className="col_35p">
+                <h5>Category</h5>
               </div>
-              {attachedMaterial.formStatus == "ready" && (
-                <div className="col_25p">
-                  <h5>Selling Quantity</h5>
-                </div>
-              )}
+              <div className="col_35p">
+                <h5>Brand</h5>
+              </div>
+              <div className="col_35p">
+                <h5>Model</h5>
+              </div>
+              {/* {attachedMaterial.formStatus == "ready" && ( */}
+              <div className="col_50p">
+                <h5>Selling Quantity</h5>
+              </div>
+              {/* )} */}
               <div className="col_25p">
                 <h5 className="action_wrraper">Note</h5>
               </div>
@@ -232,34 +250,30 @@ const ReadyMaterial = () => {
                     <div className="col_25p">
                       <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                     </div>
-                    <div className="col_25p">
-                      <div className="description_modal">
-                        <h6>{material?.categoryId?.name}, </h6>
-                      </div>
-                      <div className="modal_name">
-                        <h6>{material?.brandId?.name}, </h6>
-                      </div>
-                      <div className="modal_name">
-                        <h6>{material?.parameterId?.name}, </h6>
-                      </div>
-                      <div className="modal_name">
-                        <h6>{material?.modelId?.name}</h6>
-                      </div>
+                    {/* <div className="col_25p"></div> */}
+                    <div className="col_35p">
+                      <h6>{material?.categoryId?.name}, </h6>
                     </div>
-                    {attachedMaterial.formStatus == "ready" && (
-                      <div className="col_25p">
-                        <h6>
-                          <InputBox
-                            className="inputBox"
-                            type="number"
-                            placeholder="Enter Quantity"
-                            onChange={(e) => {
-                              handleQuantityChange(product, e.target.value);
-                            }}
-                          />
-                        </h6>
-                      </div>
-                    )}
+                    <div className="col_35p">
+                      <h6>{material?.brandId?.name}, </h6>
+                    </div>
+                    <div className="col_35p">
+                      <h6>{material?.modelId?.name}</h6>
+                    </div>
+                    {/* {attachedMaterial.formStatus == "ready" && ( */}
+                    <div className="col_50p">
+                      <h6>
+                        <InputBox
+                          className="inputBox"
+                          type="number"
+                          placeholder="Enter Quantity"
+                          onChange={(e) => {
+                            handleQuantityChange(material, e.target.value, product);
+                          }}
+                        />
+                      </h6>
+                    </div>
+                    {/* )} */}
                     <div className="col_25p">
                       <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
                     </div>
@@ -274,7 +288,7 @@ const ReadyMaterial = () => {
       </div>
       {attachedMaterial.formStatus == "ready" && (
         <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-          <CustomBtn name="Sell" onClick={salesOrderSell} />
+          <CustomBtn name="Partial Sell" onClick={salesOrderSell} />
           <CustomBtn name="Delete" onClick={deleteSaleOrder} className="btn-danger" />
         </div>
       )}
