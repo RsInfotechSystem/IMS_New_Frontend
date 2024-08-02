@@ -191,7 +191,7 @@ const RackList = () => {
                     status="warning"
                     message={`Do you want to ${isEnableDisable.action} block?`}
                     successHandler={() => {
-                        handleEnableDisable(isEnableDisable?.rackId);
+                        handleEnableDisable(isEnableDisable.rackId);
                     }}
                     cancelHandler={() => {
                         setIsEnableDisable((prev) => ({ ...prev, modal: false }));
@@ -385,8 +385,20 @@ const RackList = () => {
                                                         </defs>
                                                     </svg>
                                                 </div>
-                                                <div>
-                                                    <input
+                                                <div className="form-switch " title="enable/disable">
+                                                <input
+                                                    className="form-check-input cursor-pointer"
+                                                    type="checkbox"
+                                                    checked={rackDetails?.isActive}
+                                                    id={`toggleSwitch${rackDetails?._id}`}
+                                                    // onChange={(event) =>
+                                                    //     changeUserStatus(event, userDetails._id, userDetails.isActive)
+                                                    // }
+                                                    onChange={() => setIsEnableDisable({ modal: true,  action: rackDetails?.isActive ? "disable" : "enable" , rackId: rackDetails?._id })}
+                                                    // onChange={(e)=> console.log(rackDetails?._id)}
+                                                    style={{ width: "35px", height: "15px" }}
+                                                />
+                                                    {/* <input
                                                         type="checkbox"
                                                         id={"switch"}
                                                         value={rackDetails?._id}
@@ -400,8 +412,8 @@ const RackList = () => {
                                                             });
                                                             // console.log(rackDetails._id)
                                                         }}
-                                                    />
-                                                    <label
+                                                    /> */}
+                                                    {/* <label
                                                         id="toggler"
                                                         htmlFor={"switch"}
                                                         className={rackDetails?.isActive ? "toggle_enable" : "toggle_disable"}
@@ -412,7 +424,7 @@ const RackList = () => {
                                                                 backgroundColor: rackDetails?.isActive ? "#fff" : "#48505E",
                                                             }}
                                                         ></div>
-                                                    </label>
+                                                    </label> */}
                                                 </div>
                                             </h6>
                                         </div>

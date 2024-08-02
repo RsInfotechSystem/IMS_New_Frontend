@@ -37,11 +37,13 @@ function CreateCategory({ data }) {
     reset,
     formState: { errors },
   } = useForm();
+
   const onSubmit = async (values) => {
     if (selectedOption == "") {
-      setErrorRackFlag("Please confirm one");
+      toast.warn("Please confirm one");
       return;
     }
+
     try {
       let payload = {
         name: values.category,
