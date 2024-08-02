@@ -1,5 +1,6 @@
 "use client";
 import CustomBtn from "@/common-components/CustomBtn";
+import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import InputBox from "@/common-components/InputBox";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
@@ -21,6 +22,11 @@ const ReadyMaterial = () => {
   const [quantities, setQuantities] = useState([]);
   const router = useRouter();
   const [timeoutId, setTimeoutId] = useState();
+  const [respondHandlerModalState, setRespondHandlerModalState] = useState({
+    state: false,
+    deleteId: "",
+  });
+
   const getMaterialById = async () => {
     try {
       setLoader(true);
@@ -92,6 +98,29 @@ const ReadyMaterial = () => {
     setTimeoutId(_timeOutId);
   };
 
+  async function allsalesOrderSell() {
+    try {
+      setLoader(true);
+      let payload = { orderId: searchParams.get("orderId")};
+      const serverResponse = await communication.allMaterialOrderSells(payload);
+      if (serverResponse?.data?.status === "SUCCESS") {
+        toast.success(serverResponse.data.message);
+        router.back();
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        toast.info(serverResponse.data.message);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
+
+
   async function salesOrderSell() {
     try {
       if (quantities.length < 1) {
@@ -155,9 +184,20 @@ const ReadyMaterial = () => {
       }
     });
   };
+  const cancelHandler = () => {
+    setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+  };
 
   return (
     <div>
+      {respondHandlerModalState.state && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message="Are you sure you want to sell all items?"
+          cancelHandler={cancelHandler}
+          successHandler={() => allsalesOrderSell()}
+        />
+      )}
       <div className="top_header">
         <div className="tab_title">Ready Sales Material</div>
         {pageCount > 1 && (
@@ -288,6 +328,7 @@ const ReadyMaterial = () => {
       </div>
       {attachedMaterial.formStatus == "ready" && (
         <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+          <CustomBtn name="All Sell" onClick={()=> {setRespondHandlerModalState({state: true})}} />
           <CustomBtn name="Partial Sell" onClick={salesOrderSell} />
           <CustomBtn name="Delete" onClick={deleteSaleOrder} className="btn-danger" />
         </div>

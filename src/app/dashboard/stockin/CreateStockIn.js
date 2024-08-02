@@ -7,6 +7,7 @@ import InputBox from "@/common-components/InputBox";
 import SelectBox from "@/common-components/Select";
 
 import {
+  getBrandWiseModel,
   getCategory,
   getCategoryWiseBrand,
   getLocationWiseBlock,
@@ -164,28 +165,28 @@ const CreateStockIn = ({ data }) => {
       setLoader(false);
     }
   }
-  async function getBrandWiseModel() {
-    try {
-      // props.setLoader(true);
-      const payload = {
-        brandId: brandId,
-      };
-      const serverResponse = await communication.brandWiseModel(payload);
-      if (serverResponse?.data?.status === "SUCCESS") {
-        setModel(serverResponse?.data?.model);
-      } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.warn(serverResponse.data.message);
-        router.push("/");
-        setLoader(false);
-      } else {
-        setModel([]);
-      }
-      // props.setLoader(false);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || error.message);
-      // props.setLoader(false);
-    }
-  }
+  // async function getBrandWiseModel() {
+  //   try {
+  //     // props.setLoader(true);
+  //     const payload = {
+  //       brandId: brandId,
+  //     };
+  //     const serverResponse = await communication.brandWiseModel(payload);
+  //     if (serverResponse?.data?.status === "SUCCESS") {
+  //       setModel(serverResponse?.data?.model);
+  //     } else if (serverResponse?.data?.status === "JWT_INVALID") {
+  //       toast.warn(serverResponse.data.message);
+  //       router.push("/");
+  //       setLoader(false);
+  //     } else {
+  //       setModel([]);
+  //     }
+  //     // props.setLoader(false);
+  //   } catch (error) {
+  //     toast.error(error?.response?.data?.message || error.message);
+  //     // props.setLoader(false);
+  //   }
+  // }
   const onSubmit = async (values) => {
     try {
       setLoader(true);
@@ -273,11 +274,11 @@ const CreateStockIn = ({ data }) => {
   };
 
   useEffect(() => {
-    const id = getValues("brandId");
+    const id = getValues("categoryId");
     if (id) {
-      getBrandWiseModel(id);
+      getCategoryWiseBrand(id,setLoader, router, setBrandsData);
     }
-  }, [brandsData?.length >=1 && brandId ]);
+  }, [category?.length >=1 && categoryId ]);
 
   useEffect(() => {
     const id = getValues("locationId");
@@ -285,6 +286,21 @@ const CreateStockIn = ({ data }) => {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
   }, [locationList.length >=1 && location]);
+
+  useEffect(() => {
+    const id = getValues("brandId");
+    if (id) {
+      getBrandWiseModel(id,setLoader,router,setModel);
+    }
+  }, [brandId, brandsData?.length>=1]);
+
+  // useEffect(() => {
+  //   const id = getValues("brandId");
+  //   if (id) {
+  //     getBrandWiseModel(id, setLoader, router, setModel);
+  //   }
+  // }, [model?.length >=1 && brandId]);
+  
 
   useMemo(() => {
     handleCategory();

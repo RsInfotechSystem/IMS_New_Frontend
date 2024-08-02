@@ -150,18 +150,21 @@ export async function getRackPartation(id, setLoader, router, setRackPartation =
 }
 
 
-export async function getBrandWiseModel(brandId,setModel,router) {
+export async function getBrandWiseModel(brandId,setLoader,router,setModel) {
   try {
     // props.setLoader(true);
+    setLoader(true);
     const payload = {
       brandId: brandId,
     };
     const serverResponse = await communication.brandWiseModel(payload);
     if (serverResponse?.data?.status === "SUCCESS") {
       setModel(serverResponse?.data?.model);
+    setLoader(false);
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
       toast.warn(serverResponse.data.message);
       router.push("/");
+      
     } else {
       setModel([]);
     }
