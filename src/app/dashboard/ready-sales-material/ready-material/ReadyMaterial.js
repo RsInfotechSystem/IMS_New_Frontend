@@ -54,18 +54,14 @@ const ReadyMaterial = () => {
     );
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
-        // If the checkbox is already in the array, remove it
         return prevSelected.filter((id) => id !== checkboxId);
       } else {
-        // If the checkbox is not in the array, add it
         return [...prevSelected, checkboxId];
       }
     });
   };
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
-
-    // Update the array of selected checkboxes based on the "Select All" checkbox
     setSelectedCheckboxes((prevSelected) =>
       e.target.checked
         ? attachedMaterial?.materialDetails?.map((brandDetails) => brandDetails._id)
@@ -75,7 +71,6 @@ const ReadyMaterial = () => {
 
   const handleQuantityChange = (materialData, value) => {
     setQuantities([
-      // ...quantities,
       {
         materialIds: materialData?.materialIds?.map((e) => e._id),
         sellingQuantity: value,
@@ -97,7 +92,6 @@ const ReadyMaterial = () => {
       });
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse.data.message);
-        // getStatusWiseMaterialList({ page: 1, searchString });
         router.back();
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
@@ -133,7 +127,6 @@ const ReadyMaterial = () => {
           let response = await communication.deleteSaleOrder(payload);
           if (response?.data?.status === "SUCCESS") {
             toast.success(response.data.message);
-            // await getMaterialById(currentPage, searchString);
             router.back();
           } else if (response?.data?.status === "JWT_INVALID") {
             toast.info(response.data.message);
@@ -178,13 +171,6 @@ const ReadyMaterial = () => {
             <div className="table_header">
               <div className="col_20p">
                 <div className="check_box">
-                  {/* <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="selectAllCheckbox"
-                    onChange={(e) => handleSelectAllChange(e)}
-                    checked={selectAllChecked}
-                  /> */}
                   <input
                     type="checkbox"
                     className="form-check-input"
@@ -205,6 +191,9 @@ const ReadyMaterial = () => {
               <div className="col_25p">
                 <h5>Warranty</h5>
               </div>
+              <div className="col_25p">
+                <h5>Attached Material</h5>
+              </div>
               {attachedMaterial.formStatus == "ready" && (
                 <div className="col_25p">
                   <h5>Selling Quantity</h5>
@@ -216,26 +205,24 @@ const ReadyMaterial = () => {
             </div>
             {attachedMaterial?.materialDetails?.length > 0 ? (
               attachedMaterial?.materialDetails?.map((product, index) => {
-                return (
-                  <div className="table_data" key={index}>
+                return product?.materialIds?.map((material, materialIndex) => (
+                  <div className="table_data" key={material._id}>
                     <div className="col_20p">
-                      {" "}
                       <div className="check_box">
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          id={product._id}
+                          id={material._id}
                           onChange={(e) => handleCheckboxChange(e)}
-                          checked={selectedCheckboxes.includes(product._id)}
-                          // checked={selectedCheckboxes.includes(product._id)}
-                          // checked={selectedList.some((item) => item._id === product._id)}
+                          checked={selectedCheckboxes.includes(material._id)}
                         />
                       </div>
                     </div>
                     <div className="col_25p">
-                      <h6>{index + 1}</h6>
+                      <h6>
+                        {index + 1}.{materialIndex + 1}
+                      </h6>
                     </div>
-
                     <div className="col_25p">
                       <h6>{product?.materialDescription}</h6>
                     </div>
@@ -244,6 +231,20 @@ const ReadyMaterial = () => {
                     </div>
                     <div className="col_25p">
                       <h6>{product?.warranty ? product?.warranty : "--"}</h6>
+                    </div>
+                    <div className="col_25p">
+                      <div className="description_modal">
+                        <h6>{material?.categoryId?.name}, </h6>
+                      </div>
+                      <div className="modal_name">
+                        <h6>{material?.brandId?.name}, </h6>
+                      </div>
+                      <div className="modal_name">
+                        <h6>{material?.parameterId?.name}, </h6>
+                      </div>
+                      <div className="modal_name">
+                        <h6>{material?.modelId?.name}</h6>
+                      </div>
                     </div>
                     {attachedMaterial.formStatus == "ready" && (
                       <div className="col_25p">
@@ -263,26 +264,18 @@ const ReadyMaterial = () => {
                       <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
                     </div>
                   </div>
-                );
+                ));
               })
             ) : (
-              <small className="text-center text-secondary p-2 small d-block">
-                Add order to see list
-              </small>
+              <small className="text-center text-secondary py-2">No Records Found</small>
             )}
           </div>
         </div>
       </div>
-      {/* <div className="buttons_wrapper row">
-        <CustomBtn name="Cancel"  onClick={() => {
-          router.back()
-        }}/>
-        <CustomBtn name="Sell" onClick={salesOrderSell}/>
-      </div> */}
       {attachedMaterial.formStatus == "ready" && (
         <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-          <CustomBtn name="Delete Order" onClick={deleteSaleOrder} />
           <CustomBtn name="Sell" onClick={salesOrderSell} />
+          <CustomBtn name="Delete" onClick={deleteSaleOrder} className="btn-danger" />
         </div>
       )}
     </div>

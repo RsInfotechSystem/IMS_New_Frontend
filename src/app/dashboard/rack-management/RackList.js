@@ -24,7 +24,7 @@ const RackList = () => {
     const [isEnableDisable, setIsEnableDisable] = useState({
         action: "disable",
         modal: false,
-        blockId: "",
+        rackId: "",
     });
     // pagination states
     const [isPageUpdated, setIsPageUpdated] = useState(false);
@@ -109,7 +109,8 @@ const RackList = () => {
     
 
     const handleEnableDisable = async (rackId) => {
-        // console.log((blockId, "blcokId"));
+
+        console.log((rackId, "rackId"));
         try {
             const serverResponse = await communication.changeRackStatus({ rackId: rackId });
             if (serverResponse?.data?.status === "SUCCESS") {
@@ -190,7 +191,7 @@ const RackList = () => {
                     status="warning"
                     message={`Do you want to ${isEnableDisable.action} block?`}
                     successHandler={() => {
-                        handleEnableDisable(isEnableDisable?.blockId);
+                        handleEnableDisable(isEnableDisable?.rackId);
                     }}
                     cancelHandler={() => {
                         setIsEnableDisable((prev) => ({ ...prev, modal: false }));
@@ -272,7 +273,7 @@ const RackList = () => {
                     <div className="table_section">
                         <div className="table_header">
                             <div className="col_7p">
-                                <div className="check_box">
+                                {/* <div className="check_box"> */}
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
@@ -281,7 +282,7 @@ const RackList = () => {
                                         checked={selectAllChecked}
                                     />
                                     <label className="form-check-label"></label>
-                                </div>
+                                {/* </div> */}
                             </div>
                             <div className="col_10p">
                                 <h5>Sr. No.</h5>
@@ -299,12 +300,15 @@ const RackList = () => {
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
                         </div>
+                        {rackList.length > 0 ? (
+                            <>
+                       
                         {rackList?.map((rackDetails, index) => {
                             return (
                                 <>
                                     <div className="table_data" key={index}>
                                         <div className="col_7p">
-                                            <div className="check_box">
+                                            {/* <div className="check_box"> */}
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
@@ -313,7 +317,7 @@ const RackList = () => {
                                                     checked={selectedCheckboxes.includes(rackDetails?._id)}
                                                 />
                                                 <label className="form-check-label"></label>
-                                            </div>
+                                            {/* </div> */}
                                         </div>
                                         <div className="col_10p">
                                             <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
@@ -391,9 +395,10 @@ const RackList = () => {
                                                         onChange={(e) => {
                                                             setIsEnableDisable({
                                                                 modal: true,
-                                                                action: rackDetails?.isActive ? "disable" : "enable",
-                                                                blockId: e.target.value,
+                                                                action: rackDetails?.isActive ? "enable" : "disable",
+                                                                rackId: e.target.value,
                                                             });
+                                                            // console.log(rackDetails._id)
                                                         }}
                                                     />
                                                     <label
@@ -415,6 +420,11 @@ const RackList = () => {
                                 </>
                             );
                         })}
+                         </>
+                         ):(
+                           <p className="no_data">Data Not Available</p>
+                         )
+                        }
                     </div>
                 </div>
             </div>

@@ -63,7 +63,7 @@ const Product = () => {
         router.push("/");
         setLoader(false);
       } else {
-        setBrandList([]);
+        setProductList([]);
         setLoader(false);
       }
     } catch (error) {
@@ -275,6 +275,9 @@ const Product = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
+            {productList.length > 0 ? (
+              <>
+            
             {productList?.map((data, index) => {
               return (
                 <div className="table_data" key={index + 1}>
@@ -382,6 +385,11 @@ const Product = () => {
                 </div>
               );
             })}
+            </>
+            ):(
+              <p className="no_data">Data Not Available</p>
+            )
+          }
           </div>
         </div>
       </div>

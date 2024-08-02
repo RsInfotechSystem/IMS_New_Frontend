@@ -65,7 +65,7 @@ const SalesOrderList = () => {
         toast.warn(serverResponse.data.message);
         router.push("/");
       } else {
-        setModelList([]);
+        setSalesOrder([]);
       }
       setLoader(false);
     } catch (error) {

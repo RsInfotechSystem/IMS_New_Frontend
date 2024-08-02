@@ -62,6 +62,50 @@ const CreateStockIn = ({ data }) => {
   const brandId = watch("brandId");
   const rack = watch("blockId");
   const _rackIdForPrtn = watch("rackId");
+
+  async function getStockById() {
+    try {
+      setLoader(true);
+      const responseFromServer = await communication.getStockById(modalStates?.id);
+      if (responseFromServer?.data?.status === "SUCCESS") {
+        // Set default values for each form field
+        setIsPartationPresent(responseFromServer?.data?.stock.partitionName);
+        getRackPartation(
+          responseFromServer?.data?.stock.rackId,
+          setLoader,
+          router,
+          setRackPartation
+        );
+        const stockData = responseFromServer?.data?.stock;
+        setValue("locationId", stockData?.locationId?._id);
+        await getLocationWiseBlock(stockData?.locationId?._id, setLoader, router, setBlocks);
+        setValue("parameterId", stockData?.parameterId);
+        setValue("modelId", stockData?.modelId._id);
+        setModelId(stockData?.modelId);
+        setValue("conditionType", stockData?.conditionType);
+        setValue("itemCode", stockData?.itemCode);
+        setValue("parameter", stockData?.parameter);
+        setValue("serialNo", stockData?.serialNo);
+        setValue("status", stockData?.status);
+        setValue("quantity", stockData?.quantity);
+        setValue("categoryId", stockData?.categoryId._id);
+        setValue("rackId", stockData?.rackId?._id);
+        setValue("brandId", stockData?.brandId?._id);
+        setValue("blockId", stockData?.blockId?._id);
+        // setValue("partitionName", stockData?.partitionName);
+      } else if (responseFromServer?.data?.status === "JWT_INVALID") {
+        toast.info(responseFromServer?.data?.message);
+        router.push("/login");
+      } else {
+        toast.info(responseFromServer?.data?.message);
+      }
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+    } finally {
+      setLoader(false);
+    }
+  }
+
   useEffect(() => {
     setValue("partitionName", isPartationPresent);
   }, [rackPartation && rackPartation.length >= 1]);
@@ -231,13 +275,14 @@ const CreateStockIn = ({ data }) => {
     if (id) {
       getBrandWiseModel(id);
     }
-  }, [brandId]);
+  }, [brandsData?.length >=1 && brandId ]);
+
   useEffect(() => {
     const id = getValues("locationId");
     if (id) {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
-  }, [location]);
+  }, [locationList.lenghth >=1 && location]);
 
   useMemo(() => {
     handleCategory();
@@ -252,48 +297,7 @@ const CreateStockIn = ({ data }) => {
       getStockById();
     }
   }, []);
-  async function getStockById() {
-    try {
-      setLoader(true);
-      const responseFromServer = await communication.getStockById(modalStates?.id);
-      if (responseFromServer?.data?.status === "SUCCESS") {
-        // Set default values for each form field
-        setIsPartationPresent(responseFromServer?.data?.stock.partitionName);
-        getRackPartation(
-          responseFromServer?.data?.stock.rackId,
-          setLoader,
-          router,
-          setRackPartation
-        );
-        const stockData = responseFromServer?.data?.stock;
-        setValue("locationId", stockData?.locationId?._id);
-        await getLocationWiseBlock(stockData?.locationId?._id, setLoader, router, setBlocks);
-        setValue("parameterId", stockData?.parameterId);
-        setValue("modelId", stockData?.modelId._id);
-        setModelId(stockData?.modelId);
-        setValue("conditionType", stockData?.conditionType);
-        setValue("itemCode", stockData?.itemCode);
-        setValue("parameter", stockData?.parameter);
-        setValue("serialNo", stockData?.serialNo);
-        setValue("status", stockData?.status);
-        setValue("quantity", stockData?.quantity);
-        setValue("categoryId", stockData?.categoryId._id);
-        setValue("rackId", stockData?.rackId?._id);
-        setValue("brandId", stockData?.brandId?._id);
-        setValue("blockId", stockData?.blockId?._id);
-        // setValue("partitionName", stockData?.partitionName);
-      } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(responseFromServer?.data?.message);
-        router.push("/login");
-      } else {
-        toast.info(responseFromServer?.data?.message);
-      }
-    } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
-    } finally {
-      setLoader(false);
-    }
-  }
+
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}

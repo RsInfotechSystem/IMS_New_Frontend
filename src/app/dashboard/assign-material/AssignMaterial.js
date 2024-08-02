@@ -176,8 +176,14 @@ const AssignMaterial = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Clear error message on input change
+    if(value || value){
+      setFormValues({ ...formValues, [name]: value });
+      setErrors({ ...errors, [name]: "" }); // Clear error message on input change
+    }else{
+      setParameter([]);
+
+    }
+   
   };
 
   const validateForm = () => {
@@ -411,9 +417,9 @@ const AssignMaterial = () => {
                   <div style={{ maxHeight: "40dvh", overflowY: "auto" }}>
                     <div className="p-3" style={{ backgroundColor: "white" }}>
                       {/* <div className="form_modal_body w-75 py-3"></div> */}
-                      <div className="pb-2">
+                      {/* <div className="pb-2">
                         <h6>Select Material</h6>
-                      </div>
+                      </div> */}
                       <div className="row">
                         <div class="col-lg-6 col-md-5 d-flex align-items-center">
                           <label>Serial No./Item Code</label>
@@ -447,7 +453,7 @@ const AssignMaterial = () => {
                         <div className=" col-6">
                           <label>Select Category</label>
                         </div>
-                        <div class="col-lg-6 col-md-7 ">
+                        <div className="position-relative col-lg-6 col-md-7">
                           <select
                             name="categoryId"
                             value={formValues.categoryId}
@@ -471,7 +477,9 @@ const AssignMaterial = () => {
                               );
                             })}
                           </select>
-
+                          <div className="select_box_smallarrow me-2 ">
+                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                          </div>
                           <div style={{ height: "5px" }}>
                             {errors.categoryId && (
                               <p
@@ -482,9 +490,7 @@ const AssignMaterial = () => {
                               </p>
                             )}
                           </div>
-                          <div className="select_box_arrow">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                          </div>
+                          
                         </div>
                       </div>
 
@@ -492,7 +498,7 @@ const AssignMaterial = () => {
                         <div className=" col-6">
                           <label>Brand</label>
                         </div>
-                        <div className="col-lg-6 col-md-7">
+                        <div className="position-relative col-lg-6 col-md-7">
                           <select
                             // {...register("brandId", {
                             //   // required: "Brand is required",
@@ -518,6 +524,9 @@ const AssignMaterial = () => {
                               );
                             })}
                           </select>
+                          <div className="select_box_smallarrow me-2 ">
+                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                          </div>
                           <div style={{ height: "5px" }}>
                             {errors.brandId && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
@@ -531,7 +540,7 @@ const AssignMaterial = () => {
                         <div className="col-lg-6 col-md-5 d-flex align-items-center ">
                           <label>Select Status</label>
                         </div>
-                        <div className="col-lg-6 col-md-7">
+                        <div className="position-relative col-lg-6 col-md-7">
                           <select
                             name="status"
                             value={formValues.status}
@@ -551,6 +560,9 @@ const AssignMaterial = () => {
                               );
                             })}
                           </select>
+                          <div className="select_box_smallarrow me-2 ">
+                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                          </div>
                           <div style={{ height: "5px" }}>
                             {errors.status && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
@@ -564,7 +576,7 @@ const AssignMaterial = () => {
                         <div className="col-lg-6 col-md-5 d-flex align-items-center">
                           <label>Condition Type</label>
                         </div>
-                        <div className="col-lg-6 col-md-7">
+                        <div className="position-relative col-lg-6 col-md-7">
                           <select
                             // {...register("conditionType", {
                             //   // required: "condition is required",
@@ -593,6 +605,9 @@ const AssignMaterial = () => {
                               Refurbished
                             </option>
                           </select>
+                          <div className="select_box_smallarrow me-2 ">
+                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                          </div>
                           <div style={{ height: "5px" }}>
                             {errors.conditionType && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
@@ -616,7 +631,8 @@ const AssignMaterial = () => {
                       <h6>Parameters</h6>
                     </div>
                     <div className="mt-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
-                      {parameter.map((modal, index) => (
+                      { parameter?.length > 0 ? (
+                      parameter?.map((modal, index) => (
                         <div key={index} className="modal-container">
                           <div className="d-flex gap-2 mb-2">
                             <div
@@ -649,11 +665,11 @@ const AssignMaterial = () => {
                                   {param}
                                 </li>
                               ))}
-                              {console.log("eeeeeeeeee", selectedModels)}
                             </ul>
                           )}
                         </div>
-                      ))}
+                      ))) : 
+                      <div><p>Data is not available</p></div> }
                     </div>
                   </div>
                 </form>

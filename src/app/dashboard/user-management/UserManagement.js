@@ -360,7 +360,7 @@ const UserManagement = () => {
       <div className="table_wrapper">
         <div className="table_main">
           {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
-          <div className="table_section" style={{ minWidth: "1600px" }}>
+          <div className="table_section">
             {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">
               <button className="table_badge">
                 <h5>Total User</h5>
@@ -382,28 +382,29 @@ const UserManagement = () => {
               <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_20p">
+              <div className="col_15p">
                 <h5>User ID</h5>
               </div>
-              <div className="col_25p">
+              <div className="col_30p">
                 <h5>User Name</h5>
               </div>
-              <div className="col_25p">
+
+              <div className="col_15p">
                 <h5>Role Type</h5>
               </div>
               <div className="col_35p">
                 <h5>Email</h5>
               </div>
-              <div className="col_25p">
+              <div className="col_20p">
                 <h5>Contact No.</h5>
               </div>
-              <div className="col_35p">
+              <div className="col_20p">
                 <h5>Location</h5>
               </div>
-              <div className="col_25p">
+              <div className="password">
                 <h5>Password</h5>
               </div>
-              <div className="col_20p ">
+              <div className="col_20p action_wrraper">
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
@@ -423,28 +424,28 @@ const UserManagement = () => {
                     <div className="col_10p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_15p">
                       <h6>{userDetails?.userId}</h6>
                     </div>
-                    <div className="col_25p">
+                    <div className="col_30p">
                       <h6>{userDetails?.name}</h6>
                     </div>
-                    <div className="col_25p">
+                    <div className="col_15p">
                       <h6>{userDetails?.role}</h6>
                     </div>
                     <div className="col_35p">
                       <h6 style={{ textTransform: "lowercase" }}>{userDetails?.email}</h6>
                     </div>
-                    <div className="col_25p">
+                    <div className="col_20p">
                       <h6>{userDetails?.mobile}</h6>
                     </div>
-                    <div className="col_35p">
+                    <div className="col_20p">
                       <h6>{userDetails?.locationId?.map((ele) => ele.name)?.join(", ")}</h6>
                       {/* <h6>
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}
                     </div>
-                    <div className="col_25p">
+                    <div className="password">
                       {passwordVisibility[userDetails._id] ? (
                         <h6 style={{ display: "inline-flex", alignItems: "center" }}>
                           {userDetails.password}
@@ -511,9 +512,9 @@ const UserManagement = () => {
                             </defs>
                           </svg>
                         </div>
-                        <div className="form-check form-switch " title="enable/disable">
+                        <div className="form-switch " title="enable/disable">
                           <input
-                            class="form-check-input cursor-pointer"
+                            className="form-check-input cursor-pointer"
                             type="checkbox"
                             checked={userDetails?.isActive}
                             id={`toggleSwitch${userDetails._id}`}

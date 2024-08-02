@@ -311,7 +311,9 @@ const Parameters = () => {
                 <h6>Action</h6>
               </div>
             </div>
-
+            {parameter.length > 0 ?(
+              <>
+           
             {parameter?.map((parameter, index) => {
               return (
                 <>
@@ -332,7 +334,7 @@ const Parameters = () => {
                     </div>
 
                     <div className="col_30p">
-                      <h6>{parameter?.name}</h6>
+                      <h6>{parameter?.categoryId?.name}</h6>
                     </div>
                     <div className="col_40p">
                       <h6>{parameter?.parameter.join(", ")}</h6>
@@ -388,6 +390,11 @@ const Parameters = () => {
                 </>
               );
             })}
+             </>
+             ):(
+              <p className="no_data">Data Not Available</p>
+             )
+            }
           </div>
         </div>
       </div>

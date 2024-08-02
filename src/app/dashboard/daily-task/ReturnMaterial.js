@@ -56,6 +56,11 @@ const ReturnMaterial = ({ data }) => {
   const [modelList, setModelList] = useState([]);
   const [materialIdList, setMaterialIdList] = useState([]);
   const [modelId, setModelId] = useState("");
+
+  const location = watch("locationId");
+  const categoryId = watch("categoryId");
+  const rack = watch("blockId");
+
   const handleMaterialChange = (event) => {
     setSelectedMaterial(event.target.value);
     const selectedIndex = event.target.selectedIndex;
@@ -88,16 +93,14 @@ const ReturnMaterial = ({ data }) => {
   };
   useEffect(() => {
     setValue("blockId", blockValue);
-  }, [blocks.length > 0 || blockValue]);
+  }, [blocks.length > 0 && blockValue]);
 
   const handleRemoveMaterial = (index) => {
     setMaterialList((prevList) => prevList.filter((_, i) => i !== index));
     setMaterialIdList((prevList) => prevList.filter((_, i) => i !== index));
   };
 
-  const location = watch("locationId");
-  const categoryId = watch("categoryId");
-  const rack = watch("blockId");
+
 
   const onSubmit = async (values) => {
     try {
@@ -727,7 +730,9 @@ const ReturnMaterial = ({ data }) => {
                   </div>
                 )}
               </div>
-              <div className="form_button_wrapper">
+              {/* <div className="form_button_wrapper"> */}
+        <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+
                 {roleName != "admin" && (
                   <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
                 )}

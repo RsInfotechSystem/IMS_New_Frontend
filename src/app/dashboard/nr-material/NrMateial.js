@@ -14,11 +14,12 @@ import Image from "next/image";
 import { formatDate } from "@/helper/formatDate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
+import StockFilter from "@/common-components/StockFilter";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const NrMateial = () => {
     const router = useRouter();
-    const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "" });
+    const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", filter: false, isView: false });
     const [departmentList, setDepartmentList] = useState([]);
     const [searchString, setSearchString] = useState("");
     const [loader, setLoader] = useState(false);
@@ -50,13 +51,19 @@ const NrMateial = () => {
     const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const [showModal, setShowModal] = useState({ modal: false });
-
-    async function getNrMaterialList(page, searchString, isSearch = false) {
+    const [filter, setFilter] = useState({});
+    
+    async function getNrMaterialList(page, searchString, isSearch = false,isFirstCall, location, categoryId, brandId, modelId) {
+    // async function getNrMaterialList({ page = 1, searchString, isSearch = false, isFirstCall, location, categoryId, brandId, modelId }) {
         try {
             setLoader(true);
             const serverResponse = await communication.getNrMaterialList({
                 page: page,
                 searchString: searchString,
+                location,
+                categoryId,
+                brandId,
+                modelId
             });
             if (serverResponse?.data?.status === "SUCCESS") {
                 setNrMaterial(serverResponse?.data?.stock);
@@ -74,7 +81,7 @@ const NrMateial = () => {
             }
             setLoader(false);
         } catch (error) {
-                        toast.info(error?.response?.data?.message || error.message)
+            toast.info(error?.response?.data?.message || error.message)
 
 
             setLoader(false);
@@ -111,7 +118,7 @@ const NrMateial = () => {
         let isSearch = true;
         clearTimeout(timeoutId);
         let _timeOutId = setTimeout(() => {
-            getNrMaterialList({ page: 1, searchString: e.target.value, isSearch });
+            getNrMaterialList({ page: 1, searchString: e.target.value, isSearch, ...filter });
             setCurrentPage(1);
         }, 2000);
         setTimeoutId(_timeOutId);
@@ -150,15 +157,16 @@ const NrMateial = () => {
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
+            {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getNrMaterialList} filter={filter} setFilter={setFilter} />}
             <div className="top_header">
                 <div className="tab_title">NR Material</div>
                 <Pagination
-                        isPageUpdated={isPageUpdated}
-                        setIsPageUpdated={setIsPageUpdated}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        pageCount={pageCount}
-                    />
+                    isPageUpdated={isPageUpdated}
+                    setIsPageUpdated={setIsPageUpdated}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    pageCount={pageCount}
+                />
             </div>
             <div className="search_btn_wrapper">
                 <Search
@@ -171,6 +179,27 @@ const NrMateial = () => {
                 {
                     <div className="buttons_wrapper">
                         <CustomBtn
+                            name={"Filter"}
+                            onClick={() => {
+                                setModalStates((prev) => ({ ...prev, filter: true }));
+                            }}
+                            svg={
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 512 512" fill="#fff">
+                                    <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+                                </svg>
+                            }
+                        />
+                        <CustomBtn
+                            name={"Reset Filter"}
+                            onClick={() => {
+                                getNrMaterialList();
+                            }}
+
+                        />
+                        <CustomBtn
                             name={"Sell"}
                             // onClick={() => {
                             //   setModalStates((prev) => ({ ...prev, modal: true, type: "create" }));
@@ -178,15 +207,7 @@ const NrMateial = () => {
                             // svg={<FontAwesomeIcon icon={faTrash} />}
                             onClick={() => sellStock("all")}
                         />
-                        {/* {showModal.modal && (
-                            <CustomResponseHandlerModal
-                                status="warning"
-                                // show={showModal}
-                                message="Are you sure you want to sell this stock?"
-                                successHandler={successHandler}
-                                cancelHandler={cancelHandler}
-                            />
-                        )} */}
+
                     </div>
                 }
             </div >
@@ -232,6 +253,8 @@ const NrMateial = () => {
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
                         </div>
+                        {nrMaterial.length > 0 ? (
+                        <>
                         {nrMaterial?.map((materialDetails, index) => {
                             return (
                                 <div className="table_data" key={index}>
@@ -350,6 +373,11 @@ const NrMateial = () => {
                                 </div>
                             );
                         })}
+                       </>
+                       ):(
+                        <p className="no_data">Data Not Available</p>
+                       )
+                    }
                     </div>
                 </div>
             </div >
