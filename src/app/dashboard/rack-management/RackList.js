@@ -24,7 +24,7 @@ const RackList = () => {
     const [isEnableDisable, setIsEnableDisable] = useState({
         action: "disable",
         modal: false,
-        blockId: "",
+        rackId: "",
     });
     // pagination states
     const [isPageUpdated, setIsPageUpdated] = useState(false);
@@ -109,7 +109,8 @@ const RackList = () => {
     
 
     const handleEnableDisable = async (rackId) => {
-        // console.log((blockId, "blcokId"));
+
+        console.log((rackId, "rackId"));
         try {
             const serverResponse = await communication.changeRackStatus({ rackId: rackId });
             if (serverResponse?.data?.status === "SUCCESS") {
@@ -190,7 +191,7 @@ const RackList = () => {
                     status="warning"
                     message={`Do you want to ${isEnableDisable.action} block?`}
                     successHandler={() => {
-                        handleEnableDisable(isEnableDisable?.blockId);
+                        handleEnableDisable(isEnableDisable?.rackId);
                     }}
                     cancelHandler={() => {
                         setIsEnableDisable((prev) => ({ ...prev, modal: false }));
@@ -394,9 +395,10 @@ const RackList = () => {
                                                         onChange={(e) => {
                                                             setIsEnableDisable({
                                                                 modal: true,
-                                                                action: rackDetails?.isActive ? "disable" : "enable",
-                                                                blockId: e.target.value,
+                                                                action: rackDetails?.isActive ? "enable" : "disable",
+                                                                rackId: e.target.value,
                                                             });
+                                                            // console.log(rackDetails._id)
                                                         }}
                                                     />
                                                     <label
