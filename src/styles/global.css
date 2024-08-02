@@ -1656,8 +1656,26 @@ div:where(.tab_active, .tab_inactive) {
   background-color: var(--white-color);
   pointer-events: none;
 }
+.select_box_smallarrow {
+  border: 1px solid var(--grey_color_light_shade1);
+  width: 21px;
+  height: 21px;
+  padding-top: 1px;
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  background-color: var(--white-color);
+  pointer-events: none;
+}
 
 .select_box_arrow .icon {
+  color: var(--grey_color_light_shade1);
+  font-size: 14px;
+}
+.select_box_smallarrow .icon {
   color: var(--grey_color_light_shade1);
   font-size: 14px;
 }

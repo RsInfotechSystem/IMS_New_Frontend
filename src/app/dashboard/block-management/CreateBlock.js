@@ -40,7 +40,7 @@ function CreateBlock({ data }) {
     formState: { errors },
   } = useForm();
   const location = watch("locationId");
-  console.log("rahjwal", getValues(locationId))
+
   const onSubmit = async (values) => {
     let rackIds = values.rackName ? values.rackName : "";
     if (selectedOption == "") {
@@ -135,17 +135,19 @@ function CreateBlock({ data }) {
   const getActiveRack = async (locationId) => {
     try {
       setLoader(true);
-      let response = await communication.getActiveRack(locationId);
+      let response = await communication.getActiveRack(_locationId ? _locationId : locationId);
       if (response?.data?.status === "SUCCESS") {
-        setRackList(response?.data.rack);
+        setRackList(response?.data?.rack);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
       } else {
         toast.warn(response.data.message);
+        setRackList([])
       }
     } catch (error) {
       toast.error(error.message);
+      setRackList([])
     } finally {
       setLoader(false);
     }
@@ -261,8 +263,7 @@ function CreateBlock({ data }) {
                       required: "location is required",
                     }),
                   }}
-                  onChange={(e) => _setlocationId(e.target.value)
-                  }
+                  onChange={(e) => _setlocationId(e.target.value)}
                   errors={errors.locationId}
                 />
               </div>

@@ -334,7 +334,7 @@ const Parameters = () => {
                     </div>
 
                     <div className="col_30p">
-                      <h6>{parameter?.name}</h6>
+                      <h6>{parameter?.categoryId?.name}</h6>
                     </div>
                     <div className="col_40p">
                       <h6>{parameter?.parameter.join(", ")}</h6>
