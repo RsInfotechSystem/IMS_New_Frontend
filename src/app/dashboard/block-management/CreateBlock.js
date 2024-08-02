@@ -44,7 +44,7 @@ function CreateBlock({ data }) {
   const onSubmit = async (values) => {
     let rackIds = values.rackName ? values.rackName : "";
     if (selectedOption == "") {
-      setErrorRackFlag("Please confirm one");
+      toast.warn("Please confirm one");
       return;
     }
     try {
