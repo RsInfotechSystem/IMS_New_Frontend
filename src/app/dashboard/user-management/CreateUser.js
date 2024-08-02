@@ -209,13 +209,14 @@ function CreateUser({ data }) {
                                     firstOption={"Select Role"}
                                     disable={false}
                                     defaultValue={""} //selected value
+                                    style={{ height: '30px' }}
                                     register={{
                                         ...register("role", {
                                             required: "Role is required",
                                         })
                                     }}
                                     errors={errors.role}
-                                />
+                                />                            
                             </div>
                             <div className="input_wrapper col-md-4">
                                 <label >User Name*</label>
