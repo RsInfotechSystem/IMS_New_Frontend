@@ -66,11 +66,16 @@ const CreateOrder = () => {
 
   // Get all categories list
   const createOrder = async (values) => {
+    if (values.description=="") {
+      toast.info("description is required");
+      return;
+    }
     try {
       if (!filterValues.orderDate || !filterValues.orderCompleteDate) {
         toast.info("Date is required");
         return;
       }
+      
       setLoader(true);
       const dataToSend = {
         salesOrderNo: values.orderNo,
@@ -119,6 +124,9 @@ const CreateOrder = () => {
 
   const addMaterial = () => {
     const { description, quantity, warranty, note } = getValues();
+    console.log('====================================');
+    console.log(description,quantity);
+    console.log('====================================');
     if (!description || !quantity) {
       toast.info("Add Material");
       return;
@@ -163,11 +171,11 @@ const CreateOrder = () => {
 
   const employeeDetailSubmit = (data) => {
     if (filterValues?.orderDate === "") {
-      setOrderDateError("OrderDate is required");
+      toast.info("OrderDate is required");
       return ;
     }
     if (filterValues?.orderCompleteDate === "") {
-      setOrderCompleteDateError("Order Complete Date is required");
+      toast.info("Order Complete Date is required");
       return 
     }
     try {
@@ -534,9 +542,8 @@ const CreateOrder = () => {
                     <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Description</label>
                       <textarea
-                        register={{...register("description")}}
-                        errors={errors.quantity}
-
+                        {...register("description")}
+                      
                         className="form-control custom_input"
                         rows="1"
                       ></textarea>
