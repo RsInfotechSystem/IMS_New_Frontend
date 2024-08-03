@@ -122,19 +122,25 @@ const ReadyMaterial = () => {
     }
   }
 
-  async function salesOrderSell() {
+  async function salesOrderSell(flag = false) {
     try {
       if (quantities.length < 1) {
         toast.info("Add quantity for sell");
         return;
       }
+
       setLoader(true);
-      let payload = { orderId: searchParams.get("orderId"), materialDetails: quantities };
+      let payload = {
+        orderId: searchParams.get("orderId"),
+        flag: flag,
+        materialDetails: quantities,
+      };
       console.log(payload, "payload");
       const serverResponse = await communication.SalesOrderSells(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse.data.message);
-        router.back();
+        getMaterialById();
+        // router.back();
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -148,6 +154,25 @@ const ReadyMaterial = () => {
       setLoader(false);
     }
   }
+  const showInputDialog = () => {
+    Swal.fire({
+      html: `<p>Do you want this order later or cancel?</p>`,
+      showCancelButton: true,
+      confirmButtonText: "Later",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // User clicked "Later"
+        const flag = false; // Set the flag to true
+        salesOrderSell(flag);
+      } else {
+        // User clicked "Cancel"
+        // deleteSaleOrder();
+        const flag = true;
+        salesOrderSell(flag);
+      }
+    });
+  };
 
   const deleteSaleOrder = async () => {
     try {
@@ -359,7 +384,11 @@ const ReadyMaterial = () => {
               setRespondHandlerModalState({ state: true });
             }}
           />
-          <CustomBtn name="Partial Sell" onClick={salesOrderSell} />
+          <CustomBtn
+            name="Partial Sell"
+            // onClick={salesOrderSell}
+            onClick={(e) => showInputDialog()}
+          />
           <CustomBtn
             name="Delete"
             onClick={() => {

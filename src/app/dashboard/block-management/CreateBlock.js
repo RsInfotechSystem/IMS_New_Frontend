@@ -7,7 +7,7 @@ import SelectBox from "@/common-components/Select";
 import { communication } from "@/services/communication";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Multiselect from '@/common-components/MultiSelect';
+import Multiselect from "@/common-components/MultiSelect";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -27,7 +27,7 @@ function CreateBlock({ data }) {
   const [rackList, setRackList] = useState([]);
   const [propertyType, setPropertyType] = useState([]);
   const [defaultRack, setDefaultRack] = useState([]);
-  const [_locationId, _setlocationId] = useState("")
+  const [_locationId, _setlocationId] = useState("");
 
   const {
     register,
@@ -52,7 +52,7 @@ function CreateBlock({ data }) {
         locationId: values.locationId,
         blockNo: values.blockNo,
         isRackAdded: selectedOption === "Yes" ? true : false,
-        rackId: propertyType.map(ele => (ele._id)),
+        rackId: propertyType.map((ele) => ele._id),
       };
       // if (rackIds) {
       //   payload.rackId = [rackIds];
@@ -114,10 +114,10 @@ function CreateBlock({ data }) {
         setValue("blockNo", response?.data?.block?.blockNo);
         setSelectedOption(response?.data?.block?.isRackAdded ? "Yes" : "No");
         if (response?.data?.block?.isRackAdded) {
-          setPropertyType(response?.data?.block?.rackId)
-          await getActiveRack(response?.data.block.locationId._id)
+          setPropertyType(response?.data?.block?.rackId);
+          await getActiveRack(response?.data.block.locationId._id);
         } else {
-          setPropertyType([])
+          setPropertyType([]);
         }
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
@@ -143,11 +143,11 @@ function CreateBlock({ data }) {
         router.push("/");
       } else {
         toast.warn(response.data.message);
-        setRackList([])
+        setRackList([]);
       }
     } catch (error) {
       toast.error(error.message);
-      setRackList([])
+      setRackList([]);
     } finally {
       setLoader(false);
     }
@@ -165,7 +165,7 @@ function CreateBlock({ data }) {
         locationId: values.locationId,
         blockNo: values.blockNo,
         isRackAdded: selectedOption === "Yes" ? true : false,
-        rackId: selectedOption === "Yes" ? propertyType.map(ele => (ele._id)) : [],
+        rackId: selectedOption === "Yes" ? propertyType.map((ele) => ele._id) : [],
         // isRackAdded: true, //bypass
       };
 
@@ -225,11 +225,16 @@ function CreateBlock({ data }) {
   }, []);
 
   useEffect(() => {
-    if (selectedOption === "Yes") {
+    if (_locationId) {
       getActiveRack(_locationId);
     }
   }, [_locationId]);
-  console.log("rajjjjjj", _locationId)
+  // useEffect(() => {
+  //   if (selectedOption === "Yes") {
+  //     getActiveRack(_locationId);
+  //   }
+  // }, [_locationId]);
+  // console.log("rajjjjjj", _locationId);
 
   return (
     <>
@@ -313,11 +318,13 @@ function CreateBlock({ data }) {
               {selectedOption === "Yes" && (
                 <>
                   <div className="col-md-4">
-                    <label >Rack Select*</label>
+                    <label>Rack Select*</label>
                     <Multiselect
                       placeholder="Select Rack"
                       options={rackList}
-                      selectedValues={modalStates?.type === "create" ? defaultRack : [...propertyType]}
+                      selectedValues={
+                        modalStates?.type === "create" ? defaultRack : [...propertyType]
+                      }
                       keepSearchTerm={true}
                       displayValue={"rackName"}
                       onSelect={(event) => setPropertyType(event)}

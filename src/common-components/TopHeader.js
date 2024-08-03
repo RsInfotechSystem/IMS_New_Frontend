@@ -32,9 +32,9 @@ function TopHeader() {
   useEffect(() => {
     const socketConnection = io(getServerUrl(), { transports: ["websocket"] });
     setSocket(socketConnection);
-    return () => {
-      socketConnection.disconnect();
-    };
+    // return () => {
+    //   socketConnection.disconnect();
+    // };
   }, []);
   useEffect(() => {
     if (socket) {
