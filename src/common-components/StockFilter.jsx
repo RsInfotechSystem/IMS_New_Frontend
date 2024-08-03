@@ -44,7 +44,7 @@ function StockFilter({ setModalStates, apiCall, filter, setFilter }) {
   const handleBrand = async (id) => {
     setFilter((pre) => ({ ...pre, brandId: id, modelId: "" }));
     if (id) {
-      getBrandWiseModel(id, setModal, router);
+      getBrandWiseModel(id,setLoader, router,setModal);
     } else {
       setModal([]);
     }
