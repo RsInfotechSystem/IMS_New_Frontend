@@ -48,7 +48,6 @@ const CreateStockIn = ({ data }) => {
   const [modelId, setModelId] = useState("");
 
 
-  console.log(blocks,"sdfg");
   const {
     register,
     handleSubmit,
@@ -276,23 +275,23 @@ const CreateStockIn = ({ data }) => {
   useEffect(() => {
     const id = getValues("categoryId");
     if (id) {
-      getCategoryWiseBrand(id,setLoader, router, setBrandsData);
+      getCategoryWiseBrand(id, setLoader, router, setBrandsData);
     }
-  }, [category?.length >=1 && categoryId ]);
+  }, [category?.length >= 1 && categoryId]);
 
   useEffect(() => {
     const id = getValues("locationId");
     if (id) {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
-  }, [locationList.length >=1 && location]);
+  }, [locationList.length >= 1 && location]);
 
   useEffect(() => {
     const id = getValues("brandId");
     if (id) {
-      getBrandWiseModel(id,setLoader,router,setModel);
+      getBrandWiseModel(id, setLoader, router, setModel);
     }
-  }, [brandId, brandsData?.length>=1]);
+  }, [brandId, brandsData?.length >= 1]);
 
   // useEffect(() => {
   //   const id = getValues("brandId");
@@ -300,7 +299,7 @@ const CreateStockIn = ({ data }) => {
   //     getBrandWiseModel(id, setLoader, router, setModel);
   //   }
   // }, [model?.length >=1 && brandId]);
-  
+
 
   useMemo(() => {
     handleCategory();
@@ -326,8 +325,8 @@ const CreateStockIn = ({ data }) => {
               {modalStates.isView
                 ? "View Details"
                 : modalStates?.type === "create"
-                ? "Create Stock"
-                : "Update Stock"}
+                  ? "Create Stock"
+                  : "Update Stock"}
             </h5>
             <FontAwesomeIcon
               icon={faCircleXmark}
@@ -367,12 +366,12 @@ const CreateStockIn = ({ data }) => {
                     </div>
                   </div>
                   <div style={{ height: "5px" }}>
-                      {errors.locationId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.locationId.message}
-                        </p>
-                      )}
-                    </div>
+                    {errors.locationId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors.locationId.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Select Block *</label>
@@ -401,12 +400,12 @@ const CreateStockIn = ({ data }) => {
                     </div>
                   </div>
                   <div style={{ height: "5px" }}>
-                      {errors.locationId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.locationId.message}
-                        </p>
-                      )}
-                    </div>
+                    {errors.locationId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors.locationId.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 {racks.length >= 1 && (
                   <div className="col-lg-3 col-md-6 input_wrapper">
@@ -746,9 +745,9 @@ const CreateStockIn = ({ data }) => {
                                 // required: "itemCode is required",
                               }),
                             }}
-                            // {...register(`parameter[${item}]`)}
-                            // className="form-control custom_input"
-                            // style={{ width: "100%", height: "31px" }}
+                          // {...register(`parameter[${item}]`)}
+                          // className="form-control custom_input"
+                          // style={{ width: "100%", height: "31px" }}
                           />
                         </div>
                       </React.Fragment>
