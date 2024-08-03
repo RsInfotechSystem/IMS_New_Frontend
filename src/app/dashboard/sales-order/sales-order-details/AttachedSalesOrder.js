@@ -445,12 +445,14 @@ const AttachedSalesOrder = () => {
                 <div className="col_25p">
                   <h5>Description</h5>
                 </div>
-
                 <div className="col_25p">
                   <h5>Quantity</h5>
                 </div>
                 <div className="col_25p">
                   <h5>Warranty</h5>
+                </div>
+                <div className="col_25p">
+                  <h5>Location</h5>
                 </div>
                 <div className="col_25p">
                   <h5 className="action_wrraper">Note</h5>
@@ -488,12 +490,15 @@ const AttachedSalesOrder = () => {
                         <h6>{product?.quantity ? product?.quantity : "--"}</h6>
                       </div>
                       <div className="col_25p">
-                        <h6>{product?.note ? product?.note : "--"}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6 className="action_wrraper">
+                        <h6 >
                           {product?.warranty ? product?.warranty : "--"}
                         </h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{modelList?.orderLocation?.name ? modelList?.orderLocation?.name : "--"}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
                       </div>
                       {/* <div className="col_20p">
                         <h6 className="action_wrraper ">
@@ -525,7 +530,7 @@ const AttachedSalesOrder = () => {
               <div className="form_layout">
                 <div className="row d-flex align-items-end">
                   <div className="col-lg-3 col-md-6 input_wrapper">
-                    <label>category Name *</label>
+                    <label>Category Name *</label>
                     <div className="position-relative">
                       <select
                         // disabled={modalStates.isView}
