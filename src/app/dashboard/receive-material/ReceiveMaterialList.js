@@ -14,6 +14,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import Link from "next/link";
 import CreateTransferMaterial from "../transfer-material/CreateTrasferMaterial";
+import { Button } from "bootstrap";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 const ReceiveMaterialList = () => {
   const router = useRouter();
@@ -77,12 +78,12 @@ const ReceiveMaterialList = () => {
       <div className="top_header">
         <div className="tab_title">Receive Material</div>
         <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -142,19 +143,19 @@ const ReceiveMaterialList = () => {
                       </div>
                       <div className="col_30p">
                         {modelData?.acceptedBy?.name ? (
-                         "--"
+                          <h6>{"--"}</h6>
+                          
                         ) : (
                           <h6 >
-                            <button
-                              className="btn btn-success"
+                            <CustomBtn
+                              name={"Receive"}
                               onClick={() =>
                                 router.push(
                                   `/dashboard/receive-material/receive-material-action?reciveMaterialId=${modelData?._id}`
                                 )
                               }
-                            >
-                              Receive
-                            </button>
+                              />
+                          
                           </h6>
                         )}
                       </div>

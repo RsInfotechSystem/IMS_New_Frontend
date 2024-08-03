@@ -190,18 +190,18 @@ const StockOut = () => {
                 <div className="table_main">
 
                     {/* Rename the class name "purchase_indent_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
-                    <div className="table_section purchase_indent_table">
+                    <div className="table_section inventory_table_res">
                         <div className="table_header">
                             <div className="col_15p">
                                 <h5>Sr. No.</h5>
                             </div>
-                            <div className="col_40p">
+                            <div className="col_50p">
                                 <h5>Category Name</h5>
                             </div>
                             <div className="col_35p">
                                 <h5>Brand Name</h5>
                             </div>
-                            <div className="col_35p">
+                            <div className="col_45p">
                                 <h5>Location Name</h5>
                             </div>
                             <div className="col_35p">
@@ -225,7 +225,7 @@ const StockOut = () => {
                             <div className="col_35p">
                                 <h5>Quantity</h5>
                             </div>
-                            <div className="col_35p">
+                            <div className="col_45p">
                                 <h5>Stock Out By</h5>
                             </div>
                             <div className="col_35p">
@@ -239,13 +239,13 @@ const StockOut = () => {
                                     <div className="col_15p">
                                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                     </div>
-                                    <div className="col_40p">
+                                    <div className="col_50p">
                                         <h6>{materialDetails?.categoryId?.name}</h6>
                                     </div>
                                     <div className="col_35p">
                                         <h6>{materialDetails?.brandId?.name}</h6>
                                     </div>
-                                    <div className="col_35p">
+                                    <div className="col_45p">
                                         <h6>{materialDetails?.locationId?.name}</h6>
                                     </div>
                                     <div className="col_35p">
@@ -269,7 +269,7 @@ const StockOut = () => {
                                     <div className="col_35p">
                                         <h6>{materialDetails?.quantity}</h6>
                                     </div>
-                                    <div className="col_35p">
+                                    <div className="col_45p">
                                         <h6>{materialDetails?.stockOutBy?.name}</h6>
                                     </div>
                                     <div className="col_35p">

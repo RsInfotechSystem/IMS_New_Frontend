@@ -281,8 +281,9 @@ function CreateBlock({ data }) {
               </div>
             </div>
             <div className="row">
-              <label>Want to add rack ? *</label>
               <div className="check_box col-md-6">
+              <label>Want to add rack ? *</label>
+
                 <div className="row">
                   {" "}
                   <div className="form-check col-12 d-flex gap-3">
@@ -312,7 +313,7 @@ function CreateBlock({ data }) {
               </div>
               {selectedOption === "Yes" && (
                 <>
-                  <div className="col-md-4">
+                  <div className="col-md-6">
                     <label >Rack Select*</label>
                     <Multiselect
                       placeholder="Select Rack"

@@ -129,7 +129,7 @@ const StockManagement = () => {
       }
       setLoader(false);
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message)
 
       setLoader(false);
     }
@@ -143,7 +143,7 @@ const StockManagement = () => {
         remark: remark,
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-         toast.success(serverResponse?.data?.message);
+        toast.success(serverResponse?.data?.message);
         fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
@@ -163,7 +163,7 @@ const StockManagement = () => {
       }
       setLoader(false);
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message)
 
       setLoader(false);
     }
@@ -177,7 +177,7 @@ const StockManagement = () => {
         remark: remark,
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-         toast.success(serverResponse?.data?.message);
+        toast.success(serverResponse?.data?.message);
         fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
@@ -197,7 +197,7 @@ const StockManagement = () => {
       }
       setLoader(false);
     } catch (error) {
-        toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message)
       setLoader(false);
     }
   }
@@ -237,7 +237,7 @@ const StockManagement = () => {
       };
       let response = await communication.rejectMaterial(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-         toast.success(response?.data?.message);
+        toast.success(response?.data?.message);
         fetchReturnMaterialList(1, searchString);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.info(response.data.message)
@@ -247,7 +247,7 @@ const StockManagement = () => {
       }
       setLoader(false);
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message)
 
       setLoader(false);
     }
@@ -302,12 +302,12 @@ const StockManagement = () => {
       <div className="top_header">
         <div className="tab_title">Stock Management</div>
         <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -352,7 +352,7 @@ const StockManagement = () => {
       {/* table  */}
       <div className="table_wrapper" >
         <div className="table_main">
-          <div className="table_section"  style={{minWidth: "1500px"}}>
+          <div className="table_section" style={{ minWidth: "1500px" }}>
             <div className="table_header">
               <div className="col_20p">
                 <h5>Sr. No.</h5>
@@ -375,7 +375,7 @@ const StockManagement = () => {
               <div className="col_35p">
                 <h5>Serial No.</h5>
               </div>
-              <div className="col_35p">
+              <div className="col_45p">
                 <h5>Block Name</h5>
               </div>
               <div className="col_35p">
@@ -387,66 +387,67 @@ const StockManagement = () => {
               <div className="col_55p">
                 <h5>Assigned Quantity</h5>
               </div>
-              <div className="col_50p">
+              <div className="col_80p">
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
             {material.length > 0 ? (
-            <>
-           
-            {material?.map((materialDetails, index) => {
-              return (
-                <div className="table_data" key={index}>
-                  <div className="col_20p">
-                    <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                  </div>
-                  <div className="col_50p">
-                    <h6>{materialDetails?.categoryId?.name}</h6>
-                  </div>
-                  <div className="col_45p">
-                    <h6>{materialDetails?.brandId?.name}</h6>
-                  </div>
-                  <div className="col_55p">
-                    <h6>{materialDetails?.locationId.name}</h6>
-                  </div>
-                  <div className="col_50p">
-                    <h6>{materialDetails?.modelId?.name}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6>{materialDetails?.itemCode}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6>{materialDetails?.serialNo}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6>{materialDetails?.blockId?.blockNo}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6> {materialDetails?.rackId?.rackName ? materialDetails?.rackId?.rackName : "-"}</h6>
-                  </div>
-                  <div className="col_45p">
-                    <h6>{materialDetails?.conditionType}</h6>
-                  </div>
-                  <div className="col_55p">
-                    <h6>{materialDetails?.assignQuantity}</h6>
-                  </div>
-                  <div className="col_50p">
-                    <h6 className="action_wrraper">
-                      <button className="btn btn-success"  onClick={() => router.push(`/dashboard/stock-management/accept-material?stockId=${materialDetails._id}`)}>accept</button>
-                      <button className="btn btn-danger" 
-                      onClick={(e) =>showInputDialog(materialDetails?._id, "reject")}
-                      // onClick={() => { setModalStates((prev) => ({ ...prev, modal: true,id: materialDetails?._id, status : "reject" })) }}
-                      >reject</button>
-                    </h6>
-                  </div>
-                </div>
-              );
-            })}
-            </>
-            ):(
+              <>
+
+                {material?.map((materialDetails, index) => {
+                  return (
+                    <div className="table_data" key={index}>
+                      <div className="col_20p">
+                        <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                      </div>
+                      <div className="col_50p">
+                        <h6>{materialDetails?.categoryId?.name}</h6>
+                      </div>
+                      <div className="col_45p">
+                        <h6>{materialDetails?.brandId?.name}</h6>
+                      </div>
+                      <div className="col_55p">
+                        <h6>{materialDetails?.locationId.name}</h6>
+                      </div>
+                      <div className="col_50p">
+                        <h6>{materialDetails?.modelId?.name}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.itemCode}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.serialNo}</h6>
+                      </div>
+                      <div className="col_45p">
+                        <h6>{materialDetails?.blockId?.blockNo}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6> {materialDetails?.rackId?.rackName ? materialDetails?.rackId?.rackName : "-"}</h6>
+                      </div>
+                      <div className="col_45p">
+                        <h6>{materialDetails?.conditionType}</h6>
+                      </div>
+                      <div className="col_55p">
+                        <h6>{materialDetails?.assignQuantity}</h6>
+                      </div>
+                      <div className="col_80p gap-1">
+                        <CustomBtn
+                          name={"Accept"}
+                          onClick={() => router.push(`/dashboard/stock-management/accept-material?stockId=${materialDetails._id}`)}
+                        />
+                        <CustomBtn
+                          name={"Reject"}
+                          onClick={(e) => showInputDialog(materialDetails?._id, "reject")}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
               <p className="no_data">Data Not Available</p>
             )
-          }
+            }
           </div>
         </div>
       </div>
@@ -455,8 +456,8 @@ const StockManagement = () => {
           
         </div>
       )} */}
-      {modalStates?.modal && <RejectModel data={{ modalStates, setModalStates}} />}
-      
+      {modalStates?.modal && <RejectModel data={{ modalStates, setModalStates }} />}
+
     </>
   );
 };
