@@ -25,6 +25,8 @@ gsap.registerPlugin(useGSAP);
 const CreateOrder = () => {
   const router = useRouter();
   const params = useSearchParams();
+  const [orderCompleteDateError, setOrderCompleteDateError] = useState("")
+  const [orderDateError, setOrderDateError] = useState("")
 
   const [activeTab, setActiveTab] = useState("INFO");
   const [loader, setLoader] = useState(false);
@@ -64,7 +66,6 @@ const CreateOrder = () => {
 
   // Get all categories list
   const createOrder = async (values) => {
-    // console.log(values, "values");
     try {
       if (!filterValues.orderDate || !filterValues.orderCompleteDate) {
         toast.info("Date is required");
@@ -84,7 +85,6 @@ const CreateOrder = () => {
         contactPerson: values.contactPerson,
         remark: values.remark,
       };
-      console.log(dataToSend, "dataToSend");
       let response = await communication.createSalesOrder(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);
@@ -159,6 +159,28 @@ const CreateOrder = () => {
   const deleteProduct = (id) => {
     setState({ materials: state.materials.filter((_, index) => index !== id) });
   };
+
+
+  const employeeDetailSubmit = (data) => {
+    if (filterValues?.orderDate === "") {
+      setOrderDateError("OrderDate is required");
+      return ;
+    }
+    if (filterValues?.orderCompleteDate === "") {
+      setOrderCompleteDateError("Order Complete Date is required");
+      return 
+    }
+    try {
+     
+
+      // setFormTabArray((prev) => prev?.map((ele, ind) => ele.tabName === "Working" ? { ...ele, isFormSubmitted: true } : ele));
+      setActiveTab("SUPPLY");
+    } catch(error) {
+      toast.info(error.message)
+    }
+  }
+
+
 
   return (
     <>
@@ -381,7 +403,6 @@ const CreateOrder = () => {
                     placeholder={""}
                     disable={false}
                   /> */}
-                 { console.log(filterValues?.orderDate)}
                 <CustomDateInput
                   value={filterValues?.orderDate}
                   maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
@@ -389,6 +410,11 @@ const CreateOrder = () => {
                     setFilterValues((prev) => ({ ...prev, orderDate: date }));
                   }}
                 />
+                {/* {orderDateError && (
+                    <p className="text-danger text-start" style={{ fontSize: "13px" }}>
+                      {orderDateError}
+                    </p>
+                  )} */}
               </div>
               <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
                 <label>Complete Date*</label>
@@ -414,6 +440,11 @@ const CreateOrder = () => {
                     setFilterValues((prev) => ({ ...prev, orderCompleteDate: date }));
                   }}
                 />
+                {/* {orderCompleteDateError && (
+                    <p className="text-danger text-start" style={{ fontSize: "13px" }}>
+                      {orderCompleteDateError}
+                    </p>
+                  )} */}
               </div>
               <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
                 <label>Order Taken By*</label>
@@ -481,10 +512,10 @@ const CreateOrder = () => {
           <div className="d-flex align-items-center justify-content-center">
             <Button
               name={"Save & Next"}
-              //   onClick={handleSubmit(handleVendorInformation)}
-              onClick={() => {
-                setActiveTab("SUPPLY");
-              }}
+              onClick={handleSubmit(employeeDetailSubmit)}
+            // onClick={() => {
+            //   setActiveTab("SUPPLY");
+            // }}
             />
           </div>
         </div>
@@ -503,7 +534,9 @@ const CreateOrder = () => {
                     <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Description</label>
                       <textarea
-                        {...register("description")}
+                        register={{...register("description")}}
+                        errors={errors.quantity}
+
                         className="form-control custom_input"
                         rows="1"
                       ></textarea>
@@ -514,7 +547,7 @@ const CreateOrder = () => {
                         // type={"text"}
                         register={{
                           ...register("quantity", {
-                            // required: "quantity Name is required",
+                            required: "quantity is required",
                           }),
                         }}
                         errors={errors.quantity}
@@ -526,7 +559,7 @@ const CreateOrder = () => {
                         // type={"number"}
                         register={{
                           ...register("warranty", {
-                            // required: "warranty Name is required",
+                            required: "warranty is required",
                           }),
                         }}
                         errors={errors.warranty}
@@ -538,7 +571,7 @@ const CreateOrder = () => {
                         // type={"number"}
                         register={{
                           ...register("note", {
-                            // required: "note Name is required",
+                            required: "note is required",
                           }),
                         }}
                         errors={errors.note}
@@ -550,7 +583,7 @@ const CreateOrder = () => {
                         // type={"number"}
                         register={{
                           ...register("remarks", {
-                            // required: "Remarks Name is required",
+                            required: "Remarks is required",
                           }),
                         }}
                         errors={errors.remarks}
@@ -613,12 +646,12 @@ const CreateOrder = () => {
                             <h6>{product?.quantity ? product?.quantity : "--"}</h6>
                           </div>
                           <div className="col_25p">
-                          <h6 >
+                            <h6 >
                               {product?.warranty ? product?.warranty : "--"}
                             </h6>
                           </div>
                           <div className="col_25p">
-                          <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+                            <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
 
                           </div>
                           <div className="col_20p">
