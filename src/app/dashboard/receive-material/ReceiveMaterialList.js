@@ -7,14 +7,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
-import { getCookiesData } from "@/utilities/getCookiesData";
 import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import Link from "next/link";
 import CreateTransferMaterial from "../transfer-material/CreateTrasferMaterial";
-import { Button } from "bootstrap";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 const ReceiveMaterialList = () => {
   const router = useRouter();
@@ -27,12 +22,6 @@ const ReceiveMaterialList = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [timeoutId, setTimeoutId] = useState();
   const [page, setPage] = useState(1);
-  const [selectAllChecked, setSelectAllChecked] = useState(false);
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-  const [errorForRackFlag, setErrorRackFlag] = useState("");
-  const [selectedOption, setSelectedOption] = useState("");
-  const [showModal, setShowModal] = useState({ modal: false });
-  const [materialList, setMaterialList] = useState([]);
   const [receiveMaterial, setReceiveMaterial] = useState([]);
   //get transfer material list on initial Load
   async function getReceiveMaterial(page, searchString, isSearch = false) {
@@ -87,7 +76,7 @@ const ReceiveMaterialList = () => {
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
-        { }
+        {}
       </div>
       {/* table  */}
       <div className="table_wrapper">
@@ -144,9 +133,8 @@ const ReceiveMaterialList = () => {
                       <div className="col_30p">
                         {modelData?.acceptedBy?.name ? (
                           <h6>{"--"}</h6>
-                          
                         ) : (
-                          <h6 >
+                          <h6>
                             <CustomBtn
                               name={"Receive"}
                               onClick={() =>
@@ -154,8 +142,7 @@ const ReceiveMaterialList = () => {
                                   `/dashboard/receive-material/receive-material-action?reciveMaterialId=${modelData?._id}`
                                 )
                               }
-                              />
-                          
+                            />
                           </h6>
                         )}
                       </div>
