@@ -84,29 +84,36 @@ const RackList = () => {
         }
     }
 
+    const [showMore, setShowMore] = useState(false);
+
+    const handleShowMore = () => {
+        setShowMore(!showMore);
+    };
+
+
     const handleCheckboxChange = (e) => {
         const checkboxId = e.target.id;
         setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === rackList?.length)))
         setSelectedCheckboxes((prevSelected) => {
-          if (prevSelected.includes(checkboxId)) {
-            // If the checkbox is already in the array, remove it
-            return prevSelected.filter((id) => id !== checkboxId);
-          } else {
-            // If the checkbox is not in the array, add it
-            return [...prevSelected, checkboxId];
-          }
+            if (prevSelected.includes(checkboxId)) {
+                // If the checkbox is already in the array, remove it
+                return prevSelected.filter((id) => id !== checkboxId);
+            } else {
+                // If the checkbox is not in the array, add it
+                return [...prevSelected, checkboxId];
+            }
         });
-    
-      };
-      const handleSelectAllChange = (e) => {
+
+    };
+    const handleSelectAllChange = (e) => {
         setSelectAllChecked(e.target.checked);
-    
+
         // Update the array of selected checkboxes based on the "Select All" checkbox
         setSelectedCheckboxes((prevSelected) =>
-          e.target.checked ? rackList.map((brandDetails) => brandDetails._id) : []
+            e.target.checked ? rackList.map((brandDetails) => brandDetails._id) : []
         );
-      };
-    
+    };
+
 
     const handleEnableDisable = async (rackId) => {
 
@@ -183,6 +190,7 @@ const RackList = () => {
         getRackList(currentPage, searchString);
     }, [isPageUpdated]);
 
+
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
@@ -201,12 +209,12 @@ const RackList = () => {
             <div className="top_header">
                 <div className="tab_title">Rack Management</div>
                 <Pagination
-                        isPageUpdated={isPageUpdated}
-                        setIsPageUpdated={setIsPageUpdated}
-                        currentPage={currentPage}
-                        setCurrentPage={setCurrentPage}
-                        pageCount={pageCount}
-                    />
+                    isPageUpdated={isPageUpdated}
+                    setIsPageUpdated={setIsPageUpdated}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    pageCount={pageCount}
+                />
             </div>
             <div className="search_btn_wrapper">
                 <Search
@@ -274,14 +282,14 @@ const RackList = () => {
                         <div className="table_header">
                             <div className="col_7p">
                                 {/* <div className="check_box"> */}
-                                    <input
-                                        className="form-check-input"
-                                        type="checkbox"
-                                        id="selectAllCheckbox"
-                                        onChange={(e) => handleSelectAllChange(e)}
-                                        checked={selectAllChecked}
-                                    />
-                                    <label className="form-check-label"></label>
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    id="selectAllCheckbox"
+                                    onChange={(e) => handleSelectAllChange(e)}
+                                    checked={selectAllChecked}
+                                />
+                                <label className="form-check-label"></label>
                                 {/* </div> */}
                             </div>
                             <div className="col_10p">
@@ -302,103 +310,107 @@ const RackList = () => {
                         </div>
                         {rackList.length > 0 ? (
                             <>
-                       
-                        {rackList?.map((rackDetails, index) => {
-                            return (
-                                <>
-                                    <div className="table_data" key={index}>
-                                        <div className="col_7p">
-                                            {/* <div className="check_box"> */}
-                                                <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    id={rackDetails._id}
-                                                    onChange={(e) => handleCheckboxChange(e)}
-                                                    checked={selectedCheckboxes.includes(rackDetails?._id)}
-                                                />
-                                                <label className="form-check-label"></label>
-                                            {/* </div> */}
-                                        </div>
-                                        <div className="col_10p">
-                                            <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                                        </div>
-                                        <div className="col_35p">
-                                            <h6>{rackDetails?.locationId?.name}</h6>
-                                        </div>
-                                        <div className="col_35p">
-                                            <h6>{rackDetails?.rackName}</h6>
-                                        </div>
-                                        <div className="col_35p">
-                                            {/* <h6>{rackDetails?.rackName}</h6> */}
-                                            <h6>
-                                                {rackDetails.partitionArray.length > 0
-                                                    ? rackDetails.partitionArray.map((item, index) => (
-                                                        <span key={index}>
-                                                            {item.partitionName}
-                                                            {index !== rackDetails.partitionArray.length - 1 ? ", " : ""}
-                                                        </span>
-                                                    ))
-                                                    : "-"}
-                                            </h6>
-                                        </div>
-                                        <div className="col_10p">
-                                            <h6 className="action_wrraper">
-                                                <div title="Update">
-                                                    <svg
-                                                        onClick={() => {
-                                                            setModalStates((prev) => ({
-                                                                ...prev,
-                                                                modal: true,
-                                                                type: "update",
-                                                                id: rackDetails?._id,
-                                                            }));
-                                                        }}
-                                                        width="27"
-                                                        height="27"
-                                                        viewBox="0 0 25 24"
-                                                        fill="none"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <g clip-path="url(#clip0_279_5204)">
-                                                            <path
-                                                                d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                                                                stroke="#0D6EFD"
-                                                                stroke-linecap="round"
-                                                                stroke-linejoin="round"
-                                                            />
-                                                            <path
-                                                                d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                                                                stroke="#0D6EFD"
-                                                                stroke-linecap="round"
-                                                                stroke-linejoin="round"
-                                                            />
-                                                        </g>
-                                                        <defs>
-                                                            <clipPath id="clip0_279_5204">
-                                                                <rect
-                                                                    width="15"
-                                                                    height="15"
-                                                                    fill="white"
-                                                                    transform="translate(5 5)"
-                                                                />
-                                                            </clipPath>
-                                                        </defs>
-                                                    </svg>
+
+                                {rackList?.map((rackDetails, index) => {
+                                    return (
+                                        <>
+                                            <div className="table_data" key={index}>
+                                                <div className="col_7p">
+                                                    {/* <div className="check_box"> */}
+                                                    <input
+                                                        className="form-check-input"
+                                                        type="checkbox"
+                                                        id={rackDetails._id}
+                                                        onChange={(e) => handleCheckboxChange(e)}
+                                                        checked={selectedCheckboxes.includes(rackDetails?._id)}
+                                                    />
+                                                    <label className="form-check-label"></label>
+                                                    {/* </div> */}
                                                 </div>
-                                                <div className="form-switch " title="enable/disable">
-                                                <input
-                                                    className="form-check-input cursor-pointer"
-                                                    type="checkbox"
-                                                    checked={rackDetails?.isActive}
-                                                    id={`toggleSwitch${rackDetails?._id}`}
-                                                    // onChange={(event) =>
-                                                    //     changeUserStatus(event, userDetails._id, userDetails.isActive)
-                                                    // }
-                                                    onChange={() => setIsEnableDisable({ modal: true,  action: rackDetails?.isActive ? "disable" : "enable" , rackId: rackDetails?._id })}
-                                                    // onChange={(e)=> console.log(rackDetails?._id)}
-                                                    style={{ width: "35px", height: "15px" }}
-                                                />
-                                                    {/* <input
+                                                <div className="col_10p">
+                                                    <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                                                </div>
+                                                <div className="col_35p">
+                                                    <h6>{rackDetails?.locationId?.name}</h6>
+                                                </div>
+                                                <div className="col_35p">
+                                                    <h6>{rackDetails?.rackName}</h6>
+                                                </div>
+                                                <div className="col_35p">
+                                                    <h6>
+                                                        {rackDetails.partitionArray.length > 0
+                                                            ? rackDetails.partitionArray.slice(0, showMore ? rackDetails.partitionArray.length : 20).map((item, index) => (
+                                                                <span key={index}>
+                                                                    {item.partitionName}
+                                                                    {index !== (showMore ? rackDetails.partitionArray.length : 20) - 1 ? ", " : ""}
+                                                                </span>
+                                                            ))
+                                                            : "-"}
+                                                    </h6>
+                                                    {rackDetails.partitionArray.length > 20 && (
+                                                        <button onClick={handleShowMore} className="custom_button_read">
+                                                            {showMore ? "Show Less" : "Show More"}
+                                                        </button>
+                                                    )}
+                                                </div>
+                                                <div className="col_10p">
+                                                    <h6 className="action_wrraper">
+                                                        <div title="Update">
+                                                            <svg
+                                                                onClick={() => {
+                                                                    setModalStates((prev) => ({
+                                                                        ...prev,
+                                                                        modal: true,
+                                                                        type: "update",
+                                                                        id: rackDetails?._id,
+                                                                    }));
+                                                                }}
+                                                                width="27"
+                                                                height="27"
+                                                                viewBox="0 0 25 24"
+                                                                fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                            >
+                                                                <g clip-path="url(#clip0_279_5204)">
+                                                                    <path
+                                                                        d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                                                        stroke="#0D6EFD"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                    />
+                                                                    <path
+                                                                        d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                                                        stroke="#0D6EFD"
+                                                                        stroke-linecap="round"
+                                                                        stroke-linejoin="round"
+                                                                    />
+                                                                </g>
+                                                                <defs>
+                                                                    <clipPath id="clip0_279_5204">
+                                                                        <rect
+                                                                            width="15"
+                                                                            height="15"
+                                                                            fill="white"
+                                                                            transform="translate(5 5)"
+                                                                        />
+                                                                    </clipPath>
+                                                                </defs>
+                                                            </svg>
+                                                        </div>
+                                                        <div className="form-switch " title="enable/disable">
+                                                            <input
+                                                                className="form-check-input cursor-pointer"
+                                                                type="checkbox"
+                                                                checked={rackDetails?.isActive}
+                                                                id={`toggleSwitch${rackDetails?._id}`}
+                                                                // onChange={(event) =>
+                                                                //     changeUserStatus(event, userDetails._id, userDetails.isActive)
+                                                                // }
+                                                                onChange={() => setIsEnableDisable({ modal: true, action: rackDetails?.isActive ? "disable" : "enable", rackId: rackDetails?._id })}
+                                                                // onChange={(e)=> console.log(rackDetails?._id)}
+                                                                style={{ width: "35px", height: "15px" }}
+                                                            />
+                                                            {/* <input
                                                         type="checkbox"
                                                         id={"switch"}
                                                         value={rackDetails?._id}
@@ -413,7 +425,7 @@ const RackList = () => {
                                                             // console.log(rackDetails._id)
                                                         }}
                                                     /> */}
-                                                    {/* <label
+                                                            {/* <label
                                                         id="toggler"
                                                         htmlFor={"switch"}
                                                         className={rackDetails?.isActive ? "toggle_enable" : "toggle_disable"}
@@ -425,17 +437,17 @@ const RackList = () => {
                                                             }}
                                                         ></div>
                                                     </label> */}
+                                                        </div>
+                                                    </h6>
                                                 </div>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                </>
-                            );
-                        })}
-                         </>
-                         ):(
-                           <p className="no_data">Data Not Available</p>
-                         )
+                                            </div>
+                                        </>
+                                    );
+                                })}
+                            </>
+                        ) : (
+                            <p className="no_data">Data Not Available</p>
+                        )
                         }
                     </div>
                 </div>

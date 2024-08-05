@@ -711,11 +711,11 @@ const AssignMaterial = () => {
               <div className="row">
                 <div className="col-12 mb-1" style={{ height: "40dvh" }}>
                   <div className="table_wrapper table_wrapper_assign">
-                    <div className="table_main" style={{ minWidth: "1200px" }}>
+                    <div className="table_main p-0" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
                         {/* <div className="table_container"> */}
                         <div className="table_header">
-                          <div className="col_20p">
+                          <div className="col_5p">
                             <div className="check_box">
                               <input
                                 className="form-check-input"
@@ -726,7 +726,7 @@ const AssignMaterial = () => {
                               />
                             </div>
                           </div>
-                          <div className="col_20p">
+                          <div className="col_10p">
                             <h5>Sr. No.</h5>
                           </div>
                           <div className="col_20p">
@@ -757,7 +757,7 @@ const AssignMaterial = () => {
                             {" "}
                             {material.map((materialData, index) => (
                               <div className="table_data" key={index}>
-                                <div className="col_20p">
+                                <div className="col_5p">
                                   {" "}
                                   <div className="check_box">
                                     <input
@@ -771,7 +771,7 @@ const AssignMaterial = () => {
                                     />
                                   </div>
                                 </div>
-                                <div className="col_20p">
+                                <div className="col_10p">
                                   <h6>{index + 1}</h6>
                                 </div>
                                 <div className="col_20p">
@@ -814,10 +814,10 @@ const AssignMaterial = () => {
                 </div>
                 <div className="col-12 mb-2 mt-4">
                   <div className="table_wrapper" style={{ height: "30dvh" }}>
-                    <div className="table_main" style={{ minWidth: "1200px" }}>
+                    <div className="table_main p-0" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
                         <div className="table_header">
-                          <div className="col_8p">
+                          <div className="col_5p">
                             <div className="check_box">
                               <input
                                 className="form-check-input"
@@ -871,7 +871,7 @@ const AssignMaterial = () => {
                             {" "}
                             {selectedList.map((materialData, index) => (
                               <div className="table_data" key={index}>
-                                <div className="col_8p">
+                                <div className="col_5p">
                                   <div className="check_box">
                                     <input
                                       className="form-check-input"
@@ -975,11 +975,45 @@ const AssignMaterial = () => {
                     </div>
                   </div>
                 </div>
-                <div className="row d-flex m-0 ps-5" style={{ height: "10%" }}>
-                  <div className="col-lg-5 col-md-4 justify-content-center d-flex align-items-center select_tech">
-                    <h6 className="">Select Technician</h6>
+                <div className="row d-flex px-5" style={{ height: "10%" }}>
+                  <div className="col-lg-4 col-md-4 gap-2 ">
+                    <h6 className="mb-1">Select Location</h6>
+                    <select
+                      className="inputBox"
+                      style={{
+                        background: "#f5f5f5",
+                        fontSize: "15px",
+                        border: "0.5px solid grey",
+                        padding: "6px 12px",
+                        borderRadius: "4px",
+                        cursor: "pointer",
+                      }}
+                      // {...register("userId", {
+                      //   required: "Technician is required",
+                      // })}
+                      onChange={(e) => setUserId(e.target.value)}
+                    >
+                      {/* <option>Roshan</option>
+                  <option>Roshan 2</option> */}
+                      <option value="" className="">
+                        Select Location
+                      </option>
+                      {TechnicianList.map((ele, index) => {
+                        return (
+                          <option
+                            className=""
+                            style={{ fontSize: "14px" }}
+                            value={ele._id}
+                            key={index}
+                          >
+                            {ele.name}
+                          </option>
+                        );
+                      })}
+                    </select>
                   </div>
-                  <div className="col-lg-3 col-md-4 d-flex align-items-center pt-3">
+                  <div className="col-lg-4 col-md-4 gap-2 ">
+                  <h6 className="mb-1">Select Technician</h6>
                     <select
                       className="inputBox"
                       style={{
@@ -1035,7 +1069,7 @@ const AssignMaterial = () => {
                   Assign material
                 </button>
               </div> */}
-                  <div className="form_button_wrapper gap-2 col-lg-4 col-md-4 d-flex align-items-center">
+                  <div className="form_button_wrapper col-lg-4 col-md-4">
                     <CustomBtn name="Assign material" onClick={() => handleAssign()} />
                   </div>
                 </div>
