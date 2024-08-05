@@ -9,6 +9,7 @@ import SelectBox from "@/common-components/Select";
 import {
   getCategory,
   getCategoryWiseBrand,
+  getLocations,
   getLocationWiseBlock,
   getParameter,
   getRackPartation,
@@ -99,25 +100,28 @@ const InventoryView = ({ data }) => {
       setValue("parameterId", "");
     }
   }, [categoryId]);
-  async function getLocations() {
-    try {
-      setLoader(true);
-      const serverResponse = await communication.getLocations();
-      if (serverResponse?.data?.status === "SUCCESS") {
-        setLocationList(serverResponse?.data?.result);
-      } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.warn(serverResponse.data.message);
-        router.push("/");
-        setLoader(false);
-      } else {
-        setLocationList([]);
-      }
-      setLoader(false);
-    } catch (error) {
-      toast.warn(error?.response?.data?.message || error.message);
-      setLoader(false);
-    }
-  }
+  // async function getLocations() {
+  //   try {
+  //     setLoader(true);
+  //     const serverResponse = await communication.getLocations();
+  //     if (serverResponse?.data?.status === "SUCCESS") {
+  //       setLocationList(serverResponse?.data?.result);
+  //     } else if (serverResponse?.data?.status === "JWT_INVALID") {
+  //       toast.warn(serverResponse.data.message);
+  //       router.push("/");
+  //       setLoader(false);
+  //     } else {
+  //       setLocationList([]);
+  //     }
+  //     setLoader(false);
+  //   } catch (error) {
+  //     toast.warn(error?.response?.data?.message || error.message);
+  //     setLoader(false);
+  //   }
+  // }
+  useEffect(() => {
+    getLocations(setLoader, router, setLocations);
+  }, []);
   async function getBrandWiseModel() {
     try {
       // props.setLoader(true);
@@ -216,15 +220,15 @@ const InventoryView = ({ data }) => {
     //   await getBrandById()
     // }
   }
-  const handleCategory = async () => {
-    if (getValues("categoryId")) {
-      setBrandsData(
-        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-      );
-    } else {
-      setBrandsData([]);
-    }
-  };
+  // const handleCategory = async () => {
+  //   if (getValues("categoryId")) {
+  //     setBrandsData(
+  //       await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
+  //     );
+  //   } else {
+  //     setBrandsData([]);
+  //   }
+  // };
 
   useEffect(() => {
     const id = getValues("brandId");
@@ -239,9 +243,9 @@ const InventoryView = ({ data }) => {
     }
   }, [location]);
 
-  useMemo(() => {
-    handleCategory();
-  }, [categoryId]);
+  // useMemo(() => {
+  //   handleCategory();
+  // }, [categoryId]);
 
   useEffect(() => {
     getLocations();
@@ -278,19 +282,19 @@ const InventoryView = ({ data }) => {
         setValue("status", stockData?.status);
         setValue("quantity", stockData?.quantity);
         setValue("categoryId", stockData?.categoryId._id);
+        await getCategoryWiseBrand(stockData?.categoryId._id, setLoader, router, setBrandsData);
         setValue("rackId", stockData?.rackId?._id);
         setValue("brandId", stockData?.brandId?._id);
         setValue("blockId", stockData?.blockId?._id);
         // setValue("partitionName", stockData?.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
         router.push("/login");
       } else {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
       }
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
-
+      toast.info(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
@@ -327,7 +331,7 @@ const InventoryView = ({ data }) => {
                     <option value="" className="text-secondary text-lowercase">
                       Select Location
                     </option>
-                    {locationList.map((ele, index) => {
+                    {locations.map((ele, index) => {
                       return (
                         <option className="small text-capitalize" value={ele._id} key={index}>
                           {" "}
@@ -452,7 +456,7 @@ const InventoryView = ({ data }) => {
                 /> */}
                   <select
                     disabled
-                    // name="categoryId"
+                    name="categoryId"
                     className="form-control custom_input"
                     style={{ width: "100%" }}
                     {...register("categoryId", {
@@ -637,31 +641,30 @@ const InventoryView = ({ data }) => {
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Model Name *</label>
                   <div className="position-relative">
-
-                  <select
-                    disabled
-                    {...register("modelId", {
-                      required: "modelId is required",
-                    })}
-                    className="form-control custom_input"
-                    style={{ width: "100%" }}
-                  >
-                    <option value="">Model Name</option>
-                    {model.map((ele, index) => {
-                      return (
-                        <option
-                          value={ele._id}
-                          key={index}
-                          selected={ele._id === getValues("modelId")}
-                        >
-                          {ele.name}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
+                    <select
+                      disabled
+                      {...register("modelId", {
+                        required: "modelId is required",
+                      })}
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                    >
+                      <option value="">Model Name</option>
+                      {model.map((ele, index) => {
+                        return (
+                          <option
+                            value={ele._id}
+                            key={index}
+                            selected={ele._id === getValues("modelId")}
+                          >
+                            {ele.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
                   </div>
 
                   <div style={{ height: "5px" }}>

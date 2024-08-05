@@ -46,7 +46,8 @@ const CreateStockIn = ({ data }) => {
   const [locations, setLocations] = useState([]);
   const [isPartationPresent, setIsPartationPresent] = useState("");
   const [modelId, setModelId] = useState("");
-
+  const [_category, _setCategory] = useState("");
+  const [_brand, _setBrand] = useState("");
 
   const {
     register,
@@ -91,8 +92,11 @@ const CreateStockIn = ({ data }) => {
         setValue("status", stockData?.status);
         setValue("quantity", stockData?.quantity);
         setValue("categoryId", stockData?.categoryId._id);
+        await getCategoryWiseBrand(stockData?.categoryId._id, setLoader, router, setBrandsData);
+        _setCategory(stockData?.categoryId._id);
         setValue("rackId", stockData?.rackId?._id);
         setValue("brandId", stockData?.brandId?._id);
+        _setBrand(stockData?.brandId?._id);
         setValue("blockId", stockData?.blockId?._id);
         // setValue("partitionName", stockData?.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
@@ -262,23 +266,26 @@ const CreateStockIn = ({ data }) => {
     //   await getBrandById()
     // }
   }
-  const handleCategory = async () => {
-    if (getValues("categoryId")) {
-      setBrandsData(
-        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-      );
-    } else {
-      setBrandsData([]);
-    }
-  };
+  // const handleCategory = async () => {
+  //   if (getValues("categoryId")) {
+  //     setBrandsData(
+  //       await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
+  //     );
+  //   } else {
+  //     setBrandsData([]);
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   const id = getValues("categoryId");
+  //   console.log("iddddd", _category);
+  //   if (_category) {
+  //     getCategoryWiseBrand(_category, setLoader, router, setBrandsData);
+  //   }
+  // }, [_category && category?.length >= 1]);
   useEffect(() => {
-    const id = getValues("categoryId");
-    if (id) {
-      getCategoryWiseBrand(id, setLoader, router, setBrandsData);
-    }
-  }, [category?.length >= 1 && categoryId]);
-
+    setValue("brandId", _brand);
+  }, [_category]);
   useEffect(() => {
     const id = getValues("locationId");
     if (id) {
@@ -300,10 +307,9 @@ const CreateStockIn = ({ data }) => {
   //   }
   // }, [model?.length >=1 && brandId]);
 
-
-  useMemo(() => {
-    handleCategory();
-  }, [categoryId]);
+  // useMemo(() => {
+  //   handleCategory();
+  // }, [categoryId]);
 
   useEffect(() => {
     getLocations();
@@ -325,8 +331,8 @@ const CreateStockIn = ({ data }) => {
               {modalStates.isView
                 ? "View Details"
                 : modalStates?.type === "create"
-                  ? "Create Stock"
-                  : "Update Stock"}
+                ? "Create Stock"
+                : "Update Stock"}
             </h5>
             <FontAwesomeIcon
               icon={faCircleXmark}
@@ -482,7 +488,7 @@ const CreateStockIn = ({ data }) => {
                   <div className="position-relative">
                     <select
                       disabled={modalStates.isView}
-                      // name="categoryId"
+                      name="categoryId"
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                       {...register("categoryId", {
@@ -526,8 +532,8 @@ const CreateStockIn = ({ data }) => {
                       <option value="" className="text-secondary text-lowercase"></option>
                       {brandsData?.map((ele, index) => {
                         return (
-                          <option className="small text-capitalize" value={ele._id} key={index}>
-                            {ele.name}
+                          <option className="small text-capitalize" value={ele?._id} key={index}>
+                            {ele?.name}
                           </option>
                         );
                       })}
@@ -745,9 +751,9 @@ const CreateStockIn = ({ data }) => {
                                 // required: "itemCode is required",
                               }),
                             }}
-                          // {...register(`parameter[${item}]`)}
-                          // className="form-control custom_input"
-                          // style={{ width: "100%", height: "31px" }}
+                            // {...register(`parameter[${item}]`)}
+                            // className="form-control custom_input"
+                            // style={{ width: "100%", height: "31px" }}
                           />
                         </div>
                       </React.Fragment>

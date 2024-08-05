@@ -32,8 +32,8 @@ export async function getLocations(setLoader, router, setLocations = []) {
     }
     setLoader(false);
   } catch (error) {
-    toast.info(error?.response?.data?.message || error.message)
-    setLoader(false);
+    toast.info(error?.response?.data?.message || error.message);
+    // setLoader(false);
   }
 }
 export async function getBrands(router) {
@@ -58,7 +58,7 @@ export async function getParameter(setLoader, router, setParameter = []) {
     if (serverResponse?.data?.status === "SUCCESS") {
       setParameter(serverResponse?.data?.parameter);
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
-      toast.info(serverResponse.data.message)
+      toast.info(serverResponse.data.message);
       router.push("/");
       setLoader(false);
     } else {
@@ -71,10 +71,8 @@ export async function getParameter(setLoader, router, setParameter = []) {
   }
 }
 
-
 export async function getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData = []) {
   try {
-
     const serverResponse = await communication.getCategoryWiseBrand(categoryId);
     if (serverResponse?.data?.status === "SUCCESS") {
       setBrandsData(serverResponse?.data?.brand);
@@ -136,7 +134,7 @@ export async function getRackPartation(id, setLoader, router, setRackPartation =
     if (serverResponse?.data?.status === "SUCCESS") {
       setRackPartation(serverResponse?.data?.filteredPartitions);
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
-      toast.info(serverResponse.data.message)
+      toast.info(serverResponse.data.message);
       router.push("/");
       setLoader(false);
     } else {
@@ -148,7 +146,6 @@ export async function getRackPartation(id, setLoader, router, setRackPartation =
     setLoader(false);
   }
 }
-
 
 export async function getBrandWiseModel(brandId, setLoader, router, setModel) {
   try {
@@ -169,7 +166,6 @@ export async function getBrandWiseModel(brandId, setLoader, router, setModel) {
       setModel([]);
     }
     setLoader(false);
-
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
   }

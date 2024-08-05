@@ -174,33 +174,62 @@ const AssignMaterial = () => {
     fetchMaterial();
   }, [formValues.categoryId]);
 
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   if (value || value) {
+  //     setFormValues({ ...formValues, [name]: value });
+  //     setErrors({ ...errors, [name]: "" }); // Clear error message on input change
+  //   } else {
+  //     setParameter([]);
+  //   }
+  // };
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if(value || value){
-      setFormValues({ ...formValues, [name]: value });
-      setErrors({ ...errors, [name]: "" }); // Clear error message on input change
-    }else{
-      setParameter([]);
+    setFormValues({ ...formValues, [name]: value });
+    setErrors({ ...errors, [name]: "" }); // Clear error message on input change
 
+    // If changing searchString, clear other field errors
+    if (name === "searchString" && value) {
+      setErrors({});
     }
-   
+    // If changing other fields, clear searchString error
+    else if (name !== "searchString") {
+      setErrors({ ...errors, searchString: "" });
+    }
   };
 
+  // const validateForm = () => {
+  //   const newErrors = {};
+
+  //   // Validate form based on conditions
+  //   if (
+  //     !formValues.searchString &&
+  //     (!formValues.categoryId ||
+  //       !formValues.status ||
+  //       !formValues.brandId ||
+  //       !formValues.conditionType)
+  //   ) {
+  //     newErrors.searchString = "Serial No./Item Code is required";
+  //     if (!formValues.categoryId) newErrors.categoryId = "Category is required";
+  //     if (!formValues.status) newErrors.status = "Status is required";
+  //     if (!formValues.brandId) newErrors.brandId = "Brand is required";
+  //     if (!formValues.conditionType) newErrors.conditionType = "Condition is required";
+  //   }
+
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate form based on conditions
-    if (
-      !formValues.searchString &&
-      (!formValues.categoryId ||
-        !formValues.status ||
-        !formValues.brandId ||
-        !formValues.conditionType)
-    ) {
-      newErrors.searchString = "Serial No./Item Code is required";
+    if (formValues.searchString) {
+      // If searching by serial number, no other fields are required
+      return true;
+    } else {
+      // If not searching by serial number, all other fields are required
       if (!formValues.categoryId) newErrors.categoryId = "Category is required";
-      if (!formValues.status) newErrors.status = "Status is required";
       if (!formValues.brandId) newErrors.brandId = "Brand is required";
+      if (!formValues.status) newErrors.status = "Status is required";
       if (!formValues.conditionType) newErrors.conditionType = "Condition is required";
     }
 
@@ -209,7 +238,7 @@ const AssignMaterial = () => {
   };
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     if (!validateForm()) return;
 
     const payload = formValues.searchString
@@ -435,7 +464,7 @@ const AssignMaterial = () => {
                             // style={{ paddingLeft: lefIcon ? 45 : "auto" }}
                             // className={`form_control_assign custom_input ${className}`}
                           />
-                          <div style={{ height: "5px" }}>
+                          <div style={{ height: "25px" }}>
                             {errors.searchString && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
                                 {errors.searchString}
@@ -480,7 +509,7 @@ const AssignMaterial = () => {
                           <div className="select_box_smallarrow me-2 ">
                             <FontAwesomeIcon icon={faAngleDown} className="icon" />
                           </div>
-                          <div style={{ height: "5px" }}>
+                          <div style={{ height: "25px" }}>
                             {errors.categoryId && (
                               <p
                                 className="validation_message"
@@ -490,7 +519,6 @@ const AssignMaterial = () => {
                               </p>
                             )}
                           </div>
-                          
                         </div>
                       </div>
 
@@ -527,7 +555,7 @@ const AssignMaterial = () => {
                           <div className="select_box_smallarrow me-2 ">
                             <FontAwesomeIcon icon={faAngleDown} className="icon" />
                           </div>
-                          <div style={{ height: "5px" }}>
+                          <div style={{ height: "25px" }}>
                             {errors.brandId && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
                                 {errors.brandId}
@@ -563,7 +591,7 @@ const AssignMaterial = () => {
                           <div className="select_box_smallarrow me-2 ">
                             <FontAwesomeIcon icon={faAngleDown} className="icon" />
                           </div>
-                          <div style={{ height: "5px" }}>
+                          <div style={{ height: "25px" }}>
                             {errors.status && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
                                 {errors.status}
@@ -608,7 +636,7 @@ const AssignMaterial = () => {
                           <div className="select_box_smallarrow me-2 ">
                             <FontAwesomeIcon icon={faAngleDown} className="icon" />
                           </div>
-                          <div style={{ height: "5px" }}>
+                          <div style={{ height: "25px" }}>
                             {errors.conditionType && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
                                 {errors.conditionType}
@@ -620,7 +648,7 @@ const AssignMaterial = () => {
                       <div className="row">
                         <div className="col-12 d-flex align-items-center justify-content-center">
                           <div className="py-2 gap-2">
-                            <CustomBtn name="Search" onClick={() => handleSubmit()} />
+                            <CustomBtn name="Search" type="submit" />
                           </div>
                         </div>
                       </div>
@@ -631,45 +659,49 @@ const AssignMaterial = () => {
                       <h6>Parameters</h6>
                     </div>
                     <div className="mt-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
-                      { parameter?.length > 0 ? (
-                      parameter?.map((modal, index) => (
-                        <div key={index} className="modal-container">
-                          <div className="d-flex gap-2 mb-2">
-                            <div
-                              onClick={() => toggleModal(modal?.modelName)}
-                              style={{ cursor: "pointer" }}
-                            >
-                              {expandedModals.includes(modal?.modelName) ? "-" : "+"}
+                      {parameter?.length > 0 ? (
+                        parameter?.map((modal, index) => (
+                          <div key={index} className="modal-container">
+                            <div className="d-flex gap-2 mb-2">
+                              <div
+                                onClick={() => toggleModal(modal?.modelName)}
+                                style={{ cursor: "pointer" }}
+                              >
+                                {expandedModals.includes(modal?.modelName) ? "-" : "+"}
+                              </div>
+
+                              <div
+                                onClick={() => toggleModal(modal?.modelName)}
+                                style={{ cursor: "pointer" }}
+                              >
+                                {modal?.modelName}
+                              </div>
                             </div>
 
-                            <div
-                              onClick={() => toggleModal(modal?.modelName)}
-                              style={{ cursor: "pointer" }}
-                            >
-                              {modal?.modelName}
-                            </div>
+                            {expandedModals.includes(modal?.modelName) && (
+                              <ul className="parameter-list" style={{ listStyle: "none" }}>
+                                {modal.parameterList.map((param, paramIndex) => (
+                                  <li key={paramIndex}>
+                                    <input
+                                      type="checkbox"
+                                      className="me-3"
+                                      id={`modelName:${modal?.modelName}value:${param}`}
+                                      onChange={(e) =>
+                                        handleCheckboxSelect(e, modal.modelName, param)
+                                      }
+                                    />
+                                    {param}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
-
-                          {expandedModals.includes(modal?.modelName) && (
-                            <ul className="parameter-list" style={{ listStyle: "none" }}>
-                              {modal.parameterList.map((param, paramIndex) => (
-                                <li key={paramIndex}>
-                                  <input
-                                    type="checkbox"
-                                    className="me-3"
-                                    id={`modelName:${modal?.modelName}value:${param}`}
-                                    onChange={(e) =>
-                                      handleCheckboxSelect(e, modal.modelName, param)
-                                    }
-                                  />
-                                  {param}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
+                        ))
+                      ) : (
+                        <div>
+                          <p>Data is not available</p>
                         </div>
-                      ))) : 
-                      <div><p>Data is not available</p></div> }
+                      )}
                     </div>
                   </div>
                 </form>
@@ -981,7 +1013,7 @@ const AssignMaterial = () => {
                         );
                       })}
                     </select>
-                    {/* <div style={{ height: "5px" }}>
+                    {/* <div style={{ height: "25px" }}>
                   {errors.userId && (
                     <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
                       {errors.userId.message}

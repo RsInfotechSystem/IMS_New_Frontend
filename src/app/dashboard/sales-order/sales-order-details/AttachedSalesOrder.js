@@ -4,7 +4,13 @@ import CustomBtn from "@/common-components/CustomBtn";
 import Loader from "@/common-components/Loader";
 import { getCategory, getCategoryWiseBrand } from "@/services/commonApis";
 import { communication } from "@/services/communication";
-import { faAngleDown, faCaretLeft, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faCaretLeft,
+  faCaretRight,
+  faCheck,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { getCookie } from "cookies-next";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -38,6 +44,7 @@ const AttachedSalesOrder = () => {
     data: "",
     viewPrintBill: false,
   });
+  const [attachedDescriptions, setAttachedDescriptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
   const _location = watch("locationId");
@@ -58,6 +65,7 @@ const AttachedSalesOrder = () => {
   const [materialsPayload, setMaterialPayload] = useState([]);
   const [materialDetails, setMaterialDetails] = useState([]);
   const [materialIDS, setMaterialIDS] = useState(null);
+  const [selectedParameters, setSelectedParameters] = useState({});
   const categoryId = watch("categoryId");
   const brandId = watch("brandId");
   const modelId = watch("modelId");
@@ -89,19 +97,42 @@ const AttachedSalesOrder = () => {
       getBrandWiseModel(id);
     }
   }, [brandId]);
+  // const handleCategory = async () => {
+  //   if (getValues("categoryId")) {
+  //     setBrandsData(
+  //       await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
+  //     );
+  //   } else {
+  //     setBrandsData([]);
+  //   }
+  // };
   const handleCategory = async () => {
-    if (getValues("categoryId")) {
-      setBrandsData(
-        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-      );
+    const categoryId = getValues("categoryId");
+    if (categoryId) {
+      setBrandsData(await getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData));
+      // Fetch parameters for the selected category
+      const response = await communication.getCategoryWiseParameter({ categoryId });
+      if (response?.data?.status === "SUCCESS") {
+        setParameter(response.data.parameter);
+      }
     } else {
       setBrandsData([]);
+      setParameter([]);
     }
   };
 
   useMemo(() => {
     handleCategory();
   }, [categoryId]);
+  const handleParameterSelect = (modelName, param) => {
+    setSelectedParameters((prev) => ({
+      ...prev,
+      [modelName]: {
+        ...(prev[modelName] || {}),
+        [param]: !(prev[modelName] && prev[modelName][param]),
+      },
+    }));
+  };
 
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
@@ -115,20 +146,28 @@ const AttachedSalesOrder = () => {
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
     console.log(e.target.id);
+    if (attachedDescriptions.includes(checkboxId)) {
+      return; // Don't allow changing if already attached
+    }
     setCheckBox(checkboxId);
+    // Set the selectedCheckboxes to an array with only the current checkbox ID
+    setSelectedCheckboxes([checkboxId]);
 
-    setSelectAllChecked(
-      !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === stock?.length
-    );
-    setSelectedCheckboxes((prevSelected) => {
-      if (prevSelected.includes(checkboxId)) {
-        // If the checkbox is already in the array, remove it
-        return prevSelected.filter((id) => id !== checkboxId);
-      } else {
-        // If the checkbox is not in the array, add it
-        return [...prevSelected, checkboxId];
-      }
-    });
+    // Since we're only allowing one selection at a time, we can simplify this
+    setSelectAllChecked(false);
+
+    // setSelectAllChecked(
+    //   !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === stock?.length
+    // );
+    // setSelectedCheckboxes((prevSelected) => {
+    //   if (prevSelected.includes(checkboxId)) {
+    //     // If the checkbox is already in the array, remove it
+    //     return prevSelected.filter((id) => id !== checkboxId);
+    //   } else {
+    //     // If the checkbox is not in the array, add it
+    //     return [...prevSelected, checkboxId];
+    //   }
+    // });
   };
   // console.log("checkboxId", selectedCheckboxes);
   useEffect(() => {
@@ -205,48 +244,22 @@ const AttachedSalesOrder = () => {
         categoryId: categoryId,
         brandId: brandId,
         modelId: modelId,
-        parameters: Object.keys(selectedModels).map((modelName) => ({
-          modelName,
-          parameterList: selectedModels[modelName],
-        })),
+        // parameters: Object.keys(selectedModels).map((modelName) => ({
+        //   modelName,
+        //   parameterList: selectedModels[modelName],
+        // })),
+        parameters: Object.entries(selectedParameters).flatMap(([modelName, params]) =>
+          Object.entries(params)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([param]) => ({ modelName, parameterList: [param] }))
+        ),
       };
+
       const serverResponse = await communication.getLocationWiseMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.stock);
         // setPageCount(serverResponse?.data?.totalPages);
         setState({ materialLists: serverResponse?.data.material });
-        // if (isFirstCall) {
-        //   setState({
-        //     category: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({ categoryId: item.categoryId, category: item.category })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //     brand: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({ brandId: item.brandId, brand: item.brand })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //     modelName: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({ modelId: item?.modelId?._id, modelName: item?.modelId?.name })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //     location: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({ locationId: item.locationId, location: item.location })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //   });
-        // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -345,25 +358,61 @@ const AttachedSalesOrder = () => {
   const handleAttachMaterials = () => {
     const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m._id));
     setAttachedMaterials((prev) => [...prev, ...newAttachedMaterials]);
+
+    // Add the selected description to attachedDescriptions
+    setAttachedDescriptions((prev) => [...prev, checkBox]);
+
+    // Associate materials with the description
+    setMaterialDetails((prev) => [
+      ...prev,
+      {
+        detailId: checkBox,
+        materialIds: newAttachedMaterials.map((m) => m._id),
+      },
+    ]);
+
     setSelectedMaterials([]);
-    setMaterialIDS(
-      material.filter((m) => selectedMaterials.includes(m._id)).map((item) => item._id)
-    );
+    setMaterialIDS(newAttachedMaterials.map((item) => item._id));
+
     setTimeout(() => {
       setCheckBox("");
       setMaterialIDS(null);
     }, 600);
   };
-  // console.log("sssss", attachedMaterials);
+  // // console.log("sssss", attachedMaterials);
+  // const handleRemoveAttachedMaterial = (materialId) => {
+  //   setAttachedMaterials((prev) => prev.filter((m) => m._id !== materialId));
+  //   // let materialArray = materialDetails.map((data) =>
+  //   //   data.materialIds.filter((material) => materialId !== material)
+  //   // );
+  //   // setMaterialDetails(materialDetails.map((data) => !data.materialIds.includes(materialId)));
+  //   // console.log(materialArray, "materialArray");
+  // };
   const handleRemoveAttachedMaterial = (materialId) => {
     setAttachedMaterials((prev) => prev.filter((m) => m._id !== materialId));
-    // let materialArray = materialDetails.map((data) =>
-    //   data.materialIds.filter((material) => materialId !== material)
-    // );
-    // setMaterialDetails(materialDetails.map((data) => !data.materialIds.includes(materialId)));
-    // console.log(materialArray, "materialArray");
-  };
 
+    // Find the description ID associated with this material
+    const descriptionToRemove = materialDetails.find((detail) =>
+      detail.materialIds.includes(materialId)
+    )?.detailId;
+
+    if (descriptionToRemove) {
+      removeAttachedDescription(descriptionToRemove);
+    }
+
+    // Remove the material from materialDetails
+    setMaterialDetails((prev) =>
+      prev
+        .map((detail) => ({
+          ...detail,
+          materialIds: detail.materialIds.filter((id) => id !== materialId),
+        }))
+        .filter((detail) => detail.materialIds.length > 0)
+    );
+  };
+  const removeAttachedDescription = (descriptionId) => {
+    setAttachedDescriptions((prev) => prev.filter((id) => id !== descriptionId));
+  };
   useEffect(() => {
     initialAPICall();
   }, []);
@@ -373,8 +422,13 @@ const AttachedSalesOrder = () => {
     }
   }, [materialIDS]);
   useEffect(() => {
-    if (location && categoryId && selectedModels) getLocationWiseMaterial({ isFirstCall: true });
-  }, [location, categoryId, selectedModels]);
+    if (location && categoryId) {
+      getLocationWiseMaterial({ isFirstCall: true });
+    }
+  }, [location, categoryId, brandId, modelId, selectedParameters]);
+  // useEffect(() => {
+  //   if (location && categoryId && selectedModels) getLocationWiseMaterial({ isFirstCall: true });
+  // }, [location, categoryId, selectedModels]);
   return (
     <>
       {loader && <Loader text={"Loading..."} />}
@@ -434,11 +488,12 @@ const AttachedSalesOrder = () => {
                       className="form-check-input"
                       type="checkbox"
                       id="selectAllCheckbox"
-                      onChange={(e) => handleSelectAllChange(e)}
-                      checked={selectAllChecked}
+                      // onChange={(e) => handleSelectAllChange(e)}
+                      // checked={selectAllChecked}
                     />
                   </div>
                 </div>
+
                 <div className="col_25p">
                   <h5>Sr. No.</h5>
                 </div>
@@ -466,8 +521,8 @@ const AttachedSalesOrder = () => {
                 modelList?.materialDetails?.map((product, index) => {
                   return (
                     <div className="table_data" key={index}>
-                      <div className="col_20p">
-                        {" "}
+                      {/* <div className="col_20p">
+                      
                         <div className="check_box">
                           <input
                             className="form-check-input"
@@ -478,6 +533,24 @@ const AttachedSalesOrder = () => {
                             // checked={selectedList.some((item) => item._id === product._id)}
                           />
                         </div>
+                      </div> */}
+                      <div className="col_20p">
+                        {attachedDescriptions.includes(product._id) ? (
+                          <div className="check_box">
+                            <FontAwesomeIcon icon={faCheck} className="text-success" />
+                          </div>
+                        ) : (
+                          <div className="check_box">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id={product._id}
+                              onChange={(e) => handleCheckboxChange(e)}
+                              checked={selectedCheckboxes.includes(product._id)}
+                              disabled={attachedDescriptions.includes(product._id)}
+                            />
+                          </div>
+                        )}
                       </div>
                       <div className="col_25p">
                         <h6>{index + 1}</h6>
@@ -490,12 +563,12 @@ const AttachedSalesOrder = () => {
                         <h6>{product?.quantity ? product?.quantity : "--"}</h6>
                       </div>
                       <div className="col_25p">
-                        <h6 >
-                          {product?.warranty ? product?.warranty : "--"}
-                        </h6>
+                        <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                       </div>
                       <div className="col_25p">
-                        <h6>{modelList?.orderLocation?.name ? modelList?.orderLocation?.name : "--"}</h6>
+                        <h6>
+                          {modelList?.orderLocation?.name ? modelList?.orderLocation?.name : "--"}
+                        </h6>
                       </div>
                       <div className="col_25p">
                         <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
@@ -670,8 +743,11 @@ const AttachedSalesOrder = () => {
                                 <input
                                   type="checkbox"
                                   className="me-3"
+                                  // id={`modelName:${modal?.modelName}value:${param}`}
+                                  // onChange={(e) => handleCheckboxSelect(e, modal.modelName, param)}
                                   id={`modelName:${modal?.modelName}value:${param}`}
-                                  onChange={(e) => handleCheckboxSelect(e, modal.modelName, param)}
+                                  onChange={() => handleParameterSelect(modal.modelName, param)}
+                                  checked={selectedParameters[modal.modelName]?.[param] || false}
                                 />
                                 {param}
                               </li>
