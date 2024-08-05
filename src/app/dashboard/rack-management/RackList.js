@@ -301,7 +301,7 @@ const RackList = () => {
                             <div className="col_35p">
                                 <h5>Rack Name</h5>
                             </div>
-                            <div className="col_35p">
+                            <div className="w-50">
                                 <h5>Rack Partition</h5>
                             </div>
                             <div className="col_10p">
@@ -336,7 +336,7 @@ const RackList = () => {
                                                 <div className="col_35p">
                                                     <h6>{rackDetails?.rackName}</h6>
                                                 </div>
-                                                <div className="col_35p">
+                                                <div className="w-50">
                                                     <h6>
                                                         {rackDetails.partitionArray.length > 0
                                                             ? rackDetails.partitionArray.slice(0, showMore ? rackDetails.partitionArray.length : 20).map((item, index) => (
@@ -347,11 +347,17 @@ const RackList = () => {
                                                             ))
                                                             : "-"}
                                                     </h6>
+                                                 <div>
+                                                    
+                                                 </div>
+                                                    <h6>
                                                     {rackDetails.partitionArray.length > 20 && (
                                                         <button onClick={handleShowMore} className="custom_button_read">
                                                             {showMore ? "Show Less" : "Show More"}
                                                         </button>
                                                     )}
+                                                    </h6>
+                                                    
                                                 </div>
                                                 <div className="col_10p">
                                                     <h6 className="action_wrraper">
