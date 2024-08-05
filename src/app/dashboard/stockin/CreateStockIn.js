@@ -266,15 +266,15 @@ const CreateStockIn = ({ data }) => {
     //   await getBrandById()
     // }
   }
-  // const handleCategory = async () => {
-  //   if (getValues("categoryId")) {
-  //     setBrandsData(
-  //       await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-  //     );
-  //   } else {
-  //     setBrandsData([]);
-  //   }
-  // };
+  const handleCategory = async () => {
+    if (getValues("categoryId")) {
+      setBrandsData(
+        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
+      );
+    } else {
+      setBrandsData([]);
+    }
+  };
 
   // useEffect(() => {
   //   const id = getValues("categoryId");
@@ -307,9 +307,9 @@ const CreateStockIn = ({ data }) => {
   //   }
   // }, [model?.length >=1 && brandId]);
 
-  // useMemo(() => {
-  //   handleCategory();
-  // }, [categoryId]);
+  useMemo(() => {
+    handleCategory();
+  }, [categoryId]);
 
   useEffect(() => {
     getLocations();

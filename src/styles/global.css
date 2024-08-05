@@ -963,8 +963,8 @@ div:where(.tab_active, .tab_inactive) {
   height: 100%;
   border-radius: 10px;
   /* background-image: url("/images/login-bg.png"); */
-  background: rgb(238,174,202);
-  background: linear-gradient(105deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+  background: rgb(238, 174, 202);
+  background: linear-gradient(105deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -1608,6 +1608,10 @@ div:where(.tab_active, .tab_inactive) {
 
 .form_modal_body .form_label {
   padding: 0;
+}
+.form_modal_body img {
+  width: 100% !important;
+  height: auto !important;
 }
 
 .input_wrapper .custom_input_wrapper {
@@ -2885,9 +2889,9 @@ div:where(.access_sudo_class) {
   padding: 1rem;
 }
 
-.optionListContainer{
+.optionListContainer {
   z-index: 0 !important;
-  position:unset !important; 
+  position: unset !important;
 }
 .form_tabs_wrapper {
   display: flex;
@@ -5320,13 +5324,13 @@ ul .appointment_letter_ul {
   font-weight: 600;
   color: var(--black_color_dark_shade);
 }
-.login_page_rsis{
+.login_page_rsis {
   color: #184965;
 }
-.form_control_assign{
+.form_control_assign {
   display: block;
   width: 100%;
-  padding: 0.2rem .75rem;
+  padding: 0.2rem 0.75rem;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
@@ -5338,13 +5342,13 @@ ul .appointment_letter_ul {
   background-clip: padding-box;
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-.assign_or_font{
+.assign_or_font {
   font-size: 12px;
   font-weight: 600;
 }
-.font_label{
+.font_label {
   font-family: 12px;
 }
 .multiSelectContainer ul {
