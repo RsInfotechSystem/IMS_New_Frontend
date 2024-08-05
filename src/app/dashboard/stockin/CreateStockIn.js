@@ -208,15 +208,14 @@ const CreateStockIn = ({ data }) => {
       let response = await communication.updateStock(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         setButtonLoader(false);
+        await getStockList({ currentPage, searchString });
         setModalStates((prev) => ({ ...prev, modal: false }));
-        setIsPageUpdated((prev) => !prev);
-        getStockList();
-        setModalStates((pre) => ({
-          modal: false,
-          type: "",
-          id: "",
-        }));
-        getStockList(currentPage, searchString);
+        // setIsPageUpdated((prev) => !prev);
+        // setModalStates((pre) => ({
+        //   modal: false,
+        //   type: "",
+        //   id: "",
+        // }));
         toast.success(response?.data?.message, {
           autoClose: 1500, // 1.5 seconds
         });
@@ -258,7 +257,7 @@ const CreateStockIn = ({ data }) => {
         setValue("wholeSalePrice", "");
         setValue("displayPrice", "");
         toast.success(response.data.message);
-        // await getStockList({ currentPage, searchString });
+        await getStockList({ currentPage, searchString });
         setLoader(false);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
