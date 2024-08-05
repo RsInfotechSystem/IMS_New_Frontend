@@ -24,8 +24,16 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faAngleDown, faAnglesDown } from "@fortawesome/free-solid-svg-icons";
 
 const CreateStockIn = ({ data }) => {
-  const { modalStates, setModalStates, setIsPageUpdated, locationsss, roleList, getStockList } =
-    data;
+  const {
+    modalStates,
+    setModalStates,
+    setIsPageUpdated,
+    locationsss,
+    roleList,
+    getStockList,
+    currentPage,
+    searchString,
+  } = data;
 
   const router = useRouter();
   const params = useSearchParams();
@@ -201,9 +209,14 @@ const CreateStockIn = ({ data }) => {
       if (response?.data?.status === "SUCCESS") {
         setButtonLoader(false);
         setModalStates((prev) => ({ ...prev, modal: false }));
-        // setIsPageUpdated((prev) => !prev);
+        setIsPageUpdated((prev) => !prev);
         getStockList();
-
+        setModalStates((pre) => ({
+          modal: false,
+          type: "",
+          id: "",
+        }));
+        getStockList(currentPage, searchString);
         toast.success(response?.data?.message, {
           autoClose: 1500, // 1.5 seconds
         });
@@ -616,7 +629,7 @@ const CreateStockIn = ({ data }) => {
                     disable={modalStates.isView}
                     register={{
                       ...register("serialNo", {
-                        required: "serialNo is required",
+                        // required: "serialNo is required",
                       }),
                     }}
                     errors={errors.serialNo}
@@ -699,7 +712,7 @@ const CreateStockIn = ({ data }) => {
                     disable={modalStates.isView}
                     register={{
                       ...register("itemCode", {
-                        required: "itemCode is required",
+                        // required: "itemCode is required",
                       }),
                     }}
                     errors={errors.itemCode}
