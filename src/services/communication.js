@@ -882,18 +882,18 @@ export const communication = {
       throw error;
     }
   },
-  getLocations: async () => {
-    try {
-      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/location/get-all-location`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("inventryToken")}`,
-        },
-      });
-    } catch (error) {
-      throw error;
-    }
-  },
+  // getLocations: async () => {
+  //   try {
+  //     return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/location/get-all-location`, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${getCookie("inventryToken")}`,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
   createUser: async (data) => {
     try {
       return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/user/create-user`, data, {

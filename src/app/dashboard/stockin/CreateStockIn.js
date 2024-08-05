@@ -46,9 +46,9 @@ const CreateStockIn = ({ data }) => {
   const [locations, setLocations] = useState([]);
   const [isPartationPresent, setIsPartationPresent] = useState("");
   const [modelId, setModelId] = useState("");
+  const [_category, _setCategory] = useState("");
+  const [_brand, _setBrand] = useState("");
 
-
-  console.log(blocks,"sdfg");
   const {
     register,
     handleSubmit,
@@ -92,8 +92,11 @@ const CreateStockIn = ({ data }) => {
         setValue("status", stockData?.status);
         setValue("quantity", stockData?.quantity);
         setValue("categoryId", stockData?.categoryId._id);
+        await getCategoryWiseBrand(stockData?.categoryId._id, setLoader, router, setBrandsData);
+        _setCategory(stockData?.categoryId._id);
         setValue("rackId", stockData?.rackId?._id);
         setValue("brandId", stockData?.brandId?._id);
+        _setBrand(stockData?.brandId?._id);
         setValue("blockId", stockData?.blockId?._id);
         // setValue("partitionName", stockData?.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
@@ -263,36 +266,39 @@ const CreateStockIn = ({ data }) => {
     //   await getBrandById()
     // }
   }
-  const handleCategory = async () => {
-    if (getValues("categoryId")) {
-      setBrandsData(
-        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-      );
-    } else {
-      setBrandsData([]);
-    }
-  };
+  // const handleCategory = async () => {
+  //   if (getValues("categoryId")) {
+  //     setBrandsData(
+  //       await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
+  //     );
+  //   } else {
+  //     setBrandsData([]);
+  //   }
+  // };
 
+  // useEffect(() => {
+  //   const id = getValues("categoryId");
+  //   console.log("iddddd", _category);
+  //   if (_category) {
+  //     getCategoryWiseBrand(_category, setLoader, router, setBrandsData);
+  //   }
+  // }, [_category && category?.length >= 1]);
   useEffect(() => {
-    const id = getValues("categoryId");
-    if (id) {
-      getCategoryWiseBrand(id,setLoader, router, setBrandsData);
-    }
-  }, [category?.length >=1 && categoryId ]);
-
+    setValue("brandId", _brand);
+  }, [_category]);
   useEffect(() => {
     const id = getValues("locationId");
     if (id) {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
-  }, [locationList.length >=1 && location]);
+  }, [locationList.length >= 1 && location]);
 
   useEffect(() => {
     const id = getValues("brandId");
     if (id) {
-      getBrandWiseModel(id,setLoader,router,setModel);
+      getBrandWiseModel(id, setLoader, router, setModel);
     }
-  }, [brandId, brandsData?.length>=1]);
+  }, [brandId, brandsData?.length >= 1]);
 
   // useEffect(() => {
   //   const id = getValues("brandId");
@@ -300,11 +306,10 @@ const CreateStockIn = ({ data }) => {
   //     getBrandWiseModel(id, setLoader, router, setModel);
   //   }
   // }, [model?.length >=1 && brandId]);
-  
 
-  useMemo(() => {
-    handleCategory();
-  }, [categoryId]);
+  // useMemo(() => {
+  //   handleCategory();
+  // }, [categoryId]);
 
   useEffect(() => {
     getLocations();
@@ -367,12 +372,12 @@ const CreateStockIn = ({ data }) => {
                     </div>
                   </div>
                   <div style={{ height: "5px" }}>
-                      {errors.locationId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.locationId.message}
-                        </p>
-                      )}
-                    </div>
+                    {errors.locationId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors.locationId.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Select Block *</label>
@@ -401,12 +406,12 @@ const CreateStockIn = ({ data }) => {
                     </div>
                   </div>
                   <div style={{ height: "5px" }}>
-                      {errors.locationId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.locationId.message}
-                        </p>
-                      )}
-                    </div>
+                    {errors.locationId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors.locationId.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
                 {racks.length >= 1 && (
                   <div className="col-lg-3 col-md-6 input_wrapper">
@@ -483,7 +488,7 @@ const CreateStockIn = ({ data }) => {
                   <div className="position-relative">
                     <select
                       disabled={modalStates.isView}
-                      // name="categoryId"
+                      name="categoryId"
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                       {...register("categoryId", {
@@ -527,8 +532,8 @@ const CreateStockIn = ({ data }) => {
                       <option value="" className="text-secondary text-lowercase"></option>
                       {brandsData?.map((ele, index) => {
                         return (
-                          <option className="small text-capitalize" value={ele._id} key={index}>
-                            {ele.name}
+                          <option className="small text-capitalize" value={ele?._id} key={index}>
+                            {ele?.name}
                           </option>
                         );
                       })}

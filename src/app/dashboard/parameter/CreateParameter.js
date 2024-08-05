@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 function CreateParameter({ data }) {
-  const { modalStates, setModalStates, setIsPageUpdated,getAllParameter } = data;
+  const { modalStates, setModalStates, setIsPageUpdated, getAllParameter } = data;
   const [buttonLoader, setButtonLoader] = useState(false);
   const [loader, setLoader] = useState(false);
   const [searchString, setSearchString] = useState("");
@@ -48,14 +48,15 @@ function CreateParameter({ data }) {
     watch,
     formState: { errors },
   } = useForm();
+  // const _parameterInput = watch("parameter");
+  const category = watch("category");
 
-  const category = watch("category")
-  
   function addToPrameterList() {
+    // console.log(parameterInput, "parameterInput");
+
     if (parameterInput) {
       _setPrameterList((prev) => [...prev, parameterInput]);
       setValue("parameter", "");
-      
     } else {
       setError("parameter", {
         message: "Please enter parameter",
@@ -71,8 +72,6 @@ function CreateParameter({ data }) {
       // await getBrandById();
     }
   }
-  const _parameterInput = watch("parameter");
-
 
   // function addToPrameterList() {
   //   if (parameterInput) {
@@ -85,30 +84,30 @@ function CreateParameter({ data }) {
   //   }
   // }
   function deleteParameterList(id) {
-    _setPrameterList(_parameterList.filter((item,index) => index != id));
+    _setPrameterList(_parameterList.filter((item, index) => index != id));
   }
-  useEffect(() => {
-    setParameterInput(_parameterInput);
-  }, [_parameterInput]);
+  // useEffect(() => {
+  //   setParameterInput(_parameterInput);
+  // }, [_parameterInput]);
 
   const getParameterById = async (values) => {
     try {
       setLoader(true);
 
-      let response = await communication.getParameterById({ parameterId:modalStates?.id});
+      let response = await communication.getParameterById({ parameterId: modalStates?.id });
       if (response?.data?.status === "SUCCESS") {
         setCategoryFillById(response?.data?.parameter?.categoryId);
         let param = response?.data.parameter.parameter[0];
         setparameterId(response?.data?.parameter_id);
         setValue("category", response?.data?.parameter?.categoryId);
-        _setCategoryId(response?.data?.parameter?.categoryId)
+        _setCategoryId(response?.data?.parameter?.categoryId);
         // setValue("parameter", param);
         _setPrameterList([...response?.data?.parameter?.parameter]);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
         router.push("/");
       } else {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
         // toast.warn(response.data.message);
       }
     } catch (error) {
@@ -137,14 +136,14 @@ function CreateParameter({ data }) {
         const serverResponse = await communication.updateParameter(payload);
         if (serverResponse?.data?.status === "SUCCESS") {
           // router.push("/admin/dashboard/parameter/");
-          toast.success(serverResponse.data.message)
-          setModalStates((prev) => ({ ...prev, modal: false }))
-          getAllParameter()
+          toast.success(serverResponse.data.message);
+          setModalStates((prev) => ({ ...prev, modal: false }));
+          getAllParameter();
         } else if (serverResponse?.data?.status === "JWT_INVALID") {
-          toast.info(serverResponse.data.message)
+          toast.info(serverResponse.data.message);
           router.push("/");
         } else {
-          toast.info(serverResponse.data.message)
+          toast.info(serverResponse.data.message);
         }
         setLoader(false);
       } catch (error) {
@@ -174,14 +173,14 @@ function CreateParameter({ data }) {
           toast.success(serverResponse.data.message);
           //  toast.success(serverResponse?.data?.message);
           reset();
-          getAllParameter()
-          setModalStates((prev) => ({ ...prev, modal: false }))
+          getAllParameter();
+          setModalStates((prev) => ({ ...prev, modal: false }));
           await getAllParameter(currentPage, searchString);
         } else if (serverResponse?.data?.status === "JWT_INVALID") {
-          toast.info(serverResponse.data.message)
+          toast.info(serverResponse.data.message);
           router.push("/");
         } else {
-          toast.info(serverResponse.data.message)
+          toast.info(serverResponse.data.message);
         }
         setLoader(false);
       } catch (error) {
@@ -200,12 +199,12 @@ function CreateParameter({ data }) {
   // }, []);
   useEffect(() => {
     if (modalStates?.type === "update") {
-    getParameterById();
-    // getCategory(setLoader, router, setCategoryList);
-    }else{
-      _setPrameterList([])
+      getParameterById();
+      // getCategory(setLoader, router, setCategoryList);
+    } else {
+      _setPrameterList([]);
     }
-}, []);
+  }, []);
 
   // useEffect(() => {
   //   if (categoryFillById && categoryList.length > 0) {
@@ -218,15 +217,13 @@ function CreateParameter({ data }) {
 
   useEffect(() => {
     setValue("category", category);
-}, [category, CategoryMapData.length]);
-
-
+  }, [category, CategoryMapData.length]);
 
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="form_modal_wrapper">
-        <div className="form_modal" style={{width: "40%"}}>
+        <div className="form_modal" style={{ width: "40%" }}>
           <div className="form_modal_header">
             <h5 className="title">
               {modalStates?.type === "create" ? "Create Parameter" : "Update Parameter"}
@@ -239,41 +236,46 @@ function CreateParameter({ data }) {
           </div>
           <div className="form_modal_body">
             <div className="row d-flex align-items-end">
-            <div className="col-lg-6 col-md-6 input_wrapper">
-                                <label >Category*</label>
-                                <SelectBox
-                                    options={CategoryMapData}
-                                    displayName={"name"}
-                                    value={"_id"}
-                                    firstOption={"Select Category"}
-                                    disable={false}
-                                    register={{
-                                        ...register("category", {
-                                            required: "category is required",
-                                        })
-                                    }}
-                                    errors={errors.category}
-                                />
-            </div>
-
+              <div className="col-lg-6 col-md-6 input_wrapper">
+                <label>Category*</label>
+                <SelectBox
+                  options={CategoryMapData}
+                  displayName={"name"}
+                  value={"_id"}
+                  firstOption={"Select Category"}
+                  disable={false}
+                  register={{
+                    ...register("category", {
+                      required: "category is required",
+                    }),
+                  }}
+                  errors={errors.category}
+                />
+              </div>
             </div>
             <div className="row d-flex align-items-end">
-            <div className="col-lg-6 col-md-6 input_wrapper">
-                  <label>Parameter*</label>
-                  <InputBox
-                    type={"text"}
-                    register={{
-                      ...register("parameter", {
-                        // required: "Parameter is required",
-                      }),
-                    }}
-                    errors={errors.parameter}
-                  />
-                </div>
-                <div className="col-lg-4 col-md-4 input_wrapper">
-                  <CustomBtn name="Add" type="button" className="btn btn-success" onClick={addToPrameterList}/>
-                </div>
-          </div>
+              <div className="col-lg-6 col-md-6 input_wrapper">
+                <label>Parameter*</label>
+                <InputBox
+                  type={"text"}
+                  onChange={(e) => setParameterInput(e.target.value)}
+                  register={{
+                    ...register("parameter", {
+                      // required: "Parameter is required",
+                    }),
+                  }}
+                  errors={errors.parameter}
+                />
+              </div>
+              <div className="col-lg-4 col-md-4 input_wrapper">
+                <CustomBtn
+                  name="Add"
+                  type="button"
+                  className="btn btn-success"
+                  onClick={addToPrameterList}
+                />
+              </div>
+            </div>
             {/* {_parameterList?.map((ele, index) => {
               return (
                 <div className="row d-flex align-items-end" key={index}>
@@ -290,29 +292,34 @@ function CreateParameter({ data }) {
                 </div>
               );
             })} */}
-{/* <div className=""> */}
-  {_parameterList?.reduce((rows, key, index) => {
-    // Create a new row after every 3 items
-    if (index % 3 === 0) rows.push([]);
-    // Add the current item to the last row
-    rows[rows.length - 1].push(key);
-    return rows;
-  }, []).map((row, rowIndex) => (
-    <div className="row d-flex align-items-end" key={rowIndex}>
-      {row.map((ele, colIndex) => (
-        <div className="col-lg-4 col-md-5 d-flex align-items-center input_wrapper" key={colIndex}>
-          <InputBox value={ele}  disable={true}/>
-          <FontAwesomeIcon
-            icon={faTrash}
-            onClick={() => deleteParameterList(rowIndex * 3 + colIndex)}
-            className="trash fontAwesome_icon cursor_pointer ml-2" style={{marginLeft: 8}}
-          />
-        </div>
-      ))}
-    </div>
-  ))}
-{/* </div> */}
-
+            {/* <div className=""> */}
+            {_parameterList
+              ?.reduce((rows, key, index) => {
+                // Create a new row after every 3 items
+                if (index % 3 === 0) rows.push([]);
+                // Add the current item to the last row
+                rows[rows.length - 1].push(key);
+                return rows;
+              }, [])
+              .map((row, rowIndex) => (
+                <div className="row d-flex align-items-end" key={rowIndex}>
+                  {row.map((ele, colIndex) => (
+                    <div
+                      className="col-lg-4 col-md-5 d-flex align-items-center input_wrapper"
+                      key={colIndex}
+                    >
+                      <InputBox value={ele} disable={true} />
+                      <FontAwesomeIcon
+                        icon={faTrash}
+                        onClick={() => deleteParameterList(rowIndex * 3 + colIndex)}
+                        className="trash fontAwesome_icon cursor_pointer ml-2"
+                        style={{ marginLeft: 8 }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
+            {/* </div> */}
 
             <div className="form_button_wrapper">
               <CustomBtn
