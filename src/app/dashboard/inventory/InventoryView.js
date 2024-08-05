@@ -46,7 +46,8 @@ const InventoryView = ({ data }) => {
   const [locations, setLocations] = useState([]);
   const [isPartationPresent, setIsPartationPresent] = useState("");
   const [modelId, setModelId] = useState("");
-
+  const [_brand, _setBrand] = useState("");
+  const [_category, _setCategory] = useState("");
   const {
     register,
     handleSubmit,
@@ -246,9 +247,11 @@ const InventoryView = ({ data }) => {
   // useMemo(() => {
   //   handleCategory();
   // }, [categoryId]);
-
   useEffect(() => {
-    getLocations();
+    setValue("brandId", _brand);
+  }, [_category]);
+  useEffect(() => {
+    // getLocations();
     initialAPICall();
   }, []);
   useEffect(() => {
@@ -283,8 +286,10 @@ const InventoryView = ({ data }) => {
         setValue("quantity", stockData?.quantity);
         setValue("categoryId", stockData?.categoryId._id);
         await getCategoryWiseBrand(stockData?.categoryId._id, setLoader, router, setBrandsData);
+        _setCategory(stockData?.categoryId._id);
         setValue("rackId", stockData?.rackId?._id);
         setValue("brandId", stockData?.brandId?._id);
+        _setBrand(stockData?.brandId?._id);
         setValue("blockId", stockData?.blockId?._id);
         // setValue("partitionName", stockData?.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {

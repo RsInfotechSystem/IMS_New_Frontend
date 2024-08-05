@@ -19,18 +19,19 @@ export async function getCategory(setLoader, router = [], setCategory = []) {
 }
 export async function getLocations(setLoader, router, setLocations = []) {
   try {
-    setLoader(true);
+    setLoader?.(true);
     const serverResponse = await communication.getLocations();
     if (serverResponse?.data?.status === "SUCCESS") {
       setLocations(serverResponse?.data?.result);
     } else if (serverResponse?.data?.status === "JWT_INVALID") {
       toast.info(serverResponse.data.message);
       router.push("/");
-      setLoader(false);
+      setLoader?.(false);
     } else {
-      setLocations([]);
+      // setLocations([]);
+      return [];
     }
-    setLoader(false);
+    setLoader?.(false);
   } catch (error) {
     toast.info(error?.response?.data?.message || error.message);
     // setLoader(false);
