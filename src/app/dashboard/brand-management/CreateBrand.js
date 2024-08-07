@@ -14,11 +14,17 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 function CreateBrand({ data }) {
-  const { modalStates, setModalStates, setIsPageUpdated, getBrandList, currentPage,searchString } = data;
+  const { modalStates, setModalStates, setIsPageUpdated, getBrandList, currentPage, searchString } =
+    data;
   const [loader, setLoader] = useState(false);
-  const [CategoryMapData, setCategoryMapData] = useState([])
+  const [CategoryMapData, setCategoryMapData] = useState([]);
   const router = useRouter();
-  const { register, handleSubmit, setValue, formState: { errors }, } = useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm();
 
   async function onSubmit(values) {
     try {
@@ -38,19 +44,18 @@ function CreateBrand({ data }) {
       }
       if (response?.data?.status === "SUCCESS") {
         toast.success(response.data.message);
-        setModalStates(pre => ({
+        setModalStates((pre) => ({
           modal: false,
           type: "",
           id: "",
-        }))
+        }));
         // setIsPageUpdated(true)
-        getBrandList(currentPage,searchString)
-
+        getBrandList(currentPage, searchString);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
         router.push("/");
       } else {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
       }
       setLoader(false);
     } catch (error) {
@@ -65,26 +70,26 @@ function CreateBrand({ data }) {
       const responseFromServer = await communication.getBrandById({ brandId: modalStates.id });
       if (responseFromServer?.data?.status === "SUCCESS") {
         const brandData = responseFromServer?.data?.brand;
-        console.log("brandData",brandData);
+        // console.log("brandData",brandData);
         setValue("name", brandData.name);
         setValue("categoryId", brandData?.categoryId?._id);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message)
+        toast.info(serverResponse.data.message);
         router.push("/");
       } else {
-        toast.info(serverResponse.data.message)
+        toast.info(serverResponse.data.message);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
-  }
+  };
 
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
     if (modalStates?.type !== "create") {
-      await getBrandById()
+      await getBrandById();
     }
   }
   useEffect(() => {
@@ -124,11 +129,11 @@ function CreateBrand({ data }) {
                 <SelectBox
                   firstOption="select Category"
                   options={CategoryMapData}
-                  displayName={'name'}
-                  value={'_id'}
+                  displayName={"name"}
+                  value={"_id"}
                   disable={false}
                   register={{
-                    ...register("categoryId")
+                    ...register("categoryId"),
                   }}
                 />
               </div>
@@ -136,13 +141,7 @@ function CreateBrand({ data }) {
 
             <div className="form_button_wrapper">
               <CustomBtn
-                name={
-                  modalStates?.type === "create" ? (
-                    "Create"
-                  ) : (
-                    "Update"
-                  )
-                }
+                name={modalStates?.type === "create" ? "Create" : "Update"}
                 onClick={handleSubmit(onSubmit)}
               />
             </div>

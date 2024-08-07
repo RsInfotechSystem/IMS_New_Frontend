@@ -56,7 +56,7 @@ const ViewSalesOrder = ({ setModalStates, pdfData, toast }) => {
       <div className="form_modal bg-white" style={{ width: "60%" }}>
         <div className="form_modal_header">
           <div className="">
-            {console.log(pdfData, "pdfData")}
+            {/* {console.log(pdfData, "pdfData")} */}
             <button className="custom_button" onClick={handlePrint}>
               Print
             </button>

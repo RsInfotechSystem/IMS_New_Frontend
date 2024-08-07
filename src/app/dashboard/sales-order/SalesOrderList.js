@@ -129,7 +129,7 @@ const SalesOrderList = () => {
         <ViewSalesOrder pdfData={modalState?.data} setModalStates={setModalStates} />
       )}
       {/* top header  */}
-      {console.log(modalState?.data, "modalState?.data")}
+      {/* {console.log(modalState?.data, "modalState?.data")} */}
       <div className="top_header">
         <div className="tab_title">Sales Order List</div>
         <Pagination

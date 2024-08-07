@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
+import { getCategoryWiseBrand } from "./commonApis";
 
 const nodeEnvironment = process.env.NEXT_PUBLIC_NODE_ENV;
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -1882,7 +1883,23 @@ export const communication = {
       throw error;
     }
   },
+  getCategoryWiseBrandCount: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-wise-brand-count`,
+        data,
 
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   getStockOutCount: async (data) => {
     try {
       return await axios.post(
