@@ -38,13 +38,11 @@ function CreateProduct({ data }) {
   let categoryId = watch("categoryId");
   const brandId = watch("brandId");
 
-
-
-  // select document 
+  // select document
   const selectFile = async (event) => {
     const selectedFile = event.target.files[0];
     if (event.target.files.length === 0) {
-      setOtherDocuments([])
+      setOtherDocuments([]);
       return false;
     } else {
       if (selectedFile?.size > 2000000) {
@@ -52,15 +50,20 @@ function CreateProduct({ data }) {
         return false;
       } else if (otherDocuments.length > 3) {
         toast.info("The document upload limit is restricted to only 4.");
-        return false
+        return false;
       } else {
-        if (["image/png", "image/jpg", "image/jpeg", "application/pdf"].includes(selectedFile?.type)) {
-          setOtherDocuments((prev) => [...prev, {
-            fieldName: "otherDocuments",
-            documentName: selectedFile.name,
-            fileUrl: selectedFile,
-            isNew: true,
-          }]);
+        if (
+          ["image/png", "image/jpg", "image/jpeg", "application/pdf"].includes(selectedFile?.type)
+        ) {
+          setOtherDocuments((prev) => [
+            ...prev,
+            {
+              fieldName: "otherDocuments",
+              documentName: selectedFile.name,
+              fileUrl: selectedFile,
+              isNew: true,
+            },
+          ]);
           setDocument((prev) => [...prev, ...otherDocuments]);
         } else {
           toast.info("Only JPG, JPEG, PNG, and PDF files are allowed");
@@ -68,7 +71,7 @@ function CreateProduct({ data }) {
         }
       }
     }
-  }
+  };
   const deleteDocument = (indexToDelete) => {
     // Make a copy of the current state of otherDocuments
     const updatedDocuments = [...otherDocuments];
@@ -79,13 +82,10 @@ function CreateProduct({ data }) {
     }
     // Update the state with the modified array
     setOtherDocuments(updatedDocuments);
-    setDocument((prev) => [...prev, ...updatedDocuments])
-
-  }
-
+    setDocument((prev) => [...prev, ...updatedDocuments]);
+  };
 
   async function onSubmit(values) {
-    
     try {
       setLoader(true);
       let response;
@@ -111,12 +111,12 @@ function CreateProduct({ data }) {
         dataToSend.modelId = modalStates.productId;
         for (let i = 0; i < otherDocuments.length; i++) {
           const element = otherDocuments[i];
-          if (element?.isNew && typeof (element?.fileUrl) !== "string") {
+          if (element?.isNew && typeof element?.fileUrl !== "string") {
             isFileAttached = true;
-            formData.append("files", element?.fileUrl)
+            formData.append("files", element?.fileUrl);
           }
         }
-        dataToSend.otherDocuments = otherDocuments.filter(ele => !ele?.isNew);
+        dataToSend.otherDocuments = otherDocuments.filter((ele) => !ele?.isNew);
 
         if (isFileAttached) {
           formData.append("modelDetails", JSON.stringify(dataToSend));
@@ -174,7 +174,7 @@ function CreateProduct({ data }) {
     }
   };
 
-  console.log(otherDocuments, "otherDocuments");
+  // console.log(otherDocuments, "otherDocuments");
 
   async function initialAPICall() {
     setCategoryList(await getCategory(router));
@@ -229,49 +229,42 @@ function CreateProduct({ data }) {
               <div className="input_wrapper col-lg-4">
                 <label>Category*</label>
                 <div className="position-relative">
-
-                <select
-                  name="categoryId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("categoryId", {
-                    required: "Category is required",
-                  })}
-
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Category
-                  </option>
-                  {categoryList.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele._id}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.name}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
+                  <select
+                    name="categoryId"
+                    className="form-control custom_input"
+                    style={{ width: "100%" }}
+                    {...register("categoryId", {
+                      required: "Category is required",
+                    })}
+                  >
+                    <option value="" className="text-secondary text-lowercase">
+                      Select Category
+                    </option>
+                    {categoryList.map((ele, index) => {
+                      return (
+                        <option className="small text-capitalize" value={ele._id} key={index}>
+                          {" "}
+                          {ele.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <div className="select_box_arrow">
+                    <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                  </div>
                 </div>
                 <div style={{ height: "5px" }}>
-                      {errors.categoryId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.categoryId.message}
-                        </p>
-                      )}
-                    </div>
+                  {errors.categoryId && (
+                    <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                      {errors.categoryId.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="input_wrapper col-lg-4">
                 <label>Brand*</label>
                 <div className="position-relative">
-
                   <select
                     name="categoryId"
                     className="form-control custom_input"
@@ -285,11 +278,7 @@ function CreateProduct({ data }) {
                     </option>
                     {brandsData.map((ele, index) => {
                       return (
-                        <option
-                          className="small text-capitalize"
-                          value={ele._id}
-                          key={index}
-                        >
+                        <option className="small text-capitalize" value={ele._id} key={index}>
                           {" "}
                           {ele.name}
                         </option>
@@ -301,14 +290,13 @@ function CreateProduct({ data }) {
                   </div>
                   <div />
                   <div style={{ height: "5px" }}>
-                      {errors.brandId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.brandId.message}
-                        </p>
-                      )}
-                    </div>
+                    {errors.brandId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors.brandId.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
-
               </div>
               <div className="input_wrapper col-lg-12">
                 <label>Description*</label>
@@ -329,7 +317,7 @@ function CreateProduct({ data }) {
               </div>
               {/* other */}
 
-              {otherDocuments.length > 0 && (
+              {otherDocuments.length > 0 &&
                 otherDocuments?.map((file, index) => {
                   return (
                     <div className="col-lg-2 col-md-4 mt-1" key={index}>
@@ -349,43 +337,81 @@ function CreateProduct({ data }) {
                             {file.documentName?.split(".")[0]?.slice(0, 10)}.
                             {file.documentName?.split(".")[1]}
                           </p>
-                          <span className='p-1 document_delete' onClick={() => { deleteDocument(index) }} title='delete'>
-                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <span
+                            className="p-1 document_delete"
+                            onClick={() => {
+                              deleteDocument(index);
+                            }}
+                            title="delete"
+                          >
+                            <svg
+                              width="23"
+                              height="23"
+                              viewBox="0 0 23 23"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
                               <g clip-path="url(#clip0_5168_20178)">
-                                <rect x="11.3135" width="16" height="16" rx="8" transform="rotate(45 11.3135 0)" fill="#DC3545" />
-                                <path d="M13.0812 10.253C13.2765 10.0578 13.2765 9.74119 13.0812 9.54593C12.886 9.35068 12.5694 9.35067 12.3741 9.54593L11.3135 10.6066L10.2528 9.54593C10.0576 9.35067 9.74097 9.35068 9.54571 9.54593C9.35045 9.74119 9.35045 10.0578 9.54571 10.253L10.6064 11.3137L9.54571 12.3744C9.35045 12.5696 9.35045 12.8862 9.54571 13.0815C9.74097 13.2767 10.0576 13.2767 10.2528 13.0815L11.3135 12.0208L12.3741 13.0815C12.5694 13.2767 12.886 13.2767 13.0812 13.0815C13.2765 12.8862 13.2765 12.5696 13.0812 12.3744L12.0206 11.3137L13.0812 10.253Z" fill="#F3F8FF" />
-                                <path fill-rule="evenodd" clip-rule="evenodd" d="M16.3811 6.24611C13.5823 3.44735 9.04464 3.44735 6.24588 6.24611C3.4471 9.04489 3.44712 13.5826 6.24588 16.3813C9.04465 19.1801 13.5823 19.1801 16.3811 16.3813C19.1798 13.5826 19.1799 9.04489 16.3811 6.24611ZM6.95299 6.95322C9.36122 4.54499 13.2657 4.54499 15.674 6.95322C18.0822 9.36143 18.0822 13.266 15.674 15.6742C13.2658 18.0824 9.3612 18.0824 6.95299 15.6742C4.54475 13.266 4.54477 9.36143 6.95299 6.95322Z" fill="#F3F8FF" />
+                                <rect
+                                  x="11.3135"
+                                  width="16"
+                                  height="16"
+                                  rx="8"
+                                  transform="rotate(45 11.3135 0)"
+                                  fill="#DC3545"
+                                />
+                                <path
+                                  d="M13.0812 10.253C13.2765 10.0578 13.2765 9.74119 13.0812 9.54593C12.886 9.35068 12.5694 9.35067 12.3741 9.54593L11.3135 10.6066L10.2528 9.54593C10.0576 9.35067 9.74097 9.35068 9.54571 9.54593C9.35045 9.74119 9.35045 10.0578 9.54571 10.253L10.6064 11.3137L9.54571 12.3744C9.35045 12.5696 9.35045 12.8862 9.54571 13.0815C9.74097 13.2767 10.0576 13.2767 10.2528 13.0815L11.3135 12.0208L12.3741 13.0815C12.5694 13.2767 12.886 13.2767 13.0812 13.0815C13.2765 12.8862 13.2765 12.5696 13.0812 12.3744L12.0206 11.3137L13.0812 10.253Z"
+                                  fill="#F3F8FF"
+                                />
+                                <path
+                                  fill-rule="evenodd"
+                                  clip-rule="evenodd"
+                                  d="M16.3811 6.24611C13.5823 3.44735 9.04464 3.44735 6.24588 6.24611C3.4471 9.04489 3.44712 13.5826 6.24588 16.3813C9.04465 19.1801 13.5823 19.1801 16.3811 16.3813C19.1798 13.5826 19.1799 9.04489 16.3811 6.24611ZM6.95299 6.95322C9.36122 4.54499 13.2657 4.54499 15.674 6.95322C18.0822 9.36143 18.0822 13.266 15.674 15.6742C13.2658 18.0824 9.3612 18.0824 6.95299 15.6742C4.54475 13.266 4.54477 9.36143 6.95299 6.95322Z"
+                                  fill="#F3F8FF"
+                                />
                               </g>
                               <defs>
                                 <clipPath id="clip0_5168_20178">
-                                  <rect x="11.3135" width="16" height="16" rx="8" transform="rotate(45 11.3135 0)" fill="white" />
+                                  <rect
+                                    x="11.3135"
+                                    width="16"
+                                    height="16"
+                                    rx="8"
+                                    transform="rotate(45 11.3135 0)"
+                                    fill="white"
+                                  />
                                 </clipPath>
                               </defs>
                             </svg>
-
                           </span>
                         </div>
                       </div>
                     </div>
-
-                  )
-                }))
-              }
-              {
-                otherDocuments.length < 4 ?
-                  (<div className="col-lg-2 col-md-4 mt-1">
-                    <div className="document_picker_wrapper">
-                      <label for="otherDocument">
-                        <div className="document_picker">
-                          <input type="file" className="d-none" id={"otherDocument"} onChange={(event) => { selectFile(event) }} />
-                          <FontAwesomeIcon icon={faCirclePlus} className="icon fontAwesome_icon" />
-                          <p>Add</p>
-                        </div>
-                      </label>
-                    </div>
-                  </div>) : (<></>)
-              }
-
+                  );
+                })}
+              {otherDocuments.length < 4 ? (
+                <div className="col-lg-2 col-md-4 mt-1">
+                  <div className="document_picker_wrapper">
+                    <label for="otherDocument">
+                      <div className="document_picker">
+                        <input
+                          type="file"
+                          className="d-none"
+                          id={"otherDocument"}
+                          onChange={(event) => {
+                            selectFile(event);
+                          }}
+                        />
+                        <FontAwesomeIcon icon={faCirclePlus} className="icon fontAwesome_icon" />
+                        <p>Add</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
 
             {/* </div> */}

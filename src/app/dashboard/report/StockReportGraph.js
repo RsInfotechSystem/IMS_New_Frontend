@@ -1,32 +1,34 @@
 "use client";
-import React, { useEffect, useReducer, useState } from 'react';
-import { Pie } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import ChartDataLabels from 'chartjs-plugin-datalabels';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import { communication } from '@/services/communication';
-
+import React, { useEffect, useReducer, useState } from "react";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { communication } from "@/services/communication";
+import CustomBtn from "@/common-components/CustomBtn";
+import StockFilter from "@/common-components/StockFilter";
 
 // Register Chart.js components and plugins
-ChartJS.register(
-  ArcElement,
-  Tooltip,
-  Legend,
-  ChartDataLabels
-);
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 // Predefined palette of good colors
 const colorPalette = [
-  '#36A2EB', '#FFCE56', '#4BC0C0',
-  '#9966FF', '#FF9F40', '#FFCD56', '#4BC0C0',
-  '#F7464A', '#46BFBD', '#FDB45C', '#949FB1',
-  '#4D5360', '#AC64AD', '#7DCEA0', '#D7BDE2'
+  "#36A2EB",
+  "#FFCE56",
+  "#4BC0C0",
+  "#9966FF",
+  "#FF9F40",
+  "#FFCD56",
+  "#4BC0C0",
+  "#F7464A",
+  "#46BFBD",
+  "#FDB45C",
+  "#949FB1",
+  "#4D5360",
+  "#AC64AD",
+  "#7DCEA0",
+  "#D7BDE2",
 ];
 
 // Function to get colors from the palette
@@ -40,7 +42,7 @@ const StockReportGraph = () => {
   const [StatusGraphData, setStatusGraphData] = useState({ labels: [], dataset: [] });
   const [LocationGraphData, setLocationGraphData] = useState({ labels: [], dataset: [] });
   const [stockOutGraphData, setStockOutGraphData] = useState({ labels: [], count: [] });
-
+  const [modalStates, setModalStates] = useState({ filter: false, modal: false });
   const router = useRouter(); // Initialize the router
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     _categoryData: [],
@@ -52,6 +54,7 @@ const StockReportGraph = () => {
     endDate: null,
     isBelow15Days: true,
   });
+  const [filter, setFilter] = useState({});
   const handlePieClick = (event, elements) => {
     if (elements.length > 0) {
       const clickedElementIndex = elements[0].index;
@@ -59,16 +62,16 @@ const StockReportGraph = () => {
 
       let materialDetails = state._categoryData[clickedElementIndex];
       router.push(
-        `/dashboard/report/report-details?reportData=${materialDetails._id
+        `/dashboard/report/report-details?reportData=${
+          materialDetails._id
         }&reportType=${"category"}`
       );
     }
     // if (elements.length > 0) {
     //   const clickedElementIndex = elements[0].index;
-    //   const clickedLabel = event.chart.data.labels[clickedElementIndex]; 
+    //   const clickedLabel = event.chart.data.labels[clickedElementIndex];
     //   router.push(`/dashboard/report/report-details?label=${encodeURIComponent(clickedLabel)}`);
     // }
-
   };
 
   const options = (title) => ({
@@ -82,11 +85,11 @@ const StockReportGraph = () => {
         text: title,
       },
       datalabels: {
-        color: 'white',
-        anchor: 'center',
-        align: 'center',
+        color: "white",
+        anchor: "center",
+        align: "center",
         font: {
-          weight: 'bold',
+          weight: "bold",
           size: 14,
         },
       },
@@ -105,11 +108,11 @@ const StockReportGraph = () => {
         text: "Category Wise Stock",
       },
       datalabels: {
-        color: 'white',
-        anchor: 'center',
-        align: 'center',
+        color: "white",
+        anchor: "center",
+        align: "center",
         font: {
-          weight: 'bold',
+          weight: "bold",
           size: 14,
         },
       },
@@ -120,7 +123,8 @@ const StockReportGraph = () => {
 
         let materialDetails = state._categoryData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${materialDetails._id
+          `/dashboard/report/report-details?reportData=${
+            materialDetails._id
           }&reportType=${"category"}&selectedType=${materialDetails?.category}`
         );
       }
@@ -138,11 +142,11 @@ const StockReportGraph = () => {
         text: "Brand Wise Stock",
       },
       datalabels: {
-        color: 'white',
-        anchor: 'center',
-        align: 'center',
+        color: "white",
+        anchor: "center",
+        align: "center",
         font: {
-          weight: 'bold',
+          weight: "bold",
           size: 14,
         },
       },
@@ -150,11 +154,12 @@ const StockReportGraph = () => {
     onClick: (event, elements) => {
       if (elements.length > 0) {
         const clickedElementIndex = elements[0].index;
-        console.log(clickedElementIndex, "clickedElementIndex");
+        // console.log(clickedElementIndex, "clickedElementIndex");
 
         let materialDetails = state._brandData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${materialDetails._id
+          `/dashboard/report/report-details?reportData=${
+            materialDetails._id
           }&reportType=${"brand"}&selectedType=${materialDetails?.brand}`
         );
       }
@@ -172,11 +177,11 @@ const StockReportGraph = () => {
         text: "Location Wise Stock",
       },
       datalabels: {
-        color: 'white',
-        anchor: 'center',
-        align: 'center',
+        color: "white",
+        anchor: "center",
+        align: "center",
         font: {
-          weight: 'bold',
+          weight: "bold",
           size: 14,
         },
       },
@@ -186,7 +191,8 @@ const StockReportGraph = () => {
         const clickedElementIndex = elements[0].index;
         let materialDetails = state._locationData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${materialDetails?._id
+          `/dashboard/report/report-details?reportData=${
+            materialDetails?._id
           }&reportType=${"location"}&selectedType=${materialDetails?.location}`
         );
       }
@@ -204,11 +210,11 @@ const StockReportGraph = () => {
         text: "Status Wise PO",
       },
       datalabels: {
-        color: 'white',
-        anchor: 'center',
-        align: 'center',
+        color: "white",
+        anchor: "center",
+        align: "center",
         font: {
-          weight: 'bold',
+          weight: "bold",
           size: 14,
         },
       },
@@ -218,7 +224,8 @@ const StockReportGraph = () => {
         const clickedElementIndex = elements[0].index;
         let materialDetails = state._stockStatusData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${materialDetails?._id
+          `/dashboard/report/report-details?reportData=${
+            materialDetails?._id
           }&reportType=${"status"}&selectedType=${materialDetails?.stockStatus}`
         );
       }
@@ -300,74 +307,170 @@ const StockReportGraph = () => {
       toast.info(error?.response?.data?.message || error.message);
     }
   }
+  async function getCategoryWiseBrandCount(category) {
+    try {
+      setLoader(true);
+      const serverResponse = await communication.getCategoryWiseBrandCount({
+        categoryId: category,
+      });
+      if (serverResponse?.data?.status === "SUCCESS") {
+        // setMaterial(serverResponse?.data.stock);
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+      } else {
+      }
+      // setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+      // setLoader(false);
+    }
+  }
   const pieData1 = {
     labels: CategoryGraphData.labels,
-    datasets: [{
-      label: "Quantity",
-      data: CategoryGraphData.dataset,
-      backgroundColor: getColors(CategoryGraphData.labels.length),
-      borderColor: getColors(CategoryGraphData.labels.length),
-      borderWidth: 1,
-    }],
+    datasets: [
+      {
+        label: "Quantity",
+        data: CategoryGraphData.dataset,
+        backgroundColor: getColors(CategoryGraphData.labels.length),
+        borderColor: getColors(CategoryGraphData.labels.length),
+        borderWidth: 1,
+      },
+    ],
   };
 
   const pieData2 = {
     labels: BrandGraphData.labels,
-    datasets: [{
-      label: "Quantity",
-      data: BrandGraphData.dataset,
-      backgroundColor: getColors(BrandGraphData.labels.length),
-      borderColor: getColors(BrandGraphData.labels.length),
-      borderWidth: 1,
-    }],
+    datasets: [
+      {
+        label: "Quantity",
+        data: BrandGraphData.dataset,
+        backgroundColor: getColors(BrandGraphData.labels.length),
+        borderColor: getColors(BrandGraphData.labels.length),
+        borderWidth: 1,
+      },
+    ],
   };
 
   const pieData3 = {
     labels: StatusGraphData.labels,
-    datasets: [{
-      label: "Quantity",
-      data: StatusGraphData.dataset,
-      backgroundColor: getColors(StatusGraphData.labels.length),
-      borderColor: getColors(StatusGraphData.labels.length),
-      borderWidth: 1,
-    }],
+    datasets: [
+      {
+        label: "Quantity",
+        data: StatusGraphData.dataset,
+        backgroundColor: getColors(StatusGraphData.labels.length),
+        borderColor: getColors(StatusGraphData.labels.length),
+        borderWidth: 1,
+      },
+    ],
   };
 
   const pieData4 = {
     labels: LocationGraphData.labels,
-    datasets: [{
-      label: "Quantity",
-      data: LocationGraphData.dataset,
-      backgroundColor: getColors(LocationGraphData.labels.length),
-      borderColor: getColors(LocationGraphData.labels.length),
-      borderWidth: 1,
-    }],
+    datasets: [
+      {
+        label: "Quantity",
+        data: LocationGraphData.dataset,
+        backgroundColor: getColors(LocationGraphData.labels.length),
+        borderColor: getColors(LocationGraphData.labels.length),
+        borderWidth: 1,
+      },
+    ],
   };
- 
-
 
   useEffect(() => {
     MaterialByCategory();
     MaterialByStockStatus();
     MaterialByBrand();
     MaterialByLocation();
+    getCategoryWiseBrandCount();
   }, []);
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-around' }}>
-      <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
-        <h5 style={{ textAlign: 'center' }}>Category Wise Stock</h5>
+    <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-around" }}>
+      {modalStates?.filter && (
+        <StockFilter
+          setModalStates={setModalStates}
+          apiCall={getCategoryWiseBrandCount}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      )}
+
+      <div
+        style={{
+          width: "35%",
+          margin: "20px",
+          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+          padding: "15px",
+          borderRadius: "10px",
+          backgroundColor: "white",
+        }}
+      >
+        <h5 style={{ textAlign: "center" }}>Category Wise Stock</h5>
         <Pie data={pieData1} options={optionsCategory} />
       </div>
-      <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
-        <h5 style={{ textAlign: 'center' }}>Brand Wise Stock</h5>
+      <div
+        style={{
+          width: "35%",
+          margin: "20px",
+          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+          padding: "15px",
+          borderRadius: "10px",
+          backgroundColor: "white",
+        }}
+      >
+        <div className="buttons_wrapper">
+          <CustomBtn
+            name={"Filter"}
+            onClick={() => {
+              setModalStates((prev) => ({ ...prev, filter: true }));
+            }}
+            svg={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 512 512"
+                fill="#fff"
+              >
+                <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+              </svg>
+            }
+          />
+          {/* <CustomBtn
+            name={"Reset Filter"}
+            onClick={() => {
+              getStatusWiseMaterialList();
+            }}
+          /> */}
+        </div>
+        <h5 style={{ textAlign: "center" }}>Brand Wise Stock</h5>
         <Pie data={pieData2} options={optionsBrand} />
       </div>
-      <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
-        <h5 style={{ textAlign: 'center' }}>Status Wise Stock</h5>
+      <div
+        style={{
+          width: "35%",
+          margin: "20px",
+          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+          padding: "15px",
+          borderRadius: "10px",
+          backgroundColor: "white",
+        }}
+      >
+        <h5 style={{ textAlign: "center" }}>Status Wise Stock</h5>
         <Pie data={pieData3} options={optionsStatus} />
       </div>
-      <div style={{ width: '35%', margin: '20px', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)', padding: '15px', borderRadius: '10px', backgroundColor: 'white' }}>
-        <h5 style={{ textAlign: 'center' }}>Location Wise Stock</h5>
+      <div
+        style={{
+          width: "35%",
+          margin: "20px",
+          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+          padding: "15px",
+          borderRadius: "10px",
+          backgroundColor: "white",
+        }}
+      >
+        <h5 style={{ textAlign: "center" }}>Location Wise Stock</h5>
         <Pie data={pieData4} options={optionsLocation} />
       </div>
     </div>

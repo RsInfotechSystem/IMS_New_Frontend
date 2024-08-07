@@ -25,8 +25,8 @@ gsap.registerPlugin(useGSAP);
 const CreateOrder = () => {
   const router = useRouter();
   const params = useSearchParams();
-  const [orderCompleteDateError, setOrderCompleteDateError] = useState("")
-  const [orderDateError, setOrderDateError] = useState("")
+  const [orderCompleteDateError, setOrderCompleteDateError] = useState("");
+  const [orderDateError, setOrderDateError] = useState("");
 
   const [activeTab, setActiveTab] = useState("INFO");
   const [loader, setLoader] = useState(false);
@@ -66,7 +66,7 @@ const CreateOrder = () => {
 
   // Get all categories list
   const createOrder = async (values) => {
-    if (values.description=="") {
+    if (values.description == "") {
       toast.info("description is required");
       return;
     }
@@ -75,7 +75,7 @@ const CreateOrder = () => {
         toast.info("Date is required");
         return;
       }
-      
+
       setLoader(true);
       const dataToSend = {
         salesOrderNo: values.orderNo,
@@ -124,9 +124,9 @@ const CreateOrder = () => {
 
   const addMaterial = () => {
     const { description, quantity, warranty, note } = getValues();
-    console.log('====================================');
-    console.log(description,quantity);
-    console.log('====================================');
+    // console.log('====================================');
+    // console.log(description,quantity);
+    // console.log('====================================');
     if (!description || !quantity) {
       toast.info("Add Material");
       return;
@@ -163,32 +163,26 @@ const CreateOrder = () => {
     callAPIs();
   }, []);
 
-
   const deleteProduct = (id) => {
     setState({ materials: state.materials.filter((_, index) => index !== id) });
   };
 
-
   const employeeDetailSubmit = (data) => {
     if (filterValues?.orderDate === "") {
       toast.info("OrderDate is required");
-      return ;
+      return;
     }
     if (filterValues?.orderCompleteDate === "") {
       toast.info("Order Complete Date is required");
-      return 
+      return;
     }
     try {
-     
-
       // setFormTabArray((prev) => prev?.map((ele, ind) => ele.tabName === "Working" ? { ...ele, isFormSubmitted: true } : ele));
       setActiveTab("SUPPLY");
-    } catch(error) {
-      toast.info(error.message)
+    } catch (error) {
+      toast.info(error.message);
     }
-  }
-
-
+  };
 
   return (
     <>
@@ -521,9 +515,9 @@ const CreateOrder = () => {
             <Button
               name={"Save & Next"}
               onClick={handleSubmit(employeeDetailSubmit)}
-            // onClick={() => {
-            //   setActiveTab("SUPPLY");
-            // }}
+              // onClick={() => {
+              //   setActiveTab("SUPPLY");
+              // }}
             />
           </div>
         </div>
@@ -543,7 +537,6 @@ const CreateOrder = () => {
                       <label>Description</label>
                       <textarea
                         {...register("description")}
-                      
                         className="form-control custom_input"
                         rows="1"
                       ></textarea>
@@ -653,13 +646,12 @@ const CreateOrder = () => {
                             <h6>{product?.quantity ? product?.quantity : "--"}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6 >
-                              {product?.warranty ? product?.warranty : "--"}
-                            </h6>
+                            <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
-
+                            <h6 className="action_wrraper">
+                              {product?.note ? product?.note : "--"}
+                            </h6>
                           </div>
                           <div className="col_20p">
                             <h6 className="action_wrraper ">
@@ -688,7 +680,7 @@ const CreateOrder = () => {
               type="submit"
               className="btn btn-success"
               onClick={handleSubmit(createOrder)}
-            // onClick={() => handleSubmit(createOrder)}
+              // onClick={() => handleSubmit(createOrder)}
             ></Button>
           </div>
         </div>

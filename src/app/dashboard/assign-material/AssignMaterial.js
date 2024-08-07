@@ -26,6 +26,7 @@ const AssignMaterial = () => {
   const [brandsData, setBrandsData] = useState([]);
   const [CategoryMapData, setCategoryMapData] = useState([]);
   const [brandMapData, setBrandMapData] = useState([]);
+  const [selectedParameters, setSelectedParameters] = useState({});
   const router = useRouter();
   const {
     register,
@@ -62,7 +63,7 @@ const AssignMaterial = () => {
   };
   // Handler for quantity change
   const handleQuantityChange = (materialData, newQuantity) => {
-    console.log((materialData, "eleeeeeeeeeeeee"));
+    // console.log((materialData, "eleeeeeeeeeeeee"));
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
       [materialData._id]: newQuantity,
@@ -229,8 +230,8 @@ const AssignMaterial = () => {
       // If not searching by serial number, all other fields are required
       if (!formValues.categoryId) newErrors.categoryId = "Category is required";
       if (!formValues.brandId) newErrors.brandId = "Brand is required";
-      if (!formValues.status) newErrors.status = "Status is required";
-      if (!formValues.conditionType) newErrors.conditionType = "Condition is required";
+      // if (!formValues.status) newErrors.status = "Status is required";
+      // if (!formValues.conditionType) newErrors.conditionType = "Condition is required";
     }
 
     setErrors(newErrors);
@@ -248,10 +249,15 @@ const AssignMaterial = () => {
           status: formValues.status,
           brandId: formValues.brandId,
           conditionType: formValues.conditionType,
-          parameters: Object.keys(selectedModels).map((modelName) => ({
-            modelName,
-            parameterList: selectedModels[modelName],
-          })),
+          // parameters: Object.keys(selectedModels).map((modelName) => ({
+          //   modelName,
+          //   parameterList: selectedModels[modelName],
+          // })),
+          parametersToMatch: Object.entries(selectedParameters).flatMap(([modelName, params]) =>
+            Object.entries(params)
+              .filter(([_, isSelected]) => isSelected)
+              .map(([param]) => ({ modelName, parameterList: [param] }))
+          ),
           // parameter: selectedModels,
         };
 
@@ -261,17 +267,6 @@ const AssignMaterial = () => {
   const submitForm = async (payload) => {
     setStockIds([]);
     try {
-      // let payload = {};
-      // if (values.searchString) {
-      //   payload.searchString = values.searchString;
-      // } else {
-      //   if (values.categoryId && values.status && values.brandId && values.conditionType) {
-      //     payload.categoryId = values.categoryId;
-      //     payload.status = values.status;
-      //     payload.brandId = values.brandId;
-      //     payload.conditionType = values.conditionType;
-      //   }
-      // }
       setLoader(true);
       let response = await communication.getMaterialList(payload);
       if (response?.data?.status === "SUCCESS") {
@@ -313,7 +308,11 @@ const AssignMaterial = () => {
       setLoader(false);
     }
   };
-
+  useEffect(() => {
+    if (categoryId && brandId) {
+      submitForm();
+    }
+  }, [categoryId, brandId, selectedParameters]);
   const technicianList = async () => {
     try {
       setLoader(true);
@@ -345,15 +344,16 @@ const AssignMaterial = () => {
         toast.warn("Please Select Technician");
         return;
       }
-      // if (output.length <= 0) {
-      //   toast.warn("Please Select At least one material");
-      //   return;
-      // }
+      if (output.length <= 0) {
+        toast.warn("Please Select At least one material");
+        return;
+      }
       setLoader(true);
       let payload = {
         materialDetails: output,
         userId: userId,
       };
+      // console.log(payload, "payload");
       let response = await communication.AssignMaterial(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response.data.message);
@@ -405,24 +405,33 @@ const AssignMaterial = () => {
       toast.error(error.message);
     }
   };
-  const handleCheckboxSelect = (e, modalName, param) => {
-    const { checked } = e.target;
+  // const handleCheckboxSelect = (e, modalName, param) => {
+  //   const { checked } = e.target;
 
-    setSelectedModels((prevSelectedModels) => {
-      const modalSelectedModels = prevSelectedModels[modalName] || [];
+  //   setSelectedModels((prevSelectedModels) => {
+  //     const modalSelectedModels = prevSelectedModels[modalName] || [];
 
-      if (checked) {
-        return {
-          ...prevSelectedModels,
-          [modalName]: [...modalSelectedModels, param],
-        };
-      } else {
-        return {
-          ...prevSelectedModels,
-          [modalName]: modalSelectedModels.filter((model) => model !== param),
-        };
-      }
-    });
+  //     if (checked) {
+  //       return {
+  //         ...prevSelectedModels,
+  //         [modalName]: [...modalSelectedModels, param],
+  //       };
+  //     } else {
+  //       return {
+  //         ...prevSelectedModels,
+  //         [modalName]: modalSelectedModels.filter((model) => model !== param),
+  //       };
+  //     }
+  //   });
+  // };
+  const handleParameterSelect = (modelName, param) => {
+    setSelectedParameters((prev) => ({
+      ...prev,
+      [modelName]: {
+        ...(prev[modelName] || {}),
+        [param]: !(prev[modelName] && prev[modelName][param]),
+      },
+    }));
   };
   useEffect(() => {
     // const id = getValues("categoryId");
@@ -592,11 +601,11 @@ const AssignMaterial = () => {
                             <FontAwesomeIcon icon={faAngleDown} className="icon" />
                           </div>
                           <div style={{ height: "25px" }}>
-                            {errors.status && (
+                            {/* {errors.status && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
                                 {errors.status}
                               </p>
-                            )}
+                            )} */}
                           </div>
                         </div>
                       </div>
@@ -637,11 +646,11 @@ const AssignMaterial = () => {
                             <FontAwesomeIcon icon={faAngleDown} className="icon" />
                           </div>
                           <div style={{ height: "25px" }}>
-                            {errors.conditionType && (
+                            {/* {errors.conditionType && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
                                 {errors.conditionType}
                               </p>
-                            )}
+                            )} */}
                           </div>
                         </div>
                       </div>
@@ -686,8 +695,14 @@ const AssignMaterial = () => {
                                       type="checkbox"
                                       className="me-3"
                                       id={`modelName:${modal?.modelName}value:${param}`}
+                                      // onChange={(e) =>
+                                      //   handleCheckboxSelect(e, modal.modelName, param)
+                                      // }
                                       onChange={(e) =>
-                                        handleCheckboxSelect(e, modal.modelName, param)
+                                        handleParameterSelect(modal.modelName, param)
+                                      }
+                                      checked={
+                                        selectedParameters[modal.modelName]?.[param] || false
                                       }
                                     />
                                     {param}
@@ -822,9 +837,9 @@ const AssignMaterial = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                id="selectAllCheckbox"
-                                onChange={(e) => handleSelectAllChange(e)}
-                                checked={selectAllChecked}
+                                id="_selectAllCheckbox"
+                                // onChange={(e) => handleSelectAllChange(e)}
+                                // checked={selectAllChecked}
                               />
                             </div>
                           </div>
@@ -1013,7 +1028,7 @@ const AssignMaterial = () => {
                     </select>
                   </div>
                   <div className="col-lg-4 col-md-4 gap-2 ">
-                  <h6 className="mb-1">Select Technician</h6>
+                    <h6 className="mb-1">Select Technician</h6>
                     <select
                       className="inputBox"
                       style={{
