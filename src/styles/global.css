@@ -2788,6 +2788,7 @@ div:where(.access_sudo_class) {
   position: sticky;
   top: 0;
   background-color: var(--white-color);
+  z-index: 1;
 }
 
 .form_modal_header .title {
@@ -5353,4 +5354,26 @@ ul .appointment_letter_ul {
 }
 .multiSelectContainer ul {
   max-height: 60px !important;
+}
+/* login img */
+.login_img{
+  width: 500px;
+  height: 400px;
+}
+/* select custom */
+.select_custom_option{
+  font-size: 10px;
+  color: red;
+}
+/* cancel icon  on multiselect */
+.form_modal_body img {
+  width: 15px !important;
+  /* height: auto !important; */
+}
+.searchWrapper{
+  height: 50px;
+  overflow-y: scroll;
+}
+.multiSelectContainer input{
+  /* width: 60px; */
 }

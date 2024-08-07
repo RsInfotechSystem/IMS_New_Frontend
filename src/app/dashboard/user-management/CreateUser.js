@@ -200,7 +200,7 @@ function CreateUser({ data }) {
                     </div>
                     <div className="form_modal_body">
                         <div className='row'>
-                            <div className="input_wrapper col-md-4">
+                            <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >Role*</label>
                                 <SelectBox
                                     options={roleList}
@@ -218,7 +218,7 @@ function CreateUser({ data }) {
                                     errors={errors.role}
                                 />                            
                             </div>
-                            <div className="input_wrapper col-md-4">
+                            <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >User Name*</label>
                                 <InputBox type={"text"}
                                     register={{
@@ -229,7 +229,7 @@ function CreateUser({ data }) {
                                     errors={errors.name}
                                 />
                             </div>
-                            <div className="input_wrapper col-md-4">
+                            <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >Email*</label>
                                 <InputBox type={"text"}
                                     register={{
@@ -248,7 +248,7 @@ function CreateUser({ data }) {
                                     errors={errors.email}
                                 />
                             </div>
-                            <div className="input_wrapper col-md-4">
+                            <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >Location*</label>
                                 <MultiSelect
                                     placeholder="Select Location"
@@ -269,7 +269,7 @@ function CreateUser({ data }) {
                                 {validationMessage && <p style={{ color: '#dc3545' }}>{validationMessage}</p>}
                             </div>
 
-                            <div className="input_wrapper col-md-4">
+                            <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >Contact No.*</label>
                                 <InputBox type={"number"}
                                     register={{
@@ -288,7 +288,7 @@ function CreateUser({ data }) {
                                     errors={errors.mobile}
                                 />
                             </div>
-                            <div className="input_wrapper col-md-4">
+                            <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >Password*</label>
                                 <InputBox type={"text"}
                                     register={{
@@ -316,7 +316,7 @@ function CreateUser({ data }) {
 
                         <div className="form_button_wrapper">
                             <CustomBtn name={buttonLoader ? <ButtonLoader /> : modalStates?.type === "create" ? "Create" : "Update"} onClick={modalStates?.type == "create" ? handleSubmit(onSubmit) : handleSubmit(updateExistingUser)} />
-                            {/* <CustomBtn name={buttonLoader ? <ButtonLoader /> :  handleSubmit(onSubmit) } /> */}
+                          
 
                         </div>
                     </div>

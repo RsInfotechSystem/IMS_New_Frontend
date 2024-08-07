@@ -183,6 +183,7 @@ const Inventory = () => {
             onClick={() => {
               getStatusWiseMaterialList();
             }}
+            style={{padding:"0px",minWidth:"120px"}}
            
           />
           </div>
