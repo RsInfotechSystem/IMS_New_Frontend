@@ -54,6 +54,7 @@ const StockReportGraph = () => {
     endDate: null,
     isBelow15Days: true,
   });
+  const [loader, setLoader] = useState(false);
   const [filter, setFilter] = useState({});
   const handlePieClick = (event, elements) => {
     if (elements.length > 0) {
@@ -383,16 +384,16 @@ const StockReportGraph = () => {
     MaterialByStockStatus();
     MaterialByBrand();
     MaterialByLocation();
-    getCategoryWiseBrandCount();
+    // getCategoryWiseBrandCount();
   }, []);
   return (
     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-around" }}>
       {modalStates?.filter && (
         <StockFilter
           setModalStates={setModalStates}
-          apiCall={getCategoryWiseBrandCount}
-          filter={filter}
-          setFilter={setFilter}
+          // apiCall={getCategoryWiseBrandCount}
+          // filter={filter}
+          // setFilter={setFilter}
         />
       )}
 
@@ -419,7 +420,7 @@ const StockReportGraph = () => {
           backgroundColor: "white",
         }}
       >
-        <div className="buttons_wrapper">
+        {/* <div className="buttons_wrapper">
           <CustomBtn
             name={"Filter"}
             onClick={() => {
@@ -437,13 +438,8 @@ const StockReportGraph = () => {
               </svg>
             }
           />
-          {/* <CustomBtn
-            name={"Reset Filter"}
-            onClick={() => {
-              getStatusWiseMaterialList();
-            }}
-          /> */}
-        </div>
+          
+        </div> */}
         <h5 style={{ textAlign: "center" }}>Brand Wise Stock</h5>
         <Pie data={pieData2} options={optionsBrand} />
       </div>

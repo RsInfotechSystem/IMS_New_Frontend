@@ -113,7 +113,7 @@ const ReadySalesMaterial = () => {
             onClick={() => {
               setActiveTab("ready_sales_order");
             }}
-            style={{ backgroundColor: activeTab == "ready_sales_order" ? "#184965" : "#D0D3D9" }}
+            style={{ backgroundColor: activeTab == "ready_sales_order" ? "#184965" : "#184965a8" }}
           >
             Ready sales order
           </div>
@@ -123,7 +123,7 @@ const ReadySalesMaterial = () => {
             }}
             //   onClick={handleSubmit(handleVendorInformation)}
             className="tab_btn"
-            style={{ backgroundColor: activeTab == "sales_order" ? "#184965" : "#D0D3D9" }}
+            style={{ backgroundColor: activeTab == "sales_order" ? "#184965" : "#184965a8" }}
           >
             Sales order
           </div>
@@ -134,13 +134,13 @@ const ReadySalesMaterial = () => {
       {activeTab === "ready_sales_order" && (
         <div className="table_wrapper">
           <div className="table_main kitchen_stock_table">
-            <div className="table_section">
+            <div className="table_section employee_table">
               <div className="table_header header_kitchen">
                 {/* <div className="table_header z-2"> */}
                 <div className="col_10p">
                   <h5>Sr. No.</h5>
                 </div>
-                <div className="col_20p">
+                <div className="col_10p">
                   <h5>Order No</h5>
                 </div>
                 <div className="col_20p">
@@ -171,7 +171,7 @@ const ReadySalesMaterial = () => {
                           <div className="col_10p">
                             <h6>{index + 1}</h6>
                           </div>
-                          <div className="col_20p">
+                          <div className="col_10p">
                             <h6
                               onClick={() => {
                                 router.push(

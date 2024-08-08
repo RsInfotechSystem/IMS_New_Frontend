@@ -174,28 +174,9 @@ function CreateRole({ data }) {
               />
             </div>
             <div className="check_box col-12">
-              {/* <div className="row">
-                {" "}
-                {tabsArray?.map((tabsName, index) => (
-                  <div className="form-check col-4" key={index}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      checked={selectedTabs?.includes(tabsName)}
-                      onChange={() => {
-                        handleModuleAccess(tabsName);
-                      }}
-                      id={tabsName}
-                      disabled={disabled}
-                    />
-                    <label className="form-check-label" htmlFor={tabsName}>
-                      {tabsName}
-                    </label>
-                  </div>
-                ))}
-              </div> */}
+              
               <div className="row m-0">
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     type="checkbox"
                     id="role"
@@ -206,7 +187,7 @@ function CreateRole({ data }) {
                     Role Management
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     type="checkbox"
                     id="Location"
@@ -217,7 +198,7 @@ function CreateRole({ data }) {
                     Location
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="User Management"
                     type="checkbox"
@@ -228,7 +209,7 @@ function CreateRole({ data }) {
                     User Management
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Category"
                     type="checkbox"
@@ -239,7 +220,7 @@ function CreateRole({ data }) {
                     Category
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Brand"
                     type="checkbox"
@@ -250,7 +231,7 @@ function CreateRole({ data }) {
                     Brand
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Parameters"
                     type="checkbox"
@@ -261,7 +242,7 @@ function CreateRole({ data }) {
                     Parameters
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Rack Management"
                     type="checkbox"
@@ -272,7 +253,7 @@ function CreateRole({ data }) {
                     Rack Management
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Block Management"
                     type="checkbox"
@@ -283,7 +264,7 @@ function CreateRole({ data }) {
                     Block Management
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Model Details"
                     type="checkbox" {...register("Model Details")}
@@ -292,7 +273,7 @@ function CreateRole({ data }) {
                     Model Details
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Stock In"
                     type="checkbox"
@@ -303,7 +284,7 @@ function CreateRole({ data }) {
                     Stock In
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Assign Material"
                     type="checkbox"
@@ -314,7 +295,7 @@ function CreateRole({ data }) {
                     Assign Material
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Daily Task"
                     type="checkbox"
@@ -325,7 +306,7 @@ function CreateRole({ data }) {
                     Daily Task
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Stock Management"
                     type="checkbox"
@@ -336,7 +317,7 @@ function CreateRole({ data }) {
                     Stock Management
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Inventory Look"
                     type="checkbox"
@@ -347,7 +328,7 @@ function CreateRole({ data }) {
                     Inventory Look
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Sales Order"
                     type="checkbox"
@@ -359,7 +340,7 @@ function CreateRole({ data }) {
                   </label>
                 </div>
 
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Transfer Material"
                     type="checkbox"
@@ -371,7 +352,7 @@ function CreateRole({ data }) {
                   </label>
                 </div>
 
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Receive  Material"
                     type="checkbox"
@@ -382,7 +363,7 @@ function CreateRole({ data }) {
                     Receive  Material
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Approval"
                     type="checkbox"
@@ -393,7 +374,7 @@ function CreateRole({ data }) {
                     Approval
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="NR Material"
                     type="checkbox"
@@ -404,7 +385,7 @@ function CreateRole({ data }) {
                     NR Material
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Stock Out"
                     type="checkbox"
@@ -416,7 +397,7 @@ function CreateRole({ data }) {
                   </label>
                 </div>
 
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Notification"
                     type="checkbox"
@@ -427,7 +408,7 @@ function CreateRole({ data }) {
                     Notification
                   </label>
                 </div>
-                <div className="col-lg-4 col-md-4 checkbox_main d-flex align-items-center">
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
                     id="Report"
                     type="checkbox"

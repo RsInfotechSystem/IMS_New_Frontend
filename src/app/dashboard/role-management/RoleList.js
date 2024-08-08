@@ -200,9 +200,9 @@ const RoleList = () => {
       {/* table  */}
       <div className="table_wrapper">
         <div className="table_main">
-          <div className="table_section">
+          <div className="table_section employee_table">
             <div className="table_header">
-              <div className="col_7p">
+              <div className="col_5p">
                 <div className="check_box">
                   <input
                     className="form-check-input"
@@ -214,7 +214,7 @@ const RoleList = () => {
                   <label className="form-check-label"></label>
                 </div>
               </div>
-              <div className="col_10p">
+              <div className="col_5p">
                 <h5>Sr. No.</h5>
               </div>
               <div className="col_20p">
@@ -232,7 +232,7 @@ const RoleList = () => {
                 {roles?.map((roleDetails, index) => {
                   return (
                     <div className="table_data" key={index}>
-                      <div className="col_7p">
+                      <div className="col_5p">
                         <div className="check_box">
                           <input
                             className="form-check-input"
@@ -244,7 +244,7 @@ const RoleList = () => {
                           <label className="form-check-label"></label>
                         </div>
                       </div>
-                      <div className="col_10p">
+                      <div className="col_5p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_20p">

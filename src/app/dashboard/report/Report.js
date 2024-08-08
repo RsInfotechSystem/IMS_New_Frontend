@@ -37,14 +37,14 @@ const Report = () => {
                     }}
                         style={{
                             backgroundColor:
-                                activeTab == "shift" ? "#184965" : "#D0D3D9",
+                                activeTab == "shift" ? "#184965" : "#184965a8",
                         }}
                     >
                         Stock Analysis
                     </div>
 
                     <div className="tab_btn" onClick={() => { setActiveTab("attendance"); }}
-                        style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#D0D3D9", }} >
+                        style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#184965a8", }} >
                         Sell Report
                     </div>
 

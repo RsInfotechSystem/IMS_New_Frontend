@@ -197,6 +197,8 @@ const NrMateial = () => {
                             onClick={() => {
                                 getNrMaterialList();
                             }}
+                         style={{padding:"0px",minWidth:"100px"}}
+
 
                         />
                         <CustomBtn

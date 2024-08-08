@@ -81,7 +81,7 @@ const ReceiveMaterialList = () => {
       {/* table  */}
       <div className="table_wrapper">
         <div className="table_main">
-          <div className="table_section">
+          <div className="table_section employee_table">
             <div className="table_header">
               <div className="col_10p">
                 <h5>Sr. No.</h5>

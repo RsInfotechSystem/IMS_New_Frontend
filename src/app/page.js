@@ -52,7 +52,7 @@ const Page = () => {
       <div className="login_wrapper">
         <div className="login_info_section">
           <div className="icon">
-            <Image src={icon} width={500} height={400} alt='LOGO' />
+            <Image src={icon} className='login_img' alt='LOGO' />
           </div>
           <div className="content">
             {/* <h3>Welcome to <br /> IMS</h3> */}

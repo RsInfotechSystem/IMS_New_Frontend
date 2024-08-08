@@ -264,7 +264,7 @@ const ReportDetails = () => {
             onClick={() => {
               getReportMaterialList();
             }}
-           
+            style={{padding:"0px",minWidth:"120px"}}
           />
            <CustomBtn
               name="Back"

@@ -478,13 +478,14 @@ const StockInList = () => {
               </svg>
             }
           />
-           <CustomBtn
+          <CustomBtn
             name={"Reset Filter"}
             onClick={() => {
               getStockList();
             }}
-           
+            style={{padding:"0px",minWidth:"120px"}}
           />
+
 
           <CustomBtn
             name={"Create"}

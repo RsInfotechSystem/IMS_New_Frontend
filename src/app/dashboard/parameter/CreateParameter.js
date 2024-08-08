@@ -242,7 +242,7 @@ function CreateParameter({ data }) {
                   options={CategoryMapData}
                   displayName={"name"}
                   value={"_id"}
-                  firstOption={"Select Category"}
+                  firstOption={"Category"}
                   disable={false}
                   register={{
                     ...register("category", {
@@ -250,6 +250,7 @@ function CreateParameter({ data }) {
                     }),
                   }}
                   errors={errors.category}
+                  style={{fontSize:"10px",color:"red"}}
                 />
               </div>
             </div>

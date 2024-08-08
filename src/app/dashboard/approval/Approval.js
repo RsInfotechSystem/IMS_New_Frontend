@@ -369,28 +369,32 @@ const Approval = () => {
             onClick={() => {
               getMaterialForApproval();
             }}
+            style={{padding:"0px",minWidth:"100px"}}
+
            
           />
-          <div
+          {/* <div
             className="tab_btn"
-            // name={"Sell List"}
             onClick={() => handleClick("transferList")}
             style={{
+              padding:"0px",minWidth:"70px",fontSize:"13px",
               backgroundColor:
-                activeTab == "shift" ? "#184965" : "#D0D3D9",
+                activeTab == "shift" ? "#184965" : "#184965a8",
             }}
           >Sell List</div>
           <div
             className="tab_btn"
             name={"Transfer List"}
             onClick={() => handleClick("anotherButton")}
-            style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#D0D3D9", }}
-          >Transfer List</div>
+            style={{ 
+              padding:"0px",minWidth:"110px",fontSize:"13px",
+              backgroundColor: activeTab == "attendance" ? "#184965" : "#184965a8", }}
+          >Transfer List</div> */}
         </div>
       </div>
 
       {/* ============================== Sell Approval================================= */}
-      {state.isShowSellList && (
+      {/* {state.isShowSellList && (
         <div className="table_wrapper">
           <div className="table_main">
             <div className="table_section inventory_table_res">
@@ -476,11 +480,11 @@ const Approval = () => {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* ============================== Transfer Approval================================= */}
 
-      {!state.isShowSellList && (
+      {/* {!state.isShowSellList && ( */}
         <div className="table_wrapper">
           <div className="table_main">
             <div className="table_section inventory_table_res">
@@ -521,34 +525,7 @@ const Approval = () => {
                       <div className="col_35p">
                         <h6>{materialDetails?.toLocation?.name}</h6>
                       </div>
-                      {/* {materialDetails?.materialIds?.map((tarnsferData, materialIndex) =>
-                      (
-                        <>
-                          <div className="col_35p">
-                            <h6>
-                              <strong>{tarnsferData?.categoryId?.name}</strong>
-                            </h6>
-                          </div>
-                          <div className="col_35p">
-                            <h6>{tarnsferData?.brandId?.name}</h6>
-                          </div>
-                          <div className="col_35p">
-                            <h6>{tarnsferData?.modelId?.name ? tarnsferData?.modelId?.name : "-"}</h6>
-                          </div>
-                          <div className="col_35p">
-                            <h6>{tarnsferData?.itemCode}</h6>
-                          </div>
-                          <div className="col_35p">
-                            <h6>{tarnsferData?.serialNo}</h6>
-                          </div>
-                          <div className="col_35p">
-                            <h6>{tarnsferData?.conditionType}</h6>
-                          </div>
-                          <div className="col_35p">
-                            <h6>{tarnsferData?.quantity}</h6>
-                          </div>
-                        </>
-                      ))} */}
+                      
                       <div className="col_35p">
                         <h6>{materialDetails?.transferBy?.name}</h6>
                       </div>
@@ -580,12 +557,12 @@ const Approval = () => {
                   </>)
                 })
               ) : (
-                <h5>Data Not Available</h5>
+                <p className="no_data">Data Not Available</p>
               )}
             </div>
           </div>
         </div >
-      )}
+      {/* )} */}
       {/* {
         pageCount > 1 && (
           <div className="pagination_wrapper">
