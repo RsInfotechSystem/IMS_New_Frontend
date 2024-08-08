@@ -5366,7 +5366,7 @@ ul .appointment_letter_ul {
   color: red;
 }
 /* cancel icon  on multiselect */
-.form_modal_body img {
+.form_modal_img img {
   width: 15px !important;
   /* height: auto !important; */
 }

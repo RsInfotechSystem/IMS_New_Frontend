@@ -198,7 +198,7 @@ function CreateUser({ data }) {
                         <h5 className="title">{modalStates?.type === "create" ? "Create User" : "Update User"}</h5>
                         <FontAwesomeIcon icon={faCircleXmark} onClick={() => setModalStates((prev) => ({ ...prev, modal: false }))} className="close_modal_icon" />
                     </div>
-                    <div className="form_modal_body">
+                    <div className="form_modal_body form_modal_img">
                         <div className='row'>
                             <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >Role*</label>
