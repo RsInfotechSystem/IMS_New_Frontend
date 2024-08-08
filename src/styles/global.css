@@ -5373,6 +5373,7 @@ ul .appointment_letter_ul {
 .searchWrapper{
   height: 50px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 .multiSelectContainer input{
   /* width: 60px; */
