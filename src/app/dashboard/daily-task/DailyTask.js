@@ -93,6 +93,7 @@ const DailyTask = () => {
       const serverResponse = await communication.fetchAssignMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.material);
+        toast.success(serverResponse.data.message);
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
         // if (isFirstCall) {
@@ -137,14 +138,14 @@ const DailyTask = () => {
           setCurrentPage(1);
         }
       } else if (serverResponse?.data?.status === "FAILED") {
-        toast.info(serverResponse.data.message);
+        // toast.info(serverResponse.data.message);
         setMaterial([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
         setLoader(false);
       } else {
-        toast.info(serverResponse.data.message);
+        // toast.info(serverResponse.data.message);
       }
       setLoader(false);
     } catch (error) {
@@ -174,7 +175,7 @@ const DailyTask = () => {
     }
   };
   useEffect(() => {
-    technicianList();
+    // technicianList();
     setRoleName(getCookies("role"));
   }, []);
 
@@ -311,273 +312,31 @@ const DailyTask = () => {
       {/* table  */}
       <div className="table_wrapper">
         <div className="table_main" style={{ width: "1500px" }}>
-          {/* Rename the class name "employee_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
           <div className="table_section inventory_table_res">
-            {/* {![undefined, null, 0]?.includes(user) && <div className="table_badge_wrapper">
-              <button className="table_badge">
-                <h5>Total User</h5>
-                <div className="badge_count">
-                  <h6>{user.length}</h6>
-                </div>
-              </button>
-            </div>} */}
-
             <div className="table_header">
               <div className="col_20p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_70p">
-                {/* {state.categoryFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "category")}
-                      onChange={(e) =>
-                        setState({
-                          categoryValue: {
-                            keyType: "category",
-                            keyId: e.target.value,
-                            keyCount: state.categoryValue.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.categoryValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.category.map((item, index) => {
-                        // console.log("checkkk", state.category);
-                        return (
-                          <option value={item.categoryId} key={index}>
-                            {item.category}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ categoryFilter: !state.categoryFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <> */}
-                <h5>Category</h5>
-                {/* <div>
-                      <Image
-                        onClick={() => setState({ categoryFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )} */}
+              <div className="col_50p">
+                <h5>Job No</h5>
               </div>
               <div className="col_50p">
-                {/* {state.brandFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "brand")}
-                      onChange={(e) =>
-                        setState({
-                          brandValue: {
-                            keyType: "brand",
-                            keyId: e.target.value,
-                            keyCount: state.brandValue.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.brandValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.brand.map((item, index) => {
-                        return (
-                          <option value={item.brandId} key={index}>
-                            {item.brand}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ brandFilter: !state.brandFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <> */}
-                <h5>Brand</h5>
-                {/* <div>
-                      <Image
-                        onClick={() => setState({ brandFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )} */}
+                <h5>Date</h5>
               </div>
               <div className="col_70p">
-                {/* {state.locationFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "brand")}
-                      onChange={(e) =>
-                        setState({
-                          locationValue: {
-                            keyType: "location",
-                            keyId: e.target.value,
-                            keyCount: state.locationValue.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.locationValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.location.map((item, index) => {
-                        return (
-                          <option value={item.locationId} key={index}>
-                            {item.location}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ locationFilter: !state.locationFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <> */}
+                <h5>Assign To</h5>
+              </div>
+              <div className="col_70p">
+                <h5>Assign By</h5>
+              </div>
+              <div className="col_50p">
                 <h5>Location</h5>
-                {/* <div>
-                      <Image
-                        onClick={() => setState({ locationFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )} */}
-              </div>
-              <div className="col_60p">
-                {/* {state.modelNameFilter ? (
-                  <>
-                    <select
-                      className="selectBox text-capitalize"
-                      style={{ width: "80%" }}
-                      // onChange={(e) => filterSearch(e, "brand")}
-                      onChange={(e) =>
-                        setState({
-                          modelNameValue: {
-                            keyType: "modelName",
-                            keyId: e.target.value,
-                            keyCount: state?.modelNameValue?.keyCount + 1,
-                          },
-                        })
-                      }
-                      value={state.modelNameValue.keyId}
-                    >
-                      <option value="">Select All</option>
-                      {state.modelName.map((item, index) => {
-                        return (
-                          <option value={item?.modelId} key={index}>
-                            {item?.modelName}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <Image
-                      onClick={() => setState({ modelNameFilter: !state?.modelNameFilter })}
-                      className="cursor-pointer"
-                      src={filterIcon}
-                      width={15}
-                      height={15}
-                      alt="filter-icon"
-                    ></Image>
-                  </>
-                ) : (
-                  <> */}
-                <h5>Model Name</h5>
-                {/* <div>
-                      <Image
-                        onClick={() => setState({ modelNameFilter: true })}
-                        className="cursor-pointer"
-                        src={filterIcon}
-                        width={15}
-                        height={15}
-                        alt="filter-icon"
-                      ></Image>
-                    </div>
-                  </>
-                )} */}
               </div>
               <div className="col_50p">
-                <h5>Item Code</h5>
+                <h5>Task Status</h5>
               </div>
-              {/* <div className="col_50p">
-                <h5>Quantity</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Remaining Quantity</h5>
-              </div> */}
-              <div className="col_50p">
-                <h5>Block</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Rack</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Serial No.</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Condition Type</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Status</h5>
-              </div>
-              {/* <div className="col_50p action_wrraper">
-                <h5 className="action_wrraper">Action</h5>
-              </div> */}
-              <div className="col_50p">
-                <h5>Assigned By</h5>
-              </div>
-              {/* {roleName == "admin" && ( */}
-              <div className="col_50p">
-                <h5>Technician</h5>
-              </div>
-              {/* )} */}
-              <div className="col_50p">
-                <h5>Assigned Quantity</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Assigned Date</h5>
-              </div>
-              <div className="col_50p">
-                <h5>Remark</h5>
+              <div className="col_30p">
+                <h5>Action</h5>
               </div>
             </div>
             {material.length > 0 ? (
@@ -587,78 +346,88 @@ const DailyTask = () => {
                     <div className="col_20p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
-                    <div className="col_70p">
+                    <div className="col_50p">
                       <h6
                         style={{ color: "#0000FF", cursor: "pointer" }}
-                        onClick={() =>
-                          setModalStates((prev) => ({
-                            ...prev,
-                            modal: true,
-                            type: "update",
-                            id: stockDetails?._id,
-                          }))
-                        }
+                        onClick={() => router.push("/dashboard/daily-task/return-material")}
                       >
-                        {stockDetails?.categoryId?.name}
+                        {stockDetails?.jobNo}
                       </h6>{" "}
                     </div>
                     <div className="col_50p">
-                      <h6>{stockDetails?.brandId?.name}</h6>
+                      <h6>{stockDetails?.createdAt.split("T")[0]}</h6>
                     </div>
                     <div className="col_70p">
-                      <h6>{stockDetails?.locationId.name}</h6>
+                      <h6>{stockDetails?.userId.name}</h6>
                     </div>
-                    <div className="col_60p">
-                      <h6>{stockDetails?.modelId?.name ? stockDetails?.modelId?.name : "-"}</h6>{" "}
-                    </div>
-                    {/* <div className="col_50p">
-                      <h6>{stockDetails?.mobile}</h6>
-                    </div> */}
-                    <div className="col_50p">
-                      <h6>{stockDetails?.itemCode ? stockDetails?.itemCode : "-"}</h6>
-                      {/* <h6>
-                          {roleDetails?.tab?.join(', ')}
-                        </h6> */}
-                    </div>
-                    {/* <div className="col_50p">
-                      <h6>{stockDetails?.quantity ? stockDetails?.quantity : "-"}</h6>
-                    </div>
-                    <div className="col_50p">
-                      <h6>
-                        {stockDetails?.reamainingQuantity ? stockDetails?.reamainingQuantity : "-"}
-                      </h6>{" "}
-                    </div> */}
-                    <div className="col_50p">
-                      <h6>{stockDetails?.blockId?.blockNo}</h6>
-                    </div>
-                    <div className="col_50p">
-                      <h6>{stockDetails?.rackId.rackName ? stockDetails?.rackId.rackName : "-"}</h6>{" "}
-                    </div>
-                    <div className="col_50p">
-                      <h6>{stockDetails?.serialNo ? stockDetails?.serialNo : "-"}</h6>
-                    </div>
-                    <div className="col_50p">
-                      <h6>{stockDetails?.conditionType}</h6>
-                    </div>
-                    <div className="col_50p">
-                      <h6>{stockDetails?.status}</h6>
-                    </div>
-                    <div className="col_50p">
+                    <div className="col_70p">
                       <h6>{stockDetails?.assignedBy?.name}</h6>
                     </div>
-                    {/* {roleName == "admin" && ( */}
                     <div className="col_50p">
-                      <h6>{stockDetails?.userId?.name}</h6>
-                    </div>
-                    {/* )} */}
-                    <div className="col_50p">
-                      <h6>{stockDetails?.assignQuantity}</h6>
+                      <h6>{stockDetails?.locationId ? stockDetails?.locationId?.name : "-"}</h6>
                     </div>
                     <div className="col_50p">
-                      <h6>{new Date(stockDetails.createdAt).toLocaleDateString()}</h6>
+                      <h6>{stockDetails?.taskStatus}</h6>
                     </div>
-                    <div className="col_50p">
-                      <h6>{stockDetails?.remark ?? "--"}</h6>
+                    <div className="col_30p">
+                      <h6 className="action_wrraper">
+                        <div title="edit">
+                          <svg
+                            title={`${stockDetails.isActive ? "Update" : ""}`}
+                            className={`${
+                              stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
+                            }`}
+                            onClick={() => router.push("/dashboard/assign-material")}
+                            width="27"
+                            height="27"
+                            viewBox="0 0 25 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g clip-path="url(#clip0_279_5204)">
+                              <path
+                                d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                stroke="#0D6EFD"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                stroke="#0D6EFD"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </g>
+                            <defs>
+                              <clipPath id="clip0_279_5204">
+                                <rect
+                                  width="15"
+                                  height="15"
+                                  fill="white"
+                                  transform="translate(5 5)"
+                                />
+                              </clipPath>
+                            </defs>
+                          </svg>
+                        </div>
+                        <div className="form-switch ">
+                          <input
+                            class="form-check-input cursor-pointer"
+                            type="checkbox"
+                            checked={stockDetails.isActive || false}
+                            id={`toggleSwitch${stockDetails._id}`}
+                            onChange={(event) =>
+                              setModalStates((pre) => ({
+                                ...pre,
+                                action: stockDetails.isActive ? "disable" : "enable",
+                                locationId: stockDetails._id,
+                                deleteLocation: true,
+                              }))
+                            }
+                            style={{ width: "35px", height: "15px" }}
+                          />
+                        </div>
+                      </h6>
                     </div>
                   </div>
                 ))}

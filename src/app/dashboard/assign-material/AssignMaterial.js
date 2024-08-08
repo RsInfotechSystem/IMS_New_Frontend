@@ -1,7 +1,7 @@
 "use client";
 
 import { communication } from "@/services/communication";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useReducer, useState } from "react";
 import { getCategory, getCategoryWiseBrand, getCategoryWiseParameter } from "@/services/commonApis";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import CustomBtn from "@/common-components/CustomBtn";
 import { toast } from "react-toastify";
+import FilterStructure from "@/common-components/FilterForAssignMaterial";
 
 const AssignMaterial = () => {
   const [selectedList, setSelectedList] = useState([]);
@@ -27,7 +28,27 @@ const AssignMaterial = () => {
   const [CategoryMapData, setCategoryMapData] = useState([]);
   const [brandMapData, setBrandMapData] = useState([]);
   const [selectedParameters, setSelectedParameters] = useState({});
+  const [_material, _setMaterial] = useState();
   const router = useRouter();
+  const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
+    categoryFilter: true,
+    brandFilter: true,
+    locationFilter: false,
+    modelNameFilter: false,
+    category: [],
+    brand: [],
+    modelName: [],
+    location: [],
+    categoryValue: { keyType: "", keyId: "", keyCount: 0 },
+    brandValue: { keyType: "", keyId: "", keyCount: 0 },
+    modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
+    locationValue: { keyType: "", keyId: "", keyCount: 0 },
+  });
+  const [selectedFilters, setSelectedFilters] = useState({
+    categoryId: "",
+    brandId: "",
+    modelId: "",
+  });
   const {
     register,
     // handleSubmit,
@@ -50,6 +71,7 @@ const AssignMaterial = () => {
   const searchString = watch("searchString");
   const [expandedModals, setExpandedModals] = useState([]);
   const [quantities, setQuantities] = useState([]);
+  const [locationList, setLocationList] = useState([]);
   const [formValues, setFormValues] = useState({
     searchString: "",
     categoryId: "",
@@ -58,6 +80,158 @@ const AssignMaterial = () => {
     conditionType: "",
   });
   const [errors, setErrors] = useState({});
+  // get-location
+  async function getLocations() {
+    try {
+      setLoader(true);
+      const serverResponse = await communication.getLocations();
+      if (serverResponse?.data?.status === "SUCCESS") {
+        setLocationList(serverResponse?.data?.result);
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.warn(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        setLocationList([]);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.warn(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
+
+  // get-material-list
+  async function getMaterialList({ isFirstCall, id, brandId, categoryId } = {}) {
+    try {
+      setLoader(true);
+
+      // Prepare the payload
+      let payload = {
+        // "location": "66b0ad1b9d8190631daebeec",
+        searchString: "",
+        // categoryId: "66add77631d846c3428e31d0", // Hardcoded for now
+        location: id, // Hardcoded for now
+        ...(state.brandValue.keyType === "brand" && { brandId: state.brandValue.keyId }),
+        ...(state.locationValue.keyType === "location" && { location: state.locationValue.keyId }),
+        ...(state?.modelNameValue?.keyType === "modelName" && {
+          modelId: state?.modelNameValue?.keyId,
+        }),
+      };
+      // Fetch the data
+      const serverResponse = await communication.getMaterialList(payload);
+
+      if (serverResponse?.data?.status === "SUCCESS") {
+        setMaterial(serverResponse.data.stock);
+        toast.success(serverResponse.data.message);
+
+        if (isFirstCall) {
+          const stock = serverResponse.data.stock || [];
+
+          setState({
+            category: Array.from(
+              new Set(
+                stock.map((item) =>
+                  JSON.stringify({
+                    categoryId: item.categoryId?._id || "unknown",
+                    category: item.categoryId?.name || "unknown",
+                  })
+                )
+              )
+            ).map((item) => JSON.parse(item)),
+
+            brand: Array.from(
+              new Set(
+                stock.map((item) =>
+                  JSON.stringify({ brandId: item.brandId?._id, brand: item.brandId?.name })
+                )
+              )
+            ).map((item) => JSON.parse(item)),
+
+            modelName: Array.from(
+              new Set(
+                stock.map((item) =>
+                  JSON.stringify({ modelId: item.modelId?._id, modelName: item.modelId?.name })
+                )
+              )
+            ).map((item) => JSON.parse(item)),
+
+            parameter: Array.from(
+              new Set(
+                stock.map((item) =>
+                  JSON.stringify({
+                    locationId: item.locationId?._id,
+                    location: item.locationId?.name,
+                  })
+                )
+              )
+            ).map((item) => JSON.parse(item)),
+          });
+        }
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+      } else {
+        toast.info(serverResponse.data.message || "An error occurred");
+      }
+
+      setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
+  console.log(state, "state");
+
+  const technicianList = async (id) => {
+    try {
+      setLoader(true);
+
+      let response = await communication.getTechnicianList({ locationId: id });
+      if (response?.data?.status === "SUCCESS") {
+        // toast.success(response.data.message);
+        setTechnicianList(response?.data.users);
+        // await getRoleList(currentPage, searchString);
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.warn(response.data.message);
+        router.push("/");
+      } else {
+        toast.warn(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoader(false);
+    }
+  };
+  useEffect(() => {
+    getLocations();
+  }, []);
+  useEffect(() => {
+    const id = getValues("locationId");
+    if (id) {
+      technicianList(id);
+    }
+  }, [locationList.length >= 1 && location]);
+  useEffect(() => {
+    const id = getValues("locationId");
+    if (id) {
+      getMaterialList({ id, isFirstCall: true });
+    }
+  }, [locationList.length >= 1 && location]);
+  const handleFiltersChange = (filters) => {
+    setSelectedFilters(filters);
+  };
+  const filteredMaterial = material.filter(
+    (item) =>
+      (!selectedFilters.categoryId || item.categoryId._id === selectedFilters.categoryId) &&
+      (!selectedFilters.brandId || item.brandId._id === selectedFilters.brandId) &&
+      (!selectedFilters.modelId || item.modelId._id === selectedFilters.modelId)
+  );
+  // useEffect(() => {
+  //   getMaterialList({ isFirstCall: true });
+  // }, []);
+
   const handleDeleteMaterial = (id) => {
     setSelectedList(selectedList.filter((item) => item._id !== id));
   };
@@ -313,30 +487,6 @@ const AssignMaterial = () => {
       submitForm();
     }
   }, [categoryId, brandId, selectedParameters]);
-  const technicianList = async () => {
-    try {
-      setLoader(true);
-
-      let response = await communication.getTechnicianList();
-      if (response?.data?.status === "SUCCESS") {
-        // toast.success(response.data.message);
-        setTechnicianList(response?.data.user);
-        // await getRoleList(currentPage, searchString);
-      } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
-        router.push("/");
-      } else {
-        toast.warn(response.data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoader(false);
-    }
-  };
-  useEffect(() => {
-    technicianList();
-  }, []);
 
   const handleAssign = async () => {
     try {
@@ -433,14 +583,16 @@ const AssignMaterial = () => {
       },
     }));
   };
-  useEffect(() => {
-    // const id = getValues("categoryId");
-    const id = formValues.categoryId;
-    if (id) {
-      getCategoryWiseBrand(id, setLoader, router, setBrandsData);
-      fetchMaterial(id);
-    }
-  }, [formValues.categoryId]);
+  // console.log(_material, "_material");
+
+  // useEffect(() => {
+  //   // const id = getValues("categoryId");
+  //   const id = formValues.categoryId;
+  //   if (id) {
+  //     getCategoryWiseBrand(id, setLoader, router, setBrandsData);
+  //     fetchMaterial(id);
+  //   }
+  // }, [formValues.categoryId]);
   return (
     <>
       {loader ? (
@@ -454,15 +606,83 @@ const AssignMaterial = () => {
                 <form onSubmit={handleSubmit}>
                   <div style={{ maxHeight: "40dvh", overflowY: "auto" }}>
                     <div className="p-3" style={{ backgroundColor: "white" }}>
-                      {/* <div className="form_modal_body w-75 py-3"></div> */}
-                      {/* <div className="pb-2">
-                        <h6>Select Material</h6>
-                      </div> */}
                       <div className="row">
-                        <div class="col-lg-6 col-md-5 d-flex align-items-center">
-                          <label>Serial No./Item Code</label>
+                        <div className="col-lg-6 col-md-6 input_wrapper">
+                          <label>Select Location*</label>
+                          <div className="position-relative">
+                            <select
+                              name="locationId"
+                              className="form-control custom_input"
+                              style={{ width: "100%" }}
+                              {...register("locationId", {
+                                required: "locationId is required",
+                              })}
+                              // disabled={modalStates.isView}
+                            >
+                              <option value="" className="text-secondary text-lowercase"></option>
+                              {locationList.map((ele, index) => {
+                                return (
+                                  <option
+                                    className="small text-capitalize"
+                                    value={ele._id}
+                                    key={index}
+                                  >
+                                    {" "}
+                                    {ele.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <div className="select_box_arrow">
+                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                            </div>
+                          </div>
+                          <div style={{ height: "5px" }}>
+                            {errors.locationId && (
+                              <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                                {errors.locationId.message}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                        <div className="custom_input_wrapper col-lg-6 col-md-5">
+                        <div className="col-lg-6 col-md-6 input_wrapper">
+                          <label>Select Technician*</label>
+                          <div className="position-relative">
+                            <select
+                              name="locationId"
+                              className="form-control custom_input"
+                              style={{ width: "100%" }}
+                              onChange={(e) => setUserId(e.target.value)}
+                            >
+                              <option value="" className="text-secondary text-lowercase"></option>
+                              {TechnicianList.map((ele, index) => {
+                                return (
+                                  <option
+                                    className="small text-capitalize"
+                                    value={ele._id}
+                                    key={index}
+                                  >
+                                    {ele.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <div className="select_box_arrow">
+                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                            </div>
+                          </div>
+                          <div style={{ height: "5px" }}>
+                            {errors.locationId && (
+                              <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                                {errors.locationId.message}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="row">
+                        <div className="custom_input_wrapper col-lg-12 col-md-6">
+                          <label>Serial No./Item Code</label>
                           <input
                             type="text"
                             name="searchString"
@@ -470,8 +690,6 @@ const AssignMaterial = () => {
                             onChange={handleChange}
                             className="form_control_assign custom_input"
                             style={{ width: "100%" }}
-                            // style={{ paddingLeft: lefIcon ? 45 : "auto" }}
-                            // className={`form_control_assign custom_input ${className}`}
                           />
                           <div style={{ height: "25px" }}>
                             {errors.searchString && (
@@ -482,188 +700,9 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row">
-                        <h6 className="d-flex align-items-center justify-content-center assign_or_font">
-                          OR
-                        </h6>
-                      </div>
-                      <div class="row">
-                        <div className=" col-6">
-                          <label>Select Category</label>
-                        </div>
-                        <div className="position-relative col-lg-6 col-md-7">
-                          <select
-                            name="categoryId"
-                            value={formValues.categoryId}
-                            onChange={handleChange}
-                            className="form_control_assign custom_input"
-                            style={{ width: "100%" }}
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Category
-                            </option>
-                            {CategoryMapData.map((ele, index) => {
-                              return (
-                                <option
-                                  className="small text-capitalize"
-                                  value={ele._id}
-                                  key={index}
-                                >
-                                  {" "}
-                                  {ele.name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_smallarrow me-2 ">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                          </div>
-                          <div style={{ height: "25px" }}>
-                            {errors.categoryId && (
-                              <p
-                                className="validation_message"
-                                style={{ fontSize: "0.7rem", color: "red" }}
-                              >
-                                {errors.categoryId}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="row">
-                        <div className=" col-6">
-                          <label>Brand</label>
-                        </div>
-                        <div className="position-relative col-lg-6 col-md-7">
-                          <select
-                            // {...register("brandId", {
-                            //   // required: "Brand is required",
-                            // })}
-                            name="brandId"
-                            value={formValues.brandId}
-                            onChange={handleChange}
-                            className="form_control_assign custom_input"
-                            style={{ width: "100%" }}
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Brand
-                            </option>
-                            {brandsData?.map((ele, index) => {
-                              return (
-                                <option
-                                  value={ele._id}
-                                  key={index}
-                                  className="small text-capitalize"
-                                >
-                                  {console.log(ele, "ele")} {ele?.name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_smallarrow me-2 ">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                          </div>
-                          <div style={{ height: "25px" }}>
-                            {errors.brandId && (
-                              <p className="validation_message" style={{ fontSize: "0.7rem" }}>
-                                {errors.brandId}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 col-md-5 d-flex align-items-center ">
-                          <label>Select Status</label>
-                        </div>
-                        <div className="position-relative col-lg-6 col-md-7">
-                          <select
-                            name="status"
-                            value={formValues.status}
-                            onChange={handleChange}
-                            className="form_control_assign custom_input"
-                            style={{ width: "100%" }}
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Status
-                            </option>
-                            {stockStatus.map((ele, index) => {
-                              return (
-                                <option value={ele} key={index} className="small text-capitalize">
-                                  {" "}
-                                  {ele}
-                                </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_smallarrow me-2 ">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                          </div>
-                          <div style={{ height: "25px" }}>
-                            {/* {errors.status && (
-                              <p className="validation_message" style={{ fontSize: "0.7rem" }}>
-                                {errors.status}
-                              </p>
-                            )} */}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-lg-6 col-md-5 d-flex align-items-center">
-                          <label>Condition Type</label>
-                        </div>
-                        <div className="position-relative col-lg-6 col-md-7">
-                          <select
-                            // {...register("conditionType", {
-                            //   // required: "condition is required",
-                            // })}
-                            name="conditionType"
-                            value={formValues.conditionType}
-                            onChange={handleChange}
-                            className="form_control_assign custom_input"
-                            style={{ width: "100%" }}
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Condition
-                            </option>
-                            <option
-                              value="new"
-                              selected={"new" === getValues("conditionType") ? true : false}
-                              className="small text-capitalize"
-                            >
-                              New
-                            </option>
-                            <option
-                              value="refurbished"
-                              selected={"refurbished" === getValues("conditionType") ? true : false}
-                              className="small text-capitalize"
-                            >
-                              Refurbished
-                            </option>
-                          </select>
-                          <div className="select_box_smallarrow me-2 ">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                          </div>
-                          <div style={{ height: "25px" }}>
-                            {/* {errors.conditionType && (
-                              <p className="validation_message" style={{ fontSize: "0.7rem" }}>
-                                {errors.conditionType}
-                              </p>
-                            )} */}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="row">
-                        <div className="col-12 d-flex align-items-center justify-content-center">
-                          <div className="py-2 gap-2">
-                            <CustomBtn name="Search" type="submit" />
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   </div>
-                  <div className="mt-4 p-2" style={{ backgroundColor: "white" }}>
+                  {/* <div className="mt-4 p-2" style={{ backgroundColor: "white" }}>
                     <div style={{ color: "black" }}>
                       <h6>Parameters</h6>
                     </div>
@@ -718,6 +757,13 @@ const AssignMaterial = () => {
                         </div>
                       )}
                     </div>
+                  </div> */}
+                  <div>
+                    <FilterStructure
+                      data={material}
+                      selectedFilters={selectedFilters}
+                      onFiltersChange={handleFiltersChange}
+                    />
                   </div>
                 </form>
               </div>
@@ -767,58 +813,119 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {material.length > 0 ? (
+                        {filteredMaterial.length > 0 ? (
                           <>
-                            {" "}
-                            {material.map((materialData, index) => (
-                              <div className="table_data" key={index}>
-                                <div className="col_5p">
-                                  {" "}
-                                  <div className="check_box">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      id={materialData._id}
-                                      onChange={(e) => handleCheckboxChange(e, materialData)}
-                                      checked={selectedList.some(
-                                        (item) => item._id === materialData._id
-                                      )}
-                                    />
+                            {filteredMaterial.length > 0 ? (
+                              <>
+                                {" "}
+                                {filteredMaterial.map((materialData, index) => (
+                                  <div className="table_data" key={index}>
+                                    <div className="col_5p">
+                                      {" "}
+                                      <div className="check_box">
+                                        <input
+                                          className="form-check-input"
+                                          type="checkbox"
+                                          id={materialData._id}
+                                          onChange={(e) => handleCheckboxChange(e, materialData)}
+                                          checked={selectedList.some(
+                                            (item) => item._id === materialData._id
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="col_10p">
+                                      <h6>{index + 1}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.locationId.name}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData.blockId.blockNo}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>
+                                        {materialData?.rackId.rackName
+                                          ? materialData?.rackId.rackName
+                                          : "-"}
+                                      </h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.serialNo}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.modelId?.name}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.categoryId.name}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.reamainingQuantity}</h6>
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="col_10p">
-                                  <h6>{index + 1}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{materialData?.locationId.name}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{materialData.blockId.blockNo}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>
-                                    {materialData?.rackId.rackName
-                                      ? materialData?.rackId.rackName
-                                      : "-"}
-                                  </h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{materialData?.serialNo}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{materialData?.modelId?.name}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{materialData?.categoryId.name}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{materialData?.reamainingQuantity}</h6>
-                                </div>
-                              </div>
-                            ))}
+                                ))}
+                              </>
+                            ) : (
+                              <p className="no_data">Data Not Available</p>
+                            )}
                           </>
                         ) : (
-                          <p className="no_data">Data Not Available</p>
+                          <>
+                            {" "}
+                            {material.length > 0 ? (
+                              <>
+                                {" "}
+                                {material.map((materialData, index) => (
+                                  <div className="table_data" key={index}>
+                                    <div className="col_5p">
+                                      {" "}
+                                      <div className="check_box">
+                                        <input
+                                          className="form-check-input"
+                                          type="checkbox"
+                                          id={materialData._id}
+                                          onChange={(e) => handleCheckboxChange(e, materialData)}
+                                          checked={selectedList.some(
+                                            (item) => item._id === materialData._id
+                                          )}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="col_10p">
+                                      <h6>{index + 1}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.locationId.name}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData.blockId.blockNo}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>
+                                        {materialData?.rackId.rackName
+                                          ? materialData?.rackId.rackName
+                                          : "-"}
+                                      </h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.serialNo}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.modelId?.name}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.categoryId.name}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.reamainingQuantity}</h6>
+                                    </div>
+                                  </div>
+                                ))}
+                              </>
+                            ) : (
+                              <p className="no_data">Data Not Available</p>
+                            )}
+                          </>
                         )}
 
                         {/* </div> */}
@@ -990,100 +1097,7 @@ const AssignMaterial = () => {
                     </div>
                   </div>
                 </div>
-                <div className="row d-flex px-5" style={{ height: "10%" }}>
-                  <div className="col-lg-4 col-md-4 gap-2 ">
-                    <h6 className="mb-1">Select Location</h6>
-                    <select
-                      className="inputBox"
-                      style={{
-                        background: "#f5f5f5",
-                        fontSize: "15px",
-                        border: "0.5px solid grey",
-                        padding: "6px 12px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                      }}
-                      // {...register("userId", {
-                      //   required: "Technician is required",
-                      // })}
-                      onChange={(e) => setUserId(e.target.value)}
-                    >
-                      {/* <option>Roshan</option>
-                  <option>Roshan 2</option> */}
-                      <option value="" className="">
-                        Select Location
-                      </option>
-                      {TechnicianList.map((ele, index) => {
-                        return (
-                          <option
-                            className=""
-                            style={{ fontSize: "14px" }}
-                            value={ele._id}
-                            key={index}
-                          >
-                            {ele.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                  <div className="col-lg-4 col-md-4 gap-2 ">
-                    <h6 className="mb-1">Select Technician</h6>
-                    <select
-                      className="inputBox"
-                      style={{
-                        background: "#f5f5f5",
-                        fontSize: "15px",
-                        border: "0.5px solid grey",
-                        padding: "6px 12px",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                      }}
-                      // {...register("userId", {
-                      //   required: "Technician is required",
-                      // })}
-                      onChange={(e) => setUserId(e.target.value)}
-                    >
-                      {/* <option>Roshan</option>
-                  <option>Roshan 2</option> */}
-                      <option value="" className="">
-                        Select Technician
-                      </option>
-                      {TechnicianList.map((ele, index) => {
-                        return (
-                          <option
-                            className=""
-                            style={{ fontSize: "14px" }}
-                            value={ele._id}
-                            key={index}
-                          >
-                            {ele.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    {/* <div style={{ height: "25px" }}>
-                  {errors.userId && (
-                    <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                      {errors.userId.message}
-                    </p>
-                  )}
-                </div> */}
-                  </div>
-                  {/* <div className="col-lg-4 col-md-4 d-flex align-items-center ">
-                <button
-                  onClick={
-                    () => (stockIds.length >= 1 ? handleAssign() : "")
-                    //   Swal.fire({ text: "Please Select Stock", icon: "warning" })
-                  }
-                  className="savebtn_assign mb-1 pt-3 pb-3"
-                  type="submit"
-                  style={{ height: "50%" }}
-                >
-                  <Image src={saveIcon} alt="saveIcon"></Image>
-                  Assign material
-                </button>
-              </div> */}
+                <div className="row d-flex justify-content-center px-5" style={{ height: "10%" }}>
                   <div className="form_button_wrapper col-lg-4 col-md-4">
                     <CustomBtn name="Assign material" onClick={() => handleAssign()} />
                   </div>

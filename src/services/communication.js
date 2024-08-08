@@ -1575,10 +1575,11 @@ export const communication = {
     }
   },
 
-  getTechnicianList: async () => {
+  getTechnicianList: async (data) => {
     try {
-      return await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-technician`,
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/get-location-wise-users`,
+        data,
 
         {
           headers: {
