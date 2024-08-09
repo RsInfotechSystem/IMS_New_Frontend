@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react'
-import icon from "../../public/images/login-image.png";
+import icon from "../../public/images/AANAD COMPUTER LOGO.png";
 import Image from 'next/image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';

@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon" />
+        <link rel="shortcut icon" href="/images/AANAD COMPUTER LOGO.png" type="image/x-icon" />
       </head>
       <body className={inter.className}>
         <Suspense>
