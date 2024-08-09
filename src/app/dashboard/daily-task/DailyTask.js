@@ -13,9 +13,10 @@ import filterIcon from "../../../../public/images/filter.png";
 import { getCookie, getCookies } from "cookies-next";
 import ReturnMaterial from "./ReturnMaterial";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faClipboardCheck, faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";
 import CustomBtn from "@/common-components/CustomBtn";
 import StockFilter from "@/common-components/StockFilter";
+import { getCookiesData } from "@/utilities/getCookiesData";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -37,35 +38,20 @@ const DailyTask = () => {
     userId: "",
   });
   const [filter, setFilter] = useState({});
-
   const [page, setPage] = useState(1);
   const router = useRouter();
-  const [userId, setUserId] = useState("");
   const [TechnicianList, setTechnicianList] = useState([]);
   const [loader, setLoader] = useState(false);
   const [material, setMaterial] = useState([]);
-  const [roles, setRoles] = useState([]);
   const [timeoutId, setTimeoutId] = useState();
   const [searchString, setSearchString] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
   const [isPageUpdated, setIsPageUpdated] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [roleName, setRoleName] = useState("");
-  const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
-    categoryFilter: false,
-    brandFilter: false,
-    locationFilter: false,
-    modelNameFilter: false,
-    category: [],
-    brand: [],
-    modelName: [],
-    location: [],
-    categoryValue: { keyType: "", keyId: "", keyCount: 0 },
-    brandValue: { keyType: "", keyId: "", keyCount: 0 },
-    modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
-    locationValue: { keyType: "", keyId: "", keyCount: 0 },
-  });
+  useEffect(() => {
+    setRoleName(getCookie("role"));
+  }, []);
   async function fetchAssignMaterial({
     page = 1,
     searchString,
@@ -92,48 +78,10 @@ const DailyTask = () => {
       }
       const serverResponse = await communication.fetchAssignMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        setMaterial(serverResponse?.data.material);
+        setMaterial(serverResponse?.data.data);
         toast.success(serverResponse.data.message);
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
-        // if (isFirstCall) {
-        //   setState({
-        //     category: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({
-        //             categoryId: item.categoryId?._id,
-        //             category: item.categoryId?.name,
-        //           })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //     brand: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({ brandId: item.brandId?._id, brand: item.brandId?.name })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //     modelName: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({ modelId: item.modelId?._id, modelName: item.modelId?.name })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //     location: Array.from(
-        //       new Set(
-        //         serverResponse?.data.material.map((item) =>
-        //           JSON.stringify({
-        //             locationId: item.locationId?._id,
-        //             location: item.locationId?.name,
-        //           })
-        //         )
-        //       )
-        //     ).map((item) => JSON.parse(item)),
-        //   });
-        // }
         if (isSearch) {
           setCurrentPage(1);
         }
@@ -150,6 +98,30 @@ const DailyTask = () => {
       setLoader(false);
     } catch (error) {
       toast.info(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
+
+  async function acknowledgeMaterial(stockDetails) {
+    // console.log(stockDetails, "stockDetails");
+    try {
+      setLoader(true);
+      const serverResponse = await communication.acknowledgeMaterial({
+        jobNo: stockDetails,
+      });
+      if (serverResponse?.data?.status === "SUCCESS") {
+        toast.success(serverResponse.data.message);
+        fetchAssignMaterial(1, searchString);
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        toast.info(serverResponse.data.message);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.error(error.message);
       setLoader(false);
     }
   }
@@ -174,11 +146,9 @@ const DailyTask = () => {
       setLoader(false);
     }
   };
-  useEffect(() => {
-    // technicianList();
-    setRoleName(getCookies("role"));
-  }, []);
-
+  const handleDeleteMaterial = (id) => {
+    setSelectedList(selectedList.filter((item) => item._id !== id));
+  };
   const handleSearch = (e) => {
     setSearchString(e.target.value);
     let isSearch = true;
@@ -188,23 +158,6 @@ const DailyTask = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
-  useEffect(() => {
-    let isSearch = true;
-    // clearTimeout(timeoutId);
-    // let _timeOutId = setTimeout(() => {
-    fetchAssignMaterial({
-      page: 1,
-      isSearch,
-      ...filter,
-    });
-    // }, 2000);
-    // setTimeoutId(_timeOutId);
-  }, [
-    state.categoryValue.keyId,
-    state.brandValue.keyId,
-    state.locationValue.keyId,
-    state.modelNameValue.keyId,
-  ]);
   useEffect(() => {
     fetchAssignMaterial({ page: currentPage, searchString, isFirstCall: true, ...filter });
   }, [isPageUpdated]);
@@ -335,9 +288,16 @@ const DailyTask = () => {
               <div className="col_50p">
                 <h5>Task Status</h5>
               </div>
-              <div className="col_30p">
-                <h5>Action</h5>
-              </div>
+              {roleName == "admin" && material.map((item) => item?.taskStatus) == "assigned" && (
+                <div className="col_20p">
+                  <h5>Action</h5>
+                </div>
+              )}
+              {roleName !== "admin" && material.map((item) => item?.taskStatus) == "assigned" && (
+                <div className="col_20p">
+                  <h5>Action</h5>
+                </div>
+              )}
             </div>
             {material.length > 0 ? (
               <>
@@ -349,7 +309,11 @@ const DailyTask = () => {
                     <div className="col_50p">
                       <h6
                         style={{ color: "#0000FF", cursor: "pointer" }}
-                        onClick={() => router.push("/dashboard/daily-task/return-material")}
+                        onClick={() =>
+                          router.push(
+                            `/dashboard/daily-task/return-material?jobId=${stockDetails?.jobNo}`
+                          )
+                        }
                       >
                         {stockDetails?.jobNo}
                       </h6>{" "}
@@ -369,66 +333,66 @@ const DailyTask = () => {
                     <div className="col_50p">
                       <h6>{stockDetails?.taskStatus}</h6>
                     </div>
-                    <div className="col_30p">
-                      <h6 className="action_wrraper">
-                        <div title="edit">
-                          <svg
-                            title={`${stockDetails.isActive ? "Update" : ""}`}
-                            className={`${
-                              stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
-                            }`}
-                            onClick={() => router.push("/dashboard/assign-material")}
-                            width="27"
-                            height="27"
-                            viewBox="0 0 25 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clip-path="url(#clip0_279_5204)">
-                              <path
-                                d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                                stroke="#0D6EFD"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                              <path
-                                d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                                stroke="#0D6EFD"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_279_5204">
-                                <rect
-                                  width="15"
-                                  height="15"
-                                  fill="white"
-                                  transform="translate(5 5)"
-                                />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                        </div>
-                        <div className="form-switch ">
-                          <input
-                            class="form-check-input cursor-pointer"
-                            type="checkbox"
-                            checked={stockDetails.isActive || false}
-                            id={`toggleSwitch${stockDetails._id}`}
-                            onChange={(event) =>
-                              setModalStates((pre) => ({
-                                ...pre,
-                                action: stockDetails.isActive ? "disable" : "enable",
-                                locationId: stockDetails._id,
-                                deleteLocation: true,
-                              }))
-                            }
-                            style={{ width: "35px", height: "15px" }}
-                          />
-                        </div>
-                      </h6>
-                    </div>
+                    {roleName == "admin" && stockDetails?.taskStatus == "assigned" && (
+                      <div className="col_20p me-1">
+                        <h6 className="action_wrraper">
+                          <>
+                            {" "}
+                            <div title="edit">
+                              <svg
+                                title={`${stockDetails.isActive ? "Update" : ""}`}
+                                className={`${
+                                  stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
+                                }`}
+                                onClick={() => router.push("/dashboard/assign-material")}
+                                width="27"
+                                height="27"
+                                viewBox="0 0 25 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g clip-path="url(#clip0_279_5204)">
+                                  <path
+                                    d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                    stroke="#0D6EFD"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  />
+                                  <path
+                                    d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                    stroke="#0D6EFD"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_279_5204">
+                                    <rect
+                                      width="15"
+                                      height="15"
+                                      fill="white"
+                                      transform="translate(5 5)"
+                                    />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </div>
+                            <div
+                              title="Delete"
+                              onClick={() => handleDeleteMaterial(stockDetails._id)}
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </div>
+                          </>
+                        </h6>
+                      </div>
+                    )}
+
+                    {roleName !== "admin" && stockDetails?.taskStatus == "assigned" && (
+                      <div title="Accept" onClick={(e) => acknowledgeMaterial(stockDetails?.jobNo)}>
+                        <FontAwesomeIcon icon={faClipboardCheck} />
+                      </div>
+                    )}
                   </div>
                 ))}
               </>

@@ -6,7 +6,15 @@ import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import SelectBox from "@/common-components/Select";
 
-import { getBrands, getCategory, getCategoryWiseBrand, getLocations, getLocationWiseBlock, getParameter, getRackPartation } from "@/services/commonApis";
+import {
+  getBrands,
+  getCategory,
+  getCategoryWiseBrand,
+  getLocations,
+  getLocationWiseBlock,
+  getParameter,
+  getRackPartation,
+} from "@/services/commonApis";
 import { communication, getServerUrl } from "@/services/communication";
 import { toast } from "react-toastify";
 import ButtonLoader from "@/common-components/ButtonLoader";
@@ -15,10 +23,11 @@ import Swal from "sweetalert2";
 import { stockStatus } from "@/helper/stockStatusArray";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Button from "@/common-components/Button";
 
 const AcceptMaterial = () => {
   const router = useRouter();
-  const [brandName,setBrandName] = useState("")
+  const [brandName, setBrandName] = useState("");
   const [loader, setLoader] = useState(false);
   const [isPartationPresent, setIsPartationPresent] = useState("");
   const [locations, setLocations] = useState([]);
@@ -53,7 +62,6 @@ const AcceptMaterial = () => {
   const rackId = watch("rackId");
   const brandId = watch("brandId");
 
-
   const onSubmit = async (value) => {
     try {
       setLoader(true);
@@ -66,20 +74,20 @@ const AcceptMaterial = () => {
       };
       let response = await communication.updateStockBeforeAccept(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-         toast.success(response?.data?.message);
+        toast.success(response?.data?.message);
         // acceptMaterial();
         router.push("/dashboard/stock-management");
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
         router.push("/");
       } else if (response?.data?.status == "FAILED") {
-        toast.info(response?.data?.message)
+        toast.info(response?.data?.message);
       } else {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
       }
       setLoader(false);
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message);
 
       setLoader(false);
     }
@@ -112,17 +120,16 @@ const AcceptMaterial = () => {
         setValue("blockId", stockData?.blockId._id);
         setValue("partitionName", stockData?.partitionName);
         setBrandName(stockData?.brandId?.name);
-        getCategoryWiseBrand(stockData?.categoryId?._id, setLoader, router, setBrandsData)
+        getCategoryWiseBrand(stockData?.categoryId?._id, setLoader, router, setBrandsData);
         setPartition(stockData.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
         router.push("/login");
       } else {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
       }
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
-
+      toast.info(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
@@ -137,7 +144,7 @@ const AcceptMaterial = () => {
       const parameterDetails = category.find((ele) => ele.categoryId === id);
       setValue("parameterId", parameterDetails?._id);
       setParameter(parameterDetails?.parameter ?? []);
-      getCategoryWiseBrand(id, setLoader, router, setBrandsData)
+      getCategoryWiseBrand(id, setLoader, router, setBrandsData);
     } else {
       setParameter([]);
       setValue("parameterId", "");
@@ -195,515 +202,327 @@ const AcceptMaterial = () => {
     <>
       {loader && <Loader />}
       <div className="top_header">
-        <div className="tab_title">Accept Material </div>
+        <div className="tab_title">Return Material</div>
       </div>
-      <div className="form_layout">
-        <div className="form_tabs_wrapper">
-          
-        </div>
-        <>
-          <div className="form_main" style={{ height: "70%" }}>
-            <div className="row">
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Select Location </label>
-                <div className="position-relative">
-
-                <select
-                  name="locationId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("locationId", {
-                    required: "locationId is required",
-                  })}
-                  disabled
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Location
-                  </option>
-                  {locations.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele._id}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.name}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+      <form>
+        <div className="form_layout">
+          <div className="form_list_layout_wrapper my-4">
+            <div className="d-flex align-items-center justify-content-between">
+              <p>Non-Material List</p>
+            </div>
+            {/* table  */}
+            <div className="table_wrapper my-3">
+              <div className="table_main">
+                <div className="table_section pi_product_table">
+                  <div className="table_header">
+                    <div className="col_20p">
+                      <div className="check_box">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="selectAllCheckbox"
+                        />
                       </div>
-                      </div>
+                    </div>
 
-                <div style={{ height: "5px" }}>
-                    {errors.locationId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                        {errors.locationId.message}
-                      </p>
-                    )}
+                    <div className="col_25p">
+                      <h5>Sr. No.</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Description</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Quantity</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Warranty</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Location</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5 className="action_wrraper">Note</h5>
+                    </div>
+
+                    {/* <div className="col_20p">
+                  <h5 className="action_wrraper">Remove</h5>
+                </div> */}
                   </div>
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Select Block </label>
-                <div className="position-relative">
-
-                <select
-                  name="blockId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("blockId", {
-                    required: "Block is required",
-                  })}
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Block
-                  </option>
-                  {blocks.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele._id}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.blockNo}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                      </div>
-                <div style={{ height: "5px" }}>
-                    {errors.blockId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                        {errors.blockId.message}
-                      </p>
-                    )}
-                  </div>
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Select Rack </label>
-                <div className="position-relative">
-
-                <select
-                  name="rackId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("rackId", {
-                    required: "Rack is required",
-                  })}
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Rack
-                  </option>
-                  {racks?.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele._id}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.rackName}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                      </div>
-                <div style={{ height: "5px" }}>
-                        {errors.rackId && (
-                          <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                            {errors.rackId.message}
-                          </p>
+                  {/* {modelList?.materialDetails?.length > 0 ? (
+                modelList?.materialDetails?.map((product, index) => {
+                  return (
+                    <div className="table_data" key={index}>
+                      <div className="col_20p">
+                        {attachedDescriptions.includes(product._id) ? (
+                          <div className="check_box">
+                            <FontAwesomeIcon icon={faCheck} className="text-success" />
+                          </div>
+                        ) : (
+                          <div className="check_box">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              id={product._id}
+                              onChange={(e) => handleCheckboxChange(e)}
+                              checked={selectedCheckboxes.includes(product._id)}
+                              disabled={attachedDescriptions.includes(product._id)}
+                            />
+                          </div>
                         )}
+                      </div>
+                      <div className="col_25p">
+                        <h6>{index + 1}</h6>
+                      </div>
+
+                      <div className="col_25p">
+                        <h6>{product?.materialDescription}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{product?.quantity ? product?.quantity : "--"}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{product?.warranty ? product?.warranty : "--"}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>
+                          {modelList?.orderLocation?.name ? modelList?.orderLocation?.name : "--"}
+                        </h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <small className="text-center text-secondary p-2 small d-block">
+                  Add order to see list
+                </small>
+              )} */}
                 </div>
               </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Select Partation </label>
-                <div className="position-relative">
-
-                <select
-                  name="partitionName"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("partitionName", {
-                    required: "Partition is required",
-                  })}
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Partation
-                  </option>
-                  {rackPartation.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele._id}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.partitionName}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                      </div>
-                <div style={{ height: "5px" }}>
-                        {errors.partitionName && (
-                          <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                            {errors.partitionName.message}
-                          </p>
-                        )}
-                </div>
-              </div>
-
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Category </label>
-                <div className="position-relative">
-
-                <select
-                  name="categoryId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("categoryId", {
-                    required: "Category is required",
-                  })}
-                  disabled
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Category
-                  </option>
-                  {category.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele.categoryId}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.name}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                      </div>
-                <div style={{ height: "5px" }}>
-                    {errors.categoryId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                        {errors.categoryId.message}
-                      </p>
-                    )}
-                  </div>
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Brand/Make</label>
-                <InputBox
-                  value={brandName}
-                  disable
-                />
-                {/* <select
-                  name="brandId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("brandId", {
-                    required: "Brand is required",
-                  })}
-                >
-                  <option>{brandName}</option> */}
-                  {/* <option value="" className="text-secondary text-lowercase">
-                    Select Brand
-                  </option>
-                  {brandsData.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele._id}
-                        key={index}
-                      >
-                        {" "}
-                        {ele.name}
-                      </option>
-                    );
-                  })} */}
-                {/* </select> */}
-                <div style={{ height: "5px" }}>
-                    {errors.brandId && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                        {errors.brandId.message}
-                      </p>
-                    )}
-                  </div>
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Condition Type</label>
-                <div className="position-relative">
-
-                <select
-                  name="conditionType"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("conditionType", {
-                    required: "Condition is required",
-                  })}
-                  disabled
-                >
-                   <option value="">Select Condition</option>
-                    <option value="new">New</option>
-                    <option value="refurbished">Refurbished</option>
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                      </div>
-                <div style={{ height: "5px" }}>
-                    {errors.conditionType && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                        {errors.conditionType.message}
-                      </p>
-                    )}
-                  </div>
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Status </label>
-                <div className="position-relative">
-
-                <select
-                  name="status"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("status", {
-                    required: "Status is required",
-                  })}
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Status
-                  </option>
-                  {stockStatus.map((ele, index) => {
-                    return (
-                      <option
-                        className="small text-capitalize"
-                        value={ele}
-                        key={index}
-                      >
-                        {" "}
-                        {ele}
-                      </option>
-                    );
-                  })}
-                </select>
-                <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                      </div>
-                <div style={{ height: "5px" }}>
-                    {errors.status && (
-                      <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                        {errors.status.message}
-                      </p>
-                    )}
-                  </div>
-              </div>
-
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Serial No </label>
-                <InputBox
-                  register={{
-                    ...register("serialNo", {
-                      required: "SerialNo is required",
-                    }),
-                  }}
-                  disable
-                  errors={errors.serialNo}
-                />
-              </div>{" "}
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Quantity </label>
-                <InputBox
-                  register={{
-                    ...register("quantity", { required: "Quantity is required" }),
-                  }}
-                  errors={errors.quantity}
-                  disable
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Model Name  </label>
-                <InputBox
-                  register={{
-                    ...register("modelName", { required: "Model Name Price is required" }),
-                  }}
-                  errors={errors.modelName}
-                  disable
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Item Code</label>
-                <InputBox
-                  register={{
-                    ...register("itemCode", {
-                      required: "Item Code is required",
-                    }),
-                  }}
-                  disable
-                  errors={errors.itemCode}
-                />
-              </div>
-
-              {/* <div className="row m-0 mt-2 mb-3 ps-5"> */}
-                {parameter?.map((item, index) => (
-                  <div className="col-lg-3 col-md-6 input_wrapper" key={index}>
-                      <label>{item}</label>
-                      <InputBox
-                        register={{
-                          ...register(`parameter[${item}]`),
-                        }}
-                        disable
-                      />
-                  </div>
-                ))}
-              {/* </div> */}
-
-              {/* <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Processor Details </label>
-                <InputBox
-                  register={{
-                    ...register("itemCode", {
-                      required: "Item Code is required",
-                    }),
-                  }}
-                  errors={errors.itemCode}
-                />
-              </div>{" "}
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>No. of Cores per Processor </label>
-                <InputBox
-                  register={{
-                    ...register("retailPrice", { required: "Retail Price is required" }),
-                  }}
-                  errors={errors.retailPrice}
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>No. of Processors</label>
-                <InputBox
-                  register={{
-                    ...register("wholeSalePrice", { required: "Wholesale Price is required" }),
-                  }}
-                  errors={errors.wholeSalePrice}
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Total No. of Cores</label>
-                <InputBox
-                  register={{
-                    ...register("displayPrice", {
-                      required: "Display Wholesale Price is required",
-                    }),
-                  }}
-                  errors={errors.displayPrice}
-                />
-              </div>
-
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Ram </label>
-                <InputBox
-                  register={{
-                    ...register("quantity", {
-                      required: "Quantity is required",
-                    }),
-                  }}
-                  errors={errors.quantity}
-                />
-              </div>{" "}
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Storage Details</label>
-                <InputBox
-                  register={{
-                    ...register("displayPrice", {
-                      required: "Display Wholesale Price is required",
-                    }),
-                  }}
-                  errors={errors.displayPrice}
-                />
-              </div>
-
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Raid Card </label>
-                <InputBox
-                  register={{
-                    ...register("quantity", {
-                      required: "Quantity is required",
-                    }),
-                  }}
-                  errors={errors.quantity}
-                />
-              </div>{" "}
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Console Port </label>
-                <InputBox
-                  register={{
-                    ...register("retailPrice", { required: "Retail Price is required" }),
-                  }}
-                  errors={errors.retailPrice}
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Power Supply Details/Part No. </label>
-                <InputBox
-                  register={{
-                    ...register("wholeSalePrice", { required: "Wholesale Price is required" }),
-                  }}
-                  errors={errors.wholeSalePrice}
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Bays Description </label>
-                <InputBox
-                  register={{
-                    ...register("retailPrice", { required: "Retail Price is required" }),
-                  }}
-                  errors={errors.retailPrice}
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Fan Unit/Part No.</label>
-                <InputBox
-                  register={{
-                    ...register("wholeSalePrice", { required: "Wholesale Price is required" }),
-                  }}
-                  errors={errors.wholeSalePrice}
-                />
-              </div> */}
-              
-
             </div>
           </div>
-          <div className="form_button_wrapper gap-2">
-            <CustomBtn
-              name="Accept"
-              onClick={handleSubmit(onSubmit)}
-            />
-            <CustomBtn
-              name="Back"
-              onClick={() => {
-                router.back();
-              }}
-            />
+          {/* ---------------------------sales order list of discription end----------------------------------------------------------*/}
+
+          {/* <div> */}
+          {/* ---------------------------filter for material----------------------------------------------------------*/}
+          {/* <div className="form_list_layout_wrapper"> */}
+          {/* <div className="d-flex align-items-center justify-content-between py-2"> */}
+
+          {/* ---------------------------list of material----------------------------------------------------------*/}
+          <div className="form_list_layout_wrapper my-4">
+            <div className="d-flex align-items-center justify-content-between">
+              <p>Material List</p>
+            </div>
+            {/* table */}
+            <div className="table_wrapper my-3">
+              <div className="table_main">
+                <div className="table_section pi_product_table">
+                  <div className="table_header">
+                    <div className="col_20p">
+                      <div className="check_box">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          // id="selectAllCheckbox"
+                          // onChange={(e) => handleSelectAllChange(e)}
+                          // checked={selectAllChecked}
+                        />
+                      </div>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Sr. No.</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Location</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Category</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Brand</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Block</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Rack</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Model</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Serial No</h5>
+                    </div>
+                    <div className="col_20p">
+                      <h5>Item Code</h5>
+                    </div>
+                    <div className="col_20p">
+                      <h5>Quantity</h5>
+                    </div>
+                  </div>
+                  {/* {material?.length > 0 ? (
+                          material?.map((product, index) => {
+                            return (
+                              <div className="table_data" key={index}>
+                                <div className="col_20p">
+                                  {" "}
+                                  <div className="check_box">
+                                    <input
+                                      className="form-check-input"
+                                      type="checkbox"
+                                      checked={selectedMaterials.includes(product._id)}
+                                      onChange={() => handleMaterialSelect(product._id)}
+                                    />
+                                  </div>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{index + 1}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.location}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.category}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.brand}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.block}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.rack}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.modelId}</h6>
+                                </div>
+                                <div className="col_25p">
+                                  <h6>{product?.serialNo}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{product?.itemCode}</h6>
+                                </div>
+                                <div className="col_20p">
+                                  <h6>{product?.quantity}</h6>
+                                </div>
+                              </div>
+                            );
+                          })
+                        ) : (
+                          <small className="text-center text-secondary p-2 small d-block">
+                            Add order to see list
+                          </small>
+                        )} */}
+                </div>
+              </div>
+            </div>
           </div>
-        </>
+          <Button
+            //   onClick={handleAttachMaterials}
+            //   disabled={selectedMaterials.length === 0}
+            name={" Add To Cart"}
+          ></Button>
+          {/* </div> */}
+          {/* </div> */}
+          {/* </div> */}
+          {/* ---------------------------filter for material end----------------------------------------------------------*/}
+          {/* ---------------------------attached material----------------------------------------------------------*/}
+        </div>
+      </form>
+      <div className="form_list_layout_wrapper my-4">
+        <div className="d-flex align-items-center justify-content-between">
+          <p>Sales Order Item Preview</p>
+        </div>
+        {/* table */}
+        <div className="table_wrapper my-3">
+          <div className="table_main">
+            <div className="table_section pi_product_table">
+              <div className="table_header">
+                <div className="col_20p">
+                  <div className="check_box">
+                    <input className="form-check-input" type="checkbox" />
+                  </div>
+                </div>
+                <div className="col_25p">
+                  <h5>Sr. No.</h5>
+                </div>
+                <div className="col_25p">
+                  <h5>Category</h5>
+                </div>
+                <div className="col_25p">
+                  <h5>Brand</h5>
+                </div>
+                <div className="col_25p">
+                  <h5>Model</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 className="action_wrraper">Serial No</h5>
+                </div>
+                <div className="col_20p">
+                  <h5 className="action_wrraper">Item Code</h5>
+                </div>
+                <div className="col_20p">
+                  <h5 className="action_wrraper">Action</h5>
+                </div>
+              </div>
+              {/* {attachedMaterials?.length > 0 ? (
+                    attachedMaterials?.map((item, index) => {
+                      return (
+                        <div className="table_data" key={index}>
+                          <div className="col_20p">
+                            {" "}
+                            <div className="check_box">
+                              <input className="form-check-input" type="checkbox" />
+                            </div>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{index + 1}</h6>
+                          </div>
+
+                          <div className="col_25p">
+                            <h6>{item?.category}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{item?.brand}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{item?.modelId}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6 className="action_wrraper">{item?.serialNo}</h6>
+                          </div>
+                          <div className="col_20p">
+                            <h6 className="action_wrraper ">{item?.itemCode}</h6>
+                          </div>
+                          <div className="col_20p">
+                            <Button
+                              onClick={() => handleRemoveAttachedMaterial(item._id)}
+                              name={"Delete"}
+                              className="btn-danger"
+                            >
+                              <FontAwesomeIcon icon={faTrash} />
+                            </Button>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <small className="text-center text-secondary p-2 small d-block">
+                      Add order to see list
+                    </small>
+                  )} */}
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* ---------------------------attached material end----------------------------------------------------------*/}
+
+      {/* ---------------------------send attached material----------------------------------------------------------*/}
+      <div className="d-flex align-items-center justify-content-center gap-3 my-3">
+        <Button className="btn-success" name={"Accept Material"}></Button>
+        <Button className="btn-success" name={"Reject Material"}></Button>
       </div>
     </>
   );

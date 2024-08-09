@@ -1730,6 +1730,23 @@ export const communication = {
       throw error;
     }
   },
+  acknowledgeMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/acknowledge-assigned-material`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
 
   // ==============Transfer Approval =====================
   approvedTransferMaterials: async (data) => {
@@ -1954,7 +1971,7 @@ export const communication = {
   fetchAssignMaterial: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/fetched-assigned-material-list`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-assigned-task-list`,
         data,
 
         {
@@ -1973,6 +1990,23 @@ export const communication = {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-by-id`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getReturnMaterialByJob: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-by-jobno`,
         data,
 
         {

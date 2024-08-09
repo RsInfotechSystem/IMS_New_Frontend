@@ -326,11 +326,11 @@ const StockManagement = () => {
               <div className="col_20p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_30p">
-                <h5>Date</h5>
-              </div>
               <div className="col_50p">
                 <h5>Job No</h5>
+              </div>
+              <div className="col_30p">
+                <h5>Date</h5>
               </div>
               <div className="col_70p">
                 <h5>Assign To</h5>
@@ -356,16 +356,16 @@ const StockManagement = () => {
                       <div className="col_20p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
-                      <div className="col_30p">
+                      <div className="col_50p">
                         <h6
                           style={{ color: "#0000FF", cursor: "pointer" }}
-                          onClick={() => router.push("/dashboard/daily-task/return-material")}
+                          onClick={() => router.push("/dashboard/stock-management/accept-material")}
                         >
-                          {stockDetails?.categoryId?.name}
-                        </h6>{" "}
+                          {stockDetails?.brandId?.name}
+                        </h6>
                       </div>
-                      <div className="col_50p">
-                        <h6>{stockDetails?.brandId?.name}</h6>
+                      <div className="col_30p">
+                        <h6>{stockDetails?.categoryId?.name}</h6>{" "}
                       </div>
                       <div className="col_70p">
                         <h6>{stockDetails?.locationId.name}</h6>

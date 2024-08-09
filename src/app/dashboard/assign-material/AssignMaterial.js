@@ -770,6 +770,72 @@ const AssignMaterial = () => {
             </div>
             <div className="col-12 col-lg-8 col-md-8">
               <div className="row">
+                <div className="col-lg-6 col-md-6 input_wrapper">
+                  <label>Select Status</label>
+                  <div className="position-relative">
+                    <select
+                      name="locationId"
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                      {...register("locationId", {
+                        required: "locationId is required",
+                      })}
+                      // disabled={modalStates.isView}
+                    >
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {locationList.map((ele, index) => {
+                        return (
+                          <option className="small text-capitalize" value={ele._id} key={index}>
+                            {" "}
+                            {ele.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
+                  <div style={{ height: "5px" }}>
+                    {errors.locationId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors.locationId.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                <div className="col-lg-6 col-md-6 input_wrapper">
+                  <label>Select Condition</label>
+                  <div className="position-relative">
+                    <select
+                      name="locationId"
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                      onChange={(e) => setUserId(e.target.value)}
+                    >
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {TechnicianList.map((ele, index) => {
+                        return (
+                          <option className="small text-capitalize" value={ele._id} key={index}>
+                            {ele.name}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
+                  <div style={{ height: "5px" }}>
+                    {errors.locationId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors.locationId.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="row">
                 <div className="col-12 mb-1" style={{ height: "40dvh" }}>
                   <div className="table_wrapper table_wrapper_assign">
                     <div className="table_main p-0" style={{ minWidth: "1200px" }}>
@@ -803,10 +869,16 @@ const AssignMaterial = () => {
                             <h5>Serial No.</h5>
                           </div>
                           <div className="col_20p">
+                            <h5>Item Code</h5>
+                          </div>
+                          <div className="col_20p">
                             <h5>Model Name</h5>
                           </div>
                           <div className="col_20p">
                             <h5>Category</h5>
+                          </div>
+                          <div className="col_20p">
+                            <h5>Brand</h5>
                           </div>
                           <div className="col_20p">
                             <h5>Quantity</h5>
@@ -821,7 +893,6 @@ const AssignMaterial = () => {
                                 {filteredMaterial.map((materialData, index) => (
                                   <div className="table_data" key={index}>
                                     <div className="col_5p">
-                                      {" "}
                                       <div className="check_box">
                                         <input
                                           className="form-check-input"
@@ -854,10 +925,16 @@ const AssignMaterial = () => {
                                       <h6>{materialData?.serialNo}</h6>
                                     </div>
                                     <div className="col_20p">
+                                      <h6>{materialData?.itemCode}</h6>
+                                    </div>
+                                    <div className="col_20p">
                                       <h6>{materialData?.modelId?.name}</h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.categoryId.name}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.brandId.name}</h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.reamainingQuantity}</h6>
