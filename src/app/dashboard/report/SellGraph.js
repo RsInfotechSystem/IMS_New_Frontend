@@ -84,15 +84,7 @@ const SellGraph = () => {
         backgroundColor: "#2D3E9A",
       },
     },
-    hover: {
-      mode: "index",
-      intersect: false,
-    },
-    interaction: {
-      mode: "index",
-      axis: "x",
-      intersect: false,
-    },
+   
     responsive: true,
     scales: {
       y: {

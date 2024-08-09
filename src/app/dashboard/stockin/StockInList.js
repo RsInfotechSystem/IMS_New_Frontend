@@ -17,7 +17,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import showIcon from "../../../../public/images/showIcon.png";
 import password from "../../../../public/images/password.png";
 import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
-import { getLocations, getParameter } from "@/services/commonApis";
+import { getLocations, getParameter, getRackPartation } from "@/services/commonApis";
 import filterIcon from "../../../../public/images/filter.png";
 import InventoryView from "../inventory/InventoryView";
 import { formatDate } from "@/helper/formatDate";
@@ -371,61 +371,61 @@ const StockInList = () => {
   // }, [isPageUpdated]);
 
 
-  useEffect(() => {
-    const id = getValues("locationId");
-    if (id) {
-      getLocationWiseBlock(id, setLoader, router, setBlocks);
-    }
-  }, [location]);
-  useEffect(() => {
-    const id = getValues("brandId");
-    if (id) {
-      getBrandWiseModel(id);
-    }
-  }, [brandId]);
+  // useEffect(() => {
+  //   const id = getValues("locationId");
+  //   if (id) {
+  //     getLocationWiseBlock(id, setLoader, router, setBlocks);
+  //   }
+  // }, [location]);
+  // useEffect(() => {
+  //   const id = getValues("brandId");
+  //   if (id) {
+  //     getBrandWiseModel(id);
+  //   }
+  // }, [brandId]);
 
-  useEffect(() => {
-    const id = getValues("blockId");
-    if (id) {
-      const rackDetails = blocks.find((ele) => ele._id === id);
-      setRacks(rackDetails?.rackId ?? []);
-    } else {
-      setRacks([]);
-    }
-  }, [rack]);
+  // useEffect(() => {
+  //   const id = getValues("blockId");
+  //   if (id) {
+  //     const rackDetails = blocks.find((ele) => ele._id === id);
+  //     setRacks(rackDetails?.rackId ?? []);
+  //   } else {
+  //     setRacks([]);
+  //   }
+  // }, [rack]);
 
-  useEffect(() => {
-    const id = getValues("categoryId");
-    if (id) {
-      const parameterDetails = category.find((ele) => ele.categoryId === id);
-      console.log(parameterDetails, "rrrr paramter details");
-      setValue("parameterId", parameterDetails?._id);
-      setParameter(parameterDetails.parameter ?? []);
-    } else {
-      setParameter([]);
-      setValue("parameterId", "");
-    }
-  }, [categoryId]);
-  useEffect(() => {
-    const id = getValues("rackId");
-    if (id) {
-      getRackPartation(id, setLoader, router, setRackPartation);
-    } else {
-      setRackPartation([]);
-    }
-  }, [_rackIdForPrtn]);
-  useEffect(() => {
-    getLocations(setLoader, router, setLocations);
-    getParameter(setLoader, router, setCategory);
-    // getBrands(setLoader, router, setBrands);
-    // getAllModels(setLoader, router, setModelList);
-  }, []);
-  useEffect(() => {
-    const id = getValues("categoryId");
-    if (id) {
-      getCategoryWiseBrand(id, setLoader, router, setBrandsData);
-    }
-  }, [categoryId]);
+  // useEffect(() => {
+  //   const id = getValues("categoryId");
+  //   if (id) {
+  //     const parameterDetails = category.find((ele) => ele.categoryId === id);
+  //     setValue("parameterId", parameterDetails?._id);
+  //     setParameter(parameterDetails.parameter ?? []);
+  //   } else {
+  //     setParameter([]);
+  //     setValue("parameterId", "");
+  //   }
+  // }, [categoryId]);
+  // useEffect(() => {
+  //   const id = getValues("rackId");
+  //   if (id) {
+  //     getRackPartation(id, setLoader, router, setRackPartation);
+  //   } else {
+  //     setRackPartation([]);
+  //   }
+  // }, [_rackIdForPrtn]);
+  // useEffect(() => {
+  //   getLocations(setLoader, router, setLocations);
+  //   getParameter(setLoader, router, setCategory);
+  //   // getBrands(setLoader, router, setBrands);
+  //   // getAllModels(setLoader, router, setModelList);
+  // }, []);
+  // useEffect(() => {
+  //   const id = getValues("categoryId");
+  //   if (id) {
+  //     getCategoryWiseBrand(id, setLoader, router, setBrandsData);
+  //   }
+  // }, [categoryId]);
+
   useEffect(() => {
     getStockList({ page: currentPage, searchString, isFirstCall: true });
   }, [isPageUpdated]);

@@ -1,5 +1,6 @@
 "use client";
 import CustomBtn from "@/common-components/CustomBtn";
+import CustomTextArea from "@/common-components/CustomTextArea";
 import InputBox from "@/common-components/InputBox";
 import Loader from "@/common-components/Loader";
 import SelectBox from "@/common-components/Select";
@@ -300,8 +301,7 @@ function CreateProduct({ data }) {
               </div>
               <div className="input_wrapper col-lg-12">
                 <label>Description*</label>
-                <InputBox
-                  type={"text"}
+                <CustomTextArea
                   register={{
                     ...register("description", {
                       required: "Description is required",

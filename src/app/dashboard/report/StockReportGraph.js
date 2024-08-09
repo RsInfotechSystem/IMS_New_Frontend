@@ -63,8 +63,7 @@ const StockReportGraph = () => {
 
       let materialDetails = state._categoryData[clickedElementIndex];
       router.push(
-        `/dashboard/report/report-details?reportData=${
-          materialDetails._id
+        `/dashboard/report/report-details?reportData=${materialDetails._id
         }&reportType=${"category"}`
       );
     }
@@ -124,8 +123,7 @@ const StockReportGraph = () => {
 
         let materialDetails = state._categoryData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${
-            materialDetails._id
+          `/dashboard/report/report-details?reportData=${materialDetails._id
           }&reportType=${"category"}&selectedType=${materialDetails?.category}`
         );
       }
@@ -159,8 +157,7 @@ const StockReportGraph = () => {
 
         let materialDetails = state._brandData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${
-            materialDetails._id
+          `/dashboard/report/report-details?reportData=${materialDetails._id
           }&reportType=${"brand"}&selectedType=${materialDetails?.brand}`
         );
       }
@@ -192,8 +189,7 @@ const StockReportGraph = () => {
         const clickedElementIndex = elements[0].index;
         let materialDetails = state._locationData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${
-            materialDetails?._id
+          `/dashboard/report/report-details?reportData=${materialDetails?._id
           }&reportType=${"location"}&selectedType=${materialDetails?.location}`
         );
       }
@@ -225,8 +221,7 @@ const StockReportGraph = () => {
         const clickedElementIndex = elements[0].index;
         let materialDetails = state._stockStatusData[clickedElementIndex];
         router.push(
-          `/dashboard/report/report-details?reportData=${
-            materialDetails?._id
+          `/dashboard/report/report-details?reportData=${materialDetails?._id
           }&reportType=${"status"}&selectedType=${materialDetails?.stockStatus}`
         );
       }
@@ -391,35 +386,17 @@ const StockReportGraph = () => {
       {modalStates?.filter && (
         <StockFilter
           setModalStates={setModalStates}
-          // apiCall={getCategoryWiseBrandCount}
-          // filter={filter}
-          // setFilter={setFilter}
+        // apiCall={getCategoryWiseBrandCount}
+        // filter={filter}
+        // setFilter={setFilter}
         />
       )}
 
-      <div
-        style={{
-          width: "35%",
-          margin: "20px",
-          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-          padding: "15px",
-          borderRadius: "10px",
-          backgroundColor: "white",
-        }}
-      >
+      <div className="report_card">
         <h5 style={{ textAlign: "center" }}>Category Wise Stock</h5>
         <Pie data={pieData1} options={optionsCategory} />
       </div>
-      <div
-        style={{
-          width: "35%",
-          margin: "20px",
-          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-          padding: "15px",
-          borderRadius: "10px",
-          backgroundColor: "white",
-        }}
-      >
+      <div className="report_card">
         {/* <div className="buttons_wrapper">
           <CustomBtn
             name={"Filter"}
@@ -443,29 +420,11 @@ const StockReportGraph = () => {
         <h5 style={{ textAlign: "center" }}>Brand Wise Stock</h5>
         <Pie data={pieData2} options={optionsBrand} />
       </div>
-      <div
-        style={{
-          width: "35%",
-          margin: "20px",
-          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-          padding: "15px",
-          borderRadius: "10px",
-          backgroundColor: "white",
-        }}
-      >
+      <div className="report_card">
         <h5 style={{ textAlign: "center" }}>Status Wise Stock</h5>
         <Pie data={pieData3} options={optionsStatus} />
       </div>
-      <div
-        style={{
-          width: "35%",
-          margin: "20px",
-          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
-          padding: "15px",
-          borderRadius: "10px",
-          backgroundColor: "white",
-        }}
-      >
+      <div className="report_card">
         <h5 style={{ textAlign: "center" }}>Location Wise Stock</h5>
         <Pie data={pieData4} options={optionsLocation} />
       </div>
