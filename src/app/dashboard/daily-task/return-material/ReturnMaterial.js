@@ -68,7 +68,7 @@ const ReturnMaterialUser = () => {
         searchString: searchString,
         jobNo: params.get("jobId"),
       };
-      const serverResponse = await communication.getReturnMaterialByJob(payload);
+      const serverResponse = await communication.getMaterialByJob(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setNonMaterial(serverResponse?.data?.material?.nonMaterials);
         setMaterial(serverResponse?.data?.material?.materials);

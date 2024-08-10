@@ -24,9 +24,11 @@ import { stockStatus } from "@/helper/stockStatusArray";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "@/common-components/Button";
+import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 
 const AcceptMaterial = () => {
   const router = useRouter();
+  const params = useSearchParams();
   const [brandName, setBrandName] = useState("");
   const [loader, setLoader] = useState(false);
   const [isPartationPresent, setIsPartationPresent] = useState("");
@@ -39,7 +41,17 @@ const AcceptMaterial = () => {
   const searchParams = useSearchParams();
   const [rackPartation, setRackPartation] = useState([]);
   const [partition, setPartition] = useState("");
-
+  const [nonMaterial, setNonMaterial] = useState([]);
+  const [material, setMaterial] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
+  const [selectedNonMaterials, setSelectedNonMaterials] = useState([]);
+  const [allMaterialsSelected, setAllMaterialsSelected] = useState(false);
+  const [allNonMaterialsSelected, setAllNonMaterialsSelected] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
+  const [respondHandlerModalState, setRespondHandlerModalState] = useState({
+    state: false,
+    jobNo: "",
+  });
   const {
     register,
     handleSubmit,
@@ -92,7 +104,107 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   };
+  async function returnmaterialByJob({ page = 1, searchString } = {}) {
+    try {
+      setLoader(true);
+      let payload = {
+        // page,
+        // searchString: searchString,
+        jobNo: params.get("jobId"),
+      };
+      const serverResponse = await communication.getReturnMaterialByJob(payload);
+      if (serverResponse?.data?.status === "SUCCESS") {
+        setNonMaterial(serverResponse?.data?.material?.nonMaterials);
+        setMaterial(serverResponse?.data?.material?.materials);
+        toast.success(serverResponse.data.message);
+        // setPageCount(serverResponse?.data?.totalPages);
+        // setPage(page);
+        // if (isSearch) {
+        //   setCurrentPage(1);
+        // }
+      } else if (serverResponse?.data?.status === "FAILED") {
+        // toast.info(serverResponse.data.message);
+        setMaterial([]);
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        // toast.info(serverResponse.data.message);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
+  const handleMaterialCheckboxChange = (e, productId) => {
+    if (e.target.checked) {
+      setSelectedMaterials((prev) => [...prev, productId]);
+    } else {
+      setSelectedMaterials((prev) => prev.filter((id) => id !== productId));
+    }
+    setAllMaterialsSelected(selectedMaterials.length + 1 === material.length);
+  };
 
+  const handleNonMaterialCheckboxChange = (e, productId) => {
+    if (e.target.checked) {
+      setSelectedNonMaterials((prev) => [...prev, productId]);
+    } else {
+      setSelectedNonMaterials((prev) => prev.filter((id) => id !== productId));
+    }
+    setAllNonMaterialsSelected(selectedNonMaterials.length + 1 === nonMaterial.length);
+  };
+  const handleSelectAllMaterials = (e) => {
+    const isChecked = e.target.checked;
+    setAllMaterialsSelected(isChecked);
+    if (isChecked) {
+      setSelectedMaterials(material.map((item) => item._id));
+    } else {
+      setSelectedMaterials([]);
+    }
+  };
+
+  const handleSelectAllNonMaterials = (e) => {
+    const isChecked = e.target.checked;
+    setAllNonMaterialsSelected(isChecked);
+    if (isChecked) {
+      setSelectedNonMaterials(nonMaterial.map((item) => item._id));
+    } else {
+      setSelectedNonMaterials([]);
+    }
+  };
+  const handleAttachMaterials = () => {
+    const selectedItems = nonMaterial.filter((item) => selectedNonMaterials.includes(item._id));
+    setCartItems((prevItems) => [...prevItems, ...selectedItems]);
+
+    // Clear the selection after adding to cart
+    setSelectedNonMaterials([]);
+  };
+  const cancelHandler = () => {
+    setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+  };
+  async function dumpMaterial() {
+    try {
+      setLoader(true);
+      let payload = { orderId: searchParams.get("orderId") };
+      const serverResponse = await communication.allMaterialOrderSells(payload);
+      if (serverResponse?.data?.status === "SUCCESS") {
+        toast.success(serverResponse.data.message);
+        router.back();
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.info(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        toast.info(serverResponse.data.message);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
   async function getStockById() {
     try {
       setLoader(true);
@@ -195,12 +307,20 @@ const AcceptMaterial = () => {
   }, [rackPartation.length >= 1, partition]);
 
   useEffect(() => {
-    callAPIs();
+    returnmaterialByJob();
   }, []);
 
   return (
     <>
       {loader && <Loader />}
+      {respondHandlerModalState.state && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message="Are you sure you want to dump this material?"
+          cancelHandler={cancelHandler}
+          successHandler={() => dumpMaterial()}
+        />
+      )}
       <div className="top_header">
         <div className="tab_title">Return Material</div>
       </div>
@@ -213,135 +333,24 @@ const AcceptMaterial = () => {
             {/* table  */}
             <div className="table_wrapper my-3">
               <div className="table_main">
-                <div className="table_section pi_product_table">
+                <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
                   <div className="table_header">
                     <div className="col_20p">
                       <div className="check_box">
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          id="selectAllCheckbox"
+                          id="selectAllNonMaterialCheckbox"
+                          onChange={handleSelectAllNonMaterials}
+                          checked={allNonMaterialsSelected}
                         />
                       </div>
                     </div>
-
-                    <div className="col_25p">
-                      <h5>Sr. No.</h5>
-                    </div>
-                    <div className="col_25p">
-                      <h5>Description</h5>
-                    </div>
-                    <div className="col_25p">
-                      <h5>Quantity</h5>
-                    </div>
-                    <div className="col_25p">
-                      <h5>Warranty</h5>
-                    </div>
-                    <div className="col_25p">
-                      <h5>Location</h5>
-                    </div>
-                    <div className="col_25p">
-                      <h5 className="action_wrraper">Note</h5>
-                    </div>
-
-                    {/* <div className="col_20p">
-                  <h5 className="action_wrraper">Remove</h5>
-                </div> */}
-                  </div>
-                  {/* {modelList?.materialDetails?.length > 0 ? (
-                modelList?.materialDetails?.map((product, index) => {
-                  return (
-                    <div className="table_data" key={index}>
-                      <div className="col_20p">
-                        {attachedDescriptions.includes(product._id) ? (
-                          <div className="check_box">
-                            <FontAwesomeIcon icon={faCheck} className="text-success" />
-                          </div>
-                        ) : (
-                          <div className="check_box">
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              id={product._id}
-                              onChange={(e) => handleCheckboxChange(e)}
-                              checked={selectedCheckboxes.includes(product._id)}
-                              disabled={attachedDescriptions.includes(product._id)}
-                            />
-                          </div>
-                        )}
-                      </div>
-                      <div className="col_25p">
-                        <h6>{index + 1}</h6>
-                      </div>
-
-                      <div className="col_25p">
-                        <h6>{product?.materialDescription}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6>{product?.quantity ? product?.quantity : "--"}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6>{product?.warranty ? product?.warranty : "--"}</h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6>
-                          {modelList?.orderLocation?.name ? modelList?.orderLocation?.name : "--"}
-                        </h6>
-                      </div>
-                      <div className="col_25p">
-                        <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <small className="text-center text-secondary p-2 small d-block">
-                  Add order to see list
-                </small>
-              )} */}
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* ---------------------------sales order list of discription end----------------------------------------------------------*/}
-
-          {/* <div> */}
-          {/* ---------------------------filter for material----------------------------------------------------------*/}
-          {/* <div className="form_list_layout_wrapper"> */}
-          {/* <div className="d-flex align-items-center justify-content-between py-2"> */}
-
-          {/* ---------------------------list of material----------------------------------------------------------*/}
-          <div className="form_list_layout_wrapper my-4">
-            <div className="d-flex align-items-center justify-content-between">
-              <p>Material List</p>
-            </div>
-            {/* table */}
-            <div className="table_wrapper my-3">
-              <div className="table_main">
-                <div className="table_section pi_product_table">
-                  <div className="table_header">
                     <div className="col_20p">
-                      <div className="check_box">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          // id="selectAllCheckbox"
-                          // onChange={(e) => handleSelectAllChange(e)}
-                          // checked={selectAllChecked}
-                        />
-                      </div>
-                    </div>
-                    <div className="col_25p">
                       <h5>Sr. No.</h5>
                     </div>
                     <div className="col_25p">
                       <h5>Location</h5>
-                    </div>
-                    <div className="col_25p">
-                      <h5>Category</h5>
-                    </div>
-                    <div className="col_25p">
-                      <h5>Brand</h5>
                     </div>
                     <div className="col_25p">
                       <h5>Block</h5>
@@ -350,78 +359,213 @@ const AcceptMaterial = () => {
                       <h5>Rack</h5>
                     </div>
                     <div className="col_25p">
+                      <h5>Partation</h5>
+                    </div>
+                    <div className="col_30p">
+                      <h5>Category</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Brand</h5>
+                    </div>
+                    <div className="col_30p">
                       <h5>Model</h5>
                     </div>
                     <div className="col_25p">
                       <h5>Serial No</h5>
-                    </div>
-                    <div className="col_20p">
+                    </div>{" "}
+                    <div className="col_25p">
                       <h5>Item Code</h5>
                     </div>
-                    <div className="col_20p">
+                    <div className="col_25p">
                       <h5>Quantity</h5>
                     </div>
                   </div>
-                  {/* {material?.length > 0 ? (
-                          material?.map((product, index) => {
-                            return (
-                              <div className="table_data" key={index}>
-                                <div className="col_20p">
-                                  {" "}
-                                  <div className="check_box">
-                                    <input
-                                      className="form-check-input"
-                                      type="checkbox"
-                                      checked={selectedMaterials.includes(product._id)}
-                                      onChange={() => handleMaterialSelect(product._id)}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{index + 1}</h6>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{product?.location}</h6>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{product?.category}</h6>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{product?.brand}</h6>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{product?.block}</h6>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{product?.rack}</h6>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{product?.modelId}</h6>
-                                </div>
-                                <div className="col_25p">
-                                  <h6>{product?.serialNo}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{product?.itemCode}</h6>
-                                </div>
-                                <div className="col_20p">
-                                  <h6>{product?.quantity}</h6>
-                                </div>
-                              </div>
-                            );
-                          })
-                        ) : (
-                          <small className="text-center text-secondary p-2 small d-block">
-                            Add order to see list
-                          </small>
-                        )} */}
+                  {nonMaterial?.length > 0 ? (
+                    nonMaterial?.map((product, index) => {
+                      return (
+                        <div className="table_data" key={index}>
+                          <div className="col_20p">
+                            <div className="check_box">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id={product._id}
+                                onChange={(e) => handleNonMaterialCheckboxChange(e, product._id)}
+                                checked={selectedNonMaterials.includes(product._id)}
+                                // id={product._id}
+                                // onChange={(e) => handleCheckboxChange(e)}
+                                // checked={selectedCheckboxes.includes(product._id)}
+                                // disabled={attachedDescriptions.includes(product._id)}
+                              />
+                            </div>
+                          </div>
+                          <div className="col_20p">
+                            <h6>{index + 1}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.locationId?.name}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.blockId?.blockNo}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.rackId?.rackName}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.partitionName}</h6>
+                          </div>
+                          <div className="col_30p">
+                            <h6>{product?.categoryId?.name}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.brandId?.name}</h6>
+                          </div>
+                          <div className="col_30p">
+                            <h6>{product?.modelId?.name}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.serialNo}</h6>
+                          </div>{" "}
+                          <div className="col_25p">
+                            <h6>{product?.itemCode}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.assignQuantity}</h6>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <small className="text-center text-secondary p-2 small d-block">
+                      Add order to see list
+                    </small>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="form_list_layout_wrapper my-4">
+            <div className="d-flex align-items-center justify-content-between">
+              <p>Material List</p>
+            </div>
+            {/* table */}
+            <div className="table_wrapper my-3">
+              <div className="table_main">
+                <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
+                  <div className="table_header">
+                    <div className="col_20p">
+                      <div className="check_box">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          // id="selectAllCheckbox"
+                          id="selectAllMaterialCheckbox"
+                          onChange={handleSelectAllMaterials}
+                          checked={allMaterialsSelected}
+                        />
+                      </div>
+                    </div>
+                    <div className="col_20p">
+                      <h5>Sr. No.</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Location</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Block</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Rack</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Partation</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Category</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Brand</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Model</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Serial No</h5>
+                    </div>{" "}
+                    <div className="col_25p">
+                      <h5>Item Code</h5>
+                    </div>
+                    <div className="col_25p">
+                      <h5>Quantity</h5>
+                    </div>
+                  </div>
+                  {material?.length > 0 ? (
+                    material?.map((product, index) => {
+                      return (
+                        <div className="table_data" key={index}>
+                          <div className="col_20p">
+                            <div className="check_box">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                id={product._id}
+                                onChange={(e) => handleMaterialCheckboxChange(e, product._id)}
+                                checked={selectedMaterials.includes(product._id)}
+                                // id={product._id}
+                                // onChange={(e) => handleCheckboxChange(e)}
+                                // checked={selectedCheckboxes.includes(product._id)}
+                                // disabled={attachedDescriptions.includes(product._id)}
+                              />
+                            </div>
+                          </div>
+                          <div className="col_20p">
+                            <h6>{index + 1}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.locationId?.name}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.blockId?.blockNo}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.rackId?.rackName}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.partitionName}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.categoryId?.name}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.brandId?.name}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.modelId?.name}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.serialNo}</h6>
+                          </div>{" "}
+                          <div className="col_25p">
+                            <h6>{product?.itemCode}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.assignQuantity}</h6>
+                          </div>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <small className="text-center text-secondary p-2 small d-block">
+                      Add order to see list
+                    </small>
+                  )}
                 </div>
               </div>
             </div>
           </div>
           <Button
-            //   onClick={handleAttachMaterials}
-            //   disabled={selectedMaterials.length === 0}
+            onClick={handleAttachMaterials}
+            disabled={selectedNonMaterials.length === 0}
             name={" Add To Cart"}
           ></Button>
           {/* </div> */}
@@ -458,61 +602,79 @@ const AcceptMaterial = () => {
                   <h5>Model</h5>
                 </div>
                 <div className="col_25p">
-                  <h5 className="action_wrraper">Serial No</h5>
+                  <h5>Serial No</h5>
                 </div>
                 <div className="col_20p">
-                  <h5 className="action_wrraper">Item Code</h5>
+                  <h5>Item Code</h5>
                 </div>
                 <div className="col_20p">
-                  <h5 className="action_wrraper">Action</h5>
+                  <h5>Quantity</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Action</h5>
                 </div>
               </div>
-              {/* {attachedMaterials?.length > 0 ? (
-                    attachedMaterials?.map((item, index) => {
-                      return (
-                        <div className="table_data" key={index}>
-                          <div className="col_20p">
-                            {" "}
-                            <div className="check_box">
-                              <input className="form-check-input" type="checkbox" />
-                            </div>
-                          </div>
-                          <div className="col_25p">
-                            <h6>{index + 1}</h6>
-                          </div>
-
-                          <div className="col_25p">
-                            <h6>{item?.category}</h6>
-                          </div>
-                          <div className="col_25p">
-                            <h6>{item?.brand}</h6>
-                          </div>
-                          <div className="col_25p">
-                            <h6>{item?.modelId}</h6>
-                          </div>
-                          <div className="col_25p">
-                            <h6 className="action_wrraper">{item?.serialNo}</h6>
-                          </div>
-                          <div className="col_20p">
-                            <h6 className="action_wrraper ">{item?.itemCode}</h6>
-                          </div>
-                          <div className="col_20p">
-                            <Button
-                              onClick={() => handleRemoveAttachedMaterial(item._id)}
-                              name={"Delete"}
-                              className="btn-danger"
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </Button>
-                          </div>
+              {cartItems?.length > 0 ? (
+                cartItems?.map((item, index) => {
+                  // console.log(cartItems, "cartItems");
+                  return (
+                    <div className="table_data" key={index}>
+                      <div className="col_20p">
+                        {" "}
+                        <div className="check_box">
+                          <input className="form-check-input" type="checkbox" />
                         </div>
-                      );
-                    })
-                  ) : (
-                    <small className="text-center text-secondary p-2 small d-block">
-                      Add order to see list
-                    </small>
-                  )} */}
+                      </div>
+                      <div className="col_25p">
+                        <h6>{index + 1}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{item?.categoryId?.name}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{item?.brandId?.name}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{item?.modelId?.name}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{item?.serialNo}</h6>
+                      </div>
+                      <div className="col_20p">
+                        <h6>{item?.itemCode}</h6>
+                      </div>
+                      <div className="col_20p">
+                        <h6>{item?.assignQuantity}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6 className="action_wrraper">
+                          <button
+                            className="actionbtn sell_btn"
+                            // onClick={() =>
+                            //   approvedTransferMaterials(materialDetails._id)
+                            // }
+                            onClick={() => {
+                              setRespondHandlerModalState({ state: true });
+                            }}
+                          >
+                            Dump
+                          </button>
+                          <button
+                            className="actionbtn sell_btn"
+                            // onClick={() => showInputDialog(materialDetails._id)}
+                          >
+                            Store
+                          </button>
+                        </h6>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <small className="text-center text-secondary p-2 small d-block">
+                  Add order to see list
+                </small>
+              )}
             </div>
           </div>
         </div>

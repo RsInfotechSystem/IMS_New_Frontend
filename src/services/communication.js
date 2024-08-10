@@ -1143,6 +1143,23 @@ export const communication = {
       throw error;
     }
   },
+  returnMaterialList: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-returned-task-list`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   getReturnMaterialById: async (data) => {
     try {
       return await axios.post(
@@ -2003,10 +2020,27 @@ export const communication = {
       throw error;
     }
   },
-  getReturnMaterialByJob: async (data) => {
+  getMaterialByJob: async (data) => {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-by-jobno`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getReturnMaterialByJob: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-returned-material-by-jobno`,
         data,
 
         {
@@ -2245,12 +2279,16 @@ export const communication = {
   },
   deleteAssignMaterial: async (data) => {
     try {
-      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/material/delete-assigned-material`, data, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("inventryToken")}`,
-        },
-      });
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/delete-assigned-material`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
     } catch (error) {
       throw error;
     }
