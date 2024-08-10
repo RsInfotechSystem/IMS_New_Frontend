@@ -48,6 +48,7 @@ const AcceptMaterial = () => {
   const [allMaterialsSelected, setAllMaterialsSelected] = useState(false);
   const [allNonMaterialsSelected, setAllNonMaterialsSelected] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [rejectItem, setRejectItem] = useState("");
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     jobNo: "",
@@ -149,6 +150,9 @@ const AcceptMaterial = () => {
 
   const handleNonMaterialCheckboxChange = (e, productId) => {
     if (e.target.checked) {
+      // console.log("dfgrfe",e,target);
+      
+      setRejectItem(productId)
       setSelectedNonMaterials((prev) => [...prev, productId]);
     } else {
       setSelectedNonMaterials((prev) => prev.filter((id) => id !== productId));
@@ -183,6 +187,52 @@ const AcceptMaterial = () => {
   };
   const cancelHandler = () => {
     setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+  };
+  const rejectMaterial = async (id, status, remark = "") => {
+    try {
+      setLoader(true);
+      const dataToSend = {
+        materialId: id,
+        // status: status,
+        // remark: remark,
+      };
+      let response = await communication.rejectMaterial(dataToSend);
+      if (response?.data?.status === "SUCCESS") {
+        toast.success(response?.data?.message);
+        fetchReturnMaterialList(1, searchString);
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response.data.message)
+        router.push("/");
+      } else {
+        toast.info(response?.data?.message)
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message)
+
+      setLoader(false);
+    }
+  };
+
+    const showInputDialog = (id, status) => {
+    Swal.fire({
+      html: '<input placeholder="Enter Remark for Rejection" type="text" id="remarkInput" class="swal2-input">',
+      showCancelButton: true,
+      confirmButtonText: "Submit",
+      preConfirm: () => {
+        const remarkInput = document.getElementById("remarkInput");
+        return remarkInput.value;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const remark = result.value;
+        if (remark) {
+          rejectMaterial(id);
+        } else {
+          toast.info("Remark required if you want to reject.");
+        }
+      }
+    });
   };
   async function dumpMaterial() {
     try {
@@ -684,7 +734,8 @@ const AcceptMaterial = () => {
       {/* ---------------------------send attached material----------------------------------------------------------*/}
       <div className="d-flex align-items-center justify-content-center gap-3 my-3">
         <Button className="btn-success" name={"Accept Material"}></Button>
-        <Button className="btn-success" name={"Reject Material"}></Button>
+        <Button className="btn-success" name={"Reject Material"}  onClick={(e) => rejectMaterial(rejectItem, "reject")}>
+        </Button>
       </div>
     </>
   );
