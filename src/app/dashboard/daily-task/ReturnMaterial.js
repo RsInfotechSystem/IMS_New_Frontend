@@ -100,8 +100,6 @@ const ReturnMaterial = ({ data }) => {
     setMaterialIdList((prevList) => prevList.filter((_, i) => i !== index));
   };
 
-
-
   const onSubmit = async (values) => {
     try {
       setLoader(true);
@@ -112,17 +110,16 @@ const ReturnMaterial = ({ data }) => {
 
       let response = await communication.returnMaterial(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-         toast.success(response?.data?.message);
-        router.push("/admin/dashboard/daily-task/");
+        toast.success(response?.data?.message);
+        router.push("/dashboard/daily-task/");
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
         router.push("/");
       } else {
-        toast.info(response.data.message)
+        toast.info(response.data.message);
       }
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
-
+      toast.info(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
@@ -146,10 +143,10 @@ const ReturnMaterial = ({ data }) => {
         // });
         // setCheckedStatus(initialCheckedStatus);
       } else if (serverResponse?.data?.status === "FAILED") {
-        toast.info(serverResponse.data.message)
+        toast.info(serverResponse.data.message);
         // setBlockList([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message)
+        toast.info(serverResponse.data.message);
         router.push("/");
         // props.setLoader(false);
       } else {
@@ -157,7 +154,7 @@ const ReturnMaterial = ({ data }) => {
       }
       // props.setLoader(false);
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message);
 
       // props.setLoader(false);
     }
@@ -170,10 +167,10 @@ const ReturnMaterial = ({ data }) => {
         materialId: modalStates?.id,
       });
       if (responseFromServer?.data?.status === "SUCCESS") {
-        console.log(
-          responseFromServer.data.materialData,
-          "rrrrrrrrrrr sdata brand materialData?.brandId"
-        );
+        // console.log(
+        //   responseFromServer.data.materialData,
+        //   "rrrrrrrrrrr sdata brand materialData?.brandId"
+        // );
         // Set default values for each form field
         setIsRackExist(responseFromServer?.data?.material.rackId._id);
         setDataToAddList(responseFromServer?.data?.material.dataToAddList);
@@ -195,19 +192,18 @@ const ReturnMaterial = ({ data }) => {
         setValue("status", materialData?.status);
         setValue("categoryId", materialData?.categoryId._id);
         setValue("rackId", materialData?.rackId._id);
-        console.log(materialData?.brandId._id, "rrrrrr materialData?.brandId._id");
+        // console.log(materialData?.brandId._id, "rrrrrr materialData?.brandId._id");
         setValue("brandId", materialData?.brandId._id);
         setValue("brandIds", materialData?.brandId.name);
         setBlockvalue(materialData?.blockId._id);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
         router.push("/login");
       } else {
-        toast.info(responseFromServer?.data?.message)
+        toast.info(responseFromServer?.data?.message);
       }
     } catch (error) {
-              toast.info(error?.response?.data?.message || error.message)
-
+      toast.info(error?.response?.data?.message || error.message);
     } finally {
       setLoader(false);
     }
@@ -232,7 +228,7 @@ const ReturnMaterial = ({ data }) => {
   // }, [modelName]);
   useEffect(() => {
     const id = getValues("locationId");
-    console.log("iddddddd", id);
+    // console.log("iddddddd", id);
     if (id) {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
@@ -526,7 +522,7 @@ const ReturnMaterial = ({ data }) => {
                     disabled
                     type="text"
                     {...register("itemCode", {
-                      required: "Item code is required",
+                      // required: "Item code is required",
                     })}
                     className="form-control custom_input"
                     style={{ width: "100%", height: "31px" }}
@@ -546,7 +542,7 @@ const ReturnMaterial = ({ data }) => {
                     disabled
                     type="text"
                     {...register("serialNo", {
-                      required: "SerialNo is required",
+                      // required: "SerialNo is required",
                     })}
                     className="form-control custom_input"
                     style={{ width: "100%", height: "31px" }}
@@ -731,8 +727,7 @@ const ReturnMaterial = ({ data }) => {
                 )}
               </div>
               {/* <div className="form_button_wrapper"> */}
-        <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-
+              <div className="d-flex align-items-center justify-content-center gap-3 my-3">
                 {roleName != "admin" && (
                   <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
                 )}

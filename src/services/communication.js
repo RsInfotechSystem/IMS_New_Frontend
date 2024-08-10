@@ -1,6 +1,7 @@
 import axios from "axios";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
+import { getCategoryWiseBrand } from "./commonApis";
 
 const nodeEnvironment = process.env.NEXT_PUBLIC_NODE_ENV;
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -1142,6 +1143,23 @@ export const communication = {
       throw error;
     }
   },
+  returnMaterialList: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-returned-task-list`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   getReturnMaterialById: async (data) => {
     try {
       return await axios.post(
@@ -1574,10 +1592,11 @@ export const communication = {
     }
   },
 
-  getTechnicianList: async () => {
+  getTechnicianList: async (data) => {
     try {
-      return await axios.get(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-technician`,
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/get-location-wise-users`,
+        data,
 
         {
           headers: {
@@ -1715,6 +1734,23 @@ export const communication = {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/accept-or-reject-material`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  acknowledgeMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/acknowledge-assigned-material`,
         data,
 
         {
@@ -1882,7 +1918,23 @@ export const communication = {
       throw error;
     }
   },
+  getCategoryWiseBrandCount: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-wise-brand-count`,
+        data,
 
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   getStockOutCount: async (data) => {
     try {
       return await axios.post(
@@ -1936,7 +1988,7 @@ export const communication = {
   fetchAssignMaterial: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/fetched-assigned-material-list`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-assigned-task-list`,
         data,
 
         {
@@ -1955,6 +2007,40 @@ export const communication = {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-by-id`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getMaterialByJob: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-by-jobno`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getReturnMaterialByJob: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-returned-material-by-jobno`,
         data,
 
         {
@@ -2006,7 +2092,7 @@ export const communication = {
   returnMaterial: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/return-material`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/return-task-material`,
         data,
 
         {
@@ -2179,6 +2265,22 @@ export const communication = {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/parameter/delete-parameter`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteAssignMaterial: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/delete-assigned-material`,
         data,
         {
           headers: {

@@ -21,6 +21,7 @@
   --white-color: #ffffff;
   --black_transparent: rgba(0, 0, 0, 0.686);
 }
+
 custom_button:hover .support-orange {
   color: var(--orange_color) !important;
 }
@@ -713,6 +714,7 @@ div:where(.col_100p) {
 
 .image_preview_container {
 }
+
 .notification_icon_wrapper {
   position: relative;
   cursor: pointer;
@@ -787,6 +789,12 @@ div:where(.col_100p) {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+}
+
+.side_nav_wrapper .img {
+  height: auto;
+  width: 100%;
 }
 
 .side_nav_wrapper .tab_wrapper {
@@ -963,8 +971,8 @@ div:where(.tab_active, .tab_inactive) {
   height: 100%;
   border-radius: 10px;
   /* background-image: url("/images/login-bg.png"); */
-  background: rgb(238,174,202);
-  background: linear-gradient(105deg, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%);
+  background: rgb(238, 174, 202);
+  background: linear-gradient(105deg, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
@@ -983,6 +991,7 @@ div:where(.tab_active, .tab_inactive) {
   position: absolute;
   top: 48%;
   left: 48%;
+  width: 100%;
   transform: translate(-50%, -50%);
 }
 
@@ -1363,9 +1372,10 @@ div:where(.tab_active, .tab_inactive) {
 .table_wrapper {
   background-color: var(--white-color);
   border-radius: 8px;
-  height: 80%;
+  height: 87%;
   overflow: auto;
 }
+
 .table_wrapper_assign {
   background-color: var(--white-color);
   border-radius: 8px;
@@ -1610,6 +1620,11 @@ div:where(.tab_active, .tab_inactive) {
   padding: 0;
 }
 
+.form_modal_body img {
+  width: 100% !important;
+  height: auto !important;
+}
+
 .input_wrapper .custom_input_wrapper {
   position: relative;
 }
@@ -1656,6 +1671,7 @@ div:where(.tab_active, .tab_inactive) {
   background-color: var(--white-color);
   pointer-events: none;
 }
+
 .select_box_smallarrow {
   border: 1px solid var(--grey_color_light_shade1);
   width: 21px;
@@ -1675,6 +1691,7 @@ div:where(.tab_active, .tab_inactive) {
   color: var(--grey_color_light_shade1);
   font-size: 14px;
 }
+
 .select_box_smallarrow .icon {
   color: var(--grey_color_light_shade1);
   font-size: 14px;
@@ -2784,6 +2801,7 @@ div:where(.access_sudo_class) {
   position: sticky;
   top: 0;
   background-color: var(--white-color);
+  z-index: 1;
 }
 
 .form_modal_header .title {
@@ -2885,10 +2903,11 @@ div:where(.access_sudo_class) {
   padding: 1rem;
 }
 
-.optionListContainer{
+.optionListContainer {
   z-index: 0 !important;
-  position:unset !important; 
+  position: unset !important;
 }
+
 .form_tabs_wrapper {
   display: flex;
   align-items: center;
@@ -4547,6 +4566,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 .general_po_table {
   min-width: 800px;
 }
+
 .sell_btn {
   border: none;
   background-color: #184965;
@@ -4556,6 +4576,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
   font-size: 12px;
   font-weight: 600;
 }
+
 /* css for Kitchen Tab Start */
 /* recipe */
 .kitchen_recipe_tab {
@@ -5312,6 +5333,7 @@ ul .appointment_letter_ul {
 .checkbox_main {
   margin-top: 10px !important;
 }
+
 .customer_sign p {
   text-align: left;
   margin-top: 10vh;
@@ -5320,13 +5342,15 @@ ul .appointment_letter_ul {
   font-weight: 600;
   color: var(--black_color_dark_shade);
 }
-.login_page_rsis{
+
+.login_page_rsis {
   color: #184965;
 }
-.form_control_assign{
+
+.form_control_assign {
   display: block;
   width: 100%;
-  padding: 0.2rem .75rem;
+  padding: 0.2rem 0.75rem;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
@@ -5338,15 +5362,95 @@ ul .appointment_letter_ul {
   background-clip: padding-box;
   border: var(--bs-border-width) solid var(--bs-border-color);
   border-radius: var(--bs-border-radius);
-  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-.assign_or_font{
+
+.assign_or_font {
   font-size: 12px;
   font-weight: 600;
 }
-.font_label{
+
+.font_label {
   font-family: 12px;
 }
+
 .multiSelectContainer ul {
   max-height: 60px !important;
+}
+.filter-structure {
+  font-family: Arial, sans-serif;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.expandable-section {
+  margin-bottom: 10px;
+}
+
+.section-header {
+  background-color: #f0f0f0;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.section-content {
+  padding: 10px;
+  border: 1px solid #ddd;
+  margin-top: 5px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-label {
+  margin-bottom: 5px;
+}
+
+.selected-values {
+  margin-top: 20px;
+  background-color: #f9f9f9;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+/* login img */
+/* .login_img {
+  width: 500px;
+  height: 400px;
+} */
+/* login img */
+.login_img {
+  width: 100%;
+  height: auto;
+}
+
+/* select custom */
+.select_custom_option {
+  font-size: 10px;
+  color: red;
+}
+
+/* cancel icon  on multiselect */
+.form_modal_img img {
+  width: 15px !important;
+  /* height: auto !important; */
+}
+.searchWrapper {
+  height: 50px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+.multiSelectContainer input {
+  /* width: 60px; */
+}
+
+.report_card {
+  width: 35%;
+  margin: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 10px;
+  background-color: "white";
 }

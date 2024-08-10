@@ -225,6 +225,15 @@ function Notification() {
       {loader && <Loader />}
       <div className="top_header p-2">
         <div className="tab_title">Notification</div>
+        <div className="pagination_wrapper">
+          <Pagination
+            isPageUpdated={isPageUpdated}
+            setIsPageUpdated={setIsPageUpdated}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            pageCount={pageCount}
+          />
+        </div>
       </div>
       <div className="search_btn_wrapper p-2">
         <Search
@@ -312,15 +321,7 @@ function Notification() {
           </div>
         </div>
       </div >
-      <div className="pagination_wrapper">
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
-        </div>
+   
     </>
   );
 }

@@ -32,8 +32,16 @@ const Inventory = () => {
   const [timeoutId, setTimeoutId] = useState();
   const [filter, setFilter] = useState({});
 
-
-  async function getStatusWiseMaterialList({ page = 1, searchString, isSearch = false, isFirstCall, location, categoryId, brandId, modelId } = {}) {
+  async function getStatusWiseMaterialList({
+    page = 1,
+    searchString,
+    isSearch = false,
+    isFirstCall,
+    location,
+    categoryId,
+    brandId,
+    modelId,
+  } = {}) {
     try {
       setLoader(true);
       let payload = {
@@ -42,7 +50,7 @@ const Inventory = () => {
         location,
         categoryId,
         brandId,
-        modelId
+        modelId,
       };
       const serverResponse = await communication.getInventoryMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -143,7 +151,14 @@ const Inventory = () => {
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
-      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getStatusWiseMaterialList} filter={filter} setFilter={setFilter} />}
+      {modalStates?.filter && (
+        <StockFilter
+          setModalStates={setModalStates}
+          apiCall={getStatusWiseMaterialList}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      )}
       <div className="top_header">
         <div className="tab_title">Inventory Look</div>
         <Pagination
@@ -170,21 +185,24 @@ const Inventory = () => {
                 setModalStates((prev) => ({ ...prev, filter: true }));
               }}
               svg={
-                <svg xmlns="http://www.w3.org/2000/svg"
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
                   width="16"
                   height="16"
-                  viewBox="0 0 512 512" fill="#fff">
+                  viewBox="0 0 512 512"
+                  fill="#fff"
+                >
                   <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
                 </svg>
               }
             />
-             <CustomBtn
-            name={"Reset Filter"}
-            onClick={() => {
-              getStatusWiseMaterialList();
-            }}
-           
-          />
+            <CustomBtn
+              name={"Reset Filter"}
+              onClick={() => {
+                getStatusWiseMaterialList();
+              }}
+              style={{ padding: "0px", minWidth: "120px" }}
+            />
           </div>
         }
       </div>
@@ -236,71 +254,73 @@ const Inventory = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div> */}
             </div>
-            {material.length > 0 ? (<>
-          
-            {material?.map((materialDetails, index) => {
-              return (
-                <div className="table_data" key={index}>
-                  <div className="col_15p">
-                    <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                  </div>
-                  <div className="col_60p">
-                    <h6>
-                      <strong
-                        onClick={() =>
-                          setModalStates((prev) => ({
-                            ...prev,
-                            modal: true,
-                            type: "update",
-                            id: materialDetails?._id,
-                          }))
-                        }
-                      >
-                        {materialDetails?.categoryId?.name}
-                      </strong>
-                    </h6>
-                  </div>
-                  <div className="col_50p">
-                    <h6>{materialDetails?.brandId?.name}</h6>
-                  </div>
-                  <div className="col_50p">
-                    <h6>{materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}</h6>
-                  </div>
-                  <div className="col_55p">
-                    <h6>{materialDetails?.locationId.name}</h6>
-                  </div>
-                  <div className="col_45p">
-                    <h6>{materialDetails?.itemCode}</h6>
-                  </div>
-                  <div className="col_45p">
-                    <h6>{materialDetails?.blockId?.blockNo}</h6>
-                  </div>
+            {material.length > 0 ? (
+              <>
+                {material?.map((materialDetails, index) => {
+                  return (
+                    <div className="table_data" key={index}>
+                      <div className="col_15p">
+                        <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                      </div>
+                      <div className="col_60p">
+                        <h6>
+                          <strong
+                            onClick={() =>
+                              setModalStates((prev) => ({
+                                ...prev,
+                                modal: true,
+                                type: "update",
+                                id: materialDetails?._id,
+                              }))
+                            }
+                          >
+                            {materialDetails?.categoryId?.name}
+                          </strong>
+                        </h6>
+                      </div>
+                      <div className="col_50p">
+                        <h6>{materialDetails?.brandId?.name}</h6>
+                      </div>
+                      <div className="col_50p">
+                        <h6>
+                          {materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}
+                        </h6>
+                      </div>
+                      <div className="col_55p">
+                        <h6>{materialDetails?.locationId.name}</h6>
+                      </div>
+                      <div className="col_45p">
+                        <h6>{materialDetails?.itemCode}</h6>
+                      </div>
+                      <div className="col_45p">
+                        <h6>{materialDetails?.blockId?.blockNo}</h6>
+                      </div>
 
-                  <div className="col_45p">
-                    <h6>{materialDetails?.rack}</h6>
-                  </div>
-                  <div className="col_50p">
-                    <h6>{materialDetails?.partitionName}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6>{materialDetails?.serialNo}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6>{materialDetails?.status}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6>{materialDetails?.quantity}</h6>
-                  </div>
-                  <div className="col_35p">
-                    <h6>{materialDetails?.reamainingQuantity}</h6>
-                  </div>
-                  {/* <div className="col_40p">
+                      <div className="col_45p">
+                        <h6>{materialDetails?.rack}</h6>
+                      </div>
+                      <div className="col_50p">
+                        <h6>{materialDetails?.partitionName}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.serialNo}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.status}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.quantity}</h6>
+                      </div>
+                      <div className="col_35p">
+                        <h6>{materialDetails?.reamainingQuantity}</h6>
+                      </div>
+                      {/* <div className="col_40p">
                     <h6 className="action_wrraper">
                       {/* <CustomBtn 
                     name={"Sell"}
                     onClick={() => { setModalStates((prev) => ({ ...prev, modal: true, type: "sell" })) }}
                    /> */}
-                  {/* <button
+                      {/* <button
                         className="actionbtn sell_btn"
                         onClick={(e) => changeMaterialStatus(materialDetails)}
                       >
@@ -322,14 +342,13 @@ const Inventory = () => {
                       </button>
                     </h6> 
                   </div> */}
-                </div>
-              );
-            })}
-            </>
-            ):(
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
               <p className="no_data">Data Not Available</p>
-            )
-          }
+            )}
           </div>
         </div>
       </div>

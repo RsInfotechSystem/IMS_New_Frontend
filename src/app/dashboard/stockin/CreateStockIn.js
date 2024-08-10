@@ -24,8 +24,16 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faAngleDown, faAnglesDown } from "@fortawesome/free-solid-svg-icons";
 
 const CreateStockIn = ({ data }) => {
-  const { modalStates, setModalStates, setIsPageUpdated, locationsss, roleList, getStockList } =
-    data;
+  const {
+    modalStates,
+    setModalStates,
+    setIsPageUpdated,
+    locationsss,
+    roleList,
+    getStockList,
+    currentPage,
+    searchString,
+  } = data;
 
   const router = useRouter();
   const params = useSearchParams();
@@ -90,7 +98,7 @@ const CreateStockIn = ({ data }) => {
         setValue("parameter", stockData?.parameter);
         setValue("serialNo", stockData?.serialNo);
         setValue("status", stockData?.status);
-        setValue("quantity", stockData?.quantity);
+        setValue("quantity", stockData?.reamainingQuantity);
         setValue("categoryId", stockData?.categoryId._id);
         await getCategoryWiseBrand(stockData?.categoryId._id, setLoader, router, setBrandsData);
         _setCategory(stockData?.categoryId._id);
@@ -168,28 +176,7 @@ const CreateStockIn = ({ data }) => {
       setLoader(false);
     }
   }
-  // async function getBrandWiseModel() {
-  //   try {
-  //     // props.setLoader(true);
-  //     const payload = {
-  //       brandId: brandId,
-  //     };
-  //     const serverResponse = await communication.brandWiseModel(payload);
-  //     if (serverResponse?.data?.status === "SUCCESS") {
-  //       setModel(serverResponse?.data?.model);
-  //     } else if (serverResponse?.data?.status === "JWT_INVALID") {
-  //       toast.warn(serverResponse.data.message);
-  //       router.push("/");
-  //       setLoader(false);
-  //     } else {
-  //       setModel([]);
-  //     }
-  //     // props.setLoader(false);
-  //   } catch (error) {
-  //     toast.error(error?.response?.data?.message || error.message);
-  //     // props.setLoader(false);
-  //   }
-  // }
+
   const onSubmit = async (values) => {
     try {
       setLoader(true);
@@ -200,10 +187,14 @@ const CreateStockIn = ({ data }) => {
       let response = await communication.updateStock(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         setButtonLoader(false);
+        await getStockList({ currentPage, searchString });
         setModalStates((prev) => ({ ...prev, modal: false }));
         // setIsPageUpdated((prev) => !prev);
-        getStockList();
-
+        // setModalStates((pre) => ({
+        //   modal: false,
+        //   type: "",
+        //   id: "",
+        // }));
         toast.success(response?.data?.message, {
           autoClose: 1500, // 1.5 seconds
         });
@@ -245,7 +236,7 @@ const CreateStockIn = ({ data }) => {
         setValue("wholeSalePrice", "");
         setValue("displayPrice", "");
         toast.success(response.data.message);
-        // await getStockList({ currentPage, searchString });
+        await getStockList({ currentPage, searchString });
         setLoader(false);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
@@ -266,23 +257,16 @@ const CreateStockIn = ({ data }) => {
     //   await getBrandById()
     // }
   }
-  // const handleCategory = async () => {
-  //   if (getValues("categoryId")) {
-  //     setBrandsData(
-  //       await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-  //     );
-  //   } else {
-  //     setBrandsData([]);
-  //   }
-  // };
+  const handleCategory = async () => {
+    if (getValues("categoryId")) {
+      setBrandsData(
+        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
+      );
+    } else {
+      setBrandsData([]);
+    }
+  };
 
-  // useEffect(() => {
-  //   const id = getValues("categoryId");
-  //   console.log("iddddd", _category);
-  //   if (_category) {
-  //     getCategoryWiseBrand(_category, setLoader, router, setBrandsData);
-  //   }
-  // }, [_category && category?.length >= 1]);
   useEffect(() => {
     setValue("brandId", _brand);
   }, [_category]);
@@ -307,9 +291,9 @@ const CreateStockIn = ({ data }) => {
   //   }
   // }, [model?.length >=1 && brandId]);
 
-  // useMemo(() => {
-  //   handleCategory();
-  // }, [categoryId]);
+  useMemo(() => {
+    handleCategory();
+  }, [categoryId]);
 
   useEffect(() => {
     getLocations();
@@ -331,8 +315,8 @@ const CreateStockIn = ({ data }) => {
               {modalStates.isView
                 ? "View Details"
                 : modalStates?.type === "create"
-                ? "Create Stock"
-                : "Update Stock"}
+                  ? "Create Stock"
+                  : "Update Stock"}
             </h5>
             <FontAwesomeIcon
               icon={faCircleXmark}
@@ -345,7 +329,7 @@ const CreateStockIn = ({ data }) => {
             <>
               {/* <div className="form_main"> */}
               <div className="row">
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Select Location *</label>
                   <div className="position-relative">
                     <select
@@ -357,7 +341,7 @@ const CreateStockIn = ({ data }) => {
                       })}
                       disabled={modalStates.isView}
                     >
-                      <option value="" className="text-secondary text-lowercase"></option>
+                      <option value="" className="text-secondary text-lowercase">Select Location</option>
                       {locationList.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
@@ -379,7 +363,7 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Select Block *</label>
                   <div className="position-relative">
                     <select
@@ -391,7 +375,7 @@ const CreateStockIn = ({ data }) => {
                         required: "blockNo is required",
                       })}
                     >
-                      <option value="" className="text-secondary text-lowercase"></option>
+                      <option value="" className="text-secondary text-lowercase">Select Block</option>
                       {blocks.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
@@ -414,7 +398,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 </div>
                 {racks.length >= 1 && (
-                  <div className="col-lg-3 col-md-6 input_wrapper">
+                  <div className="col-lg-4 col-md-6 input_wrapper">
                     <label>Select Rack *</label>{" "}
                     <div className="position-relative">
                       <select
@@ -425,7 +409,7 @@ const CreateStockIn = ({ data }) => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                       >
-                        <option value=""></option>
+                        <option value="" className="text-secondary text-lowercase">Select Rack</option>
                         {racks.map((ele, index) => {
                           return (
                             <option value={ele._id} key={index}>
@@ -449,7 +433,7 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 )}
                 {rackPartation?.length > 1 && (
-                  <div className="col-lg-3 col-md-6 input_wrapper">
+                  <div className="col-lg-4 col-md-6 input_wrapper">
                     <label>Select Partation *</label>
                     <div className="position-relative">
                       <select
@@ -460,7 +444,7 @@ const CreateStockIn = ({ data }) => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                       >
-                        <option value=""></option>
+                        <option value="" className="text-secondary text-lowercase">Select Partation</option>
                         {rackPartation?.map((ele, index) => {
                           return (
                             <option value={ele.partitionName} key={index}>
@@ -483,7 +467,7 @@ const CreateStockIn = ({ data }) => {
                     </div>
                   </div>
                 )}
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Category Name *</label>
                   <div className="position-relative">
                     <select
@@ -495,7 +479,7 @@ const CreateStockIn = ({ data }) => {
                         required: "categoryId is required",
                       })}
                     >
-                      <option value="" className="text-secondary text-lowercase"></option>
+                      <option value="" className="text-secondary text-lowercase">Select Category</option>
                       {category.map((ele, index) => {
                         return (
                           <option value={ele.categoryId} key={index}>
@@ -517,7 +501,7 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Brand *</label>
                   <div className="position-relative">
                     <select
@@ -529,7 +513,7 @@ const CreateStockIn = ({ data }) => {
                         required: "Brand is required",
                       })}
                     >
-                      <option value="" className="text-secondary text-lowercase"></option>
+                      <option value="" className="text-secondary text-lowercase">Select Brand</option>
                       {brandsData?.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele?._id} key={index}>
@@ -550,7 +534,7 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Condition Type *</label>
                   <div className="position-relative">
                     <select
@@ -561,7 +545,7 @@ const CreateStockIn = ({ data }) => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                     >
-                      <option value=""></option>
+                      <option value="">Select Condition Type</option>
                       <option value="new">New</option>
                       <option value="refurbished">Refurbished</option>
                     </select>
@@ -577,7 +561,7 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Status*</label>
                   <div className="position-relative">
                     <select
@@ -588,7 +572,7 @@ const CreateStockIn = ({ data }) => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                     >
-                      <option value=""></option>
+                      <option value="" className="text-secondary text-lowercase">Select Status</option>
                       {stockStatus.map((ele, index) => {
                         return (
                           <option value={ele} key={index}>
@@ -610,19 +594,19 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Serial No</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{
                       ...register("serialNo", {
-                        required: "serialNo is required",
+                        // required: "serialNo is required",
                       }),
                     }}
                     errors={errors.serialNo}
                   />
                 </div>{" "}
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Quantity*</label>
                   <InputBox
                     disable={modalStates.isView}
@@ -634,30 +618,8 @@ const CreateStockIn = ({ data }) => {
                     errors={errors.quantity}
                   />
                 </div>{" "}
-                {/* <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Model Name *</label>
-                <select
-                  name="categoryId"
-                  className="form-control custom_input"
-                  style={{ width: "100%" }}
-                  {...register("modelId", {
-                    required: "modelId is required",
-                  })}
-                >
-                  <option value="" className="text-secondary text-lowercase">
-                    Select Model
-                  </option>
-                  {productMapData.map((ele, index) => {
-                    return (
-                      <option className="small text-capitalize" value={ele._id} key={index}>
-                        {" "}
-                        {ele.name}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div> */}
-                <div className="col-lg-3 col-md-6 input_wrapper">
+
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Model Name *</label>
                   <div className="position-relative">
                     <select
@@ -668,7 +630,7 @@ const CreateStockIn = ({ data }) => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                     >
-                      <option value=""></option>
+                      <option value="" className="text-secondary text-lowercase">Select Model</option>
                       {model.map((ele, index) => {
                         return (
                           <option
@@ -693,47 +655,19 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Item Code</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{
                       ...register("itemCode", {
-                        required: "itemCode is required",
+                        // required: "itemCode is required",
                       }),
                     }}
                     errors={errors.itemCode}
                   />
                 </div>{" "}
-                {/* <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Retail Price Per Item *</label>
-                <InputBox
-                  register={{
-                    ...register("retailPrice", { required: "Retail Price is required" }),
-                  }}
-                  errors={errors.retailPrice}
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Wholesale Price Per Item *</label>
-                <InputBox
-                  register={{
-                    ...register("wholeSalePrice", { required: "Wholesale Price is required" }),
-                  }}
-                  errors={errors.wholeSalePrice}
-                />
-              </div>
-              <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Display Wholesale Price per item*</label>
-                <InputBox
-                  register={{
-                    ...register("displayPrice", {
-                      required: "Display Wholesale Price is required",
-                    }),
-                  }}
-                  errors={errors.displayPrice}
-                />
-              </div> */}
+
               </div>
               <div className="row">
                 {parameter.length > 0 && (
@@ -741,19 +675,16 @@ const CreateStockIn = ({ data }) => {
                     <h5 className="title">Add Parameters:</h5>
                     {parameter?.map((item, index) => (
                       <React.Fragment key={index}>
-                        <div className="col-lg-3 col-md-6 input_wrapper">
+                        <div className="col-lg-4 col-md-6 input_wrapper">
                           <label>{item}</label>
                           <InputBox
                             disabled={modalStates.isView}
                             type="text"
                             register={{
                               ...register(`parameter[${item}]`, {
-                                // required: "itemCode is required",
                               }),
                             }}
-                            // {...register(`parameter[${item}]`)}
-                            // className="form-control custom_input"
-                            // style={{ width: "100%", height: "31px" }}
+
                           />
                         </div>
                       </React.Fragment>
@@ -763,13 +694,7 @@ const CreateStockIn = ({ data }) => {
               </div>
               {/* </div> */}
               <div className="form_button_wrapper gap-2">
-                {/* <CustomBtn name="Save" onClick={handleSubmit(stockInDetailsSubmit)} /> */}
-                {/* <CustomBtn
-              name="Back"
-              onClick={() => {
-                router.back();
-              }}
-            /> */}
+
               </div>
             </>
             {/* </div> */}

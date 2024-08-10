@@ -180,7 +180,7 @@ const StockOut = () => {
             onClick={() => {
                 getStatusWiseMaterialList();
             }}
-           
+            style={{padding:"0px",minWidth:"110px"}}
           />
         </div>
             </div>

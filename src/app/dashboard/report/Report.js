@@ -26,31 +26,49 @@ const Report = () => {
     });
 
     return (
-        <div>
+        <>
             {loader && <Loader text="Fetching Data..." />}
-
-            <div className="search_btn_wrapper">
-                {/* tab wrapper */}
+            <div className="top_header" style={{ "marginBottom": "10px" }}>
                 <div className="my-3 d-flex justify-content-start align-items-start gap-3">
                     <div className="tab_btn" onClick={() => {
                         setActiveTab("shift");
                     }}
                         style={{
                             backgroundColor:
-                                activeTab == "shift" ? "#184965" : "#D0D3D9",
+                                activeTab == "shift" ? "#184965" : "#184965a8",
                         }}
                     >
                         Stock Analysis
                     </div>
 
                     <div className="tab_btn" onClick={() => { setActiveTab("attendance"); }}
-                        style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#D0D3D9", }} >
+                        style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#184965a8", }} >
                         Sell Report
                     </div>
 
                 </div>
             </div>
-            <div className="table_wrapper">
+            {/* <div className="search_btn_wrapper">
+                <div className="my-3 d-flex justify-content-start align-items-start gap-3">
+                    <div className="tab_btn" onClick={() => {
+                        setActiveTab("shift");
+                    }}
+                        style={{
+                            backgroundColor:
+                                activeTab == "shift" ? "#184965" : "#184965a8",
+                        }}
+                    >
+                        Stock Analysis
+                    </div>
+
+                    <div className="tab_btn" onClick={() => { setActiveTab("attendance"); }}
+                        style={{ backgroundColor: activeTab == "attendance" ? "#184965" : "#184965a8", }} >
+                        Sell Report
+                    </div>
+
+                </div>
+            </div> */}
+            <div className="table_wrapper" style={{ "height": "95%" }} >
                 <div className="table_main">
                     <div className="table_section">
                         {activeTab === "attendance" &&
@@ -66,7 +84,7 @@ const Report = () => {
                     </div>
                 </div>
             </div>
-        </div >
+        </>
 
     );
 };

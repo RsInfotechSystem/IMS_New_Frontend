@@ -1,11 +1,8 @@
-import React from 'react'
-import AcceptMaterial from './AcceptMaterial'
-
+import React from "react";
+import AcceptMaterial from "./AcceptMaterial";
 
 function Page() {
-  return (
-    <AcceptMaterial />
-  )
+  return <AcceptMaterial />;
 }
 
-export default Page
+export default Page;

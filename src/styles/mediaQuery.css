@@ -197,9 +197,22 @@
         height: 12%;
     }
 }
-
+@media only screen and (min-width:768px) and (max-width:1024px) {
+    .login_img{
+        width: 400px;
+        height: 350px;
+      }
+}
 @media only screen and (max-width:768px) {
     .search_box {
         width: 250px;
     }
+    .login_img{
+        width: 250px;
+        height: 250px;
+      }
+
+      .report_card{
+        width: 90%;
+      }
 }

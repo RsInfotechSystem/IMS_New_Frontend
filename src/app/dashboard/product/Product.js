@@ -239,7 +239,7 @@ const Product = () => {
       {/* table  */}
       <div className="table_wrapper">
         <div className="table_main">
-          <div className="table_section">
+          <div className="table_section employee_table">
             <div className="table_header">
               <div className="col_10p">
                 <div className="check_box">
@@ -316,7 +316,7 @@ const Product = () => {
                   <div className="col_35p">
                     {/* <h6>{data?.description}</h6> */}
                     <h6>{data?.description.substring(0, 100)}
-                      {(data.description?.length > 120) && <div className="custom_button_read" onClick={() => setModalStates(pre => ({ ...pre, showReadMore: true, showReadMoreText: data.description }))}> {data.description?.length > 120 && "Read More"}</div>
+                      {(data.description?.length > 100) && <div className="custom_button_read" onClick={() => setModalStates(pre => ({ ...pre, showReadMore: true, showReadMoreText: data.description }))}> {data.description?.length > 100 && "Read More"}</div>
                       }</h6>
                   </div>
                   <div className="col_20p">
