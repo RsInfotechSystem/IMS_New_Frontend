@@ -47,7 +47,9 @@ function CreateUser({ data }) {
                 setValue("email", serverResponse?.data?.user?.email)
                 setValue("mobile", serverResponse?.data?.user?.mobile)
                 setValue("password", serverResponse?.data?.user?.password)
-                setDefaultLocation(serverResponse?.data?.user?.locationId);
+                setSelectedLocation(serverResponse?.data?.user?.locationId);
+                console.log(serverResponse?.data?.user?.locationId);
+                
                 setRoleId(serverResponse?.data?.user?.roleId)
                 setValue("role", serverResponse?.data?.user?.roleId)
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
@@ -62,7 +64,7 @@ function CreateUser({ data }) {
 
     //update department
     const updateExistingUser = async (values) => {
-        if (selectedLocationId.length <= 0) {
+        if (selectedLocation.length <= 0) {
             // setValidationMessage('Please select at least one location.');
             toast.info("Please select at least one location.")
             return
@@ -80,7 +82,7 @@ function CreateUser({ data }) {
                 userId: modalStates?.id,
                 roleId: values.role,
                 // locationId: values.locationId,
-                locationId: selectedLocationId.length >= 1 ? selectedLocationId : defaultLocation.map((item) => item._id),
+                locationId: selectedLocation.map((item) => item._id),
             }
 
             setButtonLoader(true);
@@ -134,7 +136,7 @@ function CreateUser({ data }) {
                     mobile: values.mobile,
                     password: values.password,
                     roleId: values.role,
-                    locationId: selectedLocationId,
+                    locationId: selectedLocation.map(e => e._id),
                     // locationId: [locationId],
                 };
 
@@ -187,6 +189,9 @@ function CreateUser({ data }) {
     useEffect(() => {
         setValue("locationId", locationId);
     }, [locationId, locations.length]);
+
+    console.log(selectedLocation);
+    
 
 
     return (
@@ -254,16 +259,16 @@ function CreateUser({ data }) {
                                     placeholder="Select Location"
                                     options={locations}
                                     displayValue={"name"}
-                                    selectedValues={modalStates?.type === "update" ? defaultLocation : selectedLocation}
+                                    selectedValues={selectedLocation}
                                     // selectedValues={defaultLocation}
 
-                                    showCheckbox={false}
+                                    // showCheckbox={true}
                                     disable={false}
                                     keepSearchTerm={true}
-                                    onSelect={handleLocationSelect}
-                                    onRemove={handleLocationSelect}
-                                    rules={{ required: "Location is required" }}
-                                    {...register("location")}
+                                    onSelect={(e)=> setSelectedLocation(e)}
+                                    onRemove={(e)=> setSelectedLocation(e)}
+                                    // rules={{ required: "Location is required" }}
+                                    // {...register("location")}
 
                                 />
                                 {validationMessage && <p style={{ color: '#dc3545' }}>{validationMessage}</p>}
