@@ -4,11 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
-import SelectBox from "@/common-components/Select";
-
 import {
-  getBrands,
-  getCategory,
   getCategoryWiseBrand,
   getLocations,
   getLocationWiseBlock,
@@ -17,18 +13,15 @@ import {
 } from "@/services/commonApis";
 import { communication, getServerUrl } from "@/services/communication";
 import { toast } from "react-toastify";
-import ButtonLoader from "@/common-components/ButtonLoader";
 import Loader from "@/common-components/Loader";
-import Swal from "sweetalert2";
 import { stockStatus } from "@/helper/stockStatusArray";
 import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const AcceptMaterialOld = () => {
+const AcceptMaterialModel = () => {
   const router = useRouter();
   const [brandName, setBrandName] = useState("");
   const [loader, setLoader] = useState(false);
-  const [isPartationPresent, setIsPartationPresent] = useState("");
   const [locations, setLocations] = useState([]);
   const [category, setCategory] = useState([]);
   const [brandsData, setBrandsData] = useState([]);
@@ -38,7 +31,7 @@ const AcceptMaterialOld = () => {
   const searchParams = useSearchParams();
   const [rackPartation, setRackPartation] = useState([]);
   const [partition, setPartition] = useState("");
-
+  const [jobNo, setJobNo] = useState("");
   const {
     register,
     handleSubmit,
@@ -70,6 +63,7 @@ const AcceptMaterialOld = () => {
         blockId: value.blockId,
         partitionName: value.partitionName,
         status: value.status,
+        jobNo: jobNo,
       };
       let response = await communication.updateStockBeforeAccept(dataToSend);
       if (response?.data?.status === "SUCCESS") {
@@ -102,6 +96,7 @@ const AcceptMaterialOld = () => {
         // Set default values for each form field
         const stockData = responseFromServer?.data?.material;
 
+        setJobNo(stockData?.jobNo);
         // setIsPartationPresent(responseFromServer?.data?.material?.partitionName);
         getRackPartation(stockData.rackId._id, setLoader, router, setRackPartation);
         setValue("locationId", stockData?.locationId?._id);
@@ -134,9 +129,6 @@ const AcceptMaterialOld = () => {
     }
   }
 
-  // useEffect(() => {
-  //   setValue("partitionName", isPartationPresent);
-  // }, [rackPartation && rackPartation.length >= 1]);
   useEffect(() => {
     const id = getValues("categoryId");
     if (id) {
@@ -149,13 +141,6 @@ const AcceptMaterialOld = () => {
       setValue("parameterId", "");
     }
   }, [categoryId]);
-
-  // useEffect(()=>{
-  //   const id = getValues("categoryId");
-  //   if (id) {
-  //     getCategoryWiseBrand(id, setLoader, router, setBrandsData)
-  //   }
-  // },[categoryId])
 
   useEffect(() => {
     const id = getValues("locationId");
@@ -202,6 +187,37 @@ const AcceptMaterialOld = () => {
       {loader && <Loader />}
       <div className="top_header">
         <div className="tab_title">Accept Material </div>
+        <div
+          className="back_btn"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_1564_1770)">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
+                  fill="#198754"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_1564_1770">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+          <div>Back</div>
+        </div>
       </div>
       <div className="form_layout">
         <div className="form_tabs_wrapper"></div>
@@ -650,4 +666,4 @@ const AcceptMaterialOld = () => {
   );
 };
 
-export default AcceptMaterialOld;
+export default AcceptMaterialModel;

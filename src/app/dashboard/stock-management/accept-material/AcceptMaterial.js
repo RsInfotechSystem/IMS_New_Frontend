@@ -35,11 +35,8 @@ const AcceptMaterial = () => {
   const [locations, setLocations] = useState([]);
   const [category, setCategory] = useState([]);
   const [brandsData, setBrandsData] = useState([]);
-  const [blocks, setBlocks] = useState([]);
   const [parameter, setParameter] = useState([]);
-  const [racks, setRacks] = useState([]);
   const searchParams = useSearchParams();
-  const [rackPartation, setRackPartation] = useState([]);
   const [partition, setPartition] = useState("");
   const [nonMaterial, setNonMaterial] = useState([]);
   const [material, setMaterial] = useState([]);
@@ -48,6 +45,12 @@ const AcceptMaterial = () => {
   const [allMaterialsSelected, setAllMaterialsSelected] = useState(false);
   const [allNonMaterialsSelected, setAllNonMaterialsSelected] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [NonMaterialId, setNonMaterialId] = useState("");
+  const [blocks, setBlocks] = useState([]);
+  const [racks, setRacks] = useState([]);
+  const [rackPartation, setRackPartation] = useState([]);
+  const [locationId, setLocationId] = useState();
+  const [materialList, setMaterialList] = useState([]);
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     jobNo: "",
@@ -78,12 +81,22 @@ const AcceptMaterial = () => {
     try {
       setLoader(true);
       const dataToSend = {
-        materialId: searchParams.get("stockId"),
-        rackId: value.rackId,
-        blockId: value.blockId,
-        partitionName: value.partitionName,
-        status: value.status,
+        // materialId: searchParams.get("stockId"),
+        // rackId: value.rackId,
+        // blockId: value.blockId,
+        // partitionName: value.partitionName,
+        // status: value.status,
+        materialIds: materialList.map((material) => ({
+          id: material.materialId,
+          blockId: material.blockId,
+          rackId: material.rackId,
+          partitionName: material.partitionName,
+          // status: material.status,
+        })),
       };
+      console.log(dataToSend, "dataToSend");
+
+      return;
       let response = await communication.updateStockBeforeAccept(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);
@@ -104,6 +117,14 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   };
+  const handleChange = (e, index, field) => {
+    const { value } = e.target;
+    console.log(value, "value");
+
+    setNonMaterial((prevList) =>
+      prevList.map((item, idx) => (idx === index ? { ...item, [field]: value } : item))
+    );
+  };
   async function returnmaterialByJob({ page = 1, searchString } = {}) {
     try {
       setLoader(true);
@@ -114,7 +135,31 @@ const AcceptMaterial = () => {
       };
       const serverResponse = await communication.getReturnMaterialByJob(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        setNonMaterial(serverResponse?.data?.material?.nonMaterials);
+        const ReceiveData = serverResponse?.data?.material?.nonMaterials;
+        // console.log(ReceiveData, "ReceiveData");
+        if (ReceiveData.length > 0) {
+          const allMaterials = ReceiveData.flatMap((material) => ({
+            materialId: material._id,
+            categoryId: material.categoryId?._id || "",
+            block: material.blockId?._id || "",
+            blockName: material.blockId?.blockNo || "",
+            rack: material.rackId?._id || "",
+            rackName: material.rackId?.rackName || "",
+            partitionName: material.partitionName || "",
+            categoryName: material.categoryId?.name || "",
+            locationId: material.locationId?._id || "",
+            location: material.locationId?.name || "",
+            brandId: material.brandId?._id || "",
+            brand: material.brandId?.name || "",
+            modelName: material.modelId?.name || "",
+            itemCode: material.itemCode || "",
+            serialNo: material.serialNo || "",
+            quantity: material.quantity || 1,
+          }));
+
+          setNonMaterial(allMaterials);
+        }
+        // setNonMaterial(serverResponse?.data?.material?.nonMaterials);
         setMaterial(serverResponse?.data?.material?.materials);
         toast.success(serverResponse.data.message);
         // setPageCount(serverResponse?.data?.totalPages);
@@ -150,6 +195,7 @@ const AcceptMaterial = () => {
   const handleNonMaterialCheckboxChange = (e, productId) => {
     if (e.target.checked) {
       setSelectedNonMaterials((prev) => [...prev, productId]);
+      setNonMaterialId(productId);
     } else {
       setSelectedNonMaterials((prev) => prev.filter((id) => id !== productId));
     }
@@ -205,6 +251,7 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   }
+
   async function getStockById() {
     try {
       setLoader(true);
@@ -218,6 +265,7 @@ const AcceptMaterial = () => {
         // setIsPartationPresent(responseFromServer?.data?.material?.partitionName);
         getRackPartation(stockData.rackId._id, setLoader, router, setRackPartation);
         setValue("locationId", stockData?.locationId?._id);
+        setLocationId(stockData?.locationId?._id);
         await getLocationWiseBlock(stockData?.locationId._id, setLoader, router, setBlocks);
         setValue("parameterId", stockData?.parameterId);
         setValue("modelName", stockData?.modelId.name);
@@ -272,20 +320,21 @@ const AcceptMaterial = () => {
 
   useEffect(() => {
     const id = getValues("locationId");
-    if (id) {
-      getLocationWiseBlock(id, setLoader, router, setBlocks);
-    }
-  }, [location]);
 
-  useEffect(() => {
-    const id = getValues("blockId");
-    if (id) {
-      const rackDetails = blocks?.find((ele) => ele._id === id);
-      setRacks(rackDetails?.rackId ?? []);
-    } else {
-      setRacks([]);
+    if (locationId) {
+      getLocationWiseBlock(locationId, setLoader, router, setBlocks);
     }
-  }, [rack]);
+  }, [locationId]);
+
+  // useEffect(() => {
+  //   const id = getValues("blockId");
+  //   if (id) {
+  //     const rackDetails = blocks?.find((ele) => ele._id === id);
+  //     setRacks(rackDetails?.rackId ?? []);
+  //   } else {
+  //     setRacks([]);
+  //   }
+  // }, [rack]);
 
   useEffect(() => {
     const id = getValues("rackId");
@@ -309,6 +358,46 @@ const AcceptMaterial = () => {
   useEffect(() => {
     returnmaterialByJob();
   }, []);
+  useEffect(() => {
+    const uniqueLocationIds = [...new Set(nonMaterial.map((material) => material.locationId))];
+    uniqueLocationIds.forEach((locationId) => {
+      if (locationId) {
+        getLocationWiseBlock(locationId, setLoader, router, setBlocks);
+      }
+    });
+  }, [nonMaterial]);
+  useEffect(() => {
+    nonMaterial.forEach((material) => {
+      if (material.block) {
+        const rackDetails = blocks?.find((ele) => ele._id === material.block);
+        setRacks((prevRacks) => ({
+          ...prevRacks,
+          [material.block]: rackDetails?.rackId ?? [],
+        }));
+      }
+    });
+  }, [nonMaterial, blocks]);
+  useEffect(() => {
+    nonMaterial.forEach((material) => {
+      if (material.rack) {
+        getRackPartation(material.rack, setLoader, router, (partitions) => {
+          setRackPartation((prevPartitions) => ({
+            ...prevPartitions,
+            [material.rack]: partitions,
+          }));
+        });
+      }
+    });
+  }, [nonMaterial]);
+  // useEffect(() => {
+  //   const id = getValues("blockId");
+  //   if (id) {
+  //     const rackDetails = blocks?.find((ele) => ele._id === id);
+  //     setRacks(rackDetails?.rackId ?? []);
+  //   } else {
+  //     setRacks([]);
+  //   }
+  // }, [rack]);
 
   return (
     <>
@@ -322,15 +411,48 @@ const AcceptMaterial = () => {
         />
       )}
       <div className="top_header">
-        <div className="tab_title">Return Material</div>
+        <div className="tab_title">Returned Material</div>
+        <div
+          className="back_btn"
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <div>
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <g clip-path="url(#clip0_1564_1770)">
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
+                  fill="#184965"
+                />
+              </g>
+              <defs>
+                <clipPath id="clip0_1564_1770">
+                  <rect width="24" height="24" fill="white" />
+                </clipPath>
+              </defs>
+            </svg>
+          </div>
+          <div>Back</div>
+        </div>
       </div>
       <form>
+        {/* {console.log(NonMaterialId, "sssssss")} */}
         <div className="form_layout">
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Non-Material List</p>
             </div>
             {/* table  */}
+            {console.log(nonMaterial, "nonMaterial")}
             <div className="table_wrapper my-3">
               <div className="table_main">
                 <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
@@ -376,8 +498,8 @@ const AcceptMaterial = () => {
                     <div className="col_25p">
                       <h5>Item Code</h5>
                     </div>
-                    <div className="col_25p">
-                      <h5>Quantity</h5>
+                    <div className="col_20p">
+                      <h5 className="action_wrraper">Action</h5>
                     </div>
                   </div>
                   {nonMaterial?.length > 0 ? (
@@ -392,10 +514,6 @@ const AcceptMaterial = () => {
                                 id={product._id}
                                 onChange={(e) => handleNonMaterialCheckboxChange(e, product._id)}
                                 checked={selectedNonMaterials.includes(product._id)}
-                                // id={product._id}
-                                // onChange={(e) => handleCheckboxChange(e)}
-                                // checked={selectedCheckboxes.includes(product._id)}
-                                // disabled={attachedDescriptions.includes(product._id)}
                               />
                             </div>
                           </div>
@@ -403,25 +521,102 @@ const AcceptMaterial = () => {
                             <h6>{index + 1}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6>{product?.locationId?.name}</h6>
+                            <h6>{product?.location}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6>{product?.blockId?.blockNo}</h6>
+                            <div className="position-relative">
+                              <select
+                                name="blockId"
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                                value={product?.block}
+                                onChange={(e) => handleChange(e, index, "block")}
+                                // {...register("blockId", {
+                                //   required: "blockNo is required",
+                                // })}
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Block
+                                </option>
+                                {blocks.map((block, idx) => {
+                                  return (
+                                    <option
+                                      className="small text-capitalize"
+                                      value={block._id}
+                                      key={idx}
+                                    >
+                                      {block.blockNo}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
                           </div>
                           <div className="col_25p">
-                            <h6>{product?.rackId?.rackName}</h6>
+                            <div className="position-relative">
+                              <select
+                                // {...register("rackId", {
+                                //   required: "Rack is required",
+                                // })}
+                                value={product?.rack}
+                                onChange={(e) => handleChange(e, index, "rack")}
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Rack
+                                </option>
+                                {racks[product.block]?.map((rack, idx) => (
+                                  <option value={rack._id} key={idx}>
+                                    {rack.rackName}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
+                            {/* <h6>{product?.rackId?.rackName}</h6> */}
                           </div>
                           <div className="col_25p">
-                            <h6>{product?.partitionName}</h6>
+                            {/* <h6>{product?.partitionName}</h6> */}
+                            <div className="position-relative">
+                              <select
+                                // {...register("partitionName", {
+                                //   required: "Partation is required",
+                                // })}
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                                value={product?.partitionName}
+                                onChange={(e) => handleChange(e, index, "partitionName")}
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Partation
+                                </option>
+                                {rackPartation[product.rack]
+                                  ? rackPartation[product.rack].map((partition, idx) => (
+                                      <option value={partition.partitionName} key={idx}>
+                                        {partition.partitionName}
+                                      </option>
+                                    ))
+                                  : null}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
                           </div>
                           <div className="col_30p">
-                            <h6>{product?.categoryId?.name}</h6>
+                            <h6>{product?.categoryName}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6>{product?.brandId?.name}</h6>
+                            <h6>{product?.brand}</h6>
                           </div>
                           <div className="col_30p">
-                            <h6>{product?.modelId?.name}</h6>
+                            <h6>{product?.modelName}</h6>
                           </div>
                           <div className="col_25p">
                             <h6>{product?.serialNo}</h6>
@@ -429,15 +624,17 @@ const AcceptMaterial = () => {
                           <div className="col_25p">
                             <h6>{product?.itemCode}</h6>
                           </div>
-                          <div className="col_25p">
-                            <h6>{product?.assignQuantity}</h6>
+                          <div className="col_20p">
+                            <h6 className="action_wrraper">
+                              <CustomBtn name={"Accept"} onClick={handleSubmit(onSubmit)} />
+                            </h6>
                           </div>
                         </div>
                       );
                     })
                   ) : (
                     <small className="text-center text-secondary p-2 small d-block">
-                      Add order to see list
+                      Data not available
                     </small>
                   )}
                 </div>
@@ -556,7 +753,7 @@ const AcceptMaterial = () => {
                     })
                   ) : (
                     <small className="text-center text-secondary p-2 small d-block">
-                      Add order to see list
+                      Data not available
                     </small>
                   )}
                 </div>
@@ -672,7 +869,8 @@ const AcceptMaterial = () => {
                 })
               ) : (
                 <small className="text-center text-secondary p-2 small d-block">
-                  Add order to see list
+                  {console.log(NonMaterialId, "NonMaterialId")}
+                  Data not available
                 </small>
               )}
             </div>
@@ -683,7 +881,15 @@ const AcceptMaterial = () => {
 
       {/* ---------------------------send attached material----------------------------------------------------------*/}
       <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-        <Button className="btn-success" name={"Accept Material"}></Button>
+        <Button
+          className="btn-success"
+          name={"Accept Material"}
+          onClick={() => {
+            router.push(
+              `/dashboard/stock-management/accept-material/accept-material-model?stockId=${NonMaterialId}`
+            );
+          }}
+        ></Button>
         <Button className="btn-success" name={"Reject Material"}></Button>
       </div>
     </>
