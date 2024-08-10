@@ -240,7 +240,7 @@ function CreateBlock({ data }) {
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="form_modal_wrapper">
-        <div className="form_modal">
+        <div className="form_modal form_modal_img">
           <div className="form_modal_header">
             <h5 className="title">
               {modalStates?.type === "create" ? "Create Block" : "Update Block"}

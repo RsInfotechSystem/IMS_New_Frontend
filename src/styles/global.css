@@ -21,6 +21,7 @@
   --white-color: #ffffff;
   --black_transparent: rgba(0, 0, 0, 0.686);
 }
+
 custom_button:hover .support-orange {
   color: var(--orange_color) !important;
 }
@@ -713,6 +714,7 @@ div:where(.col_100p) {
 
 .image_preview_container {
 }
+
 .notification_icon_wrapper {
   position: relative;
   cursor: pointer;
@@ -787,6 +789,12 @@ div:where(.col_100p) {
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 100%;
+}
+
+.side_nav_wrapper .img {
+  height: auto;
+  width: 100%;
 }
 
 .side_nav_wrapper .tab_wrapper {
@@ -983,6 +991,7 @@ div:where(.tab_active, .tab_inactive) {
   position: absolute;
   top: 48%;
   left: 48%;
+  width: 100%;
   transform: translate(-50%, -50%);
 }
 
@@ -1363,9 +1372,10 @@ div:where(.tab_active, .tab_inactive) {
 .table_wrapper {
   background-color: var(--white-color);
   border-radius: 8px;
-  height: 80%;
+  height: 87%;
   overflow: auto;
 }
+
 .table_wrapper_assign {
   background-color: var(--white-color);
   border-radius: 8px;
@@ -1609,6 +1619,7 @@ div:where(.tab_active, .tab_inactive) {
 .form_modal_body .form_label {
   padding: 0;
 }
+
 .form_modal_body img {
   width: 100% !important;
   height: auto !important;
@@ -1660,6 +1671,7 @@ div:where(.tab_active, .tab_inactive) {
   background-color: var(--white-color);
   pointer-events: none;
 }
+
 .select_box_smallarrow {
   border: 1px solid var(--grey_color_light_shade1);
   width: 21px;
@@ -1679,6 +1691,7 @@ div:where(.tab_active, .tab_inactive) {
   color: var(--grey_color_light_shade1);
   font-size: 14px;
 }
+
 .select_box_smallarrow .icon {
   color: var(--grey_color_light_shade1);
   font-size: 14px;
@@ -2894,6 +2907,7 @@ div:where(.access_sudo_class) {
   z-index: 0 !important;
   position: unset !important;
 }
+
 .form_tabs_wrapper {
   display: flex;
   align-items: center;
@@ -4552,6 +4566,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 .general_po_table {
   min-width: 800px;
 }
+
 .sell_btn {
   border: none;
   background-color: #184965;
@@ -4561,6 +4576,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
   font-size: 12px;
   font-weight: 600;
 }
+
 /* css for Kitchen Tab Start */
 /* recipe */
 .kitchen_recipe_tab {
@@ -5317,6 +5333,7 @@ ul .appointment_letter_ul {
 .checkbox_main {
   margin-top: 10px !important;
 }
+
 .customer_sign p {
   text-align: left;
   margin-top: 10vh;
@@ -5325,9 +5342,11 @@ ul .appointment_letter_ul {
   font-weight: 600;
   color: var(--black_color_dark_shade);
 }
+
 .login_page_rsis {
   color: #184965;
 }
+
 .form_control_assign {
   display: block;
   width: 100%;
@@ -5345,13 +5364,16 @@ ul .appointment_letter_ul {
   border-radius: var(--bs-border-radius);
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 .assign_or_font {
   font-size: 12px;
   font-weight: 600;
 }
+
 .font_label {
   font-family: 12px;
 }
+
 .multiSelectContainer ul {
   max-height: 60px !important;
 }
@@ -5394,15 +5416,22 @@ ul .appointment_letter_ul {
   border: 1px solid #ddd;
 }
 /* login img */
-.login_img {
+/* .login_img {
   width: 500px;
   height: 400px;
+} */
+/* login img */
+.login_img {
+  width: 100%;
+  height: auto;
 }
+
 /* select custom */
 .select_custom_option {
   font-size: 10px;
   color: red;
 }
+
 /* cancel icon  on multiselect */
 .form_modal_img img {
   width: 15px !important;
@@ -5415,4 +5444,13 @@ ul .appointment_letter_ul {
 }
 .multiSelectContainer input {
   /* width: 60px; */
+}
+
+.report_card {
+  width: 35%;
+  margin: 20px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 15px;
+  border-radius: 10px;
+  background-color: "white";
 }

@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import logo from "../../../public/images/logo.png";
+import logo from "../../../public/images/AANAD COMPUTER LOGO.png";
 import { hasCookie } from "cookies-next";
 import { usePathname, useRouter } from "next/navigation";
 import { getUserAccessTabs } from "@/services/commonApis";
@@ -25,7 +25,7 @@ function SideNav() {
   return (
     <div className="side_nav_wrapper">
       <div className="logo">
-        <Image src={logo} width={80} height={60} alt="ohno logo" />
+        <Image src={logo} width={500} height={500} className="img" alt="ohno logo" />
       </div>
       <div className="tab_wrapper">
         {sideNavTabArray.filter(tabAccess => tab.includes(tabAccess?.tabName?.toLowerCase()))?.map((ele, index) => {
