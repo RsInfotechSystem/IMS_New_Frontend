@@ -21,13 +21,6 @@ import { getCookiesData } from "@/utilities/getCookiesData";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const DailyTask = () => {
-  const [modalStates, setModalStates] = useState({
-    modal: false,
-    type: "",
-    id: "",
-    filter: false,
-    isView: false,
-  });
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     deleteId: "",
@@ -49,6 +42,12 @@ const DailyTask = () => {
   const [isPageUpdated, setIsPageUpdated] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [roleName, setRoleName] = useState("");
+  const [modalStates, setModalStates] = useState({
+    deleteTasks: false,
+    modal: false,
+    type: "",
+    id: "",
+  });
   useEffect(() => {
     setRoleName(getCookie("role"));
   }, []);
@@ -146,8 +145,31 @@ const DailyTask = () => {
       setLoader(false);
     }
   };
-  const handleDeleteMaterial = (id) => {
-    setSelectedList(selectedList.filter((item) => item._id !== id));
+
+  const handleDeleteMaterial = async (jobNo) => {
+    try {
+      setLoader(true);
+      setModalStates((prev) => ({ ...prev, deleteTasks: false, jobNo: "" }));
+      // const payload = {
+      //   jobNo: jobNo,
+      // };
+
+      // console.log(payload, "payloadpayload");
+      let response = await communication.deleteAssignMaterial({ jobNo: jobNo });
+      if (response?.data?.status === "SUCCESS") {
+        await fetchAssignMaterial(1, searchString);
+        toast.success(response?.data?.message, { autoClose: 1500 });
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response?.data?.message, { autoClose: 1500 });
+        router.push("/");
+      } else {
+        toast.info(response?.data?.message);
+      }
+    } catch (error) {
+      toast.info(error?.message, { autoClose: 1500 });
+    } finally {
+      setLoader(false);
+    }
   };
   const handleSearch = (e) => {
     setSearchString(e.target.value);
@@ -163,31 +185,21 @@ const DailyTask = () => {
   }, [isPageUpdated]);
   return (
     <>
-      {respondHandlerModalState.state && (
+      {modalStates.deleteTasks && (
         <CustomResponseHandlerModal
           status="warning"
-          message="Are you sure you want to delete this Stock?"
-          cancelHandler={cancelHandler}
-          successHandler={() => handleDelete(respondHandlerModalState.deleteId)}
+          message={`Do you want to delete this task?`}
+          successHandler={() => {
+            handleDeleteMaterial(modalStates?.jobNo);
+          }}
+          cancelHandler={() => {
+            setModalStates((prev) => ({ ...prev, deleteTasks: false, jobNo: "" }));
+          }}
         />
       )}
-      {respondHandlerActiveModalState.state && (
-        <CustomResponseHandlerModal
-          status="warning"
-          message={`Are you sure you want to ${respondHandlerActiveModalState.action} the status?`}
-          cancelHandler={cancelHandlerActive}
-          successHandler={() => changeUserStatus(respondHandlerActiveModalState.userId)}
-        />
-      )}
+
       {loader && <Loader text="Fetching Data..." />}
-      {modalStates?.filter && (
-        <StockFilter
-          setModalStates={setModalStates}
-          apiCall={fetchAssignMaterial}
-          filter={filter}
-          setFilter={setFilter}
-        />
-      )}
+
       <div className="top_header">
         <div className="tab_title">Daily Task</div>
         <Pagination
@@ -288,16 +300,16 @@ const DailyTask = () => {
               <div className="col_50p">
                 <h5>Task Status</h5>
               </div>
-              {roleName == "admin" && material.map((item) => item?.taskStatus) == "assigned" && (
+              {/* {roleName == "admin" && material.map((item) => item?.taskStatus) == "assigned" && ( */}
+              <div className="col_20p">
+                <h5>Action</h5>
+              </div>
+              {/* )} */}
+              {/* {roleName !== "admin" && material.map((item) => item?.taskStatus) == "assigned" && (
                 <div className="col_20p">
                   <h5>Action</h5>
                 </div>
-              )}
-              {roleName !== "admin" && material.map((item) => item?.taskStatus) == "assigned" && (
-                <div className="col_20p">
-                  <h5>Action</h5>
-                </div>
-              )}
+              )} */}
             </div>
             {material.length > 0 ? (
               <>
@@ -333,7 +345,7 @@ const DailyTask = () => {
                     <div className="col_50p">
                       <h6>{stockDetails?.taskStatus}</h6>
                     </div>
-                    {roleName == "admin" && stockDetails?.taskStatus == "assigned" && (
+                    {roleName == "admin" && stockDetails?.taskStatus == "assigned" ? (
                       <div className="col_20p me-1">
                         <h6 className="action_wrraper">
                           <>
@@ -379,20 +391,35 @@ const DailyTask = () => {
                             </div>
                             <div
                               title="Delete"
-                              onClick={() => handleDeleteMaterial(stockDetails._id)}
+                              // onClick={() => handleDeleteMaterial(stockDetails?.jobNo)}
+                              onClick={() =>
+                                setModalStates((prev) => ({
+                                  ...prev,
+                                  deleteTasks: true,
+                                  jobNo: stockDetails?.jobNo,
+                                }))
+                              }
                             >
                               <FontAwesomeIcon icon={faTrash} />
                             </div>
                           </>
                         </h6>
                       </div>
+                    ) : (
+                      <div className="col_20p me-1">
+                        <h6 className="action_wrraper">--</h6>
+                      </div>
                     )}
 
-                    {roleName !== "admin" && stockDetails?.taskStatus == "assigned" && (
+                    {/* {roleName !== "admin" && stockDetails?.taskStatus == "assigned" ? (
                       <div title="Accept" onClick={(e) => acknowledgeMaterial(stockDetails?.jobNo)}>
                         <FontAwesomeIcon icon={faClipboardCheck} />
                       </div>
-                    )}
+                    ) : (
+                      <div className="col_20p me-1">
+                        <h6 className="action_wrraper">--</h6>
+                      </div>
+                    )} */}
                   </div>
                 ))}
               </>

@@ -2058,7 +2058,7 @@ export const communication = {
   returnMaterial: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/return-material`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/return-task-material`,
         data,
 
         {
@@ -2239,6 +2239,18 @@ export const communication = {
           },
         }
       );
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteAssignMaterial: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/material/delete-assigned-material`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
     } catch (error) {
       throw error;
     }

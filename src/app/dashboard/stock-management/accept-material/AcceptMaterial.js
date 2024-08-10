@@ -433,7 +433,7 @@ const AcceptMaterial = () => {
       </form>
       <div className="form_list_layout_wrapper my-4">
         <div className="d-flex align-items-center justify-content-between">
-          <p>Sales Order Item Preview</p>
+          <p>Selected Material List</p>
         </div>
         {/* table */}
         <div className="table_wrapper my-3">

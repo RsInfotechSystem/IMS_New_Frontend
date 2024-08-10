@@ -31,24 +31,41 @@ const AssignMaterial = () => {
   const [_material, _setMaterial] = useState();
   const router = useRouter();
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
-    categoryFilter: true,
-    brandFilter: true,
-    locationFilter: false,
-    modelNameFilter: false,
-    category: [],
-    brand: [],
-    modelName: [],
-    location: [],
-    categoryValue: { keyType: "", keyId: "", keyCount: 0 },
-    brandValue: { keyType: "", keyId: "", keyCount: 0 },
-    modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
-    locationValue: { keyType: "", keyId: "", keyCount: 0 },
+    // categoryFilter: true,
+    // brandFilter: true,
+    // locationFilter: false,
+    // modelNameFilter: false,
+    statusFilter: false,
+    conditionTypeFilter: false,
+    // category: [],
+    // brand: [],
+    // modelName: [],
+    // location: [],
+    conditionType: { keyType: "", keyId: "", keyCount: 0 },
+    status: { keyType: "", keyId: "", keyCount: 0 },
+    // brandValue: { keyType: "", keyId: "", keyCount: 0 },
+    // modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
+    // locationValue: { keyType: "", keyId: "", keyCount: 0 },
+    filterListori: [],
+    filterListCondition: [],
   });
   const [selectedFilters, setSelectedFilters] = useState({
     categoryId: "",
     brandId: "",
     modelId: "",
   });
+  const [selectedModels, setSelectedModels] = useState([]);
+  const [expandedModals, setExpandedModals] = useState([]);
+  const [quantities, setQuantities] = useState([]);
+  const [locationList, setLocationList] = useState([]);
+  const [formValues, setFormValues] = useState({
+    searchString: "",
+    categoryId: "",
+    status: "",
+    brandId: "",
+    conditionType: "",
+  });
+  const [errors, setErrors] = useState({});
   const {
     register,
     // handleSubmit,
@@ -64,22 +81,10 @@ const AssignMaterial = () => {
       parameter: {},
     },
   });
+  const searchString = watch("searchString");
   const location = watch("locationId");
   const categoryId = watch("categoryId");
   const brandId = watch("brandId");
-  const [selectedModels, setSelectedModels] = useState([]);
-  const searchString = watch("searchString");
-  const [expandedModals, setExpandedModals] = useState([]);
-  const [quantities, setQuantities] = useState([]);
-  const [locationList, setLocationList] = useState([]);
-  const [formValues, setFormValues] = useState({
-    searchString: "",
-    categoryId: "",
-    status: "",
-    brandId: "",
-    conditionType: "",
-  });
-  const [errors, setErrors] = useState({});
   // get-location
   async function getLocations() {
     try {
@@ -108,61 +113,38 @@ const AssignMaterial = () => {
 
       // Prepare the payload
       let payload = {
-        // "location": "66b0ad1b9d8190631daebeec",
         searchString: "",
-        // categoryId: "66add77631d846c3428e31d0", // Hardcoded for now
-        location: id, // Hardcoded for now
-        ...(state.brandValue.keyType === "brand" && { brandId: state.brandValue.keyId }),
-        ...(state.locationValue.keyType === "location" && { location: state.locationValue.keyId }),
-        ...(state?.modelNameValue?.keyType === "modelName" && {
-          modelId: state?.modelNameValue?.keyId,
-        }),
+        location: id,
+        ...(state.status.keyType === "status" && { status: state.status.keyId }),
+        ...(state.status.keyType === "conditionType" && { status: state.conditionType.keyId }),
       };
       // Fetch the data
       const serverResponse = await communication.getMaterialList(payload);
 
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse.data.stock);
+        setState({ filterListori: serverResponse.data.stock });
+        setState({ filterListCondition: serverResponse.data.stock });
         toast.success(serverResponse.data.message);
 
         if (isFirstCall) {
           const stock = serverResponse.data.stock || [];
 
           setState({
-            category: Array.from(
+            status: Array.from(
               new Set(
                 stock.map((item) =>
                   JSON.stringify({
-                    categoryId: item.categoryId?._id || "unknown",
-                    category: item.categoryId?.name || "unknown",
+                    status: item.status || "unknown",
                   })
                 )
               )
             ).map((item) => JSON.parse(item)),
 
-            brand: Array.from(
+            conditionType: Array.from(
               new Set(
                 stock.map((item) =>
-                  JSON.stringify({ brandId: item.brandId?._id, brand: item.brandId?.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-
-            modelName: Array.from(
-              new Set(
-                stock.map((item) =>
-                  JSON.stringify({ modelId: item.modelId?._id, modelName: item.modelId?.name })
-                )
-              )
-            ).map((item) => JSON.parse(item)),
-
-            parameter: Array.from(
-              new Set(
-                stock.map((item) =>
-                  JSON.stringify({
-                    locationId: item.locationId?._id,
-                    location: item.locationId?.name,
-                  })
+                  JSON.stringify({ conditionType: item.conditionType || "unknown" })
                 )
               )
             ).map((item) => JSON.parse(item)),
@@ -181,7 +163,18 @@ const AssignMaterial = () => {
       setLoader(false);
     }
   }
-  console.log(state, "state");
+  useEffect(() => {
+    const id = getValues("locationId");
+    if (id) {
+      setState({ statusFilter: true });
+      let isSearch = true;
+      getMaterialList({
+        page: 1,
+        isSearch,
+      });
+    }
+  }, [state?.status?.keyId]);
+  // console.log(state, "state");
 
   const technicianList = async (id) => {
     try {
@@ -228,6 +221,15 @@ const AssignMaterial = () => {
       (!selectedFilters.brandId || item.brandId._id === selectedFilters.brandId) &&
       (!selectedFilters.modelId || item.modelId._id === selectedFilters.modelId)
   );
+  // const filteredMaterial = useMemo(() => {
+  //   return material.filter(
+  //     (item) =>
+  //       (!selectedFilters.categoryId || item.categoryId._id === selectedFilters.categoryId) &&
+  //       (!selectedFilters.brandId || item.brandId._id === selectedFilters.brandId) &&
+  //       (!selectedFilters.modelId || item.modelId._id === selectedFilters.modelId) &&
+  //       (!state.statusFilter || item.status === state.statusFilter)
+  //   );
+  // }, [material, selectedFilters, state.statusFilter]);
   // useEffect(() => {
   //   getMaterialList({ isFirstCall: true });
   // }, []);
@@ -600,6 +602,7 @@ const AssignMaterial = () => {
       ) : (
         // <div className=" page_wrapper">
         <div className="kitchen_wrapper">
+          {console.log(state, "statestate")}
           <div className="row">
             <div className="col-12 col-lg-4 col-md-4">
               <div className="form_view pt-0">
@@ -770,70 +773,182 @@ const AssignMaterial = () => {
             </div>
             <div className="col-12 col-lg-8 col-md-8">
               <div className="row">
-                <div className="col-lg-6 col-md-6 input_wrapper">
-                  <label>Select Status</label>
-                  <div className="position-relative">
-                    <select
-                      name="locationId"
-                      className="form-control custom_input"
-                      style={{ width: "100%" }}
-                      {...register("locationId", {
-                        required: "locationId is required",
-                      })}
-                      // disabled={modalStates.isView}
-                    >
-                      <option value="" className="text-secondary text-lowercase"></option>
-                      {locationList.map((ele, index) => {
-                        return (
-                          <option className="small text-capitalize" value={ele._id} key={index}>
-                            {" "}
-                            {ele.name}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <div className="select_box_arrow">
-                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                {state?.statusFilter ? (
+                  <div className="col-lg-6 col-md-6 input_wrapper">
+                    <label>Select Status</label>
+                    <div className="position-relative">
+                      <select
+                        name="status"
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                        onChange={(e) => {
+                          console.log(state.filterListori, "rrrr rahul");
+                          console.log(
+                            state.filterListori.filter((item) => item.status == e.target.value),
+                            "rrrrr rahul"
+                          );
+
+                          setMaterial(
+                            state.filterListori.filter(
+                              (i) =>
+                                i.status
+                                  .toLocaleLowerCase()
+                                  .search(e.target.value.toLocaleLowerCase()) !== -1
+                            )
+                          );
+                        }}
+                      >
+                        <option value="" className="text-secondary text-lowercase"></option>
+                        {state?.status?.map((ele, index) => {
+                          return (
+                            <option
+                              className="small text-capitalize"
+                              value={ele?.status}
+                              key={index}
+                            >
+                              {ele?.status}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
+                    <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <div style={{ height: "5px" }}>
-                    {errors.locationId && (
-                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                        {errors.locationId.message}
-                      </p>
-                    )}
+                ) : (
+                  <div className="col-lg-6 col-md-6 input_wrapper">
+                    <label>Select Status</label>
+                    <div className="position-relative">
+                      <select
+                        name="status"
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                        onChange={(e) =>
+                          setState({
+                            status: {
+                              keyType: "status",
+                              keyId: e.target.value,
+                              keyCount: state.status.keyCount + 1,
+                            },
+                          })
+                        }
+                        value={state.status.keyId}
+                      >
+                        <option value="" className="text-secondary text-lowercase"></option>
+                        {/* {state?.status.map((ele, index) => {
+                        return (
+                          <option className="small text-capitalize" value={ele} key={index}>
+                            {" "}
+                            {ele}
+                          </option>
+                        );
+                      })} */}
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
+                    <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="col-lg-6 col-md-6 input_wrapper">
-                  <label>Select Condition</label>
-                  <div className="position-relative">
-                    <select
-                      name="locationId"
-                      className="form-control custom_input"
-                      style={{ width: "100%" }}
-                      onChange={(e) => setUserId(e.target.value)}
-                    >
-                      <option value="" className="text-secondary text-lowercase"></option>
+                )}
+                {state?.conditionTypeFilter ? (
+                  <div className="col-lg-6 col-md-6 input_wrapper">
+                    <label>Select Condition</label>
+                    <div className="position-relative">
+                      <select
+                        name="locationId"
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                        onChange={(e) => {
+                          console.log(state.filterListCondition, "rrrr sakshi");
+                          console.log(
+                            state.filterListCondition.filter(
+                              (item) => item.conditionType == e.target.value
+                            ),
+                            "rrrrr sakshi"
+                          );
+
+                          setMaterial(
+                            state.filterListCondition.filter(
+                              (i) =>
+                                i.conditionType
+                                  .toLocaleLowerCase()
+                                  .search(e.target.value.toLocaleLowerCase()) !== -1
+                            )
+                          );
+                        }}
+                      >
+                        <option value="" className="text-secondary text-lowercase"></option>
+                        {state?.conditionType?.map((ele, index) => {
+                          return (
+                            <option
+                              className="small text-capitalize"
+                              value={ele.conditionType}
+                              key={index}
+                            >
+                              {ele.conditionType}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
+                    {/* <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
+                    </div> */}
+                  </div>
+                ) : (
+                  <div className="col-lg-6 col-md-6 input_wrapper">
+                    <label>Select Condition</label>
+                    <div className="position-relative">
+                      <select
+                        name="locationId"
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                        onChange={(e) => setUserId(e.target.value)}
+                      >
+                        {/* <option value="" className="text-secondary text-lowercase"></option>
                       {TechnicianList.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
                             {ele.name}
                           </option>
                         );
-                      })}
-                    </select>
-                    <div className="select_box_arrow">
-                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      })} */}
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
                     </div>
+                    {/* <div style={{ height: "5px" }}>
+                      {errors.locationId && (
+                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                          {errors.locationId.message}
+                        </p>
+                      )}
+                    </div> */}
                   </div>
-                  <div style={{ height: "5px" }}>
-                    {errors.locationId && (
-                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                        {errors.locationId.message}
-                      </p>
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
               <div className="row">
                 <div className="col-12 mb-1" style={{ height: "40dvh" }}>
@@ -872,6 +987,9 @@ const AssignMaterial = () => {
                             <h5>Item Code</h5>
                           </div>
                           <div className="col_20p">
+                            <h5>Status</h5>
+                          </div>
+                          <div className="col_20p">
                             <h5>Model Name</h5>
                           </div>
                           <div className="col_20p">
@@ -889,9 +1007,10 @@ const AssignMaterial = () => {
                           <>
                             {filteredMaterial.length > 0 ? (
                               <>
-                                {" "}
                                 {filteredMaterial.map((materialData, index) => (
                                   <div className="table_data" key={index}>
+                                    {console.log(materialData, "materialData")}
+
                                     <div className="col_5p">
                                       <div className="check_box">
                                         <input
@@ -926,6 +1045,9 @@ const AssignMaterial = () => {
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.itemCode}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.status}</h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.modelId?.name}</h6>

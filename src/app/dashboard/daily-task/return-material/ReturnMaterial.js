@@ -36,6 +36,10 @@ const ReturnMaterialUser = () => {
     brandId: "",
     conditionType: "",
   });
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
+  const [selectedNonMaterials, setSelectedNonMaterials] = useState([]);
+  const [allMaterialsSelected, setAllMaterialsSelected] = useState(false);
+  const [allNonMaterialsSelected, setAllNonMaterialsSelected] = useState(false);
   const {
     register,
     handleSubmit,
@@ -90,15 +94,26 @@ const ReturnMaterialUser = () => {
       setLoader(false);
     }
   }
-  const onSubmit = async (values) => {
+  const generatePayload = () => {
+    const payload = {
+      jobNo: params.get("jobId"),
+      materialIds: selectedMaterials,
+      nonMaterialIds: selectedNonMaterials,
+    };
+
+    // If either array is empty, set it to an empty array in the payload
+    if (selectedMaterials.length === 0) payload.materialIds = [];
+    if (selectedNonMaterials.length === 0) payload.nonMaterialIds = [];
+
+    return payload;
+  };
+  const onSubmit = async () => {
     try {
       setLoader(true);
-      const dataToSend = {
-        materialId: modalStates?.id,
-        addedData: materialIdList,
-      };
-
-      let response = await communication.returnMaterial(dataToSend);
+      const payload = generatePayload();
+      // console.log(payload, "payyyyy");
+      // console.log(values, "valllll");
+      let response = await communication.returnMaterial(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);
         router.push("/dashboard/daily-task/");
@@ -115,101 +130,44 @@ const ReturnMaterialUser = () => {
     }
     // }
   };
-  const handleCheckboxChange = (event, materialData) => {
-    const isChecked = event.target.checked;
-
-    if (isChecked) {
-      // Add materialData to selectedList
-      setSelectedList((prev) => [...prev, materialData]);
+  const handleMaterialCheckboxChange = (e, productId) => {
+    if (e.target.checked) {
+      setSelectedMaterials((prev) => [...prev, productId]);
     } else {
-      // Remove materialData from selectedList
-      setSelectedList((prev) => prev.filter((item) => item._id !== materialData._id));
-      setStockIds((prev) => prev.filter((item) => item !== materialData._id));
-      setOutput((pre) => pre.filter((item) => item.stockId !== materialData._id));
-      setQuantities((prevQuantities) => ({
-        ...prevQuantities,
-        [materialData._id]: 1,
-      }));
+      setSelectedMaterials((prev) => prev.filter((id) => id !== productId));
     }
+    setAllMaterialsSelected(selectedMaterials.length + 1 === material.length);
   };
-  const handleSelectAllChange = (event) => {
-    const isChecked = event.target.checked;
 
-    if (isChecked) {
-      // Select all checkboxes
-      setSelectedList([...material]);
+  const handleNonMaterialCheckboxChange = (e, productId) => {
+    if (e.target.checked) {
+      setSelectedNonMaterials((prev) => [...prev, productId]);
     } else {
-      // Deselect all checkboxes
-      setSelectedList([]);
-      setStockIds([]);
-      setSelectAllCheckedStock(false);
+      setSelectedNonMaterials((prev) => prev.filter((id) => id !== productId));
     }
-    setSelectAllChecked(isChecked);
+    setAllNonMaterialsSelected(selectedNonMaterials.length + 1 === nonMaterial.length);
   };
-  const handleSelectAllChangeStock = (event) => {
-    const isChecked = event.target.checked;
-    setSelectAllCheckedStock(isChecked);
+
+  const handleSelectAllMaterials = (e) => {
+    const isChecked = e.target.checked;
+    setAllMaterialsSelected(isChecked);
     if (isChecked) {
-      // If "Select All" is checked, select all checkboxes
-      const allMaterialIds = selectedList.map((item) => item._id);
-      setStockIds(allMaterialIds);
+      setSelectedMaterials(material.map((item) => item._id));
     } else {
-      // If "Select All" is unchecked, deselect all checkboxes
-      setStockIds([]);
+      setSelectedMaterials([]);
     }
   };
 
-  const getStockIds = (event, materialData) => {
-    const isChecked = event.target.checked;
-
+  const handleSelectAllNonMaterials = (e) => {
+    const isChecked = e.target.checked;
+    setAllNonMaterialsSelected(isChecked);
     if (isChecked) {
-      // Add materialData to selectedList
-      setStockIds((prev) => [...prev, materialData._id]);
-      setOutput((pre) => [
-        ...pre,
-        { stockId: materialData._id, assignQuantity: quantities[materialData?._id] },
-      ]);
+      setSelectedNonMaterials(nonMaterial.map((item) => item._id));
     } else {
-      // Remove materialData from selectedList
-      setStockIds((prev) => prev.filter((item) => item !== materialData._id));
-      setOutput((pre) => pre.filter((item) => item.stockId !== materialData._id));
+      setSelectedNonMaterials([]);
     }
   };
-  useEffect(() => {
-    const fetchMaterial = async () => {
-      const id = getValues("categoryId");
 
-      try {
-        let payload = {
-          categoryId: id,
-        };
-        if (id) {
-          let response = await communication.getCategoryWiseParameter(payload);
-          if (response?.data?.status === "SUCCESS") {
-            setParameter(response?.data?.parameter);
-          }
-        }
-      } catch (error) {
-        toast.warn(error.message);
-      }
-    };
-    fetchMaterial();
-  }, [formValues.categoryId]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Clear error message on input change
-
-    // If changing searchString, clear other field errors
-    if (name === "searchString" && value) {
-      setErrors({});
-    }
-    // If changing other fields, clear searchString error
-    else if (name !== "searchString") {
-      setErrors({ ...errors, searchString: "" });
-    }
-  };
   useEffect(() => {
     materialByJob();
   }, []);
@@ -239,7 +197,10 @@ const ReturnMaterialUser = () => {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              id="selectAllCheckbox"
+                              // id="selectAllCheckbox"
+                              id="selectAllNonMaterialCheckbox"
+                              onChange={handleSelectAllNonMaterials}
+                              checked={allNonMaterialsSelected}
                             />
                           </div>
                         </div>
@@ -287,6 +248,11 @@ const ReturnMaterialUser = () => {
                                     className="form-check-input"
                                     type="checkbox"
                                     id={product._id}
+                                    onChange={(e) =>
+                                      handleNonMaterialCheckboxChange(e, product._id)
+                                    }
+                                    checked={selectedNonMaterials.includes(product._id)}
+                                    // id={product._id}
                                     // onChange={(e) => handleCheckboxChange(e)}
                                     // checked={selectedCheckboxes.includes(product._id)}
                                     // disabled={attachedDescriptions.includes(product._id)}
@@ -338,14 +304,7 @@ const ReturnMaterialUser = () => {
                   </div>
                 </div>
               </div>
-              {/* ---------------------------sales order list of discription end----------------------------------------------------------*/}
 
-              {/* <div> */}
-              {/* ---------------------------filter for material----------------------------------------------------------*/}
-              {/* <div className="form_list_layout_wrapper"> */}
-              {/* <div className="d-flex align-items-center justify-content-between py-2"> */}
-
-              {/* ---------------------------list of material----------------------------------------------------------*/}
               <div className="form_list_layout_wrapper my-4">
                 <div className="d-flex align-items-center justify-content-between">
                   <p>Material List</p>
@@ -360,7 +319,10 @@ const ReturnMaterialUser = () => {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              id="selectAllCheckbox"
+                              // id="selectAllCheckbox"
+                              id="selectAllMaterialCheckbox"
+                              onChange={handleSelectAllMaterials}
+                              checked={allMaterialsSelected}
                             />
                           </div>
                         </div>
@@ -408,6 +370,9 @@ const ReturnMaterialUser = () => {
                                     className="form-check-input"
                                     type="checkbox"
                                     id={product._id}
+                                    onChange={(e) => handleMaterialCheckboxChange(e, product._id)}
+                                    checked={selectedMaterials.includes(product._id)}
+                                    // id={product._id}
                                     // onChange={(e) => handleCheckboxChange(e)}
                                     // checked={selectedCheckboxes.includes(product._id)}
                                     // disabled={attachedDescriptions.includes(product._id)}

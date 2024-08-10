@@ -350,7 +350,7 @@ const StockManagement = () => {
             </div>
             {material.length > 0 ? (
               <>
-                {material?.map((materialDetails, index) => {
+                {material?.map((stockDetails, index) => {
                   return (
                     <div className="table_data" key={index}>
                       <div className="col_20p">
