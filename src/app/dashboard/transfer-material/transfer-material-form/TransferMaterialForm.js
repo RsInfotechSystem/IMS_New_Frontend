@@ -370,7 +370,9 @@ const TransferMaterialForm = () => {
           } else if (product.reamainingQuantity < value) {
             toast.warn(`Cannot add more than ${product.reamainingQuantity}.`);
             // Swal.fire("Error", `Cannot add more than ${product.reamainingQuantity}.`, "warning");
-            return product;
+            return { ...product, quantity: product.reamainingQuantity };
+           
+            // return product;
           } else {
             return { ...product, quantity: value };
           }
@@ -386,8 +388,10 @@ const TransferMaterialForm = () => {
           .map((ele) => {
             if (ele._id === id) {
               if (ele.reamainingQuantity < value) {
-                Swal.fire("Error", `Cannot add more than ${ele.reamainingQuantity}.`, "warning");
-                return ele;
+                toast.warn(`Cannot add more than ${ele.reamainingQuantity}.`);
+                return { ...ele, quantity: ele.reamainingQuantity };
+                
+                // return ele;
               } else {
                 return { ...ele, quantity: value };
               }

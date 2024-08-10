@@ -37,10 +37,13 @@ const AssignMaterial = () => {
     // modelNameFilter: false,
     statusFilter: false,
     conditionTypeFilter: false,
+    _conditionType: "",
+    _status: "",
     // category: [],
     // brand: [],
     // modelName: [],
     // location: [],
+    conditionTypeList: [],
     conditionType: { keyType: "", keyId: "", keyCount: 0 },
     status: { keyType: "", keyId: "", keyCount: 0 },
     // brandValue: { keyType: "", keyId: "", keyCount: 0 },
@@ -141,7 +144,7 @@ const AssignMaterial = () => {
               )
             ).map((item) => JSON.parse(item)),
 
-            conditionType: Array.from(
+            conditionTypeList: Array.from(
               new Set(
                 stock.map((item) =>
                   JSON.stringify({ conditionType: item.conditionType || "unknown" })
@@ -163,6 +166,24 @@ const AssignMaterial = () => {
       setLoader(false);
     }
   }
+  useEffect(() => {
+    let filteredList = state.filterListori;
+
+    if (state._status) {
+      filteredList = filteredList.filter((i) =>
+        i.status.toLocaleLowerCase().includes(state._status.toLocaleLowerCase())
+      );
+    }
+
+    if (state._conditionType) {
+      filteredList = filteredList.filter((i) =>
+        i.conditionType.toLocaleLowerCase().includes(state._conditionType.toLocaleLowerCase())
+      );
+    }
+
+    setMaterial(filteredList);
+  }, [state._status, state._conditionType]);
+
   useEffect(() => {
     const id = getValues("locationId");
     if (id) {
@@ -781,22 +802,23 @@ const AssignMaterial = () => {
                         name="status"
                         className="form-control custom_input"
                         style={{ width: "100%" }}
-                        onChange={(e) => {
-                          console.log(state.filterListori, "rrrr rahul");
-                          console.log(
-                            state.filterListori.filter((item) => item.status == e.target.value),
-                            "rrrrr rahul"
-                          );
+                        onChange={(e) => setState({ _status: e.target.value })}
+                        // onChange={(e) => {
+                        //   console.log(state.filterListori, "rrrr rahul");
+                        //   console.log(
+                        //     state.filterListori.filter((item) => item.status == e.target.value),
+                        //     "rrrrr rahul"
+                        //   );
 
-                          setMaterial(
-                            state.filterListori.filter(
-                              (i) =>
-                                i.status
-                                  .toLocaleLowerCase()
-                                  .search(e.target.value.toLocaleLowerCase()) !== -1
-                            )
-                          );
-                        }}
+                        //   setMaterial(
+                        //     state.filterListori.filter(
+                        //       (i) =>
+                        //         i.status
+                        //           .toLocaleLowerCase()
+                        //           .search(e.target.value.toLocaleLowerCase()) !== -1
+                        //     )
+                        //   );
+                        // }}
                       >
                         <option value="" className="text-secondary text-lowercase"></option>
                         {state?.status?.map((ele, index) => {
@@ -856,59 +878,6 @@ const AssignMaterial = () => {
                         <FontAwesomeIcon icon={faAngleDown} className="icon" />
                       </div>
                     </div>
-                    <div style={{ height: "5px" }}>
-                      {errors.locationId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.locationId.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                )}
-                {state?.conditionTypeFilter ? (
-                  <div className="col-lg-6 col-md-6 input_wrapper">
-                    <label>Select Condition</label>
-                    <div className="position-relative">
-                      <select
-                        name="locationId"
-                        className="form-control custom_input"
-                        style={{ width: "100%" }}
-                        onChange={(e) => {
-                          console.log(state.filterListCondition, "rrrr sakshi");
-                          console.log(
-                            state.filterListCondition.filter(
-                              (item) => item.conditionType == e.target.value
-                            ),
-                            "rrrrr sakshi"
-                          );
-
-                          setMaterial(
-                            state.filterListCondition.filter(
-                              (i) =>
-                                i.conditionType
-                                  .toLocaleLowerCase()
-                                  .search(e.target.value.toLocaleLowerCase()) !== -1
-                            )
-                          );
-                        }}
-                      >
-                        <option value="" className="text-secondary text-lowercase"></option>
-                        {state?.conditionType?.map((ele, index) => {
-                          return (
-                            <option
-                              className="small text-capitalize"
-                              value={ele.conditionType}
-                              key={index}
-                            >
-                              {ele.conditionType}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                    </div>
                     {/* <div style={{ height: "5px" }}>
                       {errors.locationId && (
                         <p className="text-danger text-start" style={{ fontSize: "14px" }}>
@@ -917,17 +886,38 @@ const AssignMaterial = () => {
                       )}
                     </div> */}
                   </div>
-                ) : (
-                  <div className="col-lg-6 col-md-6 input_wrapper">
-                    <label>Select Condition</label>
-                    <div className="position-relative">
-                      <select
-                        name="locationId"
-                        className="form-control custom_input"
-                        style={{ width: "100%" }}
-                        onChange={(e) => setUserId(e.target.value)}
-                      >
-                        {/* <option value="" className="text-secondary text-lowercase"></option>
+                )}
+
+                <div className="col-lg-6 col-md-6 input_wrapper">
+                  <label>Select Condition</label>
+                  <div className="position-relative">
+                    <select
+                      name="conditiontype"
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                      onChange={(e) => setState({ _conditionType: e.target.value })}
+                      // onChange={(e) =>
+                      //   setMaterial(
+                      //     state.filterListori.filter(
+                      //       (i) =>
+                      //         i.conditionType
+                      //           .toLocaleLowerCase()
+                      //           .search(e.target.value.toLocaleLowerCase()) !== -1
+                      //     )
+                      //   )
+                      // }
+                    >
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {state.conditionTypeList.map((item, index) => (
+                        <option
+                          className="small text-capitalize"
+                          value={item.conditionType}
+                          key={index}
+                        >
+                          {item.conditionType}
+                        </option>
+                      ))}
+                      {/* <option value="" className="text-secondary text-lowercase"></option>
                       {TechnicianList.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
@@ -935,20 +925,19 @@ const AssignMaterial = () => {
                           </option>
                         );
                       })} */}
-                      </select>
-                      <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
                     </div>
-                    {/* <div style={{ height: "5px" }}>
+                  </div>
+                  {/* <div style={{ height: "5px" }}>
                       {errors.locationId && (
                         <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                           {errors.locationId.message}
                         </p>
                       )}
                     </div> */}
-                  </div>
-                )}
+                </div>
               </div>
               <div className="row">
                 <div className="col-12 mb-1" style={{ height: "40dvh" }}>
@@ -988,6 +977,9 @@ const AssignMaterial = () => {
                           </div>
                           <div className="col_20p">
                             <h5>Status</h5>
+                          </div>
+                          <div className="col_20p">
+                            <h5>Condition Type</h5>
                           </div>
                           <div className="col_20p">
                             <h5>Model Name</h5>
@@ -1048,6 +1040,9 @@ const AssignMaterial = () => {
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.status}</h6>
+                                    </div>
+                                    <div className="col_20p">
+                                      <h6>{materialData?.conditionType}</h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.modelId?.name}</h6>
