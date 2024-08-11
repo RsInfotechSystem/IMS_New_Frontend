@@ -81,20 +81,22 @@ const AcceptMaterial = () => {
   const rackId = watch("rackId");
   const brandId = watch("brandId");
 
-  const updateMaterial = async (value) => {
+  const updateMaterial = async (index) => {
     try {
       setLoader(true);
+      let materialToSend = nonMaterial[index];
       const dataToSend = {
-        materialIds: nonMaterial.map((material) => ({
-          id: material.materialId,
-          blockId: material.block,
-          rackId: material.rack,
-          partitionName: material.partitionName,
-          // status: material.status,
-        })),
+        // materialIds: nonMaterial.map((material) => ({
+        id: materialToSend.materialId,
+        blockId: materialToSend.block,
+        rackId: materialToSend.rack,
+        partitionName: materialToSend.partitionName,
+        jobNo: params.get("jobId"),
+        materialId: materialToSend.materialId,
+        status: materialToSend.status,
+        // })),
       };
-      console.log(nonMaterial, "dataToSend");
-      return;
+      console.log(nonMaterial[index], "dataToSend");
       let response = await communication.updateStockBeforeAccept(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);
@@ -905,7 +907,11 @@ const AcceptMaterial = () => {
                           ))}
                           <div className="col_20p">
                             <h6 className="action_wrraper">
-                              <CustomBtn name={"Save"} type="button" onClick={updateMaterial} />
+                              <CustomBtn
+                                name={"Save"}
+                                type="button"
+                                onClick={() => updateMaterial(index)}
+                              />
                             </h6>
                           </div>
                         </div>
