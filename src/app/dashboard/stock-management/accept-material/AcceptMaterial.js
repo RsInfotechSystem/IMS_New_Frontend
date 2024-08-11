@@ -53,6 +53,8 @@ const AcceptMaterial = () => {
   const [materialList, setMaterialList] = useState([]);
   const [rejectItem, setRejectItem] = useState("");
   const [parameterKeys, setparameterKeys] = useState([]);
+  const [consumedMaterials, setConsumedMaterials] = useState([]);
+
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     jobNo: "",
@@ -355,6 +357,15 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   }
+  const handleConsumeClick = (material) => {
+    console.log("Material to Consume:", material);
+
+    // Add the material ID to the consumedMaterials state
+    setConsumedMaterials((prev) => [...prev, material._id]);
+
+    // Add your logic to process the selected material data
+    // Example: Make an API call, update state, etc.
+  };
 
   async function getStockById() {
     try {
@@ -1115,7 +1126,21 @@ const AcceptMaterial = () => {
                           </div>
                           <div className="col_20p">
                             <h6 className="action_wrraper">
-                              <CustomBtn name={"Consume"} onClick={handleSubmit(onSubmit)} />
+                              <CustomBtn
+                                name={"Consume"}
+                                type="button"
+                                onClick={() => handleConsumeClick(product)}
+                                disabled={consumedMaterials.includes(product._id)}
+                                style={{
+                                  backgroundColor: consumedMaterials.includes(product._id)
+                                    ? "#ccc"
+                                    : "#007bff",
+                                  color: consumedMaterials.includes(product._id) ? "#666" : "#fff",
+                                  cursor: consumedMaterials.includes(product._id)
+                                    ? "not-allowed"
+                                    : "pointer",
+                                }}
+                              />
                             </h6>
                           </div>
                         </div>
@@ -1130,11 +1155,11 @@ const AcceptMaterial = () => {
               </div>
             </div>
           </div>
-          <Button
+          {/* <Button
             onClick={handleAttachMaterials}
             disabled={selectedNonMaterials.length === 0}
             name={" Add To Cart"}
-          ></Button>
+          ></Button> */}
           {/* </div> */}
           {/* </div> */}
           {/* </div> */}
@@ -1144,7 +1169,7 @@ const AcceptMaterial = () => {
       </form>
       <div className="form_list_layout_wrapper my-4">
         <div className="d-flex align-items-center justify-content-between">
-          <p>Selected Material List</p>
+          <p>Cart Item</p>
         </div>
         {/* table */}
         <div className="table_wrapper my-3">
