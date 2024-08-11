@@ -28,6 +28,7 @@ import CustomResponseHandlerModal from "@/common-components/CustomResponseHandle
 
 const AcceptMaterial = () => {
   const router = useRouter();
+  const [nonMaterial, setNonMaterial] = useState([]);
   const params = useSearchParams();
   const [brandName, setBrandName] = useState("");
   const [loader, setLoader] = useState(false);
@@ -38,7 +39,6 @@ const AcceptMaterial = () => {
   const [parameter, setParameter] = useState([]);
   const searchParams = useSearchParams();
   const [partition, setPartition] = useState("");
-  const [nonMaterial, setNonMaterial] = useState([]);
   const [material, setMaterial] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [selectedNonMaterials, setSelectedNonMaterials] = useState([]);
@@ -544,6 +544,14 @@ const AcceptMaterial = () => {
   //     setRacks([]);
   //   }
   // }, [rack]);
+  const handleChangeParameter = (e, productIndex, index, parameter) => {
+    let updatedNonMaterial = [...nonMaterial];
+    updatedNonMaterial[productIndex].parameter[index] = {
+      ...parameter,
+      value: e.target.value,
+    };
+    setNonMaterial(updatedNonMaterial);
+  };
 
   return (
     <>
@@ -884,16 +892,15 @@ const AcceptMaterial = () => {
                           <div className="col_25p">
                             <h6>{product?.itemCode}</h6>
                           </div>
-                          {console.log(
-                            product.parameter.map((m) => m.value),
-                            "ssssssssssss"
-                          )}
-                          {console.log(parameterKeys, "parameterKeys")}
-                          {parameterKeys.map((key, idx) => (
-                            <div className="col_25p" key={idx}>
-                              {product.parameter.map((m) => (
-                                <InputBox value={m.value || ""} />
-                              ))}
+                          {product.parameter.map((m, indexTwo) => (
+                            <div className="col_25p" key={indexTwo}>
+                              <InputBox
+                                value={m.value || ""}
+                                onChange={(e) => {
+                                  // setNonMaterial((prev)=>[...prev,parameter:[]])
+                                  handleChangeParameter(e, index, indexTwo, m);
+                                }}
+                              />
                             </div>
                           ))}
                           <div className="col_20p">
