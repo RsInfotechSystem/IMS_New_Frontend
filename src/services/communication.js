@@ -1180,7 +1180,7 @@ export const communication = {
   updateStockBeforeAccept: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/accept-updated-material`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/accept-material`,
         data,
 
         {
