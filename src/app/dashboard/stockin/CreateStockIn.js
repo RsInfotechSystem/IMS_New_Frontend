@@ -315,8 +315,8 @@ const CreateStockIn = ({ data }) => {
               {modalStates.isView
                 ? "View Details"
                 : modalStates?.type === "create"
-                  ? "Create Stock"
-                  : "Update Stock"}
+                ? "Create Stock"
+                : "Update Stock"}
             </h5>
             <FontAwesomeIcon
               icon={faCircleXmark}
@@ -341,7 +341,9 @@ const CreateStockIn = ({ data }) => {
                       })}
                       disabled={modalStates.isView}
                     >
-                      <option value="" className="text-secondary text-lowercase">Select Location</option>
+                      <option value="" className="text-secondary text-lowercase">
+                        Select Location
+                      </option>
                       {locationList.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
@@ -375,7 +377,9 @@ const CreateStockIn = ({ data }) => {
                         required: "blockNo is required",
                       })}
                     >
-                      <option value="" className="text-secondary text-lowercase">Select Block</option>
+                      <option value="" className="text-secondary text-lowercase">
+                        Select Block
+                      </option>
                       {blocks.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
@@ -409,7 +413,9 @@ const CreateStockIn = ({ data }) => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                       >
-                        <option value="" className="text-secondary text-lowercase">Select Rack</option>
+                        <option value="" className="text-secondary text-lowercase">
+                          Select Rack
+                        </option>
                         {racks.map((ele, index) => {
                           return (
                             <option value={ele._id} key={index}>
@@ -444,7 +450,9 @@ const CreateStockIn = ({ data }) => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                       >
-                        <option value="" className="text-secondary text-lowercase">Select Partation</option>
+                        <option value="" className="text-secondary text-lowercase">
+                          Select Partation
+                        </option>
                         {rackPartation?.map((ele, index) => {
                           return (
                             <option value={ele.partitionName} key={index}>
@@ -479,7 +487,9 @@ const CreateStockIn = ({ data }) => {
                         required: "categoryId is required",
                       })}
                     >
-                      <option value="" className="text-secondary text-lowercase">Select Category</option>
+                      <option value="" className="text-secondary text-lowercase">
+                        Select Category
+                      </option>
                       {category.map((ele, index) => {
                         return (
                           <option value={ele.categoryId} key={index}>
@@ -513,7 +523,9 @@ const CreateStockIn = ({ data }) => {
                         required: "Brand is required",
                       })}
                     >
-                      <option value="" className="text-secondary text-lowercase">Select Brand</option>
+                      <option value="" className="text-secondary text-lowercase">
+                        Select Brand
+                      </option>
                       {brandsData?.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele?._id} key={index}>
@@ -572,11 +584,12 @@ const CreateStockIn = ({ data }) => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                     >
-                      <option value="" className="text-secondary text-lowercase">Select Status</option>
+                      <option value="" className="text-secondary text-lowercase">
+                        Select Status
+                      </option>
                       {stockStatus.map((ele, index) => {
                         return (
                           <option value={ele} key={index}>
-                            {" "}
                             {ele}
                           </option>
                         );
@@ -618,7 +631,6 @@ const CreateStockIn = ({ data }) => {
                     errors={errors.quantity}
                   />
                 </div>{" "}
-
                 <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Model Name *</label>
                   <div className="position-relative">
@@ -630,7 +642,9 @@ const CreateStockIn = ({ data }) => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                     >
-                      <option value="" className="text-secondary text-lowercase">Select Model</option>
+                      <option value="" className="text-secondary text-lowercase">
+                        Select Model
+                      </option>
                       {model.map((ele, index) => {
                         return (
                           <option
@@ -667,7 +681,6 @@ const CreateStockIn = ({ data }) => {
                     errors={errors.itemCode}
                   />
                 </div>{" "}
-
               </div>
               <div className="row">
                 {parameter.length > 0 && (
@@ -681,10 +694,8 @@ const CreateStockIn = ({ data }) => {
                             disabled={modalStates.isView}
                             type="text"
                             register={{
-                              ...register(`parameter[${item}]`, {
-                              }),
+                              ...register(`parameter[${item}]`, {}),
                             }}
-
                           />
                         </div>
                       </React.Fragment>
@@ -693,9 +704,7 @@ const CreateStockIn = ({ data }) => {
                 )}
               </div>
               {/* </div> */}
-              <div className="form_button_wrapper gap-2">
-
-              </div>
+              <div className="form_button_wrapper gap-2"></div>
             </>
             {/* </div> */}
 
