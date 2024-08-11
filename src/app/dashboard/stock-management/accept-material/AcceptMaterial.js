@@ -28,6 +28,7 @@ import CustomResponseHandlerModal from "@/common-components/CustomResponseHandle
 
 const AcceptMaterial = () => {
   const router = useRouter();
+  const [nonMaterial, setNonMaterial] = useState([]);
   const params = useSearchParams();
   const [brandName, setBrandName] = useState("");
   const [loader, setLoader] = useState(false);
@@ -38,7 +39,6 @@ const AcceptMaterial = () => {
   const [parameter, setParameter] = useState([]);
   const searchParams = useSearchParams();
   const [partition, setPartition] = useState("");
-  const [nonMaterial, setNonMaterial] = useState([]);
   const [material, setMaterial] = useState([]);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [selectedNonMaterials, setSelectedNonMaterials] = useState([]);
@@ -81,20 +81,22 @@ const AcceptMaterial = () => {
   const rackId = watch("rackId");
   const brandId = watch("brandId");
 
-  const updateMaterial = async (value) => {
+  const updateMaterial = async (index) => {
     try {
       setLoader(true);
+      let materialToSend = nonMaterial[index];
       const dataToSend = {
-        materialIds: nonMaterial.map((material) => ({
-          id: material.materialId,
-          blockId: material.block,
-          rackId: material.rack,
-          partitionName: material.partitionName,
-          // status: material.status,
-        })),
+        // materialIds: nonMaterial.map((material) => ({
+        id: materialToSend.materialId,
+        blockId: materialToSend.block,
+        rackId: materialToSend.rack,
+        partitionName: materialToSend.partitionName,
+        jobNo: params.get("jobId"),
+        materialId: materialToSend.materialId,
+        status: materialToSend.status,
+        // })),
       };
-      console.log(nonMaterial, "dataToSend");
-      return;
+      console.log(nonMaterial[index], "dataToSend");
       let response = await communication.updateStockBeforeAccept(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);
@@ -544,6 +546,14 @@ const AcceptMaterial = () => {
   //     setRacks([]);
   //   }
   // }, [rack]);
+  const handleChangeParameter = (e, productIndex, index, parameter) => {
+    let updatedNonMaterial = [...nonMaterial];
+    updatedNonMaterial[productIndex].parameter[index] = {
+      ...parameter,
+      value: e.target.value,
+    };
+    setNonMaterial(updatedNonMaterial);
+  };
 
   return (
     <>
@@ -884,21 +894,24 @@ const AcceptMaterial = () => {
                           <div className="col_25p">
                             <h6>{product?.itemCode}</h6>
                           </div>
-                          {console.log(
-                            product.parameter.map((m) => m.value),
-                            "ssssssssssss"
-                          )}
-                          {console.log(parameterKeys, "parameterKeys")}
-                          {parameterKeys.map((key, idx) => (
-                            <div className="col_25p" key={idx}>
-                              {product.parameter.map((m) => (
-                                <InputBox value={m.value || ""} />
-                              ))}
+                          {product.parameter.map((m, indexTwo) => (
+                            <div className="col_25p" key={indexTwo}>
+                              <InputBox
+                                value={m.value || ""}
+                                onChange={(e) => {
+                                  // setNonMaterial((prev)=>[...prev,parameter:[]])
+                                  handleChangeParameter(e, index, indexTwo, m);
+                                }}
+                              />
                             </div>
                           ))}
                           <div className="col_20p">
                             <h6 className="action_wrraper">
-                              <CustomBtn name={"Save"} type="button" onClick={updateMaterial} />
+                              <CustomBtn
+                                name={"Save"}
+                                type="button"
+                                onClick={() => updateMaterial(index)}
+                              />
                             </h6>
                           </div>
                         </div>
