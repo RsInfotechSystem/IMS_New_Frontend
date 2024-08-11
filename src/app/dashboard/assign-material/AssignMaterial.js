@@ -242,18 +242,6 @@ const AssignMaterial = () => {
       (!selectedFilters.brandId || item.brandId._id === selectedFilters.brandId) &&
       (!selectedFilters.modelId || item.modelId._id === selectedFilters.modelId)
   );
-  // const filteredMaterial = useMemo(() => {
-  //   return material.filter(
-  //     (item) =>
-  //       (!selectedFilters.categoryId || item.categoryId._id === selectedFilters.categoryId) &&
-  //       (!selectedFilters.brandId || item.brandId._id === selectedFilters.brandId) &&
-  //       (!selectedFilters.modelId || item.modelId._id === selectedFilters.modelId) &&
-  //       (!state.statusFilter || item.status === state.statusFilter)
-  //   );
-  // }, [material, selectedFilters, state.statusFilter]);
-  // useEffect(() => {
-  //   getMaterialList({ isFirstCall: true });
-  // }, []);
 
   const handleDeleteMaterial = (id) => {
     setSelectedList(selectedList.filter((item) => item._id !== id));
@@ -334,7 +322,26 @@ const AssignMaterial = () => {
       setStockIds([]);
     }
   };
-
+  async function getAssignMaterialByJobNo() {
+    try {
+      setLoader(true);
+      const responseFromServer = await communication.getAssignMaterialByJobNo(modalStates?.id);
+      if (responseFromServer?.data?.status === "SUCCESS") {
+      } else if (responseFromServer?.data?.status === "JWT_INVALID") {
+        toast.info(responseFromServer?.data?.message);
+        router.push("/login");
+      } else {
+        toast.info(responseFromServer?.data?.message);
+      }
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+    } finally {
+      setLoader(false);
+    }
+  }
+  useEffect(() => {
+    getAssignMaterialByJobNo();
+  }, []);
   const getStockIds = (event, materialData) => {
     const isChecked = event.target.checked;
 
@@ -803,22 +810,6 @@ const AssignMaterial = () => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                         onChange={(e) => setState({ _status: e.target.value })}
-                        // onChange={(e) => {
-                        //   console.log(state.filterListori, "rrrr rahul");
-                        //   console.log(
-                        //     state.filterListori.filter((item) => item.status == e.target.value),
-                        //     "rrrrr rahul"
-                        //   );
-
-                        //   setMaterial(
-                        //     state.filterListori.filter(
-                        //       (i) =>
-                        //         i.status
-                        //           .toLocaleLowerCase()
-                        //           .search(e.target.value.toLocaleLowerCase()) !== -1
-                        //     )
-                        //   );
-                        // }}
                       >
                         <option value="" className="text-secondary text-lowercase"></option>
                         {state?.status?.map((ele, index) => {

@@ -50,7 +50,7 @@ const DailyTask = () => {
   });
   useEffect(() => {
     setRoleName(getCookie("role"));
-    console.log("rrrr", getCookie("role"))
+    console.log("rrrr", getCookie("role"));
   }, []);
   async function fetchAssignMaterial({
     page = 1,
@@ -348,14 +348,17 @@ const DailyTask = () => {
                     </div>
                     <div className="col_20p d-flex justify-content-center align-items-center">
                       <h6 className="text-center  ">
-                        {(roleName == "admin" && stockDetails?.taskStatus == "assigned") &&
+                        {roleName == "admin" && stockDetails?.taskStatus == "assigned" && (
                           <div className="d-flex gap-2 justify-content-center align-items-center">
                             <div title="edit">
                               <svg
-                                title={`${stockDetails.isActive ? "Update" : ""}`}
-                                className={`${stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
-                                  }`}
-                                onClick={() => router.push("/dashboard/assign-material")}
+                                // title={`${stockDetails.isActive ? "Update" : ""}`}
+                                // className={`${
+                                //   stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
+                                // }`}
+                                onClick={() =>
+                                  router.push(`/dashboard/assign-material?isView=true`)
+                                }
                                 width="27"
                                 height="27"
                                 viewBox="0 0 25 24"
@@ -402,14 +405,15 @@ const DailyTask = () => {
                               <FontAwesomeIcon icon={faTrash} />
                             </div>
                           </div>
-                        }
-                        {(roleName == "admin" && stockDetails?.taskStatus == "acknowledge") &&
+                        )}
+                        {roleName == "admin" && stockDetails?.taskStatus == "acknowledge" && (
                           <div title="edit">
                             <svg
                               title={`${stockDetails.isActive ? "Update" : ""}`}
-                              className={`${stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
-                                }`}
-                              onClick={() => router.push("/dashboard/assign-material")}
+                              className={`${
+                                stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
+                              }`}
+                              onClick={() => router.push(`/dashboard/assign-material?isView=true`)}
                               width="27"
                               height="27"
                               viewBox="0 0 25 24"
@@ -442,13 +446,16 @@ const DailyTask = () => {
                               </defs>
                             </svg>
                           </div>
-                        }
-                        {(roleName !== "admin" && stockDetails?.taskStatus == "assigned") &&
-                          <div title="Accept" onClick={(e) => acknowledgeMaterial(stockDetails?.jobNo)}>
+                        )}
+                        {roleName !== "admin" && stockDetails?.taskStatus == "assigned" && (
+                          <div
+                            title="Accept"
+                            onClick={(e) => acknowledgeMaterial(stockDetails?.jobNo)}
+                          >
                             <FontAwesomeIcon icon={faClipboardCheck} />
                           </div>
-                        }
-                        {(roleName !== "admin" && stockDetails?.taskStatus == "acknowledge") && "--"}
+                        )}
+                        {roleName !== "admin" && stockDetails?.taskStatus == "acknowledge" && "--"}
                       </h6>
                     </div>
                     {/* {roleName == "admin" && stockDetails?.taskStatus == "assigned" ? (

@@ -2293,5 +2293,21 @@ export const communication = {
       throw error;
     }
   },
+  getAssignMaterialByJobNo: async (stockId) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-by-jobno`,
+        { stockId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   ////////////////////////////////end////////////////////////////////////////////
 };
