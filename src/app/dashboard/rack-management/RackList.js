@@ -68,7 +68,6 @@ const RackList = () => {
                 });
                 setCheckedStatus(initialCheckedStatus);
             } else if (serverResponse?.data?.status === "FAILED") {
-                toast.info(serverResponse?.data?.message);
                 setRackList([]);
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse?.data?.message);
@@ -347,17 +346,17 @@ const RackList = () => {
                                                             ))
                                                             : "-"}
                                                     </h6>
-                                                 <div>
-                                                    
-                                                 </div>
+                                                    <div>
+
+                                                    </div>
                                                     <h6>
-                                                    {rackDetails.partitionArray.length > 20 && (
-                                                        <button onClick={handleShowMore} className="custom_button_read">
-                                                            {showMore ? "Show Less" : "Show More"}
-                                                        </button>
-                                                    )}
+                                                        {rackDetails.partitionArray.length > 20 && (
+                                                            <button onClick={handleShowMore} className="custom_button_read">
+                                                                {showMore ? "Show Less" : "Show More"}
+                                                            </button>
+                                                        )}
                                                     </h6>
-                                                    
+
                                                 </div>
                                                 <div className="col_10p">
                                                     <h6 className="action_wrraper">

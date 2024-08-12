@@ -109,9 +109,6 @@ const UserManagement = () => {
         });
         setCheckedStatus(initialCheckedStatus);
       } else if (serverResponse.data.status == "FAILED") {
-        toast.info(serverResponse?.data?.message, {
-          autoClose: 1500, // 1.5 seconds
-        });
         setUser([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message, {
@@ -198,9 +195,6 @@ const UserManagement = () => {
         setRoleList(response?.data.role);
         // await getRoleList(currentPage, searchString);
       } else if (response?.data?.status === "FAILED") {
-        toast.info(response.data.message, {
-          autoClose: 1500, // 1.5 seconds
-        });
         setRoleList([]);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.info(response.data.message, {
@@ -388,7 +382,6 @@ const UserManagement = () => {
               <div className="col_30p">
                 <h5>User Name</h5>
               </div>
-            
               <div className="col_30p">
                 <h5>Role Type</h5>
               </div>
