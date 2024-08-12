@@ -357,7 +357,9 @@ const DailyTask = () => {
                                 //   stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
                                 // }`}
                                 onClick={() =>
-                                  router.push(`/dashboard/assign-material?isView=true`)
+                                  router.push(
+                                    `/dashboard/assign-material?type=edit&JobNo=${stockDetails?.jobNo}`
+                                  )
                                 }
                                 width="27"
                                 height="27"
@@ -413,7 +415,11 @@ const DailyTask = () => {
                               className={`${
                                 stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
                               }`}
-                              onClick={() => router.push(`/dashboard/assign-material?isView=true`)}
+                              onClick={() =>
+                                router.push(
+                                  `/dashboard/assign-material?type=edit&JobNo=${stockDetails?.jobNo}`
+                                )
+                              }
                               width="27"
                               height="27"
                               viewBox="0 0 25 24"

@@ -2293,11 +2293,11 @@ export const communication = {
       throw error;
     }
   },
-  getAssignMaterialByJobNo: async (stockId) => {
+  getAssignMaterialByJobNo: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-material-by-jobno`,
-        { stockId },
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-all-material-by-jobno`,
+        data,
         {
           headers: {
             "Content-Type": "application/json",

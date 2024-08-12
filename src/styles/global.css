@@ -5454,3 +5454,14 @@ ul .appointment_letter_ul {
   border-radius: 10px;
   background-color: "white";
 }
+.input_scroll {
+  display: flex; /* Align items horizontally */
+  overflow-x: scroll; /* Enable horizontal scrolling */
+  width: 100%; /* Ensure the container takes up full width */
+  white-space: nowrap;
+  /* scrollbar-width: thin; */
+}
+.input_box {
+  min-width: 200px; /* Set a minimum width for each InputBox */
+  flex: 0 0 auto;
+}

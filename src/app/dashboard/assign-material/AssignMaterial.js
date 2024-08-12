@@ -4,7 +4,7 @@ import { communication } from "@/services/communication";
 import { useEffect, useMemo, useReducer, useState } from "react";
 import { getCategory, getCategoryWiseBrand, getCategoryWiseParameter } from "@/services/commonApis";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "@/common-components/Loader";
 import { stockStatus } from "@/utilities/stock-status-array";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import FilterStructure from "@/common-components/FilterForAssignMaterial";
 
 const AssignMaterial = () => {
+  const param = useSearchParams();
   const [selectedList, setSelectedList] = useState([]);
   const [material, setMaterial] = useState([]);
   const [TechnicianList, setTechnicianList] = useState([]);
@@ -31,24 +32,13 @@ const AssignMaterial = () => {
   const [_material, _setMaterial] = useState();
   const router = useRouter();
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
-    // categoryFilter: true,
-    // brandFilter: true,
-    // locationFilter: false,
-    // modelNameFilter: false,
     statusFilter: false,
     conditionTypeFilter: false,
     _conditionType: "",
     _status: "",
-    // category: [],
-    // brand: [],
-    // modelName: [],
-    // location: [],
     conditionTypeList: [],
     conditionType: { keyType: "", keyId: "", keyCount: 0 },
     status: { keyType: "", keyId: "", keyCount: 0 },
-    // brandValue: { keyType: "", keyId: "", keyCount: 0 },
-    // modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
-    // locationValue: { keyType: "", keyId: "", keyCount: 0 },
     filterListori: [],
     filterListCondition: [],
   });
@@ -69,6 +59,8 @@ const AssignMaterial = () => {
     conditionType: "",
   });
   const [errors, setErrors] = useState({});
+  const [assignedMaterial, setAssignedMaterial] = useState([]);
+  const [isView, setIsView] = useState(false);
   const {
     register,
     // handleSubmit,
@@ -238,9 +230,9 @@ const AssignMaterial = () => {
   };
   const filteredMaterial = material.filter(
     (item) =>
-      (!selectedFilters.categoryId || item.categoryId._id === selectedFilters.categoryId) &&
-      (!selectedFilters.brandId || item.brandId._id === selectedFilters.brandId) &&
-      (!selectedFilters.modelId || item.modelId._id === selectedFilters.modelId)
+      (!selectedFilters?.categoryId || item.categoryId?._id === selectedFilters?.categoryId) &&
+      (!selectedFilters?.brandId || item.brandId?._id === selectedFilters?.brandId) &&
+      (!selectedFilters?.modelId || item.modelId?._id === selectedFilters?.modelId)
   );
 
   const handleDeleteMaterial = (id) => {
@@ -322,26 +314,7 @@ const AssignMaterial = () => {
       setStockIds([]);
     }
   };
-  async function getAssignMaterialByJobNo() {
-    try {
-      setLoader(true);
-      const responseFromServer = await communication.getAssignMaterialByJobNo(modalStates?.id);
-      if (responseFromServer?.data?.status === "SUCCESS") {
-      } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(responseFromServer?.data?.message);
-        router.push("/login");
-      } else {
-        toast.info(responseFromServer?.data?.message);
-      }
-    } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
-    } finally {
-      setLoader(false);
-    }
-  }
-  useEffect(() => {
-    getAssignMaterialByJobNo();
-  }, []);
+
   const getStockIds = (event, materialData) => {
     const isChecked = event.target.checked;
 
@@ -623,14 +596,67 @@ const AssignMaterial = () => {
   //     fetchMaterial(id);
   //   }
   // }, [formValues.categoryId]);
+  async function getAssignMaterialByJobNo() {
+    try {
+      setLoader(true);
+      let payload = {
+        // location: "66b0ad1b9d8190631daebeec",
+        jobNo: param.get("JobNo"),
+      };
+      const responseFromServer = await communication.getAssignMaterialByJobNo(payload); // bypass
+      if (responseFromServer?.data?.status === "SUCCESS") {
+        // const combinedData = isView ? [...selectedList, ...assignedMaterial] : selectedList;
+        // if (router.query.isView === "true") {
+        setAssignedMaterial(responseFromServer?.data?.material);
+        // }
+      } else if (responseFromServer?.data?.status === "JWT_INVALID") {
+        toast.info(responseFromServer?.data?.message);
+        router.push("/login");
+      } else {
+        toast.info(responseFromServer?.data?.message);
+        setAssignedMaterial([]);
+      }
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message);
+    } finally {
+      setLoader(false);
+    }
+  }
+  useEffect(() => {
+    if (param.get("type") === "edit") {
+      getAssignMaterialByJobNo();
+    }
+  }, []);
+  // useEffect(() => {
+  //   console.log("Router is ready:", router.isReady);
+  //   console.log("Full query object:", router.query);
+
+  //   if (router.isReady) {
+  //     const isViewQuery = router.query.edit;
+  //     console.log("isViewQuery raw value:", isViewQuery);
+
+  //     const isViewBoolean = isViewQuery === "true";
+  //     console.log("isViewBoolean:", isViewBoolean);
+
+  //     setIsView(isViewBoolean);
+  //     console.log("State updated, isView is now:", isViewBoolean);
+
+  //     if (isViewBoolean) {
+  //       console.log("Calling getAssignMaterialByJobNo");
+  //       getAssignMaterialByJobNo();
+  //     }
+  //   }
+  // }, [router.isReady, router.query]);
+
+  // Combine data based on conditions
+
   return (
     <>
       {loader ? (
         <Loader />
       ) : (
-        // <div className=" page_wrapper">
         <div className="kitchen_wrapper">
-          {console.log(state, "statestate")}
+          {/* {console.log(isView, "statestate")} */}
           <div className="row">
             <div className="col-12 col-lg-4 col-md-4">
               <div className="form_view pt-0">
@@ -935,7 +961,6 @@ const AssignMaterial = () => {
                   <div className="table_wrapper table_wrapper_assign">
                     <div className="table_main p-0" style={{ minWidth: "1200px" }}>
                       <div className="table_section employee_table">
-                        {/* <div className="table_container"> */}
                         <div className="table_header">
                           <div className="col_5p">
                             <div className="check_box">
@@ -1173,10 +1198,10 @@ const AssignMaterial = () => {
                           </div>{" "} */}
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {selectedList.length > 0 ? (
+                        {assignedMaterial.length > 0 ? (
                           <>
                             {" "}
-                            {selectedList.map((materialData, index) => (
+                            {assignedMaterial.map((materialData, index) => (
                               <div className="table_data" key={index}>
                                 <div className="col_5p">
                                   <div className="check_box">
