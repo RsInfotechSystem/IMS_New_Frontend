@@ -60,7 +60,7 @@ const AssignMaterial = () => {
   });
   const [errors, setErrors] = useState({});
   const [assignedMaterial, setAssignedMaterial] = useState([]);
-  const [isView, setIsView] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const {
     register,
     // handleSubmit,
@@ -176,17 +176,17 @@ const AssignMaterial = () => {
     setMaterial(filteredList);
   }, [state._status, state._conditionType]);
 
-  useEffect(() => {
-    const id = getValues("locationId");
-    if (id) {
-      setState({ statusFilter: true });
-      let isSearch = true;
-      getMaterialList({
-        page: 1,
-        isSearch,
-      });
-    }
-  }, [state?.status?.keyId]);
+  // useEffect(() => {
+  //   const id = getValues("locationId");
+  //   if (id) {
+  //     setState({ statusFilter: true });
+  //     let isSearch = true;
+  //     getMaterialList({
+  //       page: 1,
+  //       isSearch,
+  //     });
+  //   }
+  // }, [state?.status?.keyId]);
   // console.log(state, "state");
 
   const technicianList = async (id) => {
@@ -605,6 +605,7 @@ const AssignMaterial = () => {
       };
       const responseFromServer = await communication.getAssignMaterialByJobNo(payload); // bypass
       if (responseFromServer?.data?.status === "SUCCESS") {
+        // const combinedMaterials = [...assignedMaterial, ...selectedList];
         // const combinedData = isView ? [...selectedList, ...assignedMaterial] : selectedList;
         // if (router.query.isView === "true") {
         setAssignedMaterial(responseFromServer?.data?.material);
@@ -624,9 +625,13 @@ const AssignMaterial = () => {
   }
   useEffect(() => {
     if (param.get("type") === "edit") {
+      setIsEdit(true);
       getAssignMaterialByJobNo();
+    } else {
+      setIsEdit(false);
     }
   }, []);
+  const materialsToShow = isEdit ? [...assignedMaterial, ...selectedList] : selectedList;
   // useEffect(() => {
   //   console.log("Router is ready:", router.isReady);
   //   console.log("Full query object:", router.query);
@@ -1198,10 +1203,9 @@ const AssignMaterial = () => {
                           </div>{" "} */}
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {assignedMaterial.length > 0 ? (
+                        {materialsToShow.length > 0 ? (
                           <>
-                            {" "}
-                            {assignedMaterial.map((materialData, index) => (
+                            {materialsToShow.map((materialData, index) => (
                               <div className="table_data" key={index}>
                                 <div className="col_5p">
                                   <div className="check_box">

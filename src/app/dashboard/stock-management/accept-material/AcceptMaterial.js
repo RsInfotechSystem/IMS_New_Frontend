@@ -944,7 +944,7 @@ const AcceptMaterial = () => {
                       <h5>Item Code</h5>
                     </div>
                     <div className="col_50p">
-                      <h5 className="action_wrraper">Action</h5>
+                      <h5 className="action_wrraper">Option</h5>
                     </div>
                   </div>
                   {material?.length > 0 ? (
