@@ -103,7 +103,6 @@ const ReceiveMaterialDetails = () => {
                 </svg>
                 Back
               </div>
-           
             </div>
           </div>
         }
@@ -138,7 +137,7 @@ const ReceiveMaterialDetails = () => {
                 <h5>Serial No</h5>
               </div>
               <div className="col_30p">
-                <h5>Quantity</h5>
+                <h5>QTY</h5>
               </div>
               {/* <div className="col_30p">
                 <h5>Remaning Quantity</h5>

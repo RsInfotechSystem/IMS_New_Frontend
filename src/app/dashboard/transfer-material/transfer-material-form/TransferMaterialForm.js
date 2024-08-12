@@ -96,7 +96,7 @@ const TransferMaterialForm = () => {
           quantity: product.quantity,
         })),
         // materialIds: selectedMaterials,
-        fromLocation: values.fromLocation ,
+        fromLocation: values.fromLocation,
         toLocation: values.toLocation,
       };
       console.log("payload", payload);
@@ -371,7 +371,7 @@ const TransferMaterialForm = () => {
             toast.warn(`Cannot add more than ${product.reamainingQuantity}.`);
             // Swal.fire("Error", `Cannot add more than ${product.reamainingQuantity}.`, "warning");
             return { ...product, quantity: product.reamainingQuantity };
-           
+
             // return product;
           } else {
             return { ...product, quantity: value };
@@ -390,7 +390,7 @@ const TransferMaterialForm = () => {
               if (ele.reamainingQuantity < value) {
                 toast.warn(`Cannot add more than ${ele.reamainingQuantity}.`);
                 return { ...ele, quantity: ele.reamainingQuantity };
-                
+
                 // return ele;
               } else {
                 return { ...ele, quantity: value };
@@ -424,12 +424,11 @@ const TransferMaterialForm = () => {
     getStatusWiseMaterialList({ page: currentPage, searchString, isFirstCall: true });
   }, [isPageUpdated]);
 
-
-  const handleBack = () =>{
-      router.push("/dashboard/transfer-material")
-      router.back()
-      return
-  }
+  const handleBack = () => {
+    router.push("/dashboard/transfer-material");
+    router.back();
+    return;
+  };
   // console.log(errors, "rrrrrrrr  eeeeeee");
   return (
     <>
@@ -777,7 +776,7 @@ const TransferMaterialForm = () => {
                       <h5>Status</h5>
                     </div>{" "}
                     <div className="col_50p">
-                      <h5>Quantity</h5>
+                      <h5>QTY</h5>
                     </div>
                     <div className="col_50p">
                       <h5>Enter Quantity</h5>
@@ -946,7 +945,7 @@ const TransferMaterialForm = () => {
                       <h5>Status</h5>
                     </div>{" "}
                     <div className="col_50p">
-                      <h5>Quantity</h5>
+                      <h5>QTY</h5>
                     </div>
                     <div className="col_20p">
                       <h5>Action</h5>
@@ -1017,11 +1016,12 @@ const TransferMaterialForm = () => {
               {/* {(params.get("type") === "approval" && modalState.viewPrintBill) && <Button onClick={() => printBill()} name={"Print Bill"} className="button" />} */}
               <Button
                 type="button"
-                onClick={()=> { router.back()}}
+                onClick={() => {
+                  router.back();
+                }}
                 name={"Cancel"}
                 className="button"
               />
-              
             </div>
           </div>
         </div>

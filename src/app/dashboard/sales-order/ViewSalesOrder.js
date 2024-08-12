@@ -187,7 +187,7 @@ const ViewSalesOrderDetails = ({ data, setModalStates }) => {
                         <h5>Note</h5>
                       </div>
                       <div className="col_20p">
-                        <h5>Quantity</h5>
+                        <h5>QTY</h5>
                       </div>
                       <div className="col_20p">
                         <h5>Warrenty</h5>

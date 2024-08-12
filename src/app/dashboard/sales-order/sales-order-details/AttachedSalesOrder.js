@@ -501,7 +501,7 @@ const AttachedSalesOrder = () => {
                   <h5>Description</h5>
                 </div>
                 <div className="col_25p">
-                  <h5>Quantity</h5>
+                  <h5>QTY</h5>
                 </div>
                 <div className="col_25p">
                   <h5>Warranty</h5>
@@ -807,7 +807,7 @@ const AttachedSalesOrder = () => {
                             <h5>Item Code</h5>
                           </div>
                           <div className="col_20p">
-                            <h5>Quantity</h5>
+                            <h5>QTY</h5>
                           </div>
                         </div>
                         {material?.length > 0 ? (

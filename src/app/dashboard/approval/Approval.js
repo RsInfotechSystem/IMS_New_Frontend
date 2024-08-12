@@ -45,14 +45,25 @@ const Approval = () => {
     isShowSellList: true,
     // isShowTransferList: false,
   });
-  const [filter,setFilter] = useState({});
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", filter: false, isView: false });
+  const [filter, setFilter] = useState({});
+  const [modalStates, setModalStates] = useState({
+    modal: false,
+    type: "",
+    id: "",
+    filter: false,
+    isView: false,
+  });
   // ----------------------SELL API------------------------------------
   async function getMaterialForApproval({
     page = 1,
-        searchString,
-        userId,
-        isSearch = false, isFirstCall, location, categoryId, brandId, modelId
+    searchString,
+    userId,
+    isSearch = false,
+    isFirstCall,
+    location,
+    categoryId,
+    brandId,
+    modelId,
   } = {}) {
     try {
       setLoader(true);
@@ -184,7 +195,7 @@ const Approval = () => {
         page: 1,
         searchString: e.target.value,
         isSearch,
-        ...filter
+        ...filter,
       });
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -217,7 +228,7 @@ const Approval = () => {
     } else {
       approveTransferMaterial({ currentPage, searchString });
       setState({ isShowSellList: false });
-      setActiveTab("attendance")
+      setActiveTab("attendance");
     }
   };
 
@@ -247,7 +258,7 @@ const Approval = () => {
         toast.info(serverResponse.data.message);
         router.push("/");
       } else {
-        toast.info(serverResponse.data.message)
+        toast.info(serverResponse.data.message);
         setMaterial([]);
       }
       setLoader(false);
@@ -325,21 +336,26 @@ const Approval = () => {
     }
   }
 
-
-
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
-      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getMaterialForApproval} filter={filter} setFilter={setFilter} />}
+      {modalStates?.filter && (
+        <StockFilter
+          setModalStates={setModalStates}
+          apiCall={getMaterialForApproval}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      )}
       <div className="top_header">
         <div className="tab_title">Approval</div>
         <Pagination
-              isPageUpdated={isPageUpdated}
-              setIsPageUpdated={setIsPageUpdated}
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-              pageCount={pageCount}
-            />
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search
@@ -350,28 +366,29 @@ const Approval = () => {
           placeholder={"Search"}
         />
         <div className="buttons_wrapper">
-        <CustomBtn
+          <CustomBtn
             name={"Filter"}
             onClick={() => {
               setModalStates((prev) => ({ ...prev, filter: true }));
             }}
             svg={
-              <svg xmlns="http://www.w3.org/2000/svg"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
-                viewBox="0 0 512 512" fill="#fff">
+                viewBox="0 0 512 512"
+                fill="#fff"
+              >
                 <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
               </svg>
             }
           />
-        <CustomBtn
+          <CustomBtn
             name={"Reset Filter"}
             onClick={() => {
               getMaterialForApproval();
             }}
-            style={{padding:"0px",minWidth:"100px"}}
-
-           
+            style={{ padding: "0px", minWidth: "100px" }}
           />
           {/* <div
             className="tab_btn"
@@ -424,7 +441,7 @@ const Approval = () => {
                   <h5>Condition Type</h5>
                 </div>
                 <div className="col_35p">
-                  <h5>Quantity</h5>
+                  <h5>QTY</h5>
                 </div>
                 <div className="col_20p">
                   <h5 className="action_wrraper">Action</h5>
@@ -485,36 +502,37 @@ const Approval = () => {
       {/* ============================== Transfer Approval================================= */}
 
       {/* {!state.isShowSellList && ( */}
-        <div className="table_wrapper">
-          <div className="table_main">
-            <div className="table_section inventory_table_res">
-              <div className="table_header">
-                <div className="col_20p">
-                  <h5>Sr. No.</h5>
-                </div>
-                <div className="col_35p">
-                  <h5>From Location</h5>
-                </div>
-                <div className="col_35p">
-                  <h5>To Location</h5>
-                </div>
-                <div className="col_35p">
-                  <h5>Transfer By</h5>
-                </div>
-                <div className="col_35p">
-                  <h5>Remark</h5>
-                </div>
-                <div className="col_35p">
-                  <h5>Status</h5>
-                </div>
-
-                <div className="col_35p">
-                  <h5 className="action_wrraper">Action</h5>
-                </div>
+      <div className="table_wrapper">
+        <div className="table_main">
+          <div className="table_section inventory_table_res">
+            <div className="table_header">
+              <div className="col_20p">
+                <h5>Sr. No.</h5>
               </div>
-              {trasferMaterial?.length > 0 ? (
-                trasferMaterial?.map((materialDetails, index) => {
-                  return (<>
+              <div className="col_35p">
+                <h5>From Location</h5>
+              </div>
+              <div className="col_35p">
+                <h5>To Location</h5>
+              </div>
+              <div className="col_35p">
+                <h5>Transfer By</h5>
+              </div>
+              <div className="col_35p">
+                <h5>Remark</h5>
+              </div>
+              <div className="col_35p">
+                <h5>Status</h5>
+              </div>
+
+              <div className="col_35p">
+                <h5 className="action_wrraper">Action</h5>
+              </div>
+            </div>
+            {trasferMaterial?.length > 0 ? (
+              trasferMaterial?.map((materialDetails, index) => {
+                return (
+                  <>
                     <div className="table_data" key={index}>
                       <div className="col_20p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
@@ -525,7 +543,6 @@ const Approval = () => {
                       <div className="col_35p">
                         <h6>{materialDetails?.toLocation?.name}</h6>
                       </div>
-                      
                       <div className="col_35p">
                         <h6>{materialDetails?.transferBy?.name}</h6>
                       </div>
@@ -539,9 +556,7 @@ const Approval = () => {
                         <h6 className="action_wrraper">
                           <button
                             className="actionbtn sell_btn"
-                            onClick={() =>
-                              approvedTransferMaterials(materialDetails._id)
-                            }
+                            onClick={() => approvedTransferMaterials(materialDetails._id)}
                           >
                             Approve
                           </button>
@@ -554,14 +569,15 @@ const Approval = () => {
                         </h6>
                       </div>
                     </div>
-                  </>)
-                })
-              ) : (
-                <p className="no_data">Data Not Available</p>
-              )}
-            </div>
+                  </>
+                );
+              })
+            ) : (
+              <p className="no_data">Data Not Available</p>
+            )}
           </div>
-        </div >
+        </div>
+      </div>
       {/* )} */}
       {/* {
         pageCount > 1 && (
@@ -575,4 +591,3 @@ const Approval = () => {
 };
 
 export default Approval;
-

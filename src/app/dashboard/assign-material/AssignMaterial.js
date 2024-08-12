@@ -1007,7 +1007,7 @@ const AssignMaterial = () => {
                             <h5>Brand</h5>
                           </div>
                           <div className="col_20p">
-                            <h5>Quantity</h5>
+                            <h5>QTY</h5>
                           </div>
                         </div>
                         {/* <div className="table_data_wrapper"> */}
@@ -1185,7 +1185,7 @@ const AssignMaterial = () => {
                             <h5>Model Name</h5>
                           </div>{" "}
                           <div className="col_20p">
-                            <h5>Quantity</h5>
+                            <h5>QTY</h5>
                           </div>
                           <div className="col_20p">
                             <h5>Assign Quantity</h5>

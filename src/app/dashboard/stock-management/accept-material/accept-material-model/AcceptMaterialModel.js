@@ -494,7 +494,7 @@ const AcceptMaterialModel = () => {
                 />
               </div>{" "}
               <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Quantity </label>
+                <label>QTY </label>
                 <InputBox
                   register={{
                     ...register("quantity", { required: "Quantity is required" }),

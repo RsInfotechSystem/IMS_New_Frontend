@@ -235,7 +235,7 @@ const ReturnMaterialUser = () => {
                           <h5>Item Code</h5>
                         </div>
                         <div className="col_25p">
-                          <h5>Quantity</h5>
+                          <h5>QTY</h5>
                         </div>
                       </div>
                       {nonMaterial?.length > 0 ? (
@@ -357,7 +357,7 @@ const ReturnMaterialUser = () => {
                           <h5>Item Code</h5>
                         </div>
                         <div className="col_25p">
-                          <h5>Quantity</h5>
+                          <h5>QTY</h5>
                         </div>
                       </div>
                       {material?.length > 0 ? (

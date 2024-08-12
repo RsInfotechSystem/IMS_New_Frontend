@@ -26,7 +26,13 @@ import StockFilter from "@/common-components/StockFilter";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const StockInList = () => {
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", filter: false, isView: false });
+  const [modalStates, setModalStates] = useState({
+    modal: false,
+    type: "",
+    id: "",
+    filter: false,
+    isView: false,
+  });
   const [respondHandlerModalState, setRespondHandlerModalState] = useState({
     state: false,
     deleteId: "",
@@ -89,7 +95,9 @@ const StockInList = () => {
 
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
-    setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === stock?.length)))
+    setSelectAllChecked(
+      !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === stock?.length
+    );
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
         // If the checkbox is already in the array, remove it
@@ -99,7 +107,6 @@ const StockInList = () => {
         return [...prevSelected, checkboxId];
       }
     });
-
   };
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
@@ -110,12 +117,18 @@ const StockInList = () => {
     );
   };
 
-
   const [filter, setFilter] = useState({});
 
-
-
-  async function getStockList({ page = 1, searchString, isSearch = false, isFirstCall, location, categoryId, brandId, modelId } = {}) {
+  async function getStockList({
+    page = 1,
+    searchString,
+    isSearch = false,
+    isFirstCall,
+    location,
+    categoryId,
+    brandId,
+    modelId,
+  } = {}) {
     try {
       setLoader(true);
       let payload = {
@@ -124,7 +137,7 @@ const StockInList = () => {
         location,
         categoryId,
         brandId,
-        modelId
+        modelId,
       };
       const serverResponse = await communication.getStockList(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -189,7 +202,7 @@ const StockInList = () => {
           return;
         }
       });
-    } catch (error) { }
+    } catch (error) {}
   };
   const handleFileChange = (event) => {
     alert("Under Maintainance");
@@ -360,7 +373,7 @@ const StockInList = () => {
         page: 1,
         searchString: e.target.value,
         isSearch,
-        ...filter
+        ...filter,
       });
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -369,7 +382,6 @@ const StockInList = () => {
   // useEffect(() => {
   //   getStockList(currentPage, searchString);
   // }, [isPageUpdated]);
-
 
   // useEffect(() => {
   //   const id = getValues("locationId");
@@ -448,7 +460,14 @@ const StockInList = () => {
         />
       )}
       {loader && <Loader text="Fetching Data..." />}
-      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getStockList} filter={filter} setFilter={setFilter} />}
+      {modalStates?.filter && (
+        <StockFilter
+          setModalStates={setModalStates}
+          apiCall={getStockList}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      )}
 
       <div className="top_header">
         <div className="tab_title">Stock In</div>
@@ -470,10 +489,13 @@ const StockInList = () => {
               setModalStates((prev) => ({ ...prev, filter: true }));
             }}
             svg={
-              <svg xmlns="http://www.w3.org/2000/svg"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
                 width="16"
                 height="16"
-                viewBox="0 0 512 512" fill="#fff">
+                viewBox="0 0 512 512"
+                fill="#fff"
+              >
                 <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
               </svg>
             }
@@ -483,9 +505,8 @@ const StockInList = () => {
             onClick={() => {
               getStockList();
             }}
-            style={{padding:"0px",minWidth:"120px"}}
+            style={{ padding: "0px", minWidth: "120px" }}
           />
-
 
           <CustomBtn
             name={"Create"}
@@ -564,7 +585,7 @@ const StockInList = () => {
                 <h5>Item Code</h5>
               </div>
               {/* <div className="col_50p">
-                <h5>Quantity</h5>
+                <h5>QTY</h5>
               </div> */}
               <div className="col_50p">
                 <h5>Remaining Quantity</h5>

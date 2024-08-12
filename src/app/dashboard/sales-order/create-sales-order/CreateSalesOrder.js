@@ -619,7 +619,7 @@ const CreateOrder = () => {
                     </div>
 
                     <div className="col_25p">
-                      <h5>Quantity</h5>
+                      <h5>QTY</h5>
                     </div>
                     <div className="col_25p">
                       <h5>Warranty</h5>

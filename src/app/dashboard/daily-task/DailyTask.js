@@ -277,7 +277,7 @@ const DailyTask = () => {
       </div>
       {/* table  */}
       <div className="table_wrapper">
-        <div className="table_main" style={{ width: "1500px" }}>
+        <div className="table_main">
           <div className="table_section inventory_table_res">
             <div className="table_header">
               <div className="col_20p">

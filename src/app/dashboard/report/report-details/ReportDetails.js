@@ -24,7 +24,13 @@ const ReportDetails = () => {
   const [reportType, setReportType] = useState();
   const [loader, setLoader] = useState(false);
   const [filter, setFilter] = useState({});
-  const [modalStates, setModalStates] = useState({ modal: false, type: "", id: "", filter: false, isView: false });
+  const [modalStates, setModalStates] = useState({
+    modal: false,
+    type: "",
+    id: "",
+    filter: false,
+    isView: false,
+  });
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     reportId: "",
     reportType: "",
@@ -79,7 +85,12 @@ const ReportDetails = () => {
     page = 1,
     searchString,
     userId,
-    isSearch = false, isFirstCall, location, categoryId, brandId, modelId,
+    isSearch = false,
+    isFirstCall,
+    location,
+    categoryId,
+    brandId,
+    modelId,
   } = {}) => {
     try {
       let payload = {
@@ -179,7 +190,7 @@ const ReportDetails = () => {
         searchString: e.target.value,
         page: 1,
         isSearch,
-        ...filter
+        ...filter,
       });
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -194,7 +205,7 @@ const ReportDetails = () => {
       reportId: searchParams.get("reportData"),
       reportType: searchParams.get("reportType"),
       searchString,
-      ...filter
+      ...filter,
     });
     // }, 2000);
     // setTimeoutId(_timeOutId);
@@ -211,7 +222,7 @@ const ReportDetails = () => {
       page: currentPage,
       searchString,
       isFirstCall: true,
-      ...filter
+      ...filter,
     });
   }, [isPageUpdated]);
   useEffect(() => {
@@ -221,7 +232,14 @@ const ReportDetails = () => {
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
-      {modalStates?.filter && <StockFilter setModalStates={setModalStates} apiCall={getReportMaterialList} filter={filter} setFilter={setFilter} />}
+      {modalStates?.filter && (
+        <StockFilter
+          setModalStates={setModalStates}
+          apiCall={getReportMaterialList}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      )}
 
       <div className="top_header">
         <div className="tab_title" style={{ textTransform: "capitalize" }}>
@@ -229,7 +247,6 @@ const ReportDetails = () => {
             ? `${searchParams.get("reportData")} Stock Out List`
             : `${searchParams.get("selectedType")} stock List`}
         </div>
-      
       </div>
       <div className="search_btn_wrapper">
         <Search onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -241,41 +258,41 @@ const ReportDetails = () => {
             setCurrentPage={setCurrentPage}
             pageCount={pageCount}
           />
-          
-        
-           <div className="buttons_wrapper mt-2">
-            
-        <CustomBtn
-            name={"Filter"}
-            onClick={() => {
-              setModalStates((prev) => ({ ...prev, filter: true }));
-            }}
-            svg={
-              <svg xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 512 512" fill="#fff">
-                <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
-              </svg>
-            }
-          />
-        <CustomBtn
-            name={"Reset Filter"}
-            onClick={() => {
-              getReportMaterialList();
-            }}
-            style={{padding:"0px",minWidth:"120px"}}
-          />
-           <CustomBtn
+
+          <div className="buttons_wrapper mt-2">
+            <CustomBtn
+              name={"Filter"}
+              onClick={() => {
+                setModalStates((prev) => ({ ...prev, filter: true }));
+              }}
+              svg={
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 512 512"
+                  fill="#fff"
+                >
+                  <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+                </svg>
+              }
+            />
+            <CustomBtn
+              name={"Reset Filter"}
+              onClick={() => {
+                getReportMaterialList();
+              }}
+              style={{ padding: "0px", minWidth: "120px" }}
+            />
+            <CustomBtn
               name="Back"
               onClick={() => {
                 router.back();
               }}
             />
-        </div>
+          </div>
         </div>
       </div>
-      
 
       {/* table  */}
       <div className="table_wrapper mt-3">
@@ -308,7 +325,7 @@ const ReportDetails = () => {
               </div>
 
               <div className="col_20p">
-                <h5>Quantity</h5>
+                <h5>QTY</h5>
               </div>
               {searchParams?.get("reportType") === "graph" ? (
                 <div className="col_25p">

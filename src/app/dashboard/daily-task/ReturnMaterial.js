@@ -559,7 +559,7 @@ const ReturnMaterial = ({ data }) => {
                 </div>
 
                 <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Quantity</label>
+                  <label>QTY</label>
                   <input
                     disabled
                     type="text"

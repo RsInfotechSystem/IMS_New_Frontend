@@ -63,7 +63,7 @@ const ReadySalesMaterial = () => {
         toast.warn(serverResponse.data.message);
         router.push("/");
       } else {
-        setModelList([]);
+        setSalesOrder([]);
       }
       setLoader(false);
     } catch (error) {
@@ -209,7 +209,7 @@ const ReadySalesMaterial = () => {
                 ))
               ) : (
                 <div className="no_data">
-                  <h6>No recipes found</h6>
+                  <h6>Data Not Available</h6>
                 </div>
               )}
             </div>
@@ -295,7 +295,7 @@ const ReadySalesMaterial = () => {
                 ))
               ) : (
                 <div className="no_data">
-                  <h6>Data not available</h6>
+                  <h6>Data Not Available</h6>
                 </div>
               )}
             </div>

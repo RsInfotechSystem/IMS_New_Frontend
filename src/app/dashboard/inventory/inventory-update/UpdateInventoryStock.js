@@ -26,7 +26,15 @@ const UpdateInventoryStock = () => {
   const [modelId, setModelId] = useState("");
   const [disable, setDisable] = useState(params?.get("type") === "view");
   const [blocks, setBlocks] = useState([]);
-  const { register, handleSubmit, formState: { errors }, setValue, getValues, reset, watch, } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    getValues,
+    reset,
+    watch,
+  } = useForm();
   const model = watch("modelId");
   const location = watch("locationId");
   const categoryId = watch("categoryId");
@@ -318,7 +326,7 @@ const UpdateInventoryStock = () => {
                 />
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Quantity *</label>
+                <label>QTY *</label>
                 <InputBox
                   register={{
                     ...register("quantity", {
@@ -364,12 +372,9 @@ const UpdateInventoryStock = () => {
             </div>
           </div>
           <div className="form_button_wrapper gap-2">
-            {params?.get("type") != "view" &&
-              <CustomBtn
-                name="Update"
-                onClick={handleSubmit(stockInUpdate)}
-              />
-            }
+            {params?.get("type") != "view" && (
+              <CustomBtn name="Update" onClick={handleSubmit(stockInUpdate)} />
+            )}
             <CustomBtn
               name="Back"
               onClick={() => {

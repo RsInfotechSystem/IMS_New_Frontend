@@ -851,7 +851,7 @@ const AcceptMaterial = () => {
                     })
                   ) : (
                     <small className="text-center text-secondary p-2 small d-block">
-                      Data not available
+                      Data Not Available
                     </small>
                   )}
                 </div>
@@ -1125,7 +1125,7 @@ const AcceptMaterial = () => {
                     })
                   ) : (
                     <small className="text-center text-secondary p-2 small d-block">
-                      Data not available
+                      Data Not Available
                     </small>
                   )}
                 </div>
@@ -1348,7 +1348,7 @@ const AcceptMaterial = () => {
               ) : (
                 <small className="text-center text-secondary p-2 small d-block">
                   {/* {console.log(NonMaterialId, "NonMaterialId")} */}
-                  Data not available
+                  Data Not Available
                 </small>
               )}
             </div>

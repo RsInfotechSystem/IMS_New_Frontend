@@ -308,7 +308,7 @@ const SalesOrderList = () => {
                 );
               })
             ) : (
-              <p className="no_data">data not available</p>
+              <p className="no_data">Data Not Available</p>
             )}
           </div>
         </div>

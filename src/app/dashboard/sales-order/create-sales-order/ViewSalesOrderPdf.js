@@ -129,7 +129,7 @@ const ViewSalesOrder = ({ setModalStates, pdfData, toast }) => {
                 <h5>Description</h5>
               </div>
               <div className=" data_col col_25p">
-                <h5>Quantity</h5>
+                <h5>QTY</h5>
               </div>
               <div className=" data_col col_25p">
                 <h5>Note</h5>

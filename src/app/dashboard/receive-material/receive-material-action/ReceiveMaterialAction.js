@@ -183,7 +183,7 @@ const ReceiveMaterialAction = () => {
           [brandId]: serverResponse?.data?.model,
         }));
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message)
+        toast.info(serverResponse.data.message);
         router.push("/");
         setLoader(false);
       } else {
@@ -192,7 +192,7 @@ const ReceiveMaterialAction = () => {
       // props.setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-           toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message);
 
       setLoader(false);
     }
@@ -286,7 +286,7 @@ const ReceiveMaterialAction = () => {
               </div>
 
               <div className="col_30p">
-                <h5>Quantity</h5>
+                <h5>QTY</h5>
               </div>
             </div>
             {materialList?.length > 0 ? (
@@ -331,7 +331,6 @@ const ReceiveMaterialAction = () => {
                               </option>
                             ))}
                           </select>
-                          
                         </h6>
                       </div>
                       <div className="col_45p">

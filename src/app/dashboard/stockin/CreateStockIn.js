@@ -620,7 +620,7 @@ const CreateStockIn = ({ data }) => {
                   />
                 </div>{" "}
                 <div className="col-lg-4 col-md-6 input_wrapper">
-                  <label>Quantity*</label>
+                  <label>QTY*</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{

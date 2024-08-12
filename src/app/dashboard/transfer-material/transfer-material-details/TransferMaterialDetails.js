@@ -105,12 +105,9 @@ const TransferMaterialDetails = () => {
                   <clipPath id="clip0_1564_1770">
                     <rect width="24" height="24" fill="white" />
                   </clipPath>
-                  
                 </defs>
-            
               </svg>
-          Back
-
+              Back
             </div>
           </div>
         }
@@ -145,7 +142,7 @@ const TransferMaterialDetails = () => {
                 <h5>Serial No</h5>
               </div>
               <div className="col_30p">
-                <h5>Quantity</h5>
+                <h5>QTY</h5>
               </div>
               <div className="col_30p">
                 <h5>Remaning Quantity</h5>
