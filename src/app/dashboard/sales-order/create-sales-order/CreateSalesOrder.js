@@ -66,10 +66,10 @@ const CreateOrder = () => {
 
   // Get all categories list
   const createOrder = async (values) => {
-    if (values.description == "") {
-      toast.info("description is required");
-      return;
-    }
+    // if (values.description == "") {
+    //   toast.info("description is required");
+    //   return;
+    // }
     try {
       if (!filterValues.orderDate || !filterValues.orderCompleteDate) {
         toast.info("Date is required");
@@ -547,7 +547,7 @@ const CreateOrder = () => {
                         // type={"text"}
                         register={{
                           ...register("quantity", {
-                            required: "quantity is required",
+                            // required: "quantity is required",
                           }),
                         }}
                         errors={errors.quantity}
@@ -559,7 +559,7 @@ const CreateOrder = () => {
                         // type={"number"}
                         register={{
                           ...register("warranty", {
-                            required: "warranty is required",
+                            // required: "warranty is required",
                           }),
                         }}
                         errors={errors.warranty}
@@ -571,7 +571,7 @@ const CreateOrder = () => {
                         // type={"number"}
                         register={{
                           ...register("note", {
-                            required: "note is required",
+                            // required: "note is required",
                           }),
                         }}
                         errors={errors.note}
@@ -583,7 +583,7 @@ const CreateOrder = () => {
                         // type={"number"}
                         register={{
                           ...register("remarks", {
-                            required: "Remarks is required",
+                            // required: "Remarks is required",
                           }),
                         }}
                         errors={errors.remarks}

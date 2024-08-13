@@ -1507,7 +1507,7 @@ div:where(.tab_active, .tab_inactive) {
 
 .toggle_disable {
   background-color: var(--grey_color_light_shade1);
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .toggle_enable {
@@ -1706,7 +1706,7 @@ div:where(.tab_active, .tab_inactive) {
 
 .form_wrapper .form_heading {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
@@ -1946,7 +1946,7 @@ div:where(.tab_active, .tab_inactive) {
 
 .detail_data {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   padding: 0.9rem 3rem;
 }
@@ -2339,7 +2339,7 @@ div:where(.access_sudo_class) {
   display: flex;
   gap: 10px;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 .order_icon_num_wrapper {
@@ -3917,7 +3917,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 
 .detail_data_s {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   padding: 1.5rem 3rem;
 }
@@ -4057,7 +4057,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 
 .detail_data_s {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   padding: 1.5rem 3rem;
 }
@@ -4663,7 +4663,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 .new_require_form {
   display: flex;
   padding: 10px 0 20px 0;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: 10px;
 }
@@ -4681,14 +4681,14 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 
 .urgent_require_form .input_wrapper {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: 10px;
 }
 
 .view_logs_kitchen {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
   gap: 5px;
   width: 40%;
@@ -5464,4 +5464,16 @@ ul .appointment_letter_ul {
 .input_box {
   min-width: 200px; /* Set a minimum width for each InputBox */
   flex: 0 0 auto;
+}
+/* --------------------style  for table color in stock mannagement-------------------------------- */
+.status-assigned {
+  background-color: #ffffff; /* White */
+}
+
+.status-returned {
+  background-color: #d8f5d4; /* Very light green */
+}
+
+.status-accepted {
+  background-color: #ffe0b2; /* Very light orange */
 }

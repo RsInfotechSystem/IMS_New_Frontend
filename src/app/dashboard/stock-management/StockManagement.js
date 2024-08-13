@@ -94,7 +94,7 @@ const StockManagement = () => {
       });
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse?.data?.message);
-        fetchReturnMaterialList(currentPage, searchString);
+        // fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
         // setPageCount(serverResponse?.data?.totalPages);
@@ -128,7 +128,7 @@ const StockManagement = () => {
       });
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse?.data?.message);
-        fetchReturnMaterialList(currentPage, searchString);
+        // fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
         // setPageCount(serverResponse?.data?.totalPages);
@@ -161,22 +161,22 @@ const StockManagement = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
-  useEffect(() => {
-    let isSearch = true;
-    // clearTimeout(timeoutId);
-    // let _timeOutId = setTimeout(() => {
-    fetchReturnMaterialList({
-      page: 1,
-      isSearch,
-    });
-    // }, 2000);
-    // setTimeoutId(_timeOutId);
-  }, [
-    state.categoryValue.keyId,
-    state.brandValue.keyId,
-    state.locationValue.keyId,
-    state.modelNameValue.keyId,
-  ]);
+  // useEffect(() => {
+  //   let isSearch = true;
+  //   // clearTimeout(timeoutId);
+  //   // let _timeOutId = setTimeout(() => {
+  //   fetchReturnMaterialList({
+  //     page: 1,
+  //     isSearch,
+  //   });
+  //   // }, 2000);
+  //   // setTimeoutId(_timeOutId);
+  // }, [
+  //   state.categoryValue.keyId,
+  //   state.brandValue.keyId,
+  //   state.locationValue.keyId,
+  //   state.modelNameValue.keyId,
+  // ]);
   const rejectMaterial = async (id, status, remark = "") => {
     try {
       setLoader(true);
