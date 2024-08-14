@@ -62,7 +62,7 @@ const ReadyMaterial = () => {
     const checkboxId = e.target.id;
     setSelectAllChecked(
       !selectedCheckboxes.includes(checkboxId) &&
-        selectedCheckboxes?.length + 1 === attachedMaterial?.materialDetails?.length
+      selectedCheckboxes?.length + 1 === attachedMaterial?.materialDetails?.length
     );
     setSelectedCheckboxes((prevSelected) => {
       if (prevSelected.includes(checkboxId)) {
@@ -284,7 +284,7 @@ const ReadyMaterial = () => {
               <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_25p">
+              <div className="col_35p">
                 <h5>Description</h5>
               </div>
               <div className="col_25p">
@@ -293,10 +293,10 @@ const ReadyMaterial = () => {
               <div className="col_25p">
                 <h5>Warranty</h5>
               </div>
-              <div className="col_35p">
+              <div className="col_25p">
                 <h5>Category</h5>
               </div>
-              <div className="col_35p">
+              <div className="col_25p">
                 <h5>Brand</h5>
               </div>
               <div className="col_35p">
@@ -331,7 +331,7 @@ const ReadyMaterial = () => {
                         {index + 1}.{materialIndex + 1}
                       </h6>
                     </div>
-                    <div className="col_25p">
+                    <div className="col_35p">
                       <h6>{product?.materialDescription}</h6>
                     </div>
                     <div className="col_25p">
@@ -341,10 +341,10 @@ const ReadyMaterial = () => {
                       <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                     </div>
                     {/* <div className="col_25p"></div> */}
-                    <div className="col_35p">
+                    <div className="col_25p">
                       <h6>{material?.categoryId?.name}, </h6>
                     </div>
-                    <div className="col_35p">
+                    <div className="col_25p">
                       <h6>{material?.brandId?.name}, </h6>
                     </div>
                     <div className="col_35p">
