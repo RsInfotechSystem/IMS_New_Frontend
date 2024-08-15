@@ -57,11 +57,10 @@ const AcceptMaterial = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingIndex, setEditingIndex] = useState(null);
-  const [savedMaterials, setSavedMaterials] = useState([]);
+  const [locationId, setLocationId] = useState("");
   const [dumpMaterial, setDumpMaterial] = useState([]);
   const [materialToReturn, setMaterialToReturn] = useState();
   const [disabledButtons, setDisabledButtons] = useState({});
-  const [rowSelections, setRowSelections] = useState({});
   const [_category, _setCategory] = useState("");
   const [isChangeLocationChecked, setIsChangeLocationChecked] = useState("");
   const [isChangeLocationCheckedMaterial, setIsChangeLocationCheckedMaterial] = useState("");
@@ -80,6 +79,15 @@ const AcceptMaterial = () => {
       // Add any other properties you want to include
     },
   ]);
+  const [rowData, setRowData] = useState([{ blocks: [], racks: [], partitions: [] }]);
+  const [dumpCount, setDumpCount] = useState(0);
+  const [storeCount, setStoreCount] = useState(0);
+  const [rowSelections, setRowSelections] = useState({});
+  const [rowCategories, setRowCategories] = useState({});
+  const [rowParameters, setRowParameters] = useState({});
+  const [savedDump, seSaveDump] = useState([]);
+  const [savedMaterials, setSavedMaterials] = useState([]);
+  const [cartData, setCartData] = useState([]);
   const {
     register,
     handleSubmit,
@@ -106,10 +114,13 @@ const AcceptMaterial = () => {
       const dataToSend = {
         jobNo: params.get("jobId"),
         material: savedMaterials,
-        dump: dumpMaterial,
+        dump: savedDump,
+        consume: consumedMaterials,
+        addToCart: cartData,
       };
-      // console.log(dataToSend, "dataToSend");
-      let response = await communication.updateStockBeforeAccept(dataToSend);
+      console.log(dataToSend, "dataToSend");
+      return;
+      let response = await communication.updateStockBeforeAccept(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);
         // acceptMaterial();
@@ -129,7 +140,7 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   };
-  // ------------------------Retuned MATERIAL data------------------------------------------
+  // ------------------------Retuned MATERIAL data List------------------------------------------
   async function returnedMaterialByJobNo({ page = 1, searchString } = {}) {
     try {
       setLoader(true);
@@ -222,69 +233,6 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   }
-  const handleChange = (e, index, field) => {
-    const { value } = e.target;
-    // console.log(value, "value");
-    setNonMaterial((prevList) =>
-      prevList.map((item, idx) => (idx === index ? { ...item, [field]: value } : item))
-    );
-  };
-  const handleChangeMaterial = (e, index, field) => {
-    const { value } = e.target;
-    // console.log(value, "value");
-    setMaterial((prevList) =>
-      prevList.map((item, idx) => (idx === index ? { ...item, [field]: value } : item))
-    );
-  };
-
-  const handleMaterialCheckboxChange = (e, productId) => {
-    if (e.target.checked) {
-      setSelectedMaterials((prev) => [...prev, productId]);
-      setSelectedItems((prev) => [...prev, productId]);
-    } else {
-      setSelectedMaterials((prev) => prev.filter((id) => id !== productId));
-      setSelectedItems((prev) => prev.filter((id) => id !== productId));
-    }
-    setAllMaterialsSelected(selectedMaterials.length + 1 === material.length);
-    // console.log("Current selected materials:", productId);
-  };
-
-  const handleNonMaterialCheckboxChange = (e, productId) => {
-    if (e.target.checked) {
-      // console.log("dfgrfe",e,target);
-      setRejectItem(productId);
-      setSelectedNonMaterials((prev) => [...prev, productId]);
-      setNonMaterialId(productId);
-      setSelectedItems((prev) => [...prev, productId]);
-    } else {
-      setSelectedNonMaterials((prev) => prev.filter((id) => id !== productId));
-      setSelectedItems((prev) => prev.filter((id) => id !== productId));
-    }
-    setAllNonMaterialsSelected(selectedNonMaterials.length + 1 === nonMaterial.length);
-  };
-  const handleSelectAllMaterials = (e) => {
-    const isChecked = e.target.checked;
-    setAllMaterialsSelected(isChecked);
-    if (isChecked) {
-      setSelectedMaterials(material.map((item) => item?.materialId));
-    } else {
-      setSelectedMaterials([]);
-    }
-  };
-
-  const handleSelectAllNonMaterials = (e) => {
-    const isChecked = e.target.checked;
-    setAllNonMaterialsSelected(isChecked);
-    if (isChecked) {
-      setSelectedNonMaterials(nonMaterial.map((item) => item._id));
-    } else {
-      setSelectedNonMaterials([]);
-    }
-  };
-
-  const cancelHandler = () => {
-    setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
-  };
   const rejectMaterial = async (id, status, remark = "") => {
     try {
       setLoader(true);
@@ -310,6 +258,72 @@ const AcceptMaterial = () => {
 
       setLoader(false);
     }
+  };
+  // ------------------------Retuned MATERIAL data List  end------------------------------------------
+  // ------------------------Non-material handle change------------------------------------------
+  const handleChange = (e, index, field) => {
+    const { value } = e.target;
+    // console.log(value, "value");
+    setNonMaterial((prevList) =>
+      prevList.map((item, idx) => (idx === index ? { ...item, [field]: value } : item))
+    );
+  };
+  const handleChangeMaterial = (e, index, field, product) => {
+    var { value } = e.target;
+    console.log(e.target.value, " e.target.value rrrrrrr ahndle");
+    console.log(rowSelections[product.materialId], " rrrrrrr handle");
+    if (rowSelections[product.materialId] == "Dump") {
+      savedDump((prevList) =>
+        prevList.map((item, idx) =>
+          item.materialId === product.materialId ? { ...item, [field]: e.target.value } : item
+        )
+      );
+    } else {
+      setMaterial((prevList) =>
+        prevList.map((item, idx) =>
+          item.materialId === product.materialId ? { ...item, [field]: e.target.value } : item
+        )
+      );
+      setSavedMaterials((prevList) =>
+        prevList.map((item, idx) =>
+          item.materialId === product.materialId ? { ...item, [field]: e.target.value } : item
+        )
+      );
+    }
+    // console.log(value, "value");
+  };
+  // ------------------------Non-material handle change end------------------------------------------
+
+  // -----------------------------Material Checkbox-----------------------------------
+  const handleSelectAllMaterials = (e) => {
+    const isChecked = e.target.checked;
+    setAllMaterialsSelected(isChecked);
+    if (isChecked) {
+      setSelectedMaterials(material.map((item) => item?.materialId));
+    } else {
+      setSelectedMaterials([]);
+    }
+  };
+
+  const handleMaterialCheckboxChange = (materialId) => {
+    setSelectedMaterials((prevSelected) => {
+      let updatedSelected;
+
+      if (prevSelected.includes(materialId)) {
+        updatedSelected = prevSelected.filter((id) => id !== materialId);
+      } else {
+        updatedSelected = [...prevSelected, materialId];
+      }
+
+      // Update "Select All" checkbox
+      setAllMaterialsSelected(updatedSelected.length === material.length);
+
+      return updatedSelected;
+    });
+  };
+
+  const cancelHandler = () => {
+    setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
   };
 
   const showInputDialog = () => {
@@ -421,12 +435,22 @@ const AcceptMaterial = () => {
     setIsEditing(true);
     setEditingIndex(index);
   };
-  const handleSaveClick = (index) => {
-    const materialToSave = {
-      ...nonMaterial[index],
-      // consume: consumedMaterials, // Add the consumed material IDs to the save payload
-    };
-    setSavedMaterials((prevMaterials) => [...prevMaterials, materialToSave]);
+  const handleSaveClick = (index, product) => {
+    console.log(rowSelections[product.materialId], "rrrrrr rrr");
+    if (rowSelections[product.materialId] == "Dump") {
+      const materialToDump = {
+        ...nonMaterial[index],
+        // consume: consumedMaterials, // Add the consumed material IDs to the save payload
+      };
+      seSaveDump((prevMaterials) => [...prevMaterials, materialToDump]);
+    } else {
+      const materialToSave = {
+        ...nonMaterial[index],
+        // consume: consumedMaterials, // Add the consumed material IDs to the save payload
+      };
+      setSavedMaterials((prevMaterials) => [...prevMaterials, materialToSave]);
+    }
+
     // Clear the consumedMaterials state after saving
     setConsumedMaterials([]);
     setIsEditing(false);
@@ -474,11 +498,37 @@ const AcceptMaterial = () => {
   const isAnyCheckboxChecked = () => {
     return Object.values(isChangeLocationChecked).some((isChecked) => isChecked);
   };
-  const handleRadioChange = (materialId, value) => {
-    setRowSelections((prevSelections) => ({
-      ...prevSelections,
-      [materialId]: value,
+  // const handleRadioChange = (materialId, value) => {
+  //   setRowSelections((prevSelections) => ({
+  //     ...prevSelections,
+  //     [materialId]: value,
+  //   }));
+  // };
+  const handleRadioChange = (materialId, selection) => {
+    const previousSelection = rowSelections[materialId];
+
+    // Update rowSelections state here
+    setRowSelections((prev) => ({
+      ...prev,
+      [materialId]: selection,
     }));
+
+    // Update counts based on selection
+    if (selection === "Dump") {
+      if (previousSelection !== "Dump") {
+        setDumpCount((prevCount) => prevCount + 1);
+        if (previousSelection === "Store") {
+          setStoreCount((prevCount) => prevCount - 1);
+        }
+      }
+    } else if (selection === "Store") {
+      if (previousSelection !== "Store") {
+        setStoreCount((prevCount) => prevCount + 1);
+        if (previousSelection === "Dump") {
+          setDumpCount((prevCount) => prevCount - 1);
+        }
+      }
+    }
   };
   // Function to handle the checkbox change
   const handleCheckboxChangeInMaterial = (materialId) => {
@@ -490,7 +540,12 @@ const AcceptMaterial = () => {
   const isAnyCheckboxCheckedMaterial = () => {
     return Object.values(isChangeLocationCheckedMaterial).some((isChecked) => isChecked);
   };
-  const handleRadioChangeMaterial = (materialId, value) => {
+  const handleRadioChangeMaterial = (materialId, value, materialObj) => {
+    if (value == "Dump") {
+      seSaveDump((pevState) => [...pevState, materialObj]);
+    } else {
+      setSavedMaterials((pevState) => [...pevState, materialObj]);
+    }
     SetRowSelectionsMaterial((prevSelections) => ({
       ...prevSelections,
       [materialId]: value,
@@ -499,33 +554,48 @@ const AcceptMaterial = () => {
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
   }
+  // useEffect(() => {
+  //   // initialAPICall();
+  //   getParameter(setLoader, router, setCategoryMapData);
+  // }, []);
+  // useEffect(() => {
+  //   const id = _category;
+  //   // const id = getValues("categoryId");
+  //   if (id) {
+  //     const parameterDetails = CategoryMapData.find((ele) => ele._id === id);
+  //     setValue("parameterId", parameterDetails?._id);
+  //     // console.log(parameterDetails, "parameterDetails");
+
+  //     __setParameter(parameterDetails?.parameter ?? []);
+  //   } else {
+  //     __setParameter([]);
+  //     setValue("parameterId", "");
+  //   }
+  // }, [_category]);
   useEffect(() => {
-    // initialAPICall();
     getParameter(setLoader, router, setCategoryMapData);
   }, []);
-  useEffect(() => {
-    const id = _category;
-    // const id = getValues("categoryId");
-    if (id) {
-      const parameterDetails = CategoryMapData.find((ele) => ele._id === id);
-      setValue("parameterId", parameterDetails?._id);
-      // console.log(parameterDetails, "parameterDetails");
 
-      __setParameter(parameterDetails?.parameter ?? []);
-    } else {
-      __setParameter([]);
-      setValue("parameterId", "");
-    }
-  }, [_category]);
+  useEffect(() => {
+    Object.entries(rowCategories).forEach(([index, categoryId]) => {
+      if (categoryId) {
+        const parameterDetails = CategoryMapData.find((ele) => ele._id === categoryId);
+        setValue(`parameterId_${index}`, parameterDetails?._id);
+
+        setRowParameters((prev) => ({
+          ...prev,
+          [index]: parameterDetails?.parameter ?? [],
+        }));
+      } else {
+        setRowParameters((prev) => ({ ...prev, [index]: [] }));
+        setValue(`parameterId_${index}`, "");
+      }
+    });
+  }, [rowCategories, CategoryMapData]);
   useEffect(() => {
     getLocations(setLoader, router, setLocationList);
   }, []);
-  useEffect(() => {
-    const id = getValues("locationIdCart");
-    if (id) {
-      getLocationWiseBlock(id, setLoader, router, setBlocksCart);
-    }
-  }, [locationList.length >= 1 && locationCart]);
+
   useEffect(() => {
     const id = getValues("blockId");
     if (id) {
@@ -544,56 +614,157 @@ const AcceptMaterial = () => {
     }
   }, [_rackIdForPrtn]);
   const handleRadioChangeCart = (value) => {
+    console.log(value, "sssss");
+
     setIsStoreSelected(value === "Store");
   };
-  // const handleAddRow = () => {
-  //   setCartTable((prevRows) => [
-  //     ...prevRows.map((row) => ({ ...row, disabled: true })), // Disable all previous rows
-  //     { disabled: false }, // Add a new row
-  //   ]);
-  // };
   const handleAddRow = () => {
     const newMaterial = {
       categoryId: "",
       parameter: {},
+      selection: "",
       locationId: "",
       blockId: "",
       rackId: "",
       partitionName: "",
       status: "",
-      // Add any other properties you want to include
+      blocks: [],
+      racks: [],
+      partitions: [],
     };
-
     setCartTable((prevCartTable) => [...prevCartTable, newMaterial]);
   };
-  const handleInputChangeCart = (index, field, value) => {
-    const updatedCartTable = [...cartTable];
-    updatedCartTable[index][field] = value;
-    setCartTable(updatedCartTable);
-  };
+  // Object.values(obj).every(i=>i.trim() !==""));
   // const handleInputChangeCart = (index, field, value) => {
-  //   const updatedCart = [...addToCart];
-  //   if (!updatedCart[index]) {
-  //     updatedCart[index] = {
-  //       locationId: "",
-  //       blockId: "",
-  //       categoryId: "",
-  //       brandId: "",
-  //       conditionType: "",
-  //       status: "",
-  //       serialNo: "",
-  //       quantity: "1",
-  //       modelId: "",
-  //       itemCode: "",
-  //       partitionName: "",
-  //       parameterId: "",
-  //       rackId: "",
-  //       parameter: {},
-  //     };
+  //   console.log(value, "sssssssssss");
+  //   // let values = Object.values(cartTable);
+  //   // let isAllValuesExist = values.every((i) => i.trim() !== "");
+  //   const updatedCartTable = [...cartTable];
+  //   updatedCartTable[index][field] = value;
+  //   let isAllValuesExist = Object.values(updatedCartTable[index]).every((i) => i !== "");
+  //   if (isAllValuesExist) {
+  //     setCartTable(updatedCartTable);
+
+  //     if (value == "Dump") {
+  //       seSaveDump((pevState) => [...pevState, cartTable]);
+  //     } else {
+  //       let isAllValues = Object.values(cartTable).every((i) => i !== "");
+  //       console.log(isAllValues, "rrrrrrrrr io");
+  //       if (isAllValues) {
+  //         setCartData((pevState) => [...pevState, cartTable]);
+  //       }
+  //     }
   //   }
-  //   updatedCart[index][field] = value;
-  //   setAddToCart(updatedCart);
   // };
+  const handleInputChangeCart = (index, field, value) => {
+    console.log(value, "fields");
+
+    setCartTable((prevCartTable) =>
+      prevCartTable.map((row, i) => {
+        if (i === index) {
+          const updatedRow = { ...row, [field]: value };
+
+          // Handle selection change (Store or Dump)
+          if (field === "selection") {
+            updatedRow.locationId = "";
+            updatedRow.blockId = "";
+            updatedRow.rackId = "";
+            updatedRow.partitionName = "";
+            updatedRow.status = "";
+            updatedRow.blocks = [];
+            updatedRow.racks = [];
+            updatedRow.partitions = [];
+          }
+          if (field === "locationId") {
+            updatedRow.blockId = "";
+            updatedRow.rackId = "";
+            updatedRow.partitionName = "";
+
+            // Fetch blocks for the selected location
+            fetchBlocks(index, value);
+          }
+          if (field === "blockId") {
+            updatedRow.rackId = "";
+            updatedRow.partitionName = "";
+            fetchRacks(index, value);
+          }
+
+          if (field === "rackId") {
+            updatedRow.partitionName = "";
+            fetchPartitions(index, value);
+          }
+          // Handle category selection
+          if (field === "categoryId") {
+            setRowCategories((prev) => ({ ...prev, [index]: value }));
+          }
+
+          return updatedRow;
+        }
+        return row;
+      })
+    );
+  };
+  // useEffect(() => {
+  //   const id = locationId;
+  //   if (id) {
+  //     getLocationWiseBlock(id, setLoader, router, setBlocksCart);
+  //   }
+
+  // }, [locationList.length >= 1 && locationId]);
+  const initializeRowData = (numRows) => {
+    setRowData(
+      Array(numRows).fill({
+        blocks: [],
+        racks: [],
+        partitions: [],
+      })
+    );
+  };
+  const fetchBlocks = async (index, locationId) => {
+    try {
+      const blocks = await getLocationWiseBlock(locationId, setLoader, router, setBlocksCart);
+      setRowData((prevRowData) =>
+        prevRowData.map((row, i) => (i === index ? { ...row, blocks: blocksCart } : row))
+      );
+    } catch (error) {
+      console.error("Error fetching blocks:", error);
+      setRowData((prevRowData) =>
+        prevRowData.map((row, i) => (i === index ? { ...row, blocks: [] } : row))
+      );
+    }
+  };
+  const fetchRacks = async (index, blockId) => {
+    const rackDetails = blocks.find((ele) => ele._id === blockId);
+    setCartRacks(rackDetails?.rackId ?? []);
+    // try {
+    // const racks = await getRackPartation(blockId,setLoader, router, setRackPartationCart);
+    setRowData((prevRowData) =>
+      prevRowData.map((row, i) => (i === index ? { ...row, racks: Cartracks } : row))
+    );
+    // } catch (error) {
+    //   console.error("Error fetching racks:", error);
+    //   setRowData((prevRowData) =>
+    //     prevRowData.map((row, i) => (i === index ? { ...row, racks: [] } : row))
+    //   );
+    // }
+  };
+
+  const fetchPartitions = async (index, rackId) => {
+    try {
+      const partitions = await getRackPartation(rackId, setLoader, router, setRackPartationCart);
+      setRowData((prevRowData) =>
+        prevRowData.map((row, i) =>
+          i === index ? { ...row, partitions: partrackPartationCartitions } : row
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching partitions:", error);
+      setRowData((prevRowData) =>
+        prevRowData.map((row, i) => (i === index ? { ...row, partitions: [] } : row))
+      );
+    }
+  };
+  console.log("cartTable", cartTable);
 
   return (
     <>
@@ -642,8 +813,8 @@ const AcceptMaterial = () => {
         </div>
       </div>
       <form>
-        {/* {console.log(savedMaterials, "savedMaterials")} */}
-        {/* {console.log(consumedMaterials, "consumedMaterials")} */}
+        {console.log(savedMaterials, "savedMaterials")}
+        {console.log(consumedMaterials, "consumedMaterials")}
         <div className="form_layout">
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
@@ -682,6 +853,9 @@ const AcceptMaterial = () => {
                       </div>
                     </div>
                     <div className="col_40p">
+                      <h5 style={{ textAlign: "center" }}>Status</h5>
+                    </div>
+                    <div className="col_40p">
                       <h5 className="action_wrraper">Change Location</h5>
                     </div>
                     {isAnyCheckboxChecked() && (
@@ -709,9 +883,6 @@ const AcceptMaterial = () => {
                         )}
                       </>
                     )}
-                    <div className="col_40p">
-                      <h5 style={{ textAlign: "center" }}>Status</h5>
-                    </div>
                   </div>
                   {nonMaterial?.length > 0 ? (
                     nonMaterial?.map((product, index) => {
@@ -732,7 +903,8 @@ const AcceptMaterial = () => {
                                 <CustomBtn
                                   name={"Save"}
                                   type="button"
-                                  onClick={() => handleSaveClick(index)}
+                                  // rowSelections[product.materialId] === "Dump"}
+                                  onClick={() => handleSaveClick(index, product)}
                                 />
                               </h6>
                             ) : (
@@ -806,10 +978,35 @@ const AcceptMaterial = () => {
                                     onChange={(e) =>
                                       handleChangeParameter(e, index, indexTwo, { key, value })
                                     }
-                                    disabled={!isEditing || editingIndex !== index} // Disable based on edit state
+                                    disable={!isEditing || editingIndex !== index} // Disable based on edit state
                                   />
                                 </div>
                               ))}
+                            </div>
+                          </div>
+                          <div className="col_40p">
+                            <div className="position-relative">
+                              <select
+                                value={product?.status}
+                                onChange={(e) => handleChange(e, index, "status")}
+                                disabled={!isEditing || editingIndex !== index}
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Status
+                                </option>
+                                {stockStatus.map((ele, index) => {
+                                  return (
+                                    <option value={ele} key={index}>
+                                      {ele}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
                             </div>
                           </div>
                           {/* checkBox for yes */}
@@ -942,31 +1139,6 @@ const AcceptMaterial = () => {
                               )}
                             </>
                           )}
-                          <div className="col_40p">
-                            <div className="position-relative">
-                              <select
-                                value={product?.status}
-                                onChange={(e) => handleChange(e, index, "status")}
-                                disabled={!isEditing || editingIndex !== index}
-                                className="form-control custom_input"
-                                style={{ width: "100%" }}
-                              >
-                                <option value="" className="text-secondary text-lowercase">
-                                  Select Status
-                                </option>
-                                {stockStatus.map((ele, index) => {
-                                  return (
-                                    <option value={ele} key={index}>
-                                      {ele}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                              <div className="select_box_arrow">
-                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                              </div>
-                            </div>
-                          </div>
                         </div>
                       );
                     })
@@ -1095,11 +1267,14 @@ const AcceptMaterial = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                id={product._id}
-                                onChange={(e) =>
-                                  handleMaterialCheckboxChange(e, product.materialId)
-                                }
+                                // id={product.materialId}
+                                // onChange={(e) =>
+                                //   handleMaterialCheckboxChange(e, product.materialId)
+                                // }
+                                // checked={selectedMaterials.includes(product.materialId)}
+                                key={product.materialId}
                                 checked={selectedMaterials.includes(product.materialId)}
+                                onChange={() => handleMaterialCheckboxChange(product.materialId)}
                               />
                             </div>
                           </div>
@@ -1170,7 +1345,7 @@ const AcceptMaterial = () => {
                                     name={`selection-${product.materialId}`}
                                     id={`dumpRadioMaterial-${product.materialId}`}
                                     onChange={() =>
-                                      handleRadioChangeMaterial(product.materialId, "Dump")
+                                      handleRadioChangeMaterial(product.materialId, "Dump", product)
                                     }
                                     checked={rowSelectionsMaterial[product.materialId] === "Dump"}
                                   />
@@ -1185,7 +1360,11 @@ const AcceptMaterial = () => {
                                     name={`selection-${product.materialId}`} // Unique name for each row
                                     id={`storeRadioMaterial-${product.materialId}`}
                                     onChange={() =>
-                                      handleRadioChangeMaterial(product.materialId, "Store")
+                                      handleRadioChangeMaterial(
+                                        product.materialId,
+                                        "Store",
+                                        product
+                                      )
                                     }
                                     checked={rowSelectionsMaterial[product.materialId] === "Store"}
                                   />
@@ -1204,7 +1383,15 @@ const AcceptMaterial = () => {
                                         className="form-control custom_input"
                                         style={{ width: "100%" }}
                                         value={product?.blockId}
-                                        onChange={(e) => handleChangeMaterial(e, index, "block")}
+                                        onChange={(e) =>
+                                          handleChangeMaterial(
+                                            e,
+                                            index,
+                                            "blockId",
+                                            product,
+                                            "blockName"
+                                          )
+                                        }
                                       >
                                         <option value="" className="text-secondary text-lowercase">
                                           Select Block
@@ -1230,7 +1417,9 @@ const AcceptMaterial = () => {
                                     <div className="position-relative">
                                       <select
                                         value={product?.rackId}
-                                        onChange={(e) => handleChangeMaterial(e, index, "rack")}
+                                        onChange={(e) =>
+                                          handleChangeMaterial(e, index, "rackId", product)
+                                        }
                                         className="form-control custom_input"
                                         style={{ width: "100%" }}
                                       >
@@ -1255,7 +1444,7 @@ const AcceptMaterial = () => {
                                         style={{ width: "100%" }}
                                         value={product?.partitionName}
                                         onChange={(e) =>
-                                          handleChangeMaterial(e, index, "partitionName")
+                                          handleChangeMaterial(e, index, "partitionName", product)
                                         }
                                       >
                                         <option value="" className="text-secondary text-lowercase">
@@ -1278,7 +1467,9 @@ const AcceptMaterial = () => {
                                     <div className="position-relative">
                                       <select
                                         value={product?.status}
-                                        onChange={(e) => handleChangeMaterial(e, index, "status")}
+                                        onChange={(e) =>
+                                          handleChangeMaterial(e, index, "status", product)
+                                        }
                                         className="form-control custom_input"
                                         style={{ width: "100%" }}
                                       >
@@ -1320,7 +1511,6 @@ const AcceptMaterial = () => {
       <div className="form_list_layout_wrapper my-4">
         <div className="d-flex align-items-center justify-content-between">
           <p>Cart Item</p>
-
           <div className="search_btn_wrapper">
             <div className="buttons_wrapper">
               <CustomBtn
@@ -1352,6 +1542,12 @@ const AcceptMaterial = () => {
             </div>
           </div>
         </div>
+        {dumpCount > 0 && (
+          <div>
+            <p>Total Dump count is {dumpCount} you need to add that in cart</p>
+          </div>
+        )}
+
         {/* table */}
         <div className="table_wrapper my-3">
           <div className="table_main">
@@ -1432,26 +1628,33 @@ const AcceptMaterial = () => {
                       style={{ fontSize: "10px", color: "red" }}
                     />
                   </div>
-                  {_category && (
+                  {rowCategories[index] && (
                     <>
                       <div className="col_85p">
                         <div className="input_scroll">
-                          {_parameter?.map((item, index) => (
-                            <div className="col_60p" style={{ display: "block" }} key={index}>
+                          {rowParameters[index]?.map((item, interIndex) => (
+                            <div className="col_60p" style={{ display: "block" }} key={interIndex}>
                               <label>{item}</label>
                               <InputBox
                                 type="text"
                                 disabled={cartTable.disabled}
                                 onChange={(e) => {
                                   const paramValue = e.target.value;
-                                  setAddToCart((prev) => {
-                                    const updatedCart = [...prev];
-                                    if (!updatedCart[index]) {
-                                      updatedCart[index] = { parameter: {} };
-                                    }
-                                    updatedCart[index].parameter[item] = paramValue;
-                                    return updatedCart;
-                                  });
+                                  setCartTable((pre) =>
+                                    pre.map((ele, i) => {
+                                      if (i === index) {
+                                        return {
+                                          ...ele,
+                                          parameter: {
+                                            ...ele.parameter,
+                                            [`${item}`]: paramValue,
+                                          },
+                                        };
+                                      } else {
+                                        return ele;
+                                      }
+                                    })
+                                  );
                                 }}
                               />
                             </div>
@@ -1459,182 +1662,236 @@ const AcceptMaterial = () => {
                         </div>
                       </div>
                       <div className="col_40p">
-                        <div className="check_box me-1" style={{ gap: "0" }}>
+                        {/* <div className="check_box me-1" style={{ gap: "0" }}>
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="selectionCart"
-                            id="dumpRadioCart"
-                            onChange={() => handleRadioChangeCart("Dump")}
+                            // name="selectionCart"
+                            name={`selectionCart-${index}`}
+                            id="dumpRadioCartDump"
+                            onChange={() => handleInputChangeCart(index, "selection", "Dump")}
+                            // onChange={() => handleRadioChangeCart("Dump")}
                           />
-                          <label htmlFor={`dumpRadioCart`}>Dump</label>
+                          <label htmlFor={`dumpRadioCartDump`}>Dump</label>
                         </div>
                         <div className="check_box me-1" style={{ gap: "0" }}>
                           <input
                             className="form-check-input"
                             type="radio"
-                            name="selectionCart"
-                            id="dumpRadioCart"
-                            onChange={() => handleRadioChangeCart("Store")}
+                            // name="selectionCart"
+                            id="dumpRadioCartStore"
+                            name={`selectionCart-${index}`}
+                            onChange={() => handleInputChangeCart(index, "selection", "Store")}
+                            // onChange={() => handleRadioChangeCart("Store")}
                           />
-                          <label htmlFor={`dumpRadioCart`}>Store</label>
-                        </div>
-                      </div>
-                    </>
-                  )}
+                          <label htmlFor={`dumpRadioCartStore`}>Store</label>
+                        </div> */}
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name={`selectionCart-${index}`}
+                          id={`dumpRadioCartDump-${index}`}
+                          checked={newTable.selection === "Dump"}
+                          onChange={() => handleInputChangeCart(index, "selection", "Dump")}
+                        />
+                        <label htmlFor={`dumpRadioCartDump-${index}`}>Dump</label>
 
-                  {isStoreSelected && (
-                    <>
-                      {" "}
-                      <div className="col_40p">
-                        <div className="position-relative">
-                          <select
-                            name="locationId"
-                            className="form-control custom_input"
-                            style={{ width: "100%" }}
-                            {...register("locationIdCart", {
-                              required: "locationId is required",
-                            })}
-                            onChange={(e) =>
-                              handleInputChangeCart(index, "locationId", e.target.value)
-                            }
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Location
-                            </option>
-                            {locationList.map((ele, index) => {
-                              return (
-                                <option
-                                  className="small text-capitalize"
-                                  value={ele._id}
-                                  key={index}
-                                >
-                                  {" "}
-                                  {ele.name}
-                                </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_arrow">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                          </div>
-                        </div>
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          id={`dumpRadioCartStore-${index}`}
+                          name={`selectionCart-${index}`}
+                          checked={newTable.selection === "Store"}
+                          onChange={() => handleInputChangeCart(index, "selection", "Store")}
+                        />
+                        <label htmlFor={`dumpRadioCartStore-${index}`}>Store</label>
                       </div>
-                      <div className="col_40p">
-                        <div className="position-relative">
-                          <select
-                            name="blockId"
-                            className="form-control custom_input"
-                            style={{ width: "100%" }}
-                            {...register("blockId", {
-                              required: "blockNo is required",
-                            })}
-                            onChange={(e) =>
-                              handleInputChangeCart(index, "blockId", e.target.value)
-                            }
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Block
-                            </option>
-                            {blocksCart.map((ele, index) => {
-                              return (
-                                <option
-                                  className="small text-capitalize"
-                                  value={ele._id}
-                                  key={index}
-                                >
-                                  {" "}
-                                  {ele.blockNo}
+                      {newTable.selection === "Store" && (
+                        <>
+                          {" "}
+                          <div className="col_40p">
+                            <div className="position-relative">
+                              <select
+                                name="locationId"
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                                value={newTable.locationId || ""}
+                                onChange={(e) =>
+                                  handleInputChangeCart(
+                                    index,
+                                    "locationId",
+                                    e.target.value
+                                    // setLocationId(e.target.value)
+                                  )
+                                }
+                                // {...register("locationIdCart", {
+                                //   required: "locationId is required",
+                                //   onChange: (e) =>
+                                //     handleInputChangeCart(index, "locationId", e.target.value),
+                                // })}
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Location
                                 </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_arrow">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                                {locationList.map((ele, locInd) => {
+                                  return (
+                                    <option
+                                      className="small text-capitalize"
+                                      value={ele._id}
+                                      key={locInd}
+                                    >
+                                      {" "}
+                                      {ele.name}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="col_40p">
-                        <div className="position-relative">
-                          <select
-                            {...register("rackId", {
-                              required: "Rack is required",
-                            })}
-                            className="form-control custom_input"
-                            style={{ width: "100%" }}
-                            onChange={(e) => handleInputChangeCart(index, "rackId", e.target.value)}
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Rack
-                            </option>
-                            {Cartracks.map((ele, index) => {
-                              return (
-                                <option value={ele._id} key={index}>
-                                  {ele.rackName}
+                          <div className="col_40p">
+                            <div className="position-relative">
+                              <select
+                                name="blockId"
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                                // {...register("blockId", {
+                                //   required: "blockNo is required",
+                                //   onChange: (e) =>
+                                //     handleInputChangeCart(index, "blockId", e.target.value),
+                                // })}
+                                value={newTable.blockId || ""}
+                                onChange={(e) =>
+                                  handleInputChangeCart(index, "blockId", e.target.value)
+                                }
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Block
                                 </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_arrow">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+
+                                {rowData[index] &&
+                                  blocks?.map((ele, BlockInd) => {
+                                    {
+                                      console.log(ele, "rrrssssssssssssssss");
+                                    }
+                                    return (
+                                      <option
+                                        className="small text-capitalize"
+                                        value={ele._id}
+                                        key={BlockInd}
+                                      >
+                                        {" "}
+                                        {ele.blockNo}
+                                      </option>
+                                    );
+                                  })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="col_40p">
-                        <div className="position-relative">
-                          <select
-                            className="form-control custom_input"
-                            style={{ width: "100%" }}
-                            {...register("partitionName", {
-                              required: "Partation is required",
-                            })}
-                            onChange={(e) =>
-                              handleInputChangeCart(index, "partitionName", e.target.value)
-                            }
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Partation
-                            </option>
-                            {rackPartationCart?.map((ele, index) => {
-                              return (
-                                <option value={ele.partitionName} key={index}>
-                                  {" "}
-                                  {ele.partitionName}
+                          <div className="col_40p">
+                            <div className="position-relative">
+                              <select
+                                // {...register("rackId", {
+                                //   required: "Rack is required",
+                                //   onChange: (e) =>
+                                //     handleInputChangeCart(index, "rackId", e.target.value),
+                                // })}
+                                value={newTable.rackId || ""}
+                                onChange={(e) =>
+                                  handleInputChangeCart(index, "rackId", e.target.value)
+                                }
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Rack
                                 </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_arrow">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                                {rowData[index] &&
+                                  racks?.map((ele, rackInd) => {
+                                    return (
+                                      <option value={ele._id} key={rackInd}>
+                                        {ele.rackName}
+                                      </option>
+                                    );
+                                  })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="col_40p">
-                        <div className="position-relative">
-                          <select
-                            {...register("status", {
-                              required: "Status is required",
-                            })}
-                            className="form-control custom_input"
-                            style={{ width: "100%" }}
-                            onChange={(e) => handleInputChangeCart(index, "status", e.target.value)}
-                          >
-                            <option value="" className="text-secondary text-lowercase">
-                              Select Status
-                            </option>
-                            {stockStatus.map((ele, index) => {
-                              return (
-                                <option value={ele} key={index}>
-                                  {ele}
+                          <div className="col_40p">
+                            <div className="position-relative">
+                              <select
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                                // {...register("partitionName", {
+                                //   required: "Partation is required",
+                                //   onChange: (e) =>
+                                //     handleInputChangeCart(index, "partitionName", e.target.value),
+                                // })}
+                                value={newTable.partitionName || ""}
+                                onChange={(e) =>
+                                  handleInputChangeCart(index, "partitionName", e.target.value)
+                                }
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Partation
                                 </option>
-                              );
-                            })}
-                          </select>
-                          <div className="select_box_arrow">
-                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                                {rowData[index] &&
+                                  partitions?.map((ele, partitionNameInd) => {
+                                    return (
+                                      <option value={ele.partitionName} key={partitionNameInd}>
+                                        {" "}
+                                        {ele.partitionName}
+                                      </option>
+                                    );
+                                  })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
+                          <div className="col_40p">
+                            <div className="position-relative">
+                              <select
+                                // {...register("status", {
+                                //   required: "Status is required",
+                                // })}
+                                className="form-control custom_input"
+                                style={{ width: "100%" }}
+                                // onChange={(e) =>
+                                //   handleInputChangeCart(index, "status", e.target.value)
+                                // }
+                                value={newTable.status || ""}
+                                onChange={(e) =>
+                                  handleInputChangeCart(index, "status", e.target.value)
+                                }
+                              >
+                                <option value="" className="text-secondary text-lowercase">
+                                  Select Status
+                                </option>
+                                {stockStatus.map((ele, stockInd) => {
+                                  return (
+                                    <option value={ele} key={stockInd}>
+                                      {ele}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </>
                   )}
                 </div>

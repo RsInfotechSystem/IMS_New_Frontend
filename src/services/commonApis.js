@@ -123,7 +123,7 @@ export async function getLocationWiseBlock(locationId, setLoader, router, setBlo
     setLoader(false);
   } catch (error) {
     toast.error(error?.response?.data?.message || error.message);
-    setLoader(false);
+    // setLoader(false);
   }
 }
 export async function getRackPartation(id, setLoader, router, setRackPartation = []) {
