@@ -710,8 +710,11 @@ const AcceptMaterial = () => {
     }
   };
   const fetchRacks = async (index, blockId) => {
-    const rackDetails = blocks.find((ele) => ele._id === blockId);
-    setCartRacks(rackDetails?.rackId ?? []);
+    console.log(blockId, "blockId");
+
+    const rackDetails = blocksCart.find((ele) => ele._id === blockId);
+    console.log(rackDetails, "rackDetails");
+    setCartRacks(rackDetails?.rackId?._id ?? []);
     // try {
     // const racks = await getRackPartation(blockId,setLoader, router, setRackPartationCart);
     setRowData((prevRowData) =>
@@ -1796,7 +1799,9 @@ const AcceptMaterial = () => {
                                   Select Rack
                                 </option>
                                 {rowData[index] &&
-                                  racks?.map((ele, rackInd) => {
+                                  (rowData[index].racks ?? [])?.map((ele, rackInd) => {
+                                    console.log(racks, "racksssss");
+
                                     return (
                                       <option value={ele._id} key={rackInd}>
                                         {ele.rackName}
@@ -1828,14 +1833,16 @@ const AcceptMaterial = () => {
                                   Select Partation
                                 </option>
                                 {rowData[index] &&
-                                  partitions?.map((ele, partitionNameInd) => {
-                                    return (
-                                      <option value={ele.partitionName} key={partitionNameInd}>
-                                        {" "}
-                                        {ele.partitionName}
-                                      </option>
-                                    );
-                                  })}
+                                  (rowData[index].partitions ?? [])?.map(
+                                    (ele, partitionNameInd) => {
+                                      return (
+                                        <option value={ele.partitionName} key={partitionNameInd}>
+                                          {" "}
+                                          {ele.partitionName}
+                                        </option>
+                                      );
+                                    }
+                                  )}
                               </select>
                               <div className="select_box_arrow">
                                 <FontAwesomeIcon icon={faAngleDown} className="icon" />
