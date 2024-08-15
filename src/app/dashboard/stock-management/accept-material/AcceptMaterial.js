@@ -233,6 +233,12 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   }
+  useEffect(() => {
+    returnedMaterialByJobNo();
+  }, []);
+  // ------------------------Retuned MATERIAL data List  end------------------------------------------
+  // ------------------------Reject material------------------------------------------
+
   const rejectMaterial = async (id, status, remark = "") => {
     try {
       setLoader(true);
@@ -259,7 +265,32 @@ const AcceptMaterial = () => {
       setLoader(false);
     }
   };
-  // ------------------------Retuned MATERIAL data List  end------------------------------------------
+  const cancelHandler = () => {
+    setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+  };
+
+  const showInputDialog = () => {
+    Swal.fire({
+      html: '<input placeholder="Enter Remark for Rejection" type="text" id="remarkInput" class="swal2-input">',
+      showCancelButton: true,
+      confirmButtonText: "Submit",
+      preConfirm: () => {
+        const remarkInput = document.getElementById("remarkInput");
+        return remarkInput.value;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const remark = result.value;
+        if (remark) {
+          rejectMaterial(remark);
+        } else {
+          toast.info("Remark required if you want to reject.");
+        }
+      }
+    });
+  };
+  // ------------------------Reject material------------------------------------------
+
   // ------------------------Non-material handle change------------------------------------------
   const handleChange = (e, index, field) => {
     const { value } = e.target;
@@ -292,64 +323,6 @@ const AcceptMaterial = () => {
     }
     // console.log(value, "value");
   };
-  // ------------------------Non-material handle change end------------------------------------------
-
-  // -----------------------------Material Checkbox-----------------------------------
-  const handleSelectAllMaterials = (e) => {
-    const isChecked = e.target.checked;
-    setAllMaterialsSelected(isChecked);
-    if (isChecked) {
-      setSelectedMaterials(material.map((item) => item?.materialId));
-    } else {
-      setSelectedMaterials([]);
-    }
-  };
-
-  const handleMaterialCheckboxChange = (materialId) => {
-    setSelectedMaterials((prevSelected) => {
-      let updatedSelected;
-
-      if (prevSelected.includes(materialId)) {
-        updatedSelected = prevSelected.filter((id) => id !== materialId);
-      } else {
-        updatedSelected = [...prevSelected, materialId];
-      }
-
-      // Update "Select All" checkbox
-      setAllMaterialsSelected(updatedSelected.length === material.length);
-
-      return updatedSelected;
-    });
-  };
-
-  const cancelHandler = () => {
-    setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
-  };
-
-  const showInputDialog = () => {
-    Swal.fire({
-      html: '<input placeholder="Enter Remark for Rejection" type="text" id="remarkInput" class="swal2-input">',
-      showCancelButton: true,
-      confirmButtonText: "Submit",
-      preConfirm: () => {
-        const remarkInput = document.getElementById("remarkInput");
-        return remarkInput.value;
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const remark = result.value;
-        if (remark) {
-          rejectMaterial(remark);
-        } else {
-          toast.info("Remark required if you want to reject.");
-        }
-      }
-    });
-  };
-
-  useEffect(() => {
-    returnedMaterialByJobNo();
-  }, []);
   useEffect(() => {
     const uniqueLocationIds = [...new Set(nonMaterial.map((material) => material.locationId))];
     uniqueLocationIds.forEach((locationId) => {
@@ -412,25 +385,6 @@ const AcceptMaterial = () => {
       }
     });
   }, [material]);
-  const handleChangeParameter = (e, productIndex, parameterIndex, parameter) => {
-    const { value } = e.target; // Get the new value from the input
-
-    // Update the nonMaterial state
-    setNonMaterial((prev) => {
-      // Create a shallow copy of the previous state
-      const updatedNonMaterial = [...prev];
-      // Update the specific parameter for the specific product
-      updatedNonMaterial[productIndex] = {
-        ...updatedNonMaterial[productIndex],
-        parameter: {
-          ...updatedNonMaterial[productIndex].parameter,
-          [parameter.key]: value, // Use the key to update the correct parameter
-        },
-      };
-      return updatedNonMaterial; // Return the updated state
-    });
-  };
-
   const handleEditClick = (index) => {
     setIsEditing(true);
     setEditingIndex(index);
@@ -456,12 +410,83 @@ const AcceptMaterial = () => {
     setIsEditing(false);
     setEditingIndex(null);
   };
+  // ------------------------Non-material handle change end------------------------------------------
+
+  // -----------------------------Material Checkbox-----------------------------------
+  const handleSelectAllMaterials = (e) => {
+    const isChecked = e.target.checked;
+    setAllMaterialsSelected(isChecked);
+    if (isChecked) {
+      setSelectedMaterials(material.map((item) => item?.materialId));
+    } else {
+      setSelectedMaterials([]);
+    }
+  };
+
+  const handleMaterialCheckboxChange = (materialId) => {
+    setSelectedMaterials((prevSelected) => {
+      let updatedSelected;
+
+      if (prevSelected.includes(materialId)) {
+        updatedSelected = prevSelected.filter((id) => id !== materialId);
+      } else {
+        updatedSelected = [...prevSelected, materialId];
+      }
+
+      // Update "Select All" checkbox
+      setAllMaterialsSelected(updatedSelected.length === material.length);
+
+      return updatedSelected;
+    });
+  };
   // consume click handler
   const handleConsumeClick = () => {
-    // console.log("Material to Consume:", material);
-    // Add the material ID to the consumedMaterials state
     setConsumedMaterials(selectedMaterials);
+    toast.success("Materials consume.");
   };
+  // Function to handle the checkbox change
+  const handleCheckboxChangeInMaterial = (materialId) => {
+    setIsChangeLocationCheckedMaterial((prevState) => ({
+      ...prevState,
+      [materialId]: !prevState[materialId],
+    }));
+  };
+  const isAnyCheckboxCheckedMaterial = () => {
+    return Object.values(isChangeLocationCheckedMaterial).some((isChecked) => isChecked);
+  };
+  const handleRadioChangeMaterial = (materialId, value, materialObj) => {
+    if (value == "Dump") {
+      seSaveDump((pevState) => [...pevState, materialObj]);
+    } else {
+      setSavedMaterials((pevState) => [...pevState, materialObj]);
+    }
+    SetRowSelectionsMaterial((prevSelections) => ({
+      ...prevSelections,
+      [materialId]: value,
+    }));
+  };
+  // -----------------------------Material Checkbox end-----------------------------------
+  // -----------------------------CART MATERIAL SECTION-----------------------------------
+
+  const handleChangeParameter = (e, productIndex, parameterIndex, parameter) => {
+    const { value } = e.target; // Get the new value from the input
+
+    // Update the nonMaterial state
+    setNonMaterial((prev) => {
+      // Create a shallow copy of the previous state
+      const updatedNonMaterial = [...prev];
+      // Update the specific parameter for the specific product
+      updatedNonMaterial[productIndex] = {
+        ...updatedNonMaterial[productIndex],
+        parameter: {
+          ...updatedNonMaterial[productIndex].parameter,
+          [parameter.key]: value, // Use the key to update the correct parameter
+        },
+      };
+      return updatedNonMaterial; // Return the updated state
+    });
+  };
+
   const handleReturnClick = (material) => {
     // console.log("Material to Return:", material);
     // Add the returned material to the savedMaterials state as an object
@@ -498,12 +523,7 @@ const AcceptMaterial = () => {
   const isAnyCheckboxChecked = () => {
     return Object.values(isChangeLocationChecked).some((isChecked) => isChecked);
   };
-  // const handleRadioChange = (materialId, value) => {
-  //   setRowSelections((prevSelections) => ({
-  //     ...prevSelections,
-  //     [materialId]: value,
-  //   }));
-  // };
+
   const handleRadioChange = (materialId, selection) => {
     const previousSelection = rowSelections[materialId];
 
@@ -530,48 +550,10 @@ const AcceptMaterial = () => {
       }
     }
   };
-  // Function to handle the checkbox change
-  const handleCheckboxChangeInMaterial = (materialId) => {
-    setIsChangeLocationCheckedMaterial((prevState) => ({
-      ...prevState,
-      [materialId]: !prevState[materialId],
-    }));
-  };
-  const isAnyCheckboxCheckedMaterial = () => {
-    return Object.values(isChangeLocationCheckedMaterial).some((isChecked) => isChecked);
-  };
-  const handleRadioChangeMaterial = (materialId, value, materialObj) => {
-    if (value == "Dump") {
-      seSaveDump((pevState) => [...pevState, materialObj]);
-    } else {
-      setSavedMaterials((pevState) => [...pevState, materialObj]);
-    }
-    SetRowSelectionsMaterial((prevSelections) => ({
-      ...prevSelections,
-      [materialId]: value,
-    }));
-  };
+
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
   }
-  // useEffect(() => {
-  //   // initialAPICall();
-  //   getParameter(setLoader, router, setCategoryMapData);
-  // }, []);
-  // useEffect(() => {
-  //   const id = _category;
-  //   // const id = getValues("categoryId");
-  //   if (id) {
-  //     const parameterDetails = CategoryMapData.find((ele) => ele._id === id);
-  //     setValue("parameterId", parameterDetails?._id);
-  //     // console.log(parameterDetails, "parameterDetails");
-
-  //     __setParameter(parameterDetails?.parameter ?? []);
-  //   } else {
-  //     __setParameter([]);
-  //     setValue("parameterId", "");
-  //   }
-  // }, [_category]);
   useEffect(() => {
     getParameter(setLoader, router, setCategoryMapData);
   }, []);
@@ -704,13 +686,7 @@ const AcceptMaterial = () => {
       })
     );
   };
-  // useEffect(() => {
-  //   const id = locationId;
-  //   if (id) {
-  //     getLocationWiseBlock(id, setLoader, router, setBlocksCart);
-  //   }
 
-  // }, [locationList.length >= 1 && locationId]);
   const initializeRowData = (numRows) => {
     setRowData(
       Array(numRows).fill({
@@ -816,6 +792,7 @@ const AcceptMaterial = () => {
         {console.log(savedMaterials, "savedMaterials")}
         {console.log(consumedMaterials, "consumedMaterials")}
         <div className="form_layout">
+          {/* ------------------------NON MATERIAL LIST START----------------------------------------------- */}
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Non-Material List</p>
@@ -1151,6 +1128,9 @@ const AcceptMaterial = () => {
               </div>
             </div>
           </div>
+          {/* ------------------------NON MATERIAL LIST END----------------------------------------------- */}
+          {/* ------------------------MATERIAL LIST START----------------------------------------------- */}
+
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Material List</p>
@@ -1259,22 +1239,22 @@ const AcceptMaterial = () => {
                   </div>
                   {material?.length > 0 ? (
                     material?.map((product, index) => {
+                      const isDisabled = consumedMaterials.includes(product.materialId);
                       return (
-                        <div className="table_data" key={index}>
+                        <div
+                          className={`table_data ${isDisabled ? "row-disabled" : ""}`}
+                          key={index}
+                        >
                           {/* {console.log(product, "product")} */}
                           <div className="col_20p">
                             <div className="check_box">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                // id={product.materialId}
-                                // onChange={(e) =>
-                                //   handleMaterialCheckboxChange(e, product.materialId)
-                                // }
-                                // checked={selectedMaterials.includes(product.materialId)}
                                 key={product.materialId}
                                 checked={selectedMaterials.includes(product.materialId)}
                                 onChange={() => handleMaterialCheckboxChange(product.materialId)}
+                                disabled={isDisabled}
                               />
                             </div>
                           </div>
@@ -1325,6 +1305,7 @@ const AcceptMaterial = () => {
                                 checked={
                                   isChangeLocationCheckedMaterial[product.materialId] || false
                                 }
+                                disabled={isDisabled}
                                 // onClick={() => handleEditClick(index)}
                               />
                               {/* {console.log(rowSelections, "rowSelections")} */}
@@ -1505,9 +1486,12 @@ const AcceptMaterial = () => {
               </div>
             </div>
           </div>
+          {/* ------------------------MATERIAL LIST END----------------------------------------------- */}
         </div>
       </form>
       {console.log(cartTable, "cartTable")}
+      {/* ------------------------CART LIST START----------------------------------------------- */}
+
       <div className="form_list_layout_wrapper my-4">
         <div className="d-flex align-items-center justify-content-between">
           <p>Cart Item</p>
@@ -1900,7 +1884,7 @@ const AcceptMaterial = () => {
           </div>
         </div>
       </div>
-      {/* ---------------------------attached material end----------------------------------------------------------*/}
+      {/* ---------------------------CART MATERIAL END----------------------------------------------------------*/}
 
       {/* ---------------------------send attached material----------------------------------------------------------*/}
       <div className="d-flex align-items-center justify-content-center gap-3 my-3">
@@ -1917,7 +1901,6 @@ const AcceptMaterial = () => {
             // e.stopPropagation();
             showInputDialog("reject");
           }}
-          // onClick={(e) => rejectMaterial(rejectItem, "reject")}
         ></Button>
       </div>
     </>
