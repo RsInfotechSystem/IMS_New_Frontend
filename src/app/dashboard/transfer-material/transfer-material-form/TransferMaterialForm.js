@@ -107,6 +107,7 @@ const TransferMaterialForm = () => {
         setLoader(false);
         reset();
         toast.success(serverResponse.data.message);
+        router.back();
       } else if (serverResponse?.data?.status == "FAILED") {
         toast.warn(serverResponse?.data?.message);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {

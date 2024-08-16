@@ -170,7 +170,6 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
           return acc;
         }, []);
 
-      console.log("data",data);
       
 
       setOptions((prev) => ({
@@ -230,11 +229,13 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
           newValues[section] = [...newValues[section], value];
         }
       }
+      console.log(newValues,"newValues");
+      
       onFiltersChange({
         categoryId: newValues.category.length > 0 ? newValues.category[0].categoryId : "",
         brandId: newValues.brand.length > 0 ? newValues.brand[0].brandId : "",
         modelId: newValues.model.length > 0 ? newValues.model[0].modelId : "",
-        modelId: newValues.parameter.length > 0 ? newValues.parameter[0].parameterId : "",
+        parameter: newValues.parameter.length > 0 ? newValues.parameter[0].parameterId : "",
       });
       return newValues;
     });
