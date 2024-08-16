@@ -264,12 +264,12 @@ const StockInList = () => {
         setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
         await getStockList({ currentPage, searchString });
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
+        toast.info(response.data.message);
         router.push("/");
       } else {
         setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
 
-        toast.error(response.data.message);
+        toast.info(response.data.message);
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);

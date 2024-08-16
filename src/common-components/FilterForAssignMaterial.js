@@ -8,19 +8,24 @@ const CheckboxGroup = ({ options, selectedOptions, onToggle, _setMaterial }) => 
           (selected) =>
             selected.categoryId === option.categoryId &&
             selected.brandId === option.brandId &&
-            selected.modelId === option.modelId
+            selected.modelId === option.modelId &&
+            selected.parameterId === option.parameterId
         );
 
         return (
           <label
-            key={option.categoryId || option.brandId || option.modelId}
+            key={option.categoryId || option.brandId || option.modelId || option.parameterId}
             className="checkbox-label"
           >
             <input type="checkbox" checked={isChecked} onChange={() => onToggle(option)} />
             &nbsp;&nbsp;
             {option?.category?.toUpperCase() ||
               option?.brand?.toUpperCase() ||
-              option?.modelName?.toUpperCase()}
+              option?.modelName?.toUpperCase() ||
+              option?.parameterId?.toUpperCase()
+              // (option?.parameter?.toUpperCase(),option?.parameterName?.toUpperCase())
+              // option?.forEach((option) =>`${option.parameterId}${option.parameterName}`)
+            }
           </label>
         );
       })}
@@ -129,25 +134,50 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
         )
       ).map((item) => JSON.parse(item));
 
+      // const parameterOptions = Array.from(
+      //   new Set(
+      //     data
+      //       .filter((item) => item.categoryId?._id === selectedCategory.categoryId)
+      //       .flatMap((item) => item.parameters || [])
+      //       .map((param) =>
+      //         JSON.stringify({
+      //           parameterId: param?._id,
+      //           parameter: param?.name,
+      //         })
+      //       )
+      //   )
+      // ).map((item) => JSON.parse(item));
+
       const parameterOptions = Array.from(
         new Set(
           data
             .filter((item) => item.categoryId?._id === selectedCategory.categoryId)
-            .flatMap((item) => item.parameters || [])
-            .map((param) =>
-              JSON.stringify({
-                parameterId: param?._id,
-                parameter: param?.name,
-              })
+            .flatMap((item) =>
+              Object.entries(item.parameter || {}).map(([key, value]) =>
+                JSON.stringify({
+                  parameterId: key.toUpperCase(), // Convert parameterId to uppercase
+                  parameterName: value.toUpperCase(), // Convert parameterName to uppercase
+                })
+              )
             )
         )
-      ).map((item) => JSON.parse(item));
+      )
+        .map((item) => JSON.parse(item))
+        .reduce((acc, curr) => {
+          if (!acc.some(option => option.parameterId === curr.parameterId)) {
+            acc.push(curr);
+          }
+          return acc;
+        }, []);
+
+      
 
       setOptions((prev) => ({
         ...prev,
         brand: brandOptions,
         model: modelOptions,
         parameter: parameterOptions,
+        
       }));
     } else {
       setOptions((prev) => ({
@@ -157,6 +187,7 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
         parameter: [],
       }));
     }
+
   }, [data, selectedValues.category]);
 
   const toggleSection = (section) => {
@@ -182,7 +213,8 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
           (item) =>
             item.categoryId === value.categoryId &&
             item.brandId === value.brandId &&
-            item.modelId === value.modelId
+            item.modelId === value.modelId &&
+            item.parameterId === value.parameterId 
         );
 
         if (isSelected) {
@@ -190,16 +222,20 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
             (item) =>
               item.categoryId !== value.categoryId ||
               item.brandId !== value.brandId ||
-              item.modelId !== value.modelId
+              item.modelId !== value.modelId ||
+              item.parameterId !== value.parameterId 
           );
         } else {
           newValues[section] = [...newValues[section], value];
         }
       }
+      console.log(newValues,"newValues");
+      
       onFiltersChange({
         categoryId: newValues.category.length > 0 ? newValues.category[0].categoryId : "",
         brandId: newValues.brand.length > 0 ? newValues.brand[0].brandId : "",
         modelId: newValues.model.length > 0 ? newValues.model[0].modelId : "",
+        parameter: newValues.parameter.length > 0 ? newValues.parameter[0].parameterId : "",
       });
       return newValues;
     });
