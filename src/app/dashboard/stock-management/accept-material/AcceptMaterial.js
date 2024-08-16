@@ -5,7 +5,9 @@ import { useForm } from "react-hook-form";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import {
+  getBrandWiseModel,
   getCategory,
+  getCategoryWiseBrand,
   getLocations,
   getLocationWiseBlock,
   getParameter,
@@ -52,7 +54,7 @@ const AcceptMaterial = () => {
   });
   const [CategoryMapData, setCategoryMapData] = useState([]);
   const [_parameter, __setParameter] = useState([]);
-
+  const [model, setModel] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -65,6 +67,7 @@ const AcceptMaterial = () => {
   const [isChangeLocationChecked, setIsChangeLocationChecked] = useState("");
   const [isChangeLocationCheckedMaterial, setIsChangeLocationCheckedMaterial] = useState("");
   const [rowSelectionsMaterial, SetRowSelectionsMaterial] = useState({});
+  const [brandsData, setBrandsData] = useState([]);
   const [isStoreSelected, setIsStoreSelected] = useState(false);
   const [addToCart, setAddToCart] = useState([]);
   const [cartTable, setCartTable] = useState([
@@ -82,31 +85,55 @@ const AcceptMaterial = () => {
   const [rowData, setRowData] = useState([{ blocks: [], racks: [], partitions: [] }]);
   const [dumpCount, setDumpCount] = useState(0);
   const [storeCount, setStoreCount] = useState(0);
+  const [partitions, setPartitions] = useState([]);
+  const [_cartParameter, _setCartParameter] = useState([]);
   const [rowSelections, setRowSelections] = useState({});
   const [rowCategories, setRowCategories] = useState({});
   const [rowParameters, setRowParameters] = useState({});
   const [savedDump, seSaveDump] = useState([]);
   const [savedMaterials, setSavedMaterials] = useState([]);
   const [cartData, setCartData] = useState([]);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-    watch,
-    getValues,
-    setValue,
-  } = useForm({
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   reset,
+  //   formState: { errors },
+  //   watch,
+  //   getValues,
+  //   setValue,
+  // } = useForm({
+  //   defaultValues: {
+  //     quantity: 1,
+  //     parameterId: "",
+  //     parameter: {},
+  //   },
+  // });
+  const { register, handleSubmit, setValue, watch, getValues } = useForm({
     defaultValues: {
-      quantity: 1,
-      parameterId: "",
-      parameter: {},
+      rows: [
+        {
+          serialNo: "",
+          itemCode: "",
+          categoryId: "",
+          brandId: "",
+          modelId: "",
+          parameter: "",
+          selection: "",
+          locationId: "",
+          blockId: "",
+          rackId: "",
+          partitionId: "",
+          conditionType: "",
+          status: "",
+        },
+      ],
     },
   });
   const categoryId = watch("categoryId");
   const rack = watch("blockId");
   const _rackIdForPrtn = watch("rackId");
   const locationCart = watch("locationIdCart");
+  const rows = watch("rows");
   // ------------------------ACCEPT MATERIAL------------------------------------------
   const acceptMaterial = async (index) => {
     try {
@@ -574,19 +601,20 @@ const AcceptMaterial = () => {
       }
     });
   }, [rowCategories, CategoryMapData]);
-  useEffect(() => {
-    getLocations(setLoader, router, setLocationList);
-  }, []);
+  // useEffect(() => {
+  //   getLocations(setLoader, router, setLocationList);
+  //   setValue(`rows[${index}].locationId`, location.id);
+  // }, []);
 
-  useEffect(() => {
-    const id = getValues("blockId");
-    if (id) {
-      const rackDetails = blocksCart.find((ele) => ele._id === id);
-      setCartRacks(rackDetails?.rackId ?? []);
-    } else {
-      setCartRacks([]);
-    }
-  }, [rack]);
+  // useEffect(() => {
+  //   const id = getValues("blockId");
+  //   if (id) {
+  //     const rackDetails = blocksCart.find((ele) => ele._id === id);
+  //     setCartRacks(rackDetails?.rackId ?? []);
+  //   } else {
+  //     setCartRacks([]);
+  //   }
+  // }, [rack]);
   useEffect(() => {
     const id = getValues("rackId");
     if (id) {
@@ -614,6 +642,13 @@ const AcceptMaterial = () => {
       racks: [],
       partitions: [],
     };
+    setRowData(
+      Array(numRows).fill({
+        blocks: [],
+        racks: [],
+        partitions: [],
+      })
+    );
     setCartTable((prevCartTable) => [...prevCartTable, newMaterial]);
   };
   // Object.values(obj).every(i=>i.trim() !==""));
@@ -711,10 +746,16 @@ const AcceptMaterial = () => {
   };
   const fetchRacks = async (index, blockId) => {
     console.log(blockId, "blockId");
-
-    const rackDetails = blocksCart.find((ele) => ele._id === blockId);
-    console.log(rackDetails, "rackDetails");
-    setCartRacks(rackDetails?.rackId?._id ?? []);
+    console.log(blocksCart, "blocksCart");
+    const rackDetails = blocks.find((ele) => ele._id === blockId);
+    console.log(
+      blocks.find((ele) => ele._id === blockId),
+      "rackDetails"
+    );
+    // const filteredRacks = rackDetails?.rackId ?? {}; // Use the rackId object
+    // const racksArray = filteredRacks[blockId] || [];
+    const racksArray = Array.isArray(rackDetails?.rackId) ? rackDetails.rackId : [];
+    setCartRacks(rackDetails?.rackId ?? []);
     // try {
     // const racks = await getRackPartation(blockId,setLoader, router, setRackPartationCart);
     setRowData((prevRowData) =>
@@ -744,6 +785,126 @@ const AcceptMaterial = () => {
     }
   };
   console.log("cartTable", cartTable);
+
+  // ______________________NEW___________________
+  useEffect(() => {
+    // Function to fetch initial location data
+    const fetchInitialCategory = async () => {
+      const initialCategory = await getParameter(setLoader, router, setCategoryMapData, true);
+      setCategoryMapData(initialCategory);
+      console.log(initialCategory, "initialCategory");
+    };
+
+    fetchInitialCategory();
+  }, []);
+  const handleCategoryChange = async (index, categoryId) => {
+    console.log(categoryId, "categoryId");
+
+    setValue(`rows[${index}].categoryId`, categoryId);
+    if (categoryId) {
+      const parameterDetails = CategoryMapData.find((ele) => ele._id === categoryId);
+      console.log(parameterDetails, "parameterDetails");
+      _setCartParameter(parameterDetails.parameter);
+      // Update the parameter value for the row
+      setValue(`rows[${index}].parameter`, parameterDetails?._id ?? []);
+    } else {
+      // Clear parameters if no category is selected
+      setValue(`rows[${index}].parameter`, []);
+    }
+    const fetchedBrand = await getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData);
+    setBrandsData(fetchedBrand);
+    console.log(fetchedBrand, "fetchedBrand");
+
+    // Reset dependent fields
+    setValue(`rows[${index}].model`, "");
+  };
+  const handleBrandChange = async (index, brandId) => {
+    console.log(brandId, "brandId");
+
+    setValue(`rows[${index}].brandId`, brandId);
+
+    const fetchedModel = await getBrandWiseModel(brandId, setLoader, router, setModel, true);
+    setModel(fetchedModel);
+    console.log(fetchedModel, "fetchedModel");
+
+    // Reset dependent fields
+    // setValue(`rows[${index}].modelId`, "");
+  };
+  useEffect(() => {
+    // Update parameters for each row based on the categoryId
+    rows.forEach((row, index) => {
+      console.log(row, "row");
+
+      const categoryId = row.categoryId;
+      if (categoryId) {
+        const parameterDetails = CategoryMapData.find((ele) => ele._id === categoryId);
+
+        setValue(`rows[${index}].parameter`, parameterDetails?.parameter ?? []);
+      } else {
+        setValue(`rows[${index}].parameter`, []);
+      }
+    });
+  }, [rows, CategoryMapData]);
+
+  useEffect(() => {
+    // Function to fetch initial location data
+    const fetchInitialLocations = async () => {
+      const initialLocations = await getLocations(setLoader, router, setLocationList, true);
+      setLocationList(initialLocations);
+      console.log(initialLocations, "initialLocations");
+    };
+
+    fetchInitialLocations();
+  }, []); // Empty dependency array ensures this runs only on the first render
+
+  // Handle location change and fetch dependent blocks
+  const handleLocationChange = async (index, locationId) => {
+    setValue(`rows[${index}].locationId`, locationId);
+
+    const fetchedBlocks = await getLocationWiseBlock(
+      locationId,
+      setLoader,
+      router,
+      setBlocksCart,
+      true
+    );
+    setBlocks(fetchedBlocks);
+    console.log(fetchedBlocks, "fetchedBlocks");
+
+    // Reset dependent fields
+    setValue(`rows[${index}].blockId`, "");
+    setValue(`rows[${index}].rackId`, "");
+    setValue(`rows[${index}].partitionId`, "");
+  };
+  // Handle block change and fetch dependent racks
+  const handleBlockChange = async (index, blockId) => {
+    setValue(`rows[${index}].blockId`, blockId);
+    const fetchedRacks = blocksCart.find((ele) => ele._id === blockId);
+    console.log(fetchedRacks, "fetchedRacks");
+
+    setCartRacks(fetchedRacks?.rackId ?? []);
+
+    // Reset dependent fields
+    setValue(`rows[${index}].rackId`, "");
+    setValue(`rows[${index}].partitionId`, "");
+  };
+
+  // Handle rack change and fetch dependent partitions
+  const handleRackChange = async (index, rackId) => {
+    setValue(`rows[${index}].rackId`, rackId);
+    const fetchedPartitions = await getRackPartation(
+      rackId,
+      setLoader,
+      router,
+      setPartitions,
+      true
+    );
+    console.log(fetchedPartitions, "fetchedPartitions");
+    setPartitions(fetchedPartitions);
+
+    // Reset dependent field
+    setValue(`rows[${index}].partitionId`, "");
+  };
 
   return (
     <>
@@ -1536,27 +1697,32 @@ const AcceptMaterial = () => {
         )}
 
         {/* table */}
-        <div className="table_wrapper my-3">
+        {/* <div className="table_wrapper my-3">
           <div className="table_main">
-            <div
-              className="table_section pi_product_table"
-              style={{
-                minWidth: _category ? "2000px" : "",
-                width: !_category ? "auto" : "",
-              }}
-            >
+            <div className="table_section pi_product_table" style={{ minWidth: "2000px" }}>
               <div className="table_header">
-                {/* <div className="col_7p">
-                  <div className="check_box">
-                    <input className="form-check-input" type="checkbox" />
-                  </div>
-                </div> */}
                 <div className="col_10p">
                   <h5>Sr. No.</h5>
                 </div>
                 <div className="col_50p">
                   <h5 style={{ textAlign: "center" }}>Category</h5>
                 </div>
+                <div className="col_50p">
+                  <h5 style={{ textAlign: "center" }}>Brand</h5>
+                </div>
+                <div className="col_50p">
+                  <h5 style={{ textAlign: "center" }}>Model</h5>
+                </div>
+                <div className="col_50p">
+                  <h5 style={{ textAlign: "center" }}>QTY</h5>
+                </div>
+                <div className="col_50p">
+                  <h5 style={{ textAlign: "center" }}>Condition Type</h5>
+                </div>
+                <div className="col_50p">
+                  <h5 style={{ textAlign: "center" }}>Serial No</h5>
+                </div>
+
                 {_category && (
                   <>
                     {" "}
@@ -1594,7 +1760,7 @@ const AcceptMaterial = () => {
               </div>
               {cartTable.map((newTable, index) => (
                 <div className="table_data" key={index}>
-                  <div className="col_10p"></div>
+                  <div className="col_10p">{index + 1}</div>
                   <div className="col_50p">
                     <SelectBox
                       options={CategoryMapData}
@@ -1602,18 +1768,89 @@ const AcceptMaterial = () => {
                       value={"_id"}
                       firstOption={"Category"}
                       disabled={cartTable.disabled}
-                      // register={{
-                      //   ...register("category", {
-                      //     required: "category is required",
-                      //   }),
-                      // }}
                       onChange={(e) => {
                         handleInputChangeCart(index, "categoryId", e.target.value);
                         _setCategory(e.target.value);
                       }}
+                      style={{ width: "100%" }}
                       errors={errors.category}
-                      style={{ fontSize: "10px", color: "red" }}
                     />
+                  </div>
+                  <div className="col_50p">
+                    <div className="position-relative">
+                      <select
+                        name="brandId"
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                      >
+                        <option value="" className="text-secondary text-lowercase">
+                          Select Brand
+                        </option>
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col_50">
+                    <div className="position-relative">
+                      <select
+                        {...register("modelId", {
+                          required: "modelId is required",
+                        })}
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                      >
+                        <option value="" className="text-secondary text-lowercase">
+                          Select Model
+                        </option>
+                        {model.map((ele, index) => {
+                          return (
+                            <option
+                              value={ele._id}
+                              key={index}
+                              selected={ele._id === getValues("modelId")}
+                            >
+                              {ele.name}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col_50">
+                    <InputBox
+                      register={{
+                        ...register("quantity", {
+                          required: "Quantity is required",
+                        }),
+                      }}
+                      errors={errors.quantity}
+                    />
+                  </div>
+                  <div className="col_50">
+                    <div className="position-relative">
+                      <select
+                        // {...register("conditionType", {
+                        //   required: "condition is required",
+                        // })}
+                        className="form-control custom_input"
+                        style={{ width: "100%" }}
+                      >
+                        <option value="">Select Condition Type</option>
+                        <option value="new">New</option>
+                        <option value="refurbished">Refurbished</option>
+                      </select>
+                      <div className="select_box_arrow">
+                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col_50">
+                    <InputBox errors={errors.serialNo} />
                   </div>
                   {rowCategories[index] && (
                     <>
@@ -1649,30 +1886,6 @@ const AcceptMaterial = () => {
                         </div>
                       </div>
                       <div className="col_40p">
-                        {/* <div className="check_box me-1" style={{ gap: "0" }}>
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            // name="selectionCart"
-                            name={`selectionCart-${index}`}
-                            id="dumpRadioCartDump"
-                            onChange={() => handleInputChangeCart(index, "selection", "Dump")}
-                            // onChange={() => handleRadioChangeCart("Dump")}
-                          />
-                          <label htmlFor={`dumpRadioCartDump`}>Dump</label>
-                        </div>
-                        <div className="check_box me-1" style={{ gap: "0" }}>
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            // name="selectionCart"
-                            id="dumpRadioCartStore"
-                            name={`selectionCart-${index}`}
-                            onChange={() => handleInputChangeCart(index, "selection", "Store")}
-                            // onChange={() => handleRadioChangeCart("Store")}
-                          />
-                          <label htmlFor={`dumpRadioCartStore`}>Store</label>
-                        </div> */}
                         <input
                           className="form-check-input"
                           type="radio"
@@ -1754,10 +1967,11 @@ const AcceptMaterial = () => {
                                   handleInputChangeCart(index, "blockId", e.target.value)
                                 }
                               >
+                                {" "}
+                                {console.log(blocksCart, "rrrrr")}
                                 <option value="" className="text-secondary text-lowercase">
                                   Select Block
                                 </option>
-
                                 {rowData[index] &&
                                   blocks?.map((ele, BlockInd) => {
                                     {
@@ -1782,36 +1996,41 @@ const AcceptMaterial = () => {
                           </div>
                           <div className="col_40p">
                             <div className="position-relative">
-                              <select
-                                // {...register("rackId", {
-                                //   required: "Rack is required",
-                                //   onChange: (e) =>
-                                //     handleInputChangeCart(index, "rackId", e.target.value),
-                                // })}
-                                value={newTable.rackId || ""}
-                                onChange={(e) =>
-                                  handleInputChangeCart(index, "rackId", e.target.value)
-                                }
-                                className="form-control custom_input"
-                                style={{ width: "100%" }}
-                              >
-                                <option value="" className="text-secondary text-lowercase">
-                                  Select Rack
-                                </option>
-                                {rowData[index] &&
-                                  (rowData[index].racks ?? [])?.map((ele, rackInd) => {
-                                    console.log(racks, "racksssss");
-
-                                    return (
-                                      <option value={ele._id} key={rackInd}>
-                                        {ele.rackName}
-                                      </option>
-                                    );
-                                  })}
-                              </select>
-                              <div className="select_box_arrow">
-                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                              </div>
+                              {blocks && (
+                                <>
+                                  {" "}
+                                  <select
+                                    // {...register("rackId", {
+                                    //   required: "Rack is required",
+                                    //   onChange: (e) =>
+                                    //     handleInputChangeCart(index, "rackId", e.target.value),
+                                    // })}
+                                    value={newTable.rackId || ""}
+                                    onChange={(e) =>
+                                      handleInputChangeCart(index, "rackId", e.target.value)
+                                    }
+                                    className="form-control custom_input"
+                                    style={{ width: "100%" }}
+                                  >
+                                    {" "}
+                                    {console.log(racks, "racksssss")}
+                                    <option value="" className="text-secondary text-lowercase">
+                                      Select Rack
+                                    </option>
+                                    {rowData[index] &&
+                                      racks?.map((ele, rackInd) => {
+                                        return (
+                                          <option value={ele._id} key={rackInd}>
+                                            {ele.rackName}
+                                          </option>
+                                        );
+                                      })}
+                                  </select>
+                                  <div className="select_box_arrow">
+                                    <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </div>
                           <div className="col_40p">
@@ -1887,6 +2106,282 @@ const AcceptMaterial = () => {
                   )}
                 </div>
               ))}
+            </div>
+          </div>
+        </div> */}
+
+        {/* -------------------------------------------new------------------------------- */}
+        <div className="table_wrapper my-3">
+          <div className="table_main">
+            <div className="table_section pi_product_table" style={{ minWidth: "1800px" }}>
+              <div className="table_header">
+                <div className="col_7p">
+                  <h5>Sr. No.</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Serial No</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Item Code</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Category</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Brand</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Model</h5>
+                </div>
+                <div className="col_85p">
+                  <div className="input_scroll" style={{ scrollbarWidth: "none" }}>
+                    <h5 style={{ textAlign: "center" }}>Parameter</h5>
+                  </div>
+                </div>
+                <div className="col_40p">
+                  <h5 className="action_wrraper" style={{ textAlign: "center" }}>
+                    Change Area
+                  </h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Location</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Block</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Rack</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Partation</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Condition Type</h5>
+                </div>
+                <div className="col_25p">
+                  <h5 style={{ textAlign: "center" }}>Status</h5>
+                </div>
+              </div>
+              {rows.map((row, index) => (
+                <div className="table_data" key={index}>
+                  <div className="col_7p">
+                    <h6>{index + 1}</h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <input
+                        {...register(`rows[${index}].serialNo`)}
+                        placeholder="Enter Serial No"
+                        className="form-control"
+                      />
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <input
+                        {...register(`rows[${index}].itemCode`)}
+                        placeholder="Enter Item Code"
+                        className="form-control"
+                      />
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].categoryId`)}
+                        value={watch(`rows[${index}].categoryId`) || ""}
+                        onChange={(e) => handleCategoryChange(index, e.target.value)}
+                        className="form-control custom_input"
+                      >
+                        <option value="">Select Category</option>
+                        {CategoryMapData.map((category) => (
+                          <option key={category._id} value={category._id}>
+                            {category.name}
+                          </option>
+                        ))}
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].brandId`)}
+                        onChange={(e) => handleBrandChange(index, e.target.value)}
+                        value={row.brandId}
+                        // disabled={!row.brandId}
+                        className="form-control custom_input"
+                      >
+                        <option value="">Select Brand</option>
+                        {brandsData.map((brand) => (
+                          <option key={brand._id} value={brand._id}>
+                            {brand.name}
+                          </option>
+                        ))}
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].modelId`)}
+                        className="form-control custom_input"
+                      >
+                        <option value="">Select Model</option>
+                        {model.map((model) => (
+                          <option key={model.id} value={model.id}>
+                            {model.name}
+                          </option>
+                        ))}
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_85p">
+                    <div className="input_scroll">
+                      {_cartParameter?.map((item, interIndex) => (
+                        // <h6>
+                        <div className="col_60p" style={{ display: "block" }}>
+                          <label>{item}</label>
+                          <InputBox
+                            {...register(`rows[${index}].parameter`)}
+                            onChange={(e) => handleParameterChange(index, e.target.value)}
+                            value={row.parameter}
+                            placeholder="Enter Parameter"
+                            className="form-control"
+                          />
+                        </div>
+                        // </h6>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        // name={`selectionCart-${index}`}
+                        // id={`dumpRadioCartDump-${index}`}
+                        // checked={newTable.selection === "Dump"}
+                        // onChange={() => handleInputChangeCart(index, "selection", "Dump")}
+                      />
+                      {/* <label htmlFor={`dumpRadioCartDump-${index}`}>Dump</label> */}
+                      <label>dump</label>
+
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        // id={`dumpRadioCartStore-${index}`}
+                        // name={`selectionCart-${index}`}
+                        // checked={newTable.selection === "Store"}
+                        // onChange={() => handleInputChangeCart(index, "selection", "Store")}
+                      />
+                      {/* <label htmlFor={`dumpRadioCartStore-${index}`}>Store</label> */}
+                      <label>store</label>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].locationId`)}
+                        value={watch(`rows[${index}].locationId`) || ""}
+                        onChange={(e) => handleLocationChange(index, e.target.value)}
+                        className="form-control"
+                      >
+                        <option value="">Select Location</option>
+                        {locationList.map((location) => (
+                          <option key={location._id} value={location._id}>
+                            {location.name}
+                          </option>
+                        ))}
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].blockId`)}
+                        onChange={(e) => handleBlockChange(index, e.target.value)}
+                        className="form-control custom_input"
+                        value={row.blockId}
+                        disabled={!row.locationId} // Disable until location is selected
+                      >
+                        <option value="">Select Block</option>
+                        {blocksCart.map((block) => (
+                          <option key={block._id} value={block._id}>
+                            {block.blockNo}
+                          </option>
+                        ))}
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].rackId`)}
+                        onChange={(e) => handleRackChange(index, e.target.value)}
+                        className="form-control custom_input"
+                        value={row.rackId}
+                        disabled={!row.blockId} // Disable until block is selected
+                      >
+                        <option value="">Select Rack</option>
+                        {Cartracks.map((rack) => (
+                          <option key={rack._id} value={rack._id}>
+                            {rack.rackName}
+                          </option>
+                        ))}
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].partitionId`)}
+                        className="form-control custom_input"
+                        value={row.partitionName}
+                        disabled={!row.rackId} // Disable until rack is selected
+                      >
+                        <option value="">Select Partition</option>
+                        {partitions.map((partition) => (
+                          <option key={partition.partitionName} value={partition.partitionName}>
+                            {partition.partitionName}
+                          </option>
+                        ))}
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].conditionType`)}
+                        className="form-control custom_input"
+                      >
+                        <option value="">Select Condition Type</option>
+                        <option value="new">New</option>
+                        <option value="refurbished">Refurbished</option>
+                      </select>
+                    </h6>
+                  </div>
+                  <div className="col_25p">
+                    <h6>
+                      <select
+                        {...register(`rows[${index}].status`)}
+                        className="form-control custom_input"
+                      >
+                        <option value="">Select Status</option>
+                        {stockStatus.map((ele, index) => {
+                          return (
+                            <option value={ele} key={index}>
+                              {ele}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </h6>
+                  </div>
+                </div>
+              ))}
+              {/* <small className="text-center text-secondary p-2 small d-block">
+                Data Not Available
+              </small> */}
             </div>
           </div>
         </div>
