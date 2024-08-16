@@ -151,16 +151,16 @@ function CreateProduct({ data }) {
     try {
       setLoader(true);
       const responseFromServer = await communication.getProductById({
-        modelId: modalStates.productId,
+        modelId: modalStates?.productId,
       });
       if (responseFromServer?.data?.status === "SUCCESS") {
         const modelData = responseFromServer?.data?.model;
         setValue("name", modelData?.name);
         setValue("categoryId", modelData?.categoryId?._id);
-        _setBrandId(modelData.brandId._id);
         await getCategoryWiseBrand(modelData?.categoryId?._id, setLoader, router, setBrandsData);
+        _setBrandId(modelData?.brandId?._id);
         setValue("brandId", modelData?.brandId?._id);
-        setValue("description", modelData.description);
+        setValue("description", modelData?.description);
         setOtherDocuments(modelData?.files);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
@@ -196,7 +196,7 @@ function CreateProduct({ data }) {
     if (id) {
       getCategoryWiseBrand(id, setLoader, router, setBrandsData);
     }
-  }, [categoryId]);
+  }, [categoryId , brandsData.length > 0]);
 
   return (
     <>

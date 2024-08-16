@@ -33,6 +33,9 @@ const ReadyMaterial = () => {
     deleteId: "",
   });
 
+  console.log("attachedMaterial",attachedMaterial);
+  
+
   const getMaterialById = async () => {
     try {
       setLoader(true);
@@ -140,7 +143,7 @@ const ReadyMaterial = () => {
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse.data.message);
         getMaterialById();
-        // router.back();
+        router.back();
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -293,6 +296,8 @@ const ReadyMaterial = () => {
               <div className="col_25p">
                 <h5>Warranty</h5>
               </div>
+              {attachedMaterial.formStatus == "ready" && (
+              <>
               <div className="col_25p">
                 <h5>Category</h5>
               </div>
@@ -302,16 +307,17 @@ const ReadyMaterial = () => {
               <div className="col_35p">
                 <h5>Model</h5>
               </div>
-              {/* {attachedMaterial.formStatus == "ready" && ( */}
               <div className="col_50p">
                 <h5>Selling Quantity</h5>
               </div>
-              {/* )} */}
+              </>
+            )}
               <div className="col_25p">
                 <h5 className="action_wrraper">Note</h5>
               </div>
             </div>
-            {attachedMaterial?.materialDetails?.length > 0 ? (
+            
+            {(attachedMaterial?.materialDetails?.length > 0 && attachedMaterial.formStatus == "ready") && (
               attachedMaterial?.materialDetails?.map((product, index) => {
                 return product?.materialIds?.map((material, materialIndex) => (
                   <div className="table_data" key={material._id}>
@@ -328,7 +334,7 @@ const ReadyMaterial = () => {
                     </div> */}
                     <div className="col_10p">
                       <h6>
-                        {index + 1}.{materialIndex + 1}
+                          {index + 1}.{materialIndex + 1}
                       </h6>
                     </div>
                     <div className="col_35p">
@@ -370,9 +376,34 @@ const ReadyMaterial = () => {
                   </div>
                 ));
               })
-            ) : (
-              <small className="text-center text-secondary py-2">No Records Found</small>
             )}
+
+            { (attachedMaterial?.materialDetails?.length >0 && attachedMaterial.formStatus == "generate") &&  (
+               attachedMaterial?.materialDetails?.map((product, index) => {
+                return <div className="table_data" key={product?._id}>
+                    <div className="col_10p">
+                      <h6>
+                          {index + 1}
+                      </h6>
+                    </div>
+                    <div className="col_35p">
+                      <h6>{product?.materialDescription}</h6>
+                    </div>
+                    <div className="col_25p">
+                      <h6>{product?.quantity}</h6>
+                    </div>
+                    <div className="col_25p">
+                      <h6>{product?.warranty ? product?.warranty : "--"}</h6>
+                    </div>
+                    {/* {attachedMaterial.formStatus == "ready" && ( */}
+                    
+                    {/* )} */}
+                    <div className="col_25p">
+                      <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+                    </div>
+                  </div>
+               }
+            ))}
           </div>
         </div>
       </div>

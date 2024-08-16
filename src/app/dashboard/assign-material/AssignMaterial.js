@@ -61,7 +61,7 @@ const AssignMaterial = () => {
   const [errors, setErrors] = useState({});
   const [assignedMaterial, setAssignedMaterial] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-  
+
   const {
     register,
     // handleSubmit,
@@ -121,7 +121,7 @@ const AssignMaterial = () => {
         setMaterial(serverResponse.data.stock);
         setState({ filterListori: serverResponse.data.stock });
         setState({ filterListCondition: serverResponse.data.stock });
-        toast.success(serverResponse.data.message);
+        // toast.success(serverResponse.data.message);
 
         if (isFirstCall) {
           const stock = serverResponse.data.stock || [];
@@ -229,11 +229,14 @@ const AssignMaterial = () => {
   const handleFiltersChange = (filters) => {
     setSelectedFilters(filters);
   };
+  console.log("material", material);
+
   const filteredMaterial = material.filter(
     (item) =>
       (!selectedFilters?.categoryId || item.categoryId?._id === selectedFilters?.categoryId) &&
       (!selectedFilters?.brandId || item.brandId?._id === selectedFilters?.brandId) &&
-      (!selectedFilters?.modelId || item.modelId?._id === selectedFilters?.modelId)
+      (!selectedFilters?.modelId || item.modelId?._id === selectedFilters?.modelId) &&
+      (!selectedFilters?.parameter || item.parameter?._id === selectedFilters?.parameterId)
   );
 
   const handleDeleteMaterial = (id) => {
@@ -241,7 +244,7 @@ const AssignMaterial = () => {
     // setAssignedMaterial(assignedMaterial.filter((item) => item._id !== id));
   };
 
-  
+
   // Handler for quantity change
   const handleQuantityChange = (materialData, newQuantity) => {
     // console.log((materialData, "eleeeeeeeeeeeee"));
@@ -274,7 +277,7 @@ const AssignMaterial = () => {
       }
     });
   };
-//top table
+  //top table
   const handleCheckboxChange = (event, materialData) => {
     const isChecked = event.target.checked;
 
@@ -307,7 +310,7 @@ const AssignMaterial = () => {
       setSelectAllCheckedStock(false);
     }
     setSelectAllChecked(isChecked);
-   
+
   };
 
   //bottom table
@@ -316,21 +319,21 @@ const AssignMaterial = () => {
     const isChecked = event.target.checked;
 
     if (isChecked) {
-        setSelectAllCheckedStock([...material]);
-        const allStockIds = material.map((item) => item._id);
-        const allOutput = material.map((item) => ({
-            stockId: item._id,
-            assignQuantity: quantities[item._id],
-        }));
+      setSelectAllCheckedStock([...material]);
+      const allStockIds = material.map((item) => item._id);
+      const allOutput = material.map((item) => ({
+        stockId: item._id,
+        assignQuantity: quantities[item._id],
+      }));
 
-        setStockIds(allStockIds);
-        setOutput(allOutput);
+      setStockIds(allStockIds);
+      setOutput(allOutput);
     } else {
       setSelectAllCheckedStock([]);
-        setStockIds([]);
-        setOutput([]);
+      setStockIds([]);
+      setOutput([]);
     }
-};
+  };
   const getStockIds = (event, materialData) => {
     const isChecked = event.target.checked;
     setSelectAllCheckedStock(
@@ -498,7 +501,7 @@ const AssignMaterial = () => {
           brandId: "",
           conditionType: "",
         });
-        toast.success(response.data.message);
+        // toast.success(response.data.message);
         reset();
         setMaterial(response?.data.stock);
         setParameter(response?.data?.parameterId);
@@ -559,6 +562,7 @@ const AssignMaterial = () => {
         setParameter([]);
         setOutput([]);
         setStockIds([]);
+        router.back()
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -586,7 +590,7 @@ const AssignMaterial = () => {
       let payload = {
         materialDetails: output,
         userId: userId,
-        jobNo : param.get("JobNo")
+        jobNo: param.get("JobNo"),
       };
       // console.log(payload, "payload");
       let response = await communication.UpdateAssignMaterial(payload);
@@ -597,6 +601,10 @@ const AssignMaterial = () => {
         setParameter([]);
         setOutput([]);
         setStockIds([]);
+        // reset()
+        setUserId("")
+        setValue("locationId","")
+
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -685,12 +693,14 @@ const AssignMaterial = () => {
         // location: "66b0ad1b9d8190631daebeec",
         jobNo: param.get("JobNo"),
       };
-      const responseFromServer = await communication.getAssignMaterialByJobNo(payload); // bypass
+      const responseFromServer = await communication.getMaterialAssignByJob(payload); // bypass
       if (responseFromServer?.data?.status === "SUCCESS") {
         // const combinedMaterials = [...assignedMaterial, ...selectedList];
         // const combinedData = isView ? [...selectedList, ...assignedMaterial] : selectedList;
         // if (router.query.isView === "true") {
-        setAssignedMaterial(responseFromServer?.data?.material);
+        setSelectedList(responseFromServer?.data?.material);
+        setValue("locationId", responseFromServer?.data?.locationId);
+        setUserId(responseFromServer?.data?.assignedTo)
         // }
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         toast.info(responseFromServer?.data?.message);
@@ -713,7 +723,7 @@ const AssignMaterial = () => {
       setIsEdit(false);
     }
   }, []);
-  const materialsToShow = isEdit ? [...assignedMaterial, ...selectedList] : selectedList;
+  // const materialsToShow = isEdit ? [...assignedMaterial, ...selectedList] : selectedList;
   // useEffect(() => {
   //   console.log("Router is ready:", router.isReady);
   //   console.log("Full query object:", router.query);
@@ -797,6 +807,7 @@ const AssignMaterial = () => {
                               className="form-control custom_input"
                               style={{ width: "100%" }}
                               onChange={(e) => setUserId(e.target.value)}
+
                             >
                               <option value="" className="text-secondary text-lowercase"></option>
                               {TechnicianList.map((ele, index) => {
@@ -805,6 +816,7 @@ const AssignMaterial = () => {
                                     className="small text-capitalize"
                                     value={ele._id}
                                     key={index}
+                                    selected={ele._id === userId ? true : false}
                                   >
                                     {ele.name}
                                   </option>
@@ -1139,10 +1151,10 @@ const AssignMaterial = () => {
                                       </h6>
                                     </div>
                                     <div className="col_20p">
-                                      <h6>{materialData?.serialNo}</h6>
+                                      <h6>{materialData?.serialNo ? materialData?.serialNo : "-"}</h6>
                                     </div>
                                     <div className="col_20p">
-                                      <h6>{materialData?.itemCode}</h6>
+                                      <h6>{materialData?.itemCode ? materialData?.itemCode : "-"}</h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.status}</h6>
@@ -1160,15 +1172,15 @@ const AssignMaterial = () => {
                                       <h6>{materialData?.brandId?.name}</h6>
                                     </div>
                                     <div className="col_45p">
-                                    <div className="input_scroll">
-                                      {materialData?.parameter &&
-                                        Object.entries(materialData?.parameter).map(([key, value], index, array) => (
-                                          <h6 key={key}>
-                                            {key}{index < array.length - 1 && ', '}
-                                          </h6>
-                                        ))
-                                      }
-                                    </div>
+                                      <div className="input_scroll">
+                                        {materialData?.parameter &&
+                                          Object.entries(materialData?.parameter).map(([key, value], index, array) => (
+                                            <h6 key={key}>
+                                              {key}{index < array.length - 1 && ', '}
+                                            </h6>
+                                          ))
+                                        }
+                                      </div>
 
                                     </div>
                                     <div className="col_20p">
@@ -1260,7 +1272,7 @@ const AssignMaterial = () => {
                                 // onChange={(e) => handleSelectAllChangeGetStock(e)}
                                 // checked={selectAllCheckedStock}
                                 onChange={(e) => handleSelectAllChange(e)}
-                  checked={selectAllCheckedStock}
+                                checked={selectAllCheckedStock}
                               />
                             </div>
                           </div>
@@ -1302,9 +1314,9 @@ const AssignMaterial = () => {
                           </div>{" "} */}
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {materialsToShow.length > 0 ? (
+                        {selectedList.length > 0 ? (
                           <>
-                            {materialsToShow.map((materialData, index) => (
+                            {selectedList.map((materialData, index) => (
                               <div className="table_data" key={index}>
                                 <div className="col_5p">
                                   <div className="check_box">
@@ -1312,7 +1324,7 @@ const AssignMaterial = () => {
                                       className="form-check-input"
                                       type="checkbox"
                                       id={materialData?._id}
-                                      
+
                                       onChange={(e) => getStockIds(e, materialData)}
                                       checked={stockIds.some((item) => item === materialData?._id)}
                                     />
@@ -1326,7 +1338,7 @@ const AssignMaterial = () => {
                                 </div>
 
                                 <div className="col_20p">
-                                  <h6>{materialData?.categoryId ?.name}</h6>
+                                  <h6>{materialData?.categoryId?.name}</h6>
                                 </div>
                                 <div className="col_20p">
                                   <h6>{materialData?.brandId?.name}</h6>
@@ -1345,13 +1357,13 @@ const AssignMaterial = () => {
                                   </h6>
                                 </div>
                                 <div className="col_20p">
-                                  <h6>{materialData?.serialNo}</h6>
+                                  <h6>{materialData?.serialNo ? materialData?.serialNo : "-"}</h6>
                                 </div>
                                 <div className="col_20p">
                                   <h6>{materialData?.modelId?.name}</h6>
                                 </div>
                                 <div className="col_20p">
-                                  <h6>{materialData?.reamainingQuantity}</h6>
+                                  <h6>{param.get("type") == "edit" ? materialData?.quantity : materialData?.reamainingQuantity}</h6>
                                 </div>
                                 <div className="col_20p">
                                   <h6>
@@ -1411,9 +1423,13 @@ const AssignMaterial = () => {
                   </div>
                 </div>
                 <div className="row d-flex justify-content-center px-5" style={{ height: "10%" }}>
-                  <div className="form_button_wrapper col-lg-4 col-md-4">
+                  <div className="form_button_wrapper col-lg-2 col-md-4">
                     <CustomBtn name="Assign material" onClick={param.get("type") === "edit" ? () => handleUpdateAssign() : () => handleAssign()} />
                   </div>
+                  <div className="form_button_wrapper col-lg-2 col-md-4">
+                  <CustomBtn name="Back" onClick={() => router.back()} />
+                  </div>
+
                 </div>
               </div>
             </div>

@@ -79,7 +79,7 @@ const DailyTask = () => {
       const serverResponse = await communication.fetchAssignMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.data);
-        toast.success(serverResponse.data.message);
+        // toast.success(serverResponse.data.message);
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
         if (isSearch) {
@@ -350,7 +350,7 @@ const DailyTask = () => {
                       <h6 className="text-center  ">
                         {roleName == "admin" && stockDetails?.taskStatus == "assigned" && (
                           <div className="d-flex gap-2 justify-content-center align-items-center">
-                            <div title="edit">
+                            <div title="edit" style={{cursor: "pointer"}}>
                               <svg
                                 // title={`${stockDetails.isActive ? "Update" : ""}`}
                                 // className={`${

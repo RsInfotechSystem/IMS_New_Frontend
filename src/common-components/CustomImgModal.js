@@ -19,7 +19,7 @@ function CustomImgModal({ url, setModalImageStates }) {
           </div>
           <div className="form_modal_body">
             {/* <Image src={`${getServerUrl()}/getFiles/${url}`} height={400}  alt="sbm" width={100} style={{width:"100%"}} /> */}
-            <Image src={`${getServerUrl()}/getFiles/${url}`} height={1000} alt="sbm" width={1000} />
+            <Image src={`${getServerUrl()}/getFiles/${url}`} height={1000} width={1000} alt="sbm"/>
           </div>
         </div>
       </div>
