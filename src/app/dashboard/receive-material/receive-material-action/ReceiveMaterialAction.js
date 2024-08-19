@@ -208,7 +208,7 @@ const ReceiveMaterialAction = () => {
     <>
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
-        <div className="tab_title">Add Receive Material in Inventory</div>
+        <div className="tab_title">Add Received Material in Inventory</div>
       </div>
       <div className="search_btn_wrapper">
         {/* <Search value={searchString} onChange={handleSearch} placeholder={"Search"} /> */}
@@ -310,10 +310,10 @@ const ReceiveMaterialAction = () => {
                         <h6>{material.modelName}</h6>
                       </div>
                       <div className="col_40p">
-                        <h6>{material.itemCode}</h6>
+                        <h6>{material.itemCode ? material.itemCode : "--"}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{material.serialNo}</h6>
+                        <h6>{material.serialNo ? material.serialNo : "--"}</h6>
                       </div>
                       <div className="col_45p">
                         <h6>

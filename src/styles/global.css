@@ -5467,7 +5467,7 @@ ul .appointment_letter_ul {
 }
 /* --------------------style  for table color in stock mannagement-------------------------------- */
 .status-assigned {
-  background-color: #ffffff; /* White */
+  background-color: #d3d3d3; /* White */
 }
 
 .status-returned {
@@ -5476,6 +5476,9 @@ ul .appointment_letter_ul {
 
 .status-accepted {
   background-color: #ffe0b2; /* Very light orange */
+}
+.status-changed {
+  background-color: #add8e6;
 }
 .row-disabled {
   opacity: 0.6; /* Make it appear faded */

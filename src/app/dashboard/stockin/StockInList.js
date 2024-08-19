@@ -684,7 +684,7 @@ const StockInList = () => {
                       <h6>{stockDetails?.rackId.rackName ? stockDetails?.rackId.rackName : "-"}</h6>{" "}
                     </div>
                     <div className="col_50p">
-                      <h6>{stockDetails?.serialNo ? stockDetails?.serialNo : "-"}</h6>
+                      <h6>{stockDetails?.serialNo ? stockDetails?.serialNo : "--"}</h6>
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.conditionType}</h6>

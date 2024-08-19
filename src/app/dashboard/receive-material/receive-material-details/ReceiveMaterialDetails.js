@@ -171,10 +171,10 @@ const ReceiveMaterialDetails = () => {
                         <h6>{transferItem?.modelId?.name}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{transferItem?.itemCode}</h6>
+                        <h6>{transferItem?.itemCode ? transferItem?.itemCode : "--"}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{transferItem?.serialNo}</h6>
+                        <h6>{transferItem?.serialNo ? transferItem?.serialNo : "--"}</h6>
                       </div>
                       <div className="col_30p">
                         <h6>{transferItem?.quantity}</h6>

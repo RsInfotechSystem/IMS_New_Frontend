@@ -438,11 +438,15 @@ const TransferMaterialForm = () => {
         <div className="top_header">
           <div className="tab_title">Transfer Material Form</div>
           <div className="search_btn_wrapper">
-            <div className="buttons_wrapper">
-              {/* <CustomBtn
-                name={"Send"}
-                type="submit"
-                svg={
+            {/* <Search value={searchString} onChange={handleSearch} placeholder={"Search"} /> */}
+            {
+              <div
+                className="back_btn"
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                <div>
                   <svg
                     width="24"
                     height="24"
@@ -450,29 +454,24 @@ const TransferMaterialForm = () => {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
-                    <path
-                      d="M12.75 9C12.75 8.58579 12.4142 8.25 12 8.25C11.5858 8.25 11.25 8.58579 11.25 9V11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H11.25V15C11.25 15.4142 11.5858 15.75 12 15.75C12.4142 15.75 12.75 15.4142 12.75 15V12.75H15C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H12.75V9Z"
-                      fill="#F3F8FF"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
-                      fill="#F3F8FF"
-                    />
+                    <g clip-path="url(#clip0_1564_1770)">
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M3.07615 5.61732C3.23093 5.24364 3.59557 5 4.00003 5H14C17.866 5 21 8.13401 21 12C21 15.866 17.866 19 14 19H5.00003C4.44774 19 4.00003 18.5523 4.00003 18C4.00003 17.4477 4.44774 17 5.00003 17H14C16.7615 17 19 14.7614 19 12C19 9.23858 16.7615 7 14 7H6.41424L8.20714 8.79289C8.59766 9.18342 8.59766 9.81658 8.20714 10.2071C7.81661 10.5976 7.18345 10.5976 6.79292 10.2071L3.29292 6.70711C3.00692 6.42111 2.92137 5.99099 3.07615 5.61732Z"
+                        fill="#184965"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_1564_1770">
+                        <rect width="24" height="24" fill="white" />
+                      </clipPath>
+                    </defs>
                   </svg>
-                }
-              /> */}
-              {/* <button onClick={handleSubmit((value) => transferForm(value))}>Send</button> */}
-              {/* <button type="submit">send</button> */}
-
-              {/* <CustomBtn
-                name={"back"}
-                onClick={() => {
-                  router.back();
-                }}
-              /> */}
-            </div>
+                  Back
+                </div>
+              </div>
+            }
           </div>
         </div>
 
@@ -832,7 +831,7 @@ const TransferMaterialForm = () => {
                             </h6>
                           </div>
                           <div className="col_50p">
-                            <h6>{materialDetails?.serialNo ? materialDetails?.serialNo : "-"}</h6>
+                            <h6>{materialDetails?.serialNo ? materialDetails?.serialNo : "--"}</h6>
                           </div>
                           <div className="col_50p">
                             <h6>{materialDetails?.status}</h6>
@@ -1018,9 +1017,10 @@ const TransferMaterialForm = () => {
               <Button
                 type="button"
                 onClick={() => {
+                  // router.push("/dashboard/transfer-material");
                   router.back();
                 }}
-                name={"Cancel"}
+                name={"Back"}
                 className="button"
               />
             </div>

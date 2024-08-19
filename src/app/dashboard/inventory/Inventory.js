@@ -290,7 +290,7 @@ const Inventory = () => {
                         <h6>{materialDetails?.locationId.name}</h6>
                       </div>
                       <div className="col_45p">
-                        <h6>{materialDetails?.itemCode}</h6>
+                        <h6>{materialDetails?.itemCode ? materialDetails?.itemCode : "--"}</h6>
                       </div>
                       <div className="col_45p">
                         <h6>{materialDetails?.blockId?.blockNo}</h6>
@@ -303,7 +303,7 @@ const Inventory = () => {
                         <h6>{materialDetails?.partitionName}</h6>
                       </div>
                       <div className="col_35p">
-                        <h6>{materialDetails?.serialNo}</h6>
+                        <h6>{materialDetails?.serialNo ? materialDetails?.serialNo : "--"}</h6>
                       </div>
                       <div className="col_35p">
                         <h6>{materialDetails?.status}</h6>

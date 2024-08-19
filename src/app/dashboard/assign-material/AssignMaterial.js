@@ -244,7 +244,6 @@ const AssignMaterial = () => {
     // setAssignedMaterial(assignedMaterial.filter((item) => item._id !== id));
   };
 
-
   // Handler for quantity change
   const handleQuantityChange = (materialData, newQuantity) => {
     // console.log((materialData, "eleeeeeeeeeeeee"));
@@ -296,7 +295,6 @@ const AssignMaterial = () => {
     }
   };
 
-
   const handleSelectAllChange = (event) => {
     const isChecked = event.target.checked;
 
@@ -310,7 +308,6 @@ const AssignMaterial = () => {
       setSelectAllCheckedStock(false);
     }
     setSelectAllChecked(isChecked);
-
   };
 
   //bottom table
@@ -469,21 +466,21 @@ const AssignMaterial = () => {
     const payload = formValues.searchString
       ? { searchString: formValues.searchString }
       : {
-        categoryId: formValues.categoryId,
-        status: formValues.status,
-        brandId: formValues.brandId,
-        conditionType: formValues.conditionType,
-        // parameters: Object.keys(selectedModels).map((modelName) => ({
-        //   modelName,
-        //   parameterList: selectedModels[modelName],
-        // })),
-        parametersToMatch: Object.entries(selectedParameters).flatMap(([modelName, params]) =>
-          Object.entries(params)
-            .filter(([_, isSelected]) => isSelected)
-            .map(([param]) => ({ modelName, parameterList: [param] }))
-        ),
-        // parameter: selectedModels,
-      };
+          categoryId: formValues.categoryId,
+          status: formValues.status,
+          brandId: formValues.brandId,
+          conditionType: formValues.conditionType,
+          // parameters: Object.keys(selectedModels).map((modelName) => ({
+          //   modelName,
+          //   parameterList: selectedModels[modelName],
+          // })),
+          parametersToMatch: Object.entries(selectedParameters).flatMap(([modelName, params]) =>
+            Object.entries(params)
+              .filter(([_, isSelected]) => isSelected)
+              .map(([param]) => ({ modelName, parameterList: [param] }))
+          ),
+          // parameter: selectedModels,
+        };
 
     await submitForm(payload);
   };
@@ -562,7 +559,7 @@ const AssignMaterial = () => {
         setParameter([]);
         setOutput([]);
         setStockIds([]);
-        router.back()
+        // router.back();
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -602,9 +599,8 @@ const AssignMaterial = () => {
         setOutput([]);
         setStockIds([]);
         // reset()
-        setUserId("")
-        setValue("locationId","")
-
+        setUserId("");
+        setValue("locationId", "");
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -700,7 +696,7 @@ const AssignMaterial = () => {
         // if (router.query.isView === "true") {
         setSelectedList(responseFromServer?.data?.material);
         setValue("locationId", responseFromServer?.data?.locationId);
-        setUserId(responseFromServer?.data?.assignedTo)
+        setUserId(responseFromServer?.data?.assignedTo);
         // }
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         toast.info(responseFromServer?.data?.message);
@@ -771,7 +767,7 @@ const AssignMaterial = () => {
                               {...register("locationId", {
                                 required: "locationId is required",
                               })}
-                            // disabled={modalStates.isView}
+                              // disabled={modalStates.isView}
                             >
                               <option value="" className="text-secondary text-lowercase"></option>
                               {locationList.map((ele, index) => {
@@ -807,7 +803,6 @@ const AssignMaterial = () => {
                               className="form-control custom_input"
                               style={{ width: "100%" }}
                               onChange={(e) => setUserId(e.target.value)}
-
                             >
                               <option value="" className="text-secondary text-lowercase"></option>
                               {TechnicianList.map((ele, index) => {
@@ -836,7 +831,7 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                       </div>
-                      <div className="row">
+                      {/* <div className="row">
                         <div className="custom_input_wrapper col-lg-12 col-md-6">
                           <label>Serial No./Item Code</label>
                           <input
@@ -855,7 +850,7 @@ const AssignMaterial = () => {
                             )}
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   {/* <div className="mt-4 p-2" style={{ backgroundColor: "white" }}>
@@ -1012,16 +1007,16 @@ const AssignMaterial = () => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                       onChange={(e) => setState({ _conditionType: e.target.value })}
-                    // onChange={(e) =>
-                    //   setMaterial(
-                    //     state.filterListori.filter(
-                    //       (i) =>
-                    //         i.conditionType
-                    //           .toLocaleLowerCase()
-                    //           .search(e.target.value.toLocaleLowerCase()) !== -1
-                    //     )
-                    //   )
-                    // }
+                      // onChange={(e) =>
+                      //   setMaterial(
+                      //     state.filterListori.filter(
+                      //       (i) =>
+                      //         i.conditionType
+                      //           .toLocaleLowerCase()
+                      //           .search(e.target.value.toLocaleLowerCase()) !== -1
+                      //     )
+                      //   )
+                      // }
                     >
                       <option value="" className="text-secondary text-lowercase"></option>
                       {state.conditionTypeList.map((item, index) => (
@@ -1151,10 +1146,14 @@ const AssignMaterial = () => {
                                       </h6>
                                     </div>
                                     <div className="col_20p">
-                                      <h6>{materialData?.serialNo ? materialData?.serialNo : "-"}</h6>
+                                      <h6>
+                                        {materialData?.serialNo ? materialData?.serialNo : "-"}
+                                      </h6>
                                     </div>
                                     <div className="col_20p">
-                                      <h6>{materialData?.itemCode ? materialData?.itemCode : "-"}</h6>
+                                      <h6>
+                                        {materialData?.itemCode ? materialData?.itemCode : "-"}
+                                      </h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.status}</h6>
@@ -1174,14 +1173,15 @@ const AssignMaterial = () => {
                                     <div className="col_45p">
                                       <div className="input_scroll">
                                         {materialData?.parameter &&
-                                          Object.entries(materialData?.parameter).map(([key, value], index, array) => (
-                                            <h6 key={key}>
-                                              {key}{index < array.length - 1 && ', '}
-                                            </h6>
-                                          ))
-                                        }
+                                          Object.entries(materialData?.parameter).map(
+                                            ([key, value], index, array) => (
+                                              <h6 key={key}>
+                                                {key}
+                                                {index < array.length - 1 && ", "}
+                                              </h6>
+                                            )
+                                          )}
                                       </div>
-
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.reamainingQuantity}</h6>
@@ -1232,7 +1232,9 @@ const AssignMaterial = () => {
                                       </h6>
                                     </div>
                                     <div className="col_20p">
-                                      <h6>{materialData?.serialNo}</h6>
+                                      <h6>
+                                        {materialData?.serialNo ? materialData?.serialNo : "--"}
+                                      </h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.modelId?.name}</h6>
@@ -1324,7 +1326,6 @@ const AssignMaterial = () => {
                                       className="form-check-input"
                                       type="checkbox"
                                       id={materialData?._id}
-
                                       onChange={(e) => getStockIds(e, materialData)}
                                       checked={stockIds.some((item) => item === materialData?._id)}
                                     />
@@ -1357,13 +1358,17 @@ const AssignMaterial = () => {
                                   </h6>
                                 </div>
                                 <div className="col_20p">
-                                  <h6>{materialData?.serialNo ? materialData?.serialNo : "-"}</h6>
+                                  <h6>{materialData?.serialNo ? materialData?.serialNo : "--"}</h6>
                                 </div>
                                 <div className="col_20p">
                                   <h6>{materialData?.modelId?.name}</h6>
                                 </div>
                                 <div className="col_20p">
-                                  <h6>{param.get("type") == "edit" ? materialData?.quantity : materialData?.reamainingQuantity}</h6>
+                                  <h6>
+                                    {param.get("type") == "edit"
+                                      ? materialData?.quantity
+                                      : materialData?.reamainingQuantity}
+                                  </h6>
                                 </div>
                                 <div className="col_20p">
                                   <h6>
@@ -1424,12 +1429,20 @@ const AssignMaterial = () => {
                 </div>
                 <div className="row d-flex justify-content-center px-5" style={{ height: "10%" }}>
                   <div className="form_button_wrapper col-lg-2 col-md-4">
-                    <CustomBtn name="Assign material" onClick={param.get("type") === "edit" ? () => handleUpdateAssign() : () => handleAssign()} />
+                    <CustomBtn
+                      name="Assign material"
+                      onClick={
+                        param.get("type") === "edit"
+                          ? () => handleUpdateAssign()
+                          : () => handleAssign()
+                      }
+                    />
                   </div>
-                  <div className="form_button_wrapper col-lg-2 col-md-4">
-                  <CustomBtn name="Back" onClick={() => router.back()} />
-                  </div>
-
+                  {param.get("type") === "edit" && (
+                    <div className="form_button_wrapper col-lg-2 col-md-4">
+                      <CustomBtn name="Back" onClick={() => router.back()} />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

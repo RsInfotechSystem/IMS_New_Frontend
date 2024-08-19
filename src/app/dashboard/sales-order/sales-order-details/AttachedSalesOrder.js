@@ -851,10 +851,10 @@ const AttachedSalesOrder = () => {
                                   <h6>{product?.modelId}</h6>
                                 </div>
                                 <div className="col_25p">
-                                  <h6>{product?.serialNo}</h6>
+                                  <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                                 </div>
                                 <div className="col_20p">
-                                  <h6>{product?.itemCode}</h6>
+                                  <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
                                 </div>
                                 <div className="col_20p">
                                   <h6>{product?.quantity}</h6>
@@ -966,10 +966,14 @@ const AttachedSalesOrder = () => {
                             <h6>{item?.modelId}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6 className="action_wrraper">{item?.serialNo}</h6>
+                            <h6 className="action_wrraper">
+                              {item?.serialNo ? item?.serialNo : "--"}
+                            </h6>
                           </div>
                           <div className="col_20p">
-                            <h6 className="action_wrraper ">{item?.itemCode}</h6>
+                            <h6 className="action_wrraper ">
+                              {item?.itemCode ? item?.itemCode : "--"}
+                            </h6>
                           </div>
                           <div className="col_20p">
                             <Button

@@ -55,31 +55,26 @@ const StockManagement = () => {
       const serverResponse = await communication.returnMaterialList(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.data);
-        toast.success(serverResponse.data.message);
+        toast.success(serverResponse.data.message, { autoClose: 1500 });
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
         if (isSearch) {
           setCurrentPage(1);
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
         router.push("/");
         setLoader(false);
       } else if (serverResponse?.data?.status == "FAILED") {
         setMaterial([]);
-
-        // Swal.fire({
-        //   text: res?.data?.message,
-        //   icon: "warning",
-        // });
       } else {
         setMaterial([]);
 
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
       }
       setLoader(false);
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
+      toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
 
       setLoader(false);
     }
@@ -93,7 +88,7 @@ const StockManagement = () => {
         remark: remark,
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-        toast.success(serverResponse?.data?.message);
+        toast.success(serverResponse?.data?.message, { autoClose: 1500 });
         // fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
@@ -103,17 +98,17 @@ const StockManagement = () => {
         //   setCurrentPage(1);
         // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
         router.push("/");
         setLoader(false);
       } else if (serverResponse.data.status == "FAILED") {
-        toast.info(serverResponse?.data?.message);
+        toast.info(serverResponse?.data?.message, { autoClose: 1500 });
       } else {
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
       }
       setLoader(false);
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
+      toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
 
       setLoader(false);
     }
@@ -127,7 +122,7 @@ const StockManagement = () => {
         remark: remark,
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-        toast.success(serverResponse?.data?.message);
+        toast.success(serverResponse?.data?.message, { autoClose: 1500 });
         // fetchReturnMaterialList(currentPage, searchString);
 
         // setMaterial(serverResponse?.data.material);
@@ -137,17 +132,17 @@ const StockManagement = () => {
         //   setCurrentPage(1);
         // }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
         router.push("/");
         setLoader(false);
       } else if (serverResponse.data.status == "FAILED") {
-        toast.info(serverResponse?.data?.message);
+        toast.info(serverResponse?.data?.message, { autoClose: 1500 });
       } else {
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
       }
       setLoader(false);
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
+      toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
       setLoader(false);
     }
   }
@@ -187,17 +182,17 @@ const StockManagement = () => {
       };
       let response = await communication.rejectMaterial(dataToSend);
       if (response?.data?.status === "SUCCESS") {
-        toast.success(response?.data?.message);
+        toast.success(response?.data?.message, { autoClose: 1500 });
         fetchReturnMaterialList(1, searchString);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message);
+        toast.info(response.data.message, { autoClose: 1500 });
         router.push("/");
       } else {
-        toast.info(response?.data?.message);
+        toast.info(response?.data?.message, { autoClose: 1500 });
       }
       setLoader(false);
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
+      toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
 
       setLoader(false);
     }

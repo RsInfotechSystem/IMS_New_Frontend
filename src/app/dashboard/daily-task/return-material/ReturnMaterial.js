@@ -284,7 +284,7 @@ const ReturnMaterialUser = () => {
                                 <h6>{product?.modelId?.name}</h6>
                               </div>
                               <div className="col_25p">
-                                <h6>{product?.serialNo}</h6>
+                                <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                               </div>{" "}
                               <div className="col_25p">
                                 <h6>{product?.itemCode}</h6>
@@ -404,10 +404,10 @@ const ReturnMaterialUser = () => {
                                 <h6>{product?.modelId?.name}</h6>
                               </div>
                               <div className="col_25p">
-                                <h6>{product?.serialNo}</h6>
+                                <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                               </div>{" "}
                               <div className="col_25p">
-                                <h6>{product?.itemCode}</h6>
+                                <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
                               </div>
                               <div className="col_25p">
                                 <h6>{product?.assignQuantity}</h6>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import icon from "../../public/images/AANAD COMPUTER LOGO.png";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,34 +7,53 @@ import { faEye, faEyeSlash } from "@fortawesome/free-regular-svg-icons";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import ButtonLoader from "@/common-components/ButtonLoader";
-import { setCookie } from "cookies-next";
+import { hasCookie, setCookie } from "cookies-next";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { communication } from "@/services/communication";
+import { sideNavTabArray } from "@/utilities/tabArray";
+import { getUserAccessTabs } from "@/services/commonApis";
 
 const Page = () => {
   const router = useRouter();
   const [togglePassword, setTogglePassword] = useState(false);
   const [loader, setLoader] = useState(false);
-
+  const [tab, setTab] = useState([]);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  async function APICall() {
+    if (hasCookie("inventryToken")) {
+      setTab(await getUserAccessTabs());
+    } else {
+      router.push("/");
+    }
+  }
+  useEffect(() => {
+    APICall();
+  }, []);
   //User Login
   const onSubmit = async (data) => {
     try {
+      // {sideNavTabArray.filter(tabAccess => tab.includes(tabAccess?.tabName?.toLowerCase()))?.map((ele, index) => {
+      //   return (<div
+      //     className={currentUrl.includes(ele.activeUrl) ? "tab_active" : "tab_inactive"}
+      //     onClick={() => router.push(ele.url)}
+      //     key={index + 1}
+      //   >
       setLoader(true);
       const serverResponse = await communication.login(data);
       if (serverResponse?.data?.status === "SUCCESS") {
-        console.log("ressss", serverResponse?.data?.userDetails);
-
+        let UserTabAccess = serverResponse?.data?.userDetails?.roleId?.tab?.map((ele) => ele);
+        let TabName = sideNavTabArray?.find((item) => UserTabAccess[0].includes(item.tab))?.url;
+        if (TabName) router.push(`${TabName}`);
+        console.log("ressss", UserTabAccess);
+        console.log("TabName", TabName);
         setCookie("inventryToken", serverResponse?.data?.token);
         setCookie("userDetails", serverResponse?.data?.userDetails);
         setCookie("role", serverResponse?.data?.userDetails?.roleId?.role);
-        router.push("/dashboard/report");
         setLoader(false);
         toast.success(serverResponse?.data?.message);
       } else {

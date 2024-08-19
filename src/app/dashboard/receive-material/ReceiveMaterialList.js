@@ -56,7 +56,7 @@ const ReceiveMaterialList = () => {
     let isSearch = true;
     clearTimeout(timeoutId);
     let _timeOutId = setTimeout(() => {
-      getTransferMaterial("1", e.target.value, isSearch);
+      getReceiveMaterial("1", e.target.value, isSearch);
     }, 2000);
     setTimeoutId(_timeOutId);
   };
