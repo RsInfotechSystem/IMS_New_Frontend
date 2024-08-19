@@ -225,6 +225,8 @@ const AcceptMaterial = () => {
             //   ? Object.entries(material.parameter).map(([key, value]) => ({ key, value }))
             //   : [],
             quantity: material.quantity || 1,
+            taskStatus: material.taskStatus || "",
+            materialStatus: material.materialStatus || "",
           }));
 
           setNonMaterial(allMaterials);
@@ -252,6 +254,8 @@ const AcceptMaterial = () => {
             taskStatus: material.taskStatus || "",
             quantity: material.quantity || 1,
             status: material.status || "",
+            taskStatus: material.taskStatus || "",
+            materialStatus: material.materialStatus || "",
           }));
 
           setMaterial(allMaterials);
@@ -1005,13 +1009,11 @@ const AcceptMaterial = () => {
                   {nonMaterial?.length > 0 ? (
                     nonMaterial?.map((product, index) => {
                       const statusClass =
-                        product?.status === "new"
-                          ? "status-assigned"
-                          : product.status === "returned"
-                          ? "status-returned"
-                          : product.taskStatus === "inprogress" || "consumed" || "dump"
+                        product?.materialStatus === "accepted"
                           ? "status-accepted"
-                          : "status-changed";
+                          : product.materialStatus === "returned"
+                          ? "status-returned"
+                          : "status-assigned";
                       return (
                         <div className={`table_data ${statusClass}`} key={index}>
                           {/* {console.log(product, "product")} */}
@@ -1460,15 +1462,11 @@ const AcceptMaterial = () => {
                       // console.log(product.taskStatus, "sssssssssss");
 
                       const statusClass =
-                        product?.status === "new"
-                          ? "status-assigned"
-                          : product.status === "returned"
-                          ? "status-returned"
-                          : product.taskStatus === "inprogress" ||
-                            product.taskStatus === "consumed" ||
-                            product.taskStatus === "dump"
+                        product?.materialStatus === "accepted"
                           ? "status-accepted"
-                          : "status-changed";
+                          : product.materialStatus === "returned"
+                          ? "status-returned"
+                          : "status-assigned";
                       const isDisabled = consumedMaterials.includes(product.materialId);
                       return (
                         <div
