@@ -49,6 +49,7 @@ const AcceptMaterial = () => {
     state: false,
     jobNo: "",
   });
+  const [cartSelectOption, setCartSelectOption] = useState({});
   const [CategoryMapData, setCategoryMapData] = useState([]);
   const [cardDataToMap, setCardDataToMap] = useState({
     block: {
@@ -158,7 +159,7 @@ const AcceptMaterial = () => {
             }
           }) ?? [],
       };
-      console.log(dataToSend, "dataToSend");
+      // console.log(dataToSend, "dataToSend");
       let response = await communication.updateStockBeforeAccept(dataToSend);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message, { autoClose: 1500 });
@@ -219,6 +220,7 @@ const AcceptMaterial = () => {
             itemCode: material.itemCode || "",
             serialNo: material.serialNo || "",
             parameter: material.parameter,
+            taskStatus: material.taskStatus || "",
             // parameter: material.parameter
             //   ? Object.entries(material.parameter).map(([key, value]) => ({ key, value }))
             //   : [],
@@ -247,6 +249,7 @@ const AcceptMaterial = () => {
             itemCode: material.itemCode || "",
             serialNo: material.serialNo || "",
             parameterMaterial: material.parameter,
+            taskStatus: material.taskStatus || "",
             quantity: material.quantity || 1,
             status: material.status || "",
           }));
@@ -620,7 +623,7 @@ const AcceptMaterial = () => {
     }
   }, [_rackIdForPrtn]);
   const handleRadioChangeCart = (value) => {
-    console.log(value, "sssss");
+    // console.log(value, "sssss");
 
     setIsStoreSelected(value === "Store");
   };
@@ -888,7 +891,6 @@ const AcceptMaterial = () => {
         {/* {console.log(consumedMaterials, "consumedMaterials")} */}
 
         <div className="form_layout">
-          {" "}
           <ColorBox />
           {/* ------------------------NON MATERIAL LIST START----------------------------------------------- */}
           <div className="form_list_layout_wrapper my-4">
@@ -896,10 +898,20 @@ const AcceptMaterial = () => {
               <p>Non-Material List</p>
             </div>
             {/* table  */}
-            {/* {console.log(nonMaterial, "nonMaterial")} */}
             <div className="table_wrapper my-3">
               <div className="table_main">
-                <div className="table_section pi_product_table" style={{ minWidth: "2500px" }}>
+                <div
+                  className="table_section pi_product_table"
+                  style={{
+                    minWidth: nonMaterial.some(
+                      (product) => rowSelections[product.materialId] === "Store"
+                    )
+                      ? "2500px"
+                      : isAnyCheckboxChecked()
+                      ? "2100px"
+                      : "2000px",
+                  }}
+                >
                   <div className="table_header">
                     <div className="col_20p">
                       <h5 style={{ textAlign: "center" }}>Action</h5>
@@ -933,14 +945,14 @@ const AcceptMaterial = () => {
                     <div className="col_40p">
                       <h5 className="action_wrraper">Change Location</h5>
                     </div>
-                    {isAnyCheckboxChecked() && (
+                    {isAnyCheckboxChecked() ? (
                       <>
                         <div className="col_40p">
                           <h5 className="action_wrraper">Change Area</h5>
                         </div>
                         {nonMaterial.some(
                           (product) => rowSelections[product.materialId] === "Store"
-                        ) && (
+                        ) ? (
                           <>
                             <div className="col_25p">
                               <h5>Location</h5>
@@ -955,7 +967,38 @@ const AcceptMaterial = () => {
                               <h5 style={{ textAlign: "center" }}>Partation</h5>
                             </div>
                           </>
+                        ) : (
+                          <>
+                            <div className="col_25p"></div>
+                            <div className="col_40p"></div>
+                            <div className="col_40p"></div>
+                            <div className="col_40p"></div>
+                          </>
                         )}
+                      </>
+                    ) : (
+                      <>
+                        {/* Render Blank Columns */}
+                        <div
+                          className="col_40p"
+                          style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                        ></div>
+                        <div
+                          className="col_25p"
+                          style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                        ></div>
                       </>
                     )}
                   </div>
@@ -966,7 +1009,7 @@ const AcceptMaterial = () => {
                           ? "status-assigned"
                           : product.status === "returned"
                           ? "status-returned"
-                          : product.taskStatus === "inprogress"
+                          : product.taskStatus === "inprogress" || "consumed" || "dump"
                           ? "status-accepted"
                           : "status-changed";
                       return (
@@ -1101,7 +1144,7 @@ const AcceptMaterial = () => {
                               </label>
                             </div>
                           </div>
-                          {isChangeLocationChecked[product.materialId] && (
+                          {isChangeLocationChecked[product.materialId] ? (
                             <>
                               <div className="col_40p">
                                 <div className="check_box me-1" style={{ gap: "0" }}>
@@ -1127,7 +1170,7 @@ const AcceptMaterial = () => {
                                   <label htmlFor={`storeRadio-${product.materialId}`}>Store</label>
                                 </div>
                               </div>
-                              {rowSelections[product.materialId] === "Store" && (
+                              {rowSelections[product.materialId] === "Store" ? (
                                 <>
                                   <div className="col_25p">
                                     <h6>{product?.location}</h6>
@@ -1211,7 +1254,38 @@ const AcceptMaterial = () => {
                                     </div>
                                   </div>
                                 </>
+                              ) : (
+                                <>
+                                  <div className="col_25p"></div>
+                                  <div className="col_40p"></div>
+                                  <div className="col_40p"></div>
+                                  <div className="col_40p"></div>
+                                </>
                               )}
+                            </>
+                          ) : (
+                            <>
+                              {/* Render Blank Columns */}
+                              <div
+                                className="col_40p"
+                                style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                              ></div>
+                              <div
+                                className="col_25p"
+                                style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                              ></div>
+                              <div
+                                className="col_40p"
+                                style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                              ></div>
+                              <div
+                                className="col_40p"
+                                style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                              ></div>
+                              <div
+                                className="col_40p"
+                                style={{ display: `${isChangeLocationChecked ? "block" : "none"}` }}
+                              ></div>
                             </>
                           )}
                         </div>
@@ -1305,14 +1379,14 @@ const AcceptMaterial = () => {
                     <div className="col_40p">
                       <h5 className="action_wrraper">Change Place</h5>
                     </div>
-                    {isAnyCheckboxCheckedMaterial() && (
+                    {isAnyCheckboxCheckedMaterial() ? (
                       <>
                         <div className="col_40p">
                           <h5 className="action_wrraper">Change Area</h5>
                         </div>
                         {material.some(
                           (product) => rowSelectionsMaterial[product.materialId] === "Store"
-                        ) && (
+                        ) ? (
                           <>
                             <div className="col_25p">
                               <h5>Location</h5>
@@ -1330,18 +1404,69 @@ const AcceptMaterial = () => {
                               <h5 style={{ textAlign: "center" }}>Status</h5>
                             </div>
                           </>
+                        ) : (
+                          <>
+                            {/* Render Blank Columns */}
+                            {/* <div className="col_40p"></div>/ */}
+                            <div className="col_25p"></div>
+                            <div className="col_25p"></div>
+                            <div className="col_25p"></div>
+                            <div className="col_25p"></div>
+                            <div className="col_25p"></div>
+                            {/* <div className="col_40p"></div>
+                            <div className="col_40p"></div>
+                            <div className="col_40p"></div> */}
+                          </>
                         )}
+                      </>
+                    ) : (
+                      <>
+                        {/* Render Blank Columns */}
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_25p"
+                          style={{
+                            display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                          }}
+                        ></div>
                       </>
                     )}
                   </div>
                   {material?.length > 0 ? (
                     material?.map((product, index) => {
+                      // console.log(product.taskStatus, "sssssssssss");
+
                       const statusClass =
                         product?.status === "new"
                           ? "status-assigned"
                           : product.status === "returned"
                           ? "status-returned"
-                          : product.taskStatus === "inprogress"
+                          : product.taskStatus === "inprogress" ||
+                            product.taskStatus === "consumed" ||
+                            product.taskStatus === "dump"
                           ? "status-accepted"
                           : "status-changed";
                       const isDisabled = consumedMaterials.includes(product.materialId);
@@ -1385,7 +1510,7 @@ const AcceptMaterial = () => {
                           </div>
                           <div className="col_85p">
                             <div className="input_scroll">
-                              {Object.entries(product.parameterMaterial).map(
+                              {Object?.entries(product.parameterMaterial).map(
                                 ([key, value], indexOne) => (
                                   <div
                                     className="col_60p"
@@ -1423,7 +1548,7 @@ const AcceptMaterial = () => {
                               </label>
                             </div>
                           </div>
-                          {isChangeLocationCheckedMaterial[product.materialId] && (
+                          {isChangeLocationCheckedMaterial[product.materialId] ? (
                             <>
                               <div className="col_40p">
                                 <div className="check_box me-1" style={{ gap: "0" }}>
@@ -1459,7 +1584,7 @@ const AcceptMaterial = () => {
                                   <label htmlFor={`storeRadio-${product.materialId}`}>Store</label>
                                 </div>
                               </div>
-                              {rowSelectionsMaterial[product.materialId] === "Store" && (
+                              {rowSelectionsMaterial[product.materialId] === "Store" ? (
                                 <>
                                   <div className="col_25p">
                                     <h6>{product?.location}</h6>
@@ -1578,7 +1703,50 @@ const AcceptMaterial = () => {
                                     </div>
                                   </div>
                                 </>
+                              ) : (
+                                <>
+                                  {/* Render Blank Columns */}
+                                  {/* <div className="col_40p"></div> */}
+                                  <div className="col_25p"></div>
+                                  <div className="col_25p"></div>
+                                  <div className="col_25p"></div>
+                                  <div className="col_25p"></div>
+                                  <div className="col_25p"></div>
+                                </>
                               )}
+                            </>
+                          ) : (
+                            <>
+                              <div
+                                className="col_40p"
+                                style={{
+                                  display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                                }}
+                              ></div>
+                              <div
+                                className="col_25p"
+                                style={{
+                                  display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                                }}
+                              ></div>
+                              <div
+                                className="col_40p"
+                                style={{
+                                  display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                                }}
+                              ></div>
+                              <div
+                                className="col_40p"
+                                style={{
+                                  display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                                }}
+                              ></div>
+                              <div
+                                className="col_40p"
+                                style={{
+                                  display: `${isChangeLocationCheckedMaterial ? "block" : "none"}`,
+                                }}
+                              ></div>
                             </>
                           )}
                         </div>
@@ -1642,7 +1810,12 @@ const AcceptMaterial = () => {
         <div className="table_wrapper my-3">
           <div className="table_main">
             <form>
-              <div className="table_section pi_product_table" style={{ minWidth: "2000px" }}>
+              <div
+                className="table_section pi_product_table"
+                style={{
+                  minWidth: Object.values(cartSelectOption).includes("store") ? "2500px" : "1500px",
+                }}
+              >
                 <div className="table_header">
                   <div className="col_7p">
                     <h5>Sr. No.</h5>
@@ -1676,31 +1849,86 @@ const AcceptMaterial = () => {
                     </h5>
                   </div>
                   {/* {watch(`rows.type`) === "store" && ( */}
-                  <>
-                    <div className="col_40p">
-                      <h5 style={{ textAlign: "center" }}>Location</h5>
-                    </div>
-                    <div className="col_40p">
-                      <h5 style={{ textAlign: "center" }}>Block</h5>
-                    </div>
-                    <div className="col_40p">
-                      <h5 style={{ textAlign: "center" }}>Rack</h5>
-                    </div>
-                    <div className="col_40p">
-                      <h5 style={{ textAlign: "center" }}>Partation</h5>
-                    </div>
-                    <div className="col_40p">
-                      <h5 style={{ textAlign: "center" }}>Condition Type</h5>
-                    </div>
-                    <div className="col_40p">
-                      <h5 style={{ textAlign: "center" }}>Status</h5>
-                    </div>
-                  </>
+                  {Object.values(cartSelectOption).includes("store") ? (
+                    <>
+                      <div className="col_40p">
+                        <h5 style={{ textAlign: "center" }}>Location</h5>
+                      </div>
+                      <div className="col_40p">
+                        <h5 style={{ textAlign: "center" }}>Block</h5>
+                      </div>
+                      <div className="col_40p">
+                        <h5 style={{ textAlign: "center" }}>Rack</h5>
+                      </div>
+                      <div className="col_40p">
+                        <h5 style={{ textAlign: "center" }}>Partation</h5>
+                      </div>
+                      <div className="col_40p">
+                        <h5 style={{ textAlign: "center" }}>Condition Type</h5>
+                      </div>
+                      <div className="col_40p">
+                        <h5 style={{ textAlign: "center" }}>Status</h5>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Render Blank Columns */}
+                      <div
+                        className="col_40p"
+                        style={{
+                          display: `${
+                            Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                          }`,
+                        }}
+                      ></div>
+                      <div
+                        className="col_40p"
+                        style={{
+                          display: `${
+                            Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                          }`,
+                        }}
+                      ></div>
+                      <div
+                        className="col_40p"
+                        style={{
+                          display: `${
+                            Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                          }`,
+                        }}
+                      ></div>
+                      <div
+                        className="col_40p"
+                        style={{
+                          display: `${
+                            Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                          }`,
+                        }}
+                      ></div>
+                      <div
+                        className="col_40p"
+                        style={{
+                          display: `${
+                            Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                          }`,
+                        }}
+                      ></div>
+                      <div
+                        className="col_40p"
+                        style={{
+                          display: `${
+                            Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                          }`,
+                        }}
+                      ></div>
+                    </>
+                  )}
+
                   {/* // )} */}
                 </div>
                 {rows.map((row, index) => (
                   <div className="table_data" key={index}>
-                    {/* {console.log(row.type, "sssssssssss")} */}
+                    {console.log(row.type, "rrrrsss")}
                     <div className="col_7p">
                       <h6>{index + 1}</h6>
                     </div>
@@ -1809,9 +2037,6 @@ const AcceptMaterial = () => {
                             <label>{item}</label>
                             <InputBox
                               register={{ ...register(`rows[${index}].parameter.${item}`) }}
-                              // onChange={(e) => handleParameterChange(index, e.target.value)}
-                              // value={row.parameter?.[item] || ""}
-                              // placeholder="Enter Parameter"
                               className="form-control"
                             />
                           </div>
@@ -1826,10 +2051,14 @@ const AcceptMaterial = () => {
                         type="radio"
                         name={`selectionCart-${index}`}
                         value={"dump"}
-                        {...register(`rows[${index}].type`)}
-                        // id={`dumpRadioCartDump-${index}`}
-
-                        // onChange={() => handleInputChangeCart(index, "selection", "Dump")}
+                        {...register(`rows[${index}].type`, {
+                          onChange: (e) => {
+                            setCartSelectOption((prevOptions) => ({
+                              ...prevOptions,
+                              [index]: e.target.value, // Set the selected value at the specific index
+                            }));
+                          },
+                        })}
                       />
                       {/* <label htmlFor={`dumpRadioCartDump-${index}`}>Dump</label> */}
                       <label>dump</label>
@@ -1839,152 +2068,212 @@ const AcceptMaterial = () => {
                         // id={`dumpRadioCartStore-${index}`}
                         name={`selectionCart-${index}`}
                         value={"store"}
-                        {...register(`rows[${index}].type`)}
-                        // onChange={() => handleInputChangeCart(index, "selection", "Store")}
+                        {...register(`rows[${index}].type`, {
+                          onChange: (e) => {
+                            setCartSelectOption((prevOptions) => ({
+                              ...prevOptions,
+                              [index]: e.target.value, // Set the selected value at the specific index
+                            }));
+                          },
+                        })}
                       />
-                      {/* <label htmlFor={`dumpRadioCartStore-${index}`}>Store</label> */}
                       <label>store</label>
                       {/* </h6> */}
                     </div>
-                    {/* {watch(`rows[${index}].type`) === "store" && ( */}
-                    <>
-                      <div className="col_40p">
-                        <h6>
-                          <div className="position-relative">
-                            <select
-                              {...register(`rows[${index}].locationId`)}
-                              value={watch(`rows[${index}].locationId`) || ""}
-                              onChange={(e) => handleLocationChange(index, e.target.value)}
-                              className="form-control"
-                            >
-                              <option value="">Select Location</option>
-                              {locationList?.map((location) => (
-                                <option key={location._id} value={location._id}>
-                                  {location.name}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="select_box_arrow">
-                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                            </div>
-                          </div>
-                        </h6>
-                      </div>
-                      <div className="col_40p">
-                        <h6>
-                          {" "}
-                          <div className="position-relative">
-                            <select
-                              {...register(`rows[${index}].blockId`)}
-                              onChange={(e) => handleBlockChange(index, e.target.value)}
-                              className="form-control custom_input"
-                              value={row.blockId}
-                              disabled={!row.locationId} // Disable until location is selected
-                            >
-                              <option value="">Select Block</option>
-                              {cardDataToMap?.block[`${index}`]?.map((block) => (
-                                <option key={block._id} value={block._id}>
-                                  {block.blockNo}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="select_box_arrow">
-                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                            </div>
-                          </div>
-                        </h6>
-                      </div>
-                      <div className="col_40p">
-                        <h6>
-                          <div className="position-relative">
-                            <select
-                              {...register(`rows[${index}].rackId`)}
-                              onChange={(e) => handleRackChange(index, e.target.value)}
-                              className="form-control custom_input"
-                              value={row.rackId}
-                              disabled={!row.blockId} // Disable until block is selected
-                            >
-                              <option value="">Select Rack</option>
-                              {cardDataToMap?.rack[`${index}`]?.map((rack) => (
-                                <option key={rack._id} value={rack._id}>
-                                  {rack.rackName}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="select_box_arrow">
-                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                            </div>
-                          </div>
-                        </h6>
-                      </div>
-                      <div className="col_40p">
-                        <h6>
-                          {" "}
-                          <div className="position-relative">
-                            <select
-                              {...register(`rows[${index}].partitionName`)}
-                              className="form-control custom_input"
-                              // value={row.partitionName}
-                              disabled={!row.rackId} // Disable until rack is selected
-                            >
-                              <option value="">Select Partition</option>
-                              {cardDataToMap?.partition[`${index}`]?.map((partition, i) => (
-                                <option
-                                  key={`${partition.partitionName}i`}
-                                  value={partition.partitionName}
-                                >
-                                  {partition.partitionName}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="select_box_arrow">
-                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                            </div>
-                          </div>
-                        </h6>
-                      </div>
-                      <div className="col_40p">
-                        <h6>
-                          <div className="position-relative">
-                            <select
-                              {...register(`rows[${index}].conditionType`)}
-                              className="form-control custom_input"
-                              // disabled={!row.partition.partitionName}
-                            >
-                              <option value="">Select Condition Type</option>
-                              <option value="new">New</option>
-                              <option value="refurbished">Refurbished</option>
-                            </select>
-                            <div className="select_box_arrow">
-                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                            </div>
-                          </div>
-                        </h6>
-                      </div>
-                      <div className="col_40p">
-                        <h6>
-                          <div className="position-relative">
-                            <select
-                              {...register(`rows[${index}].status`)}
-                              className="form-control custom_input"
-                              // disabled={!row.categoryId}
-                            >
-                              <option value="">Select Status</option>
-                              {stockStatus?.map((ele, index) => {
-                                return (
-                                  <option value={ele} key={index}>
-                                    {ele}
+                    {console.log(cartSelectOption, "cartSelectOption")}
+                    {cartSelectOption[index] === "store" ? (
+                      <>
+                        <div className="col_40p">
+                          <h6>
+                            <div className="position-relative">
+                              <select
+                                {...register(`rows[${index}].locationId`)}
+                                value={watch(`rows[${index}].locationId`) || ""}
+                                onChange={(e) => handleLocationChange(index, e.target.value)}
+                                className="form-control"
+                              >
+                                <option value="">Select Location</option>
+                                {locationList?.map((location) => (
+                                  <option key={location._id} value={location._id}>
+                                    {location.name}
                                   </option>
-                                );
-                              })}
-                            </select>
-                            <div className="select_box_arrow">
-                              <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                                ))}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
                             </div>
-                          </div>
-                        </h6>
-                      </div>
-                    </>
+                          </h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>
+                            {" "}
+                            <div className="position-relative">
+                              <select
+                                {...register(`rows[${index}].blockId`)}
+                                onChange={(e) => handleBlockChange(index, e.target.value)}
+                                className="form-control custom_input"
+                                value={row.blockId}
+                                disabled={!row.locationId} // Disable until location is selected
+                              >
+                                <option value="">Select Block</option>
+                                {cardDataToMap?.block[`${index}`]?.map((block) => (
+                                  <option key={block._id} value={block._id}>
+                                    {block.blockNo}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
+                          </h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>
+                            <div className="position-relative">
+                              <select
+                                {...register(`rows[${index}].rackId`)}
+                                onChange={(e) => handleRackChange(index, e.target.value)}
+                                className="form-control custom_input"
+                                value={row.rackId}
+                                disabled={!row.blockId} // Disable until block is selected
+                              >
+                                <option value="">Select Rack</option>
+                                {cardDataToMap?.rack[`${index}`]?.map((rack) => (
+                                  <option key={rack._id} value={rack._id}>
+                                    {rack.rackName}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
+                          </h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>
+                            {" "}
+                            <div className="position-relative">
+                              <select
+                                {...register(`rows[${index}].partitionName`)}
+                                className="form-control custom_input"
+                                // value={row.partitionName}
+                                disabled={!row.rackId} // Disable until rack is selected
+                              >
+                                <option value="">Select Partition</option>
+                                {cardDataToMap?.partition[`${index}`]?.map((partition, i) => (
+                                  <option
+                                    key={`${partition.partitionName}i`}
+                                    value={partition.partitionName}
+                                  >
+                                    {partition.partitionName}
+                                  </option>
+                                ))}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
+                          </h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>
+                            <div className="position-relative">
+                              <select
+                                {...register(`rows[${index}].conditionType`)}
+                                className="form-control custom_input"
+                                // disabled={!row.partition.partitionName}
+                              >
+                                <option value="">Select Condition Type</option>
+                                <option value="new">New</option>
+                                <option value="refurbished">Refurbished</option>
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
+                          </h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>
+                            <div className="position-relative">
+                              <select
+                                {...register(`rows[${index}].status`)}
+                                className="form-control custom_input"
+                                // disabled={!row.categoryId}
+                              >
+                                <option value="">Select Status</option>
+                                {stockStatus?.map((ele, index) => {
+                                  return (
+                                    <option value={ele} key={index}>
+                                      {ele}
+                                    </option>
+                                  );
+                                })}
+                              </select>
+                              <div className="select_box_arrow">
+                                <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                              </div>
+                            </div>
+                          </h6>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* Render Blank Columns */}
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${
+                              Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                            }`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${
+                              Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                            }`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${
+                              Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                            }`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${
+                              Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                            }`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${
+                              Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                            }`,
+                          }}
+                        ></div>
+                        <div
+                          className="col_40p"
+                          style={{
+                            display: `${
+                              Object.values(cartSelectOption).includes("store") ? "block" : "none"
+                            }`,
+                          }}
+                        ></div>
+                      </>
+                    )}
+
                     {/* )} */}
                   </div>
                 ))}
