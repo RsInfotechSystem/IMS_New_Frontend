@@ -223,6 +223,8 @@ const AcceptMaterial = () => {
             //   ? Object.entries(material.parameter).map(([key, value]) => ({ key, value }))
             //   : [],
             quantity: material.quantity || 1,
+            taskStatus: material.taskStatus || "",
+            materialStatus: material.materialStatus || "",
           }));
 
           setNonMaterial(allMaterials);
@@ -249,6 +251,8 @@ const AcceptMaterial = () => {
             parameterMaterial: material.parameter,
             quantity: material.quantity || 1,
             status: material.status || "",
+            taskStatus: material.taskStatus || "",
+            materialStatus: material.materialStatus || "",
           }));
 
           setMaterial(allMaterials);
@@ -941,34 +945,32 @@ const AcceptMaterial = () => {
                         {nonMaterial.some(
                           (product) => rowSelections[product.materialId] === "Store"
                         ) && (
-                          <>
-                            <div className="col_25p">
-                              <h5>Location</h5>
-                            </div>
-                            <div className="col_40p">
-                              <h5 style={{ textAlign: "center" }}>Block</h5>
-                            </div>
-                            <div className="col_40p">
-                              <h5 style={{ textAlign: "center" }}>Rack</h5>
-                            </div>
-                            <div className="col_40p">
-                              <h5 style={{ textAlign: "center" }}>Partation</h5>
-                            </div>
-                          </>
-                        )}
+                            <>
+                              <div className="col_25p">
+                                <h5>Location</h5>
+                              </div>
+                              <div className="col_40p">
+                                <h5 style={{ textAlign: "center" }}>Block</h5>
+                              </div>
+                              <div className="col_40p">
+                                <h5 style={{ textAlign: "center" }}>Rack</h5>
+                              </div>
+                              <div className="col_40p">
+                                <h5 style={{ textAlign: "center" }}>Partation</h5>
+                              </div>
+                            </>
+                          )}
                       </>
                     )}
                   </div>
                   {nonMaterial?.length > 0 ? (
                     nonMaterial?.map((product, index) => {
                       const statusClass =
-                        product?.status === "new"
-                          ? "status-assigned"
-                          : product.status === "returned"
-                          ? "status-returned"
-                          : product.taskStatus === "inprogress"
+                        product?.materialStatus === "accepted"
                           ? "status-accepted"
-                          : "status-changed";
+                          : product.materialStatus === "returned"
+                            ? "status-returned"
+                            : "status-assigned"
                       return (
                         <div className={`table_data ${statusClass}`} key={index}>
                           {/* {console.log(product, "product")} */}
@@ -1199,10 +1201,10 @@ const AcceptMaterial = () => {
                                         </option>
                                         {rackPartation[product.rackId]
                                           ? rackPartation[product.rackId].map((partition, idx) => (
-                                              <option value={partition.partitionName} key={idx}>
-                                                {partition.partitionName}
-                                              </option>
-                                            ))
+                                            <option value={partition.partitionName} key={idx}>
+                                              {partition.partitionName}
+                                            </option>
+                                          ))
                                           : null}
                                       </select>
                                       <div className="select_box_arrow">
@@ -1313,43 +1315,40 @@ const AcceptMaterial = () => {
                         {material.some(
                           (product) => rowSelectionsMaterial[product.materialId] === "Store"
                         ) && (
-                          <>
-                            <div className="col_25p">
-                              <h5>Location</h5>
-                            </div>
-                            <div className="col_25p">
-                              <h5 style={{ textAlign: "center" }}>Block</h5>
-                            </div>
-                            <div className="col_25p">
-                              <h5 style={{ textAlign: "center" }}>Rack</h5>
-                            </div>
-                            <div className="col_25p">
-                              <h5 style={{ textAlign: "center" }}>Partation</h5>
-                            </div>
-                            <div className="col_25p">
-                              <h5 style={{ textAlign: "center" }}>Status</h5>
-                            </div>
-                          </>
-                        )}
+                            <>
+                              <div className="col_25p">
+                                <h5>Location</h5>
+                              </div>
+                              <div className="col_25p">
+                                <h5 style={{ textAlign: "center" }}>Block</h5>
+                              </div>
+                              <div className="col_25p">
+                                <h5 style={{ textAlign: "center" }}>Rack</h5>
+                              </div>
+                              <div className="col_25p">
+                                <h5 style={{ textAlign: "center" }}>Partation</h5>
+                              </div>
+                              <div className="col_25p">
+                                <h5 style={{ textAlign: "center" }}>Status</h5>
+                              </div>
+                            </>
+                          )}
                       </>
                     )}
                   </div>
                   {material?.length > 0 ? (
                     material?.map((product, index) => {
                       const statusClass =
-                        product?.status === "new"
-                          ? "status-assigned"
-                          : product.status === "returned"
-                          ? "status-returned"
-                          : product.taskStatus === "inprogress"
+                        product?.materialStatus === "accepted"
                           ? "status-accepted"
-                          : "status-changed";
+                          : product.materialStatus === "returned"
+                            ? "status-returned"
+                            : "status-assigned";
                       const isDisabled = consumedMaterials.includes(product.materialId);
                       return (
                         <div
-                          className={`table_data ${statusClass} ${
-                            isDisabled ? "row-disabled" : ""
-                          }`}
+                          className={`table_data ${statusClass} ${isDisabled ? "row-disabled" : ""
+                            }`}
                           key={index}
                         >
                           {/* {console.log(product, "product")} */}
@@ -1395,7 +1394,7 @@ const AcceptMaterial = () => {
                                     <label>{key}</label>
                                     <InputBox
                                       value={value} // Set the input value to the corresponding value from the object
-                                      // disabled={!isEditing || editingIndex !== index} // Disable based on edit state
+                                    // disabled={!isEditing || editingIndex !== index} // Disable based on edit state
                                     />
                                   </div>
                                 )
@@ -1413,7 +1412,7 @@ const AcceptMaterial = () => {
                                   isChangeLocationCheckedMaterial[product.materialId] || false
                                 }
                                 disabled={isDisabled}
-                                // onClick={() => handleEditClick(index)}
+                              // onClick={() => handleEditClick(index)}
                               />
                               {/* {console.log(rowSelections, "rowSelections")} */}
                               <label
@@ -1540,10 +1539,10 @@ const AcceptMaterial = () => {
                                         </option>
                                         {rackPartation[product.rackId]
                                           ? rackPartation[product.rackId].map((partition, idx) => (
-                                              <option value={partition.partitionName} key={idx}>
-                                                {partition.partitionName}
-                                              </option>
-                                            ))
+                                            <option value={partition.partitionName} key={idx}>
+                                              {partition.partitionName}
+                                            </option>
+                                          ))
                                           : null}
                                       </select>
                                       <div className="select_box_arrow">
@@ -1827,9 +1826,9 @@ const AcceptMaterial = () => {
                         name={`selectionCart-${index}`}
                         value={"dump"}
                         {...register(`rows[${index}].type`)}
-                        // id={`dumpRadioCartDump-${index}`}
+                      // id={`dumpRadioCartDump-${index}`}
 
-                        // onChange={() => handleInputChangeCart(index, "selection", "Dump")}
+                      // onChange={() => handleInputChangeCart(index, "selection", "Dump")}
                       />
                       {/* <label htmlFor={`dumpRadioCartDump-${index}`}>Dump</label> */}
                       <label>dump</label>
@@ -1840,7 +1839,7 @@ const AcceptMaterial = () => {
                         name={`selectionCart-${index}`}
                         value={"store"}
                         {...register(`rows[${index}].type`)}
-                        // onChange={() => handleInputChangeCart(index, "selection", "Store")}
+                      // onChange={() => handleInputChangeCart(index, "selection", "Store")}
                       />
                       {/* <label htmlFor={`dumpRadioCartStore-${index}`}>Store</label> */}
                       <label>store</label>
@@ -1949,7 +1948,7 @@ const AcceptMaterial = () => {
                             <select
                               {...register(`rows[${index}].conditionType`)}
                               className="form-control custom_input"
-                              // disabled={!row.partition.partitionName}
+                            // disabled={!row.partition.partitionName}
                             >
                               <option value="">Select Condition Type</option>
                               <option value="new">New</option>
@@ -1967,7 +1966,7 @@ const AcceptMaterial = () => {
                             <select
                               {...register(`rows[${index}].status`)}
                               className="form-control custom_input"
-                              // disabled={!row.categoryId}
+                            // disabled={!row.categoryId}
                             >
                               <option value="">Select Status</option>
                               {stockStatus?.map((ele, index) => {
