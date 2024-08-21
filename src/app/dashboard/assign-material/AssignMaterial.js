@@ -37,6 +37,7 @@ const AssignMaterial = () => {
     _conditionType: "",
     _status: "",
     conditionTypeList: [],
+    statusArray: [],
     conditionType: { keyType: "", keyId: "", keyCount: 0 },
     status: { keyType: "", keyId: "", keyCount: 0 },
     filterListori: [],
@@ -47,7 +48,6 @@ const AssignMaterial = () => {
     brandId: "",
     modelId: "",
   });
-  const [selectedModels, setSelectedModels] = useState([]);
   const [expandedModals, setExpandedModals] = useState([]);
   const [quantities, setQuantities] = useState([]);
   const [locationList, setLocationList] = useState([]);
@@ -127,7 +127,7 @@ const AssignMaterial = () => {
           const stock = serverResponse.data.stock || [];
 
           setState({
-            status: Array.from(
+            statusArray: Array.from(
               new Set(
                 stock.map((item) =>
                   JSON.stringify({
@@ -267,15 +267,15 @@ const AssignMaterial = () => {
     );
   };
 
-  const toggleModal = (modelName) => {
-    setExpandedModals((prevExpandedModals) => {
-      if (prevExpandedModals.includes(modelName)) {
-        return prevExpandedModals.filter((modal) => modal !== modelName);
-      } else {
-        return [...prevExpandedModals, modelName];
-      }
-    });
-  };
+  // const toggleModal = (modelName) => {
+  //   setExpandedModals((prevExpandedModals) => {
+  //     if (prevExpandedModals.includes(modelName)) {
+  //       return prevExpandedModals.filter((modal) => modal !== modelName);
+  //     } else {
+  //       return [...prevExpandedModals, modelName];
+  //     }
+  //   });
+  // };
   //top table
   const handleCheckboxChange = (event, materialData) => {
     const isChecked = event.target.checked;
@@ -312,25 +312,25 @@ const AssignMaterial = () => {
 
   //bottom table
 
-  const handleSelectAllChangeGetStock = (event) => {
-    const isChecked = event.target.checked;
+  // const handleSelectAllChangeGetStock = (event) => {
+  //   const isChecked = event.target.checked;
 
-    if (isChecked) {
-      setSelectAllCheckedStock([...material]);
-      const allStockIds = material.map((item) => item._id);
-      const allOutput = material.map((item) => ({
-        stockId: item._id,
-        assignQuantity: quantities[item._id],
-      }));
+  //   if (isChecked) {
+  //     setSelectAllCheckedStock([...material]);
+  //     const allStockIds = material.map((item) => item._id);
+  //     const allOutput = material.map((item) => ({
+  //       stockId: item._id,
+  //       assignQuantity: quantities[item._id],
+  //     }));
 
-      setStockIds(allStockIds);
-      setOutput(allOutput);
-    } else {
-      setSelectAllCheckedStock([]);
-      setStockIds([]);
-      setOutput([]);
-    }
-  };
+  //     setStockIds(allStockIds);
+  //     setOutput(allOutput);
+  //   } else {
+  //     setSelectAllCheckedStock([]);
+  //     setStockIds([]);
+  //     setOutput([]);
+  //   }
+  // };
   const getStockIds = (event, materialData) => {
     const isChecked = event.target.checked;
     setSelectAllCheckedStock(
@@ -459,28 +459,23 @@ const AssignMaterial = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (value) => {
+    // e.preventDefault();
     if (!validateForm()) return;
-
     const payload = formValues.searchString
       ? { searchString: formValues.searchString }
       : {
-          categoryId: formValues.categoryId,
-          status: formValues.status,
-          brandId: formValues.brandId,
-          conditionType: formValues.conditionType,
-          // parameters: Object.keys(selectedModels).map((modelName) => ({
-          //   modelName,
-          //   parameterList: selectedModels[modelName],
-          // })),
-          parametersToMatch: Object.entries(selectedParameters).flatMap(([modelName, params]) =>
-            Object.entries(params)
-              .filter(([_, isSelected]) => isSelected)
-              .map(([param]) => ({ modelName, parameterList: [param] }))
-          ),
-          // parameter: selectedModels,
-        };
+        categoryId: formValues.categoryId,
+        status: formValues.status,
+        brandId: formValues.brandId,
+        conditionType: formValues.conditionType,
+
+        parametersToMatch: Object.entries(selectedParameters).flatMap(([modelName, params]) =>
+          Object.entries(params)
+            .filter(([_, isSelected]) => isSelected)
+            .map(([param]) => ({ modelName, parameterList: [param] }))
+        ),
+      };
 
     await submitForm(payload);
   };
@@ -629,59 +624,32 @@ const AssignMaterial = () => {
       getCategoryWiseBrand(id, setLoader, router, setBrandsData);
     }
   }, [formValues.categoryId]);
-  const fetchMaterial = async (id) => {
-    try {
-      let payload = {
-        categoryId: id,
-      };
-      if (id) {
-        let response = await communication.getCategoryWiseParameter(payload);
-        if (response?.data?.status === "SUCCESS") {
-          setParameter(response?.data?.parameter);
-        }
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-  // const handleCheckboxSelect = (e, modalName, param) => {
-  //   const { checked } = e.target;
-
-  //   setSelectedModels((prevSelectedModels) => {
-  //     const modalSelectedModels = prevSelectedModels[modalName] || [];
-
-  //     if (checked) {
-  //       return {
-  //         ...prevSelectedModels,
-  //         [modalName]: [...modalSelectedModels, param],
-  //       };
-  //     } else {
-  //       return {
-  //         ...prevSelectedModels,
-  //         [modalName]: modalSelectedModels.filter((model) => model !== param),
-  //       };
+  // const fetchMaterial = async (id) => {
+  //   try {
+  //     let payload = {
+  //       categoryId: id,
+  //     };
+  //     if (id) {
+  //       let response = await communication.getCategoryWiseParameter(payload);
+  //       if (response?.data?.status === "SUCCESS") {
+  //         setParameter(response?.data?.parameter);
+  //       }
   //     }
-  //   });
-  // };
-  const handleParameterSelect = (modelName, param) => {
-    setSelectedParameters((prev) => ({
-      ...prev,
-      [modelName]: {
-        ...(prev[modelName] || {}),
-        [param]: !(prev[modelName] && prev[modelName][param]),
-      },
-    }));
-  };
-  // console.log(_material, "_material");
-
-  // useEffect(() => {
-  //   // const id = getValues("categoryId");
-  //   const id = formValues.categoryId;
-  //   if (id) {
-  //     getCategoryWiseBrand(id, setLoader, router, setBrandsData);
-  //     fetchMaterial(id);
+  //   } catch (error) {
+  //     toast.error(error.message);
   //   }
-  // }, [formValues.categoryId]);
+  // };
+
+  // const handleParameterSelect = (modelName, param) => {
+  //   setSelectedParameters((prev) => ({
+  //     ...prev,
+  //     [modelName]: {
+  //       ...(prev[modelName] || {}),
+  //       [param]: !(prev[modelName] && prev[modelName][param]),
+  //     },
+  //   }));
+  // };
+
   async function getAssignMaterialByJobNo() {
     try {
       setLoader(true);
@@ -719,29 +687,7 @@ const AssignMaterial = () => {
       setIsEdit(false);
     }
   }, []);
-  // const materialsToShow = isEdit ? [...assignedMaterial, ...selectedList] : selectedList;
-  // useEffect(() => {
-  //   console.log("Router is ready:", router.isReady);
-  //   console.log("Full query object:", router.query);
 
-  //   if (router.isReady) {
-  //     const isViewQuery = router.query.edit;
-  //     console.log("isViewQuery raw value:", isViewQuery);
-
-  //     const isViewBoolean = isViewQuery === "true";
-  //     console.log("isViewBoolean:", isViewBoolean);
-
-  //     setIsView(isViewBoolean);
-  //     console.log("State updated, isView is now:", isViewBoolean);
-
-  //     if (isViewBoolean) {
-  //       console.log("Calling getAssignMaterialByJobNo");
-  //       getAssignMaterialByJobNo();
-  //     }
-  //   }
-  // }, [router.isReady, router.query]);
-
-  // Combine data based on conditions
 
   return (
     <>
@@ -767,7 +713,7 @@ const AssignMaterial = () => {
                               {...register("locationId", {
                                 required: "locationId is required",
                               })}
-                              // disabled={modalStates.isView}
+                            // disabled={modalStates.isView}
                             >
                               <option value="" className="text-secondary text-lowercase"></option>
                               {locationList.map((ele, index) => {
@@ -831,7 +777,7 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                       </div>
-                      {/* <div className="row">
+                      <div className="row">
                         <div className="custom_input_wrapper col-lg-12 col-md-6">
                           <label>Serial No./Item Code</label>
                           <input
@@ -850,65 +796,20 @@ const AssignMaterial = () => {
                             )}
                           </div>
                         </div>
-                      </div> */}
+                      </div>
+                      <div className="d-flex justify-content-center">
+                        <div className="form_button_wrapper col-lg-2 col-md-4">
+                          <CustomBtn
+                            name="Search"
+                            onClick={handleChange}
+
+                          />
+                        </div>
+                      </div>
+
                     </div>
                   </div>
-                  {/* <div className="mt-4 p-2" style={{ backgroundColor: "white" }}>
-                    <div style={{ color: "black" }}>
-                      <h6>Parameters</h6>
-                    </div>
-                    <div className="mt-3" style={{ maxHeight: "300px", overflowY: "auto" }}>
-                      {parameter?.length > 0 ? (
-                        parameter?.map((modal, index) => (
-                          <div key={index} className="modal-container">
-                            <div className="d-flex gap-2 mb-2">
-                              <div
-                                onClick={() => toggleModal(modal?.modelName)}
-                                style={{ cursor: "pointer" }}
-                              >
-                                {expandedModals.includes(modal?.modelName) ? "-" : "+"}
-                              </div>
 
-                              <div
-                                onClick={() => toggleModal(modal?.modelName)}
-                                style={{ cursor: "pointer" }}
-                              >
-                                {modal?.modelName}
-                              </div>
-                            </div>
-
-                            {expandedModals.includes(modal?.modelName) && (
-                              <ul className="parameter-list" style={{ listStyle: "none" }}>
-                                {modal.parameterList.map((param, paramIndex) => (
-                                  <li key={paramIndex}>
-                                    <input
-                                      type="checkbox"
-                                      className="me-3"
-                                      id={`modelName:${modal?.modelName}value:${param}`}
-                                      // onChange={(e) =>
-                                      //   handleCheckboxSelect(e, modal.modelName, param)
-                                      // }
-                                      onChange={(e) =>
-                                        handleParameterSelect(modal.modelName, param)
-                                      }
-                                      checked={
-                                        selectedParameters[modal.modelName]?.[param] || false
-                                      }
-                                    />
-                                    {param}
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        ))
-                      ) : (
-                        <div>
-                          <p>Data is not available</p>
-                        </div>
-                      )}
-                    </div>
-                  </div> */}
                   <div>
                     <FilterStructure
                       data={material}
@@ -916,89 +817,39 @@ const AssignMaterial = () => {
                       onFiltersChange={handleFiltersChange}
                     />
                   </div>
+
                 </form>
               </div>
             </div>
             <div className="col-12 col-lg-8 col-md-8">
               <div className="row">
-                {state?.statusFilter ? (
-                  <div className="col-lg-6 col-md-6 input_wrapper">
-                    <label>Select Status</label>
-                    <div className="position-relative">
-                      <select
-                        name="status"
-                        className="form-control custom_input"
-                        style={{ width: "100%" }}
-                        onChange={(e) => setState({ _status: e.target.value })}
-                      >
-                        <option value="" className="text-secondary text-lowercase"></option>
-                        {state?.status?.map((ele, index) => {
-                          return (
-                            <option
-                              className="small text-capitalize"
-                              value={ele?.status}
-                              key={index}
-                            >
-                              {ele?.status}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
-                    </div>
-                    {/* <div style={{ height: "5px" }}>
-                      {errors.locationId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.locationId.message}
-                        </p>
-                      )}
-                    </div> */}
-                  </div>
-                ) : (
-                  <div className="col-lg-6 col-md-6 input_wrapper">
-                    <label>Select Status</label>
-                    <div className="position-relative">
-                      <select
-                        name="status"
-                        className="form-control custom_input"
-                        style={{ width: "100%" }}
-                        onChange={(e) =>
-                          setState({
-                            status: {
-                              keyType: "status",
-                              keyId: e.target.value,
-                              keyCount: state.status.keyCount + 1,
-                            },
-                          })
-                        }
-                        value={state.status.keyId}
-                      >
-                        <option value="" className="text-secondary text-lowercase"></option>
-                        {/* {state?.status.map((ele, index) => {
+                <div className="col-lg-6 col-md-6 input_wrapper">
+                  <label>Select Status</label>
+                  <div className="position-relative">
+                    <select
+                      name="status"
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                      onChange={(e) => setState({ _status: e.target.value })}
+                    >
+                      <option value="" className="text-secondary text-lowercase"></option>
+                      {state?.statusArray?.map((ele, index) => {
                         return (
-                          <option className="small text-capitalize" value={ele} key={index}>
-                            {" "}
-                            {ele}
+                          <option
+                            className="small text-capitalize"
+                            value={ele?.status}
+                            key={index}
+                          >
+                            {ele?.status}
                           </option>
                         );
-                      })} */}
-                      </select>
-                      <div className="select_box_arrow">
-                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                      </div>
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
                     </div>
-                    {/* <div style={{ height: "5px" }}>
-                      {errors.locationId && (
-                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                          {errors.locationId.message}
-                        </p>
-                      )}
-                    </div> */}
                   </div>
-                )}
-
+                </div>
                 <div className="col-lg-6 col-md-6 input_wrapper">
                   <label>Select Condition</label>
                   <div className="position-relative">
@@ -1007,16 +858,6 @@ const AssignMaterial = () => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                       onChange={(e) => setState({ _conditionType: e.target.value })}
-                      // onChange={(e) =>
-                      //   setMaterial(
-                      //     state.filterListori.filter(
-                      //       (i) =>
-                      //         i.conditionType
-                      //           .toLocaleLowerCase()
-                      //           .search(e.target.value.toLocaleLowerCase()) !== -1
-                      //     )
-                      //   )
-                      // }
                     >
                       <option value="" className="text-secondary text-lowercase"></option>
                       {state.conditionTypeList.map((item, index) => (
