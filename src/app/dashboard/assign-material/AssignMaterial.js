@@ -948,13 +948,13 @@ const AssignMaterial = () => {
                         <FontAwesomeIcon icon={faAngleDown} className="icon" />
                       </div>
                     </div>
-                    <div style={{ height: "5px" }}>
+                    {/* <div style={{ height: "5px" }}>
                       {errors.locationId && (
                         <p className="text-danger text-start" style={{ fontSize: "14px" }}>
                           {errors.locationId.message}
                         </p>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <div className="col-lg-6 col-md-6 input_wrapper">

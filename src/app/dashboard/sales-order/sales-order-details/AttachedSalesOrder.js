@@ -54,8 +54,10 @@ const AttachedSalesOrder = () => {
   const [checkBox, setCheckBox] = useState("");
   const [selectedModels, setSelectedModels] = useState([]);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+  const [priviewAllSelect, SetPriviewAllSelect] = useState([]);
   const [selectedList, setSelectedList] = useState([]);
   const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectAllCheckedPreview, setSelectAllCheckedPreview] = useState(false);
   const [parameter, setParameter] = useState([]);
   const [brandsData, setBrandsData] = useState([]);
   const [model, setModel] = useState([]);
@@ -134,18 +136,21 @@ const AttachedSalesOrder = () => {
     }));
   };
 
-  const handleSelectAllChange = (e) => {
-    setSelectAllChecked(e.target.checked);
-
-    // Update the array of selected checkboxes based on the "Select All" checkbox
-    setSelectedCheckboxes((prevSelected) =>
-      e.target.checked ? modelList?.materialDetails.map((material) => material._id) : []
-    );
+  const handleSelectAllChangeList = (e) => {
+    const checked = e.target.value;
+    setSelectAllChecked(checked);
+    if (checked) {
+      const allSelect = modelList?.materialDetails?.map((material) => material._id);
+      [];
+      setSelectedCheckboxes(allSelect);
+    } else {
+      setSelectedCheckboxes([]);
+    }
   };
 
   const handleCheckboxChange = (e) => {
-    const checkboxId = e.target.id;
-    console.log(e.target.id);
+    const checkboxId = e;
+    console.log(e);
     if (attachedDescriptions.includes(checkboxId)) {
       return; // Don't allow changing if already attached
     }
@@ -170,6 +175,32 @@ const AttachedSalesOrder = () => {
     // });
   };
   // console.log("checkboxId", selectedCheckboxes);
+  const handleSelectAllChange = (e) => {
+    const PreviewChecked = e.target.checked;
+    console.log(PreviewChecked, "PreviewChecked");
+
+    setSelectAllCheckedPreview(PreviewChecked);
+    if (PreviewChecked) {
+      const allSelectPriview = material?.map((material) => material._id);
+      [];
+      setSelectedMaterials(allSelectPriview);
+    } else {
+      setSelectedMaterials([]);
+    }
+  };
+
+  const handleMaterialSelect = (materialId) => {
+    let updatedSelectedMaterials = [];
+    if (selectedMaterials.includes(materialId)) {
+      updatedSelectedMaterials = selectedMaterials.filter((id) => id !== materialId);
+    } else {
+      updatedSelectedMaterials = [...selectedMaterials, materialId];
+    }
+    setSelectedMaterials(updatedSelectedMaterials);
+    // setSelectedMaterials((prev) =>
+    //   prev.includes(materialId) ? prev.filter((id) => id !== materialId) : [...prev, materialId]
+    // );
+  };
   useEffect(() => {
     const fetchMaterial = async () => {
       const id = getValues("categoryId");
@@ -349,36 +380,47 @@ const AttachedSalesOrder = () => {
       }
     });
   };
-  const handleMaterialSelect = (materialId) => {
-    setSelectedMaterials((prev) =>
-      prev.includes(materialId) ? prev.filter((id) => id !== materialId) : [...prev, materialId]
-    );
-  };
 
   const handleAttachMaterials = () => {
-    const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m._id));
-    setAttachedMaterials((prev) => [...prev, ...newAttachedMaterials]);
+    if (checkBox) {
+      const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m._id));
+      console.log(newAttachedMaterials, "newAttachedMaterials");
+      // not working remove logic
+      // const SelectedMaterialRemove = material.filter((material) => {
+      //   !selectedMaterials.includes(material._id);
+      // });
+      const SelectedMaterialDisable = material?.map((material) => {
+        if (selectedMaterials.includes(material._id)) {
+          return { ...material, disabled: true };
+        }
+        return material;
+      });
+      setMaterial(SelectedMaterialDisable);
+      setAttachedMaterials((prev) => [...prev, ...newAttachedMaterials]);
+      // Add the selected description to attachedDescriptions
+      setAttachedDescriptions((prev) => [...prev, checkBox]);
 
-    // Add the selected description to attachedDescriptions
-    setAttachedDescriptions((prev) => [...prev, checkBox]);
+      // Associate materials with the description
+      setMaterialDetails((prev) => [
+        ...prev,
+        {
+          detailId: checkBox,
+          materialIds: newAttachedMaterials.map((m) => m._id),
+        },
+      ]);
 
-    // Associate materials with the description
-    setMaterialDetails((prev) => [
-      ...prev,
-      {
-        detailId: checkBox,
-        materialIds: newAttachedMaterials.map((m) => m._id),
-      },
-    ]);
+      setSelectedMaterials([]);
+      setMaterialIDS(newAttachedMaterials.map((item) => item._id));
 
-    setSelectedMaterials([]);
-    setMaterialIDS(newAttachedMaterials.map((item) => item._id));
-
-    setTimeout(() => {
-      setCheckBox("");
-      setMaterialIDS(null);
-    }, 600);
+      setTimeout(() => {
+        setCheckBox("");
+        setMaterialIDS(null);
+      }, 600);
+    } else {
+      toast.info("Please select discription");
+    }
   };
+
   // // console.log("sssss", attachedMaterials);
   // const handleRemoveAttachedMaterial = (materialId) => {
   //   setAttachedMaterials((prev) => prev.filter((m) => m._id !== materialId));
@@ -488,8 +530,8 @@ const AttachedSalesOrder = () => {
                       className="form-check-input"
                       type="checkbox"
                       id="selectAllCheckbox"
-                      // onChange={(e) => handleSelectAllChange(e)}
-                      // checked={selectAllChecked}
+                      onChange={(e) => handleSelectAllChangeList(e)}
+                      checked={selectAllChecked}
                     />
                   </div>
                 </div>
@@ -521,19 +563,6 @@ const AttachedSalesOrder = () => {
                 modelList?.materialDetails?.map((product, index) => {
                   return (
                     <div className="table_data" key={index}>
-                      {/* <div className="col_20p">
-                      
-                        <div className="check_box">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={product._id}
-                            onChange={(e) => handleCheckboxChange(e)}
-                            checked={selectedCheckboxes.includes(product._id)}
-                            // checked={selectedList.some((item) => item._id === product._id)}
-                          />
-                        </div>
-                      </div> */}
                       <div className="col_20p">
                         {attachedDescriptions.includes(product._id) ? (
                           <div className="check_box">
@@ -545,7 +574,7 @@ const AttachedSalesOrder = () => {
                               className="form-check-input"
                               type="checkbox"
                               id={product._id}
-                              onChange={(e) => handleCheckboxChange(e)}
+                              onChange={() => handleCheckboxChange(product._id)}
                               checked={selectedCheckboxes.includes(product._id)}
                               disabled={attachedDescriptions.includes(product._id)}
                             />
@@ -773,9 +802,9 @@ const AttachedSalesOrder = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                // id="selectAllCheckbox"
-                                // onChange={(e) => handleSelectAllChange(e)}
-                                // checked={selectAllChecked}
+                                id="selectAllCheckboxpreview"
+                                onChange={(e) => handleSelectAllChange(e)}
+                                checked={selectAllCheckedPreview}
                               />
                             </div>
                           </div>
@@ -820,8 +849,10 @@ const AttachedSalesOrder = () => {
                                     <input
                                       className="form-check-input"
                                       type="checkbox"
+                                      id="selectAllCheckboxpreview"
                                       checked={selectedMaterials.includes(product._id)}
                                       onChange={() => handleMaterialSelect(product._id)}
+                                      disabled={product.disabled}
                                       // id={product._id}
                                       // onChange={(e) => handleCheckboxChange(e)}
                                       // checked={selectedCheckboxes.includes(product._id)}
@@ -872,18 +903,11 @@ const AttachedSalesOrder = () => {
                   </div>
                 </div>
                 <Button
+                  type="button"
                   onClick={handleAttachMaterials}
                   disabled={selectedMaterials.length === 0}
                   name={" Attach Selected Materials"}
                 ></Button>
-                {/* <div className="col-lg-3 col-md-6">
-                  <button
-                    type="button"
-                    className="btn btn-success"
-                  >
-                    Add
-                  </button>
-                </div> */}
               </div>
             </div>
           </div>
@@ -892,7 +916,7 @@ const AttachedSalesOrder = () => {
 
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
-              <p>Sales Order Item Preview</p>
+              <p>Attached Sales Order</p>
             </div>
             {/* table */}
             <div className="table_wrapper my-3">

@@ -526,7 +526,7 @@ const TransferMaterialForm = () => {
             <div className="d-flex align-items-center justify-content-between py-2">
               <p>Material List</p>
             </div>
-            <Search value="" onChange={() => {}} placeholder="Search" />
+            {/* <Search value="" onChange={() => {}} placeholder="Search" /> */}
 
             {/* table  */}
             <div className="table_wrapper my-3">

@@ -129,7 +129,7 @@ const DailyTask = () => {
     try {
       setLoader(true);
 
-      let response = await communication.getTechnicianList();
+      let response = await communication.getTechnicianListMaterial();
       if (response?.data?.status === "SUCCESS") {
         //  toast.success(response?.data?.message);
         setTechnicianList(response?.data.user);
@@ -181,6 +181,9 @@ const DailyTask = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
+  useEffect(() => {
+    technicianList();
+  }, []);
   useEffect(() => {
     fetchAssignMaterial({ page: currentPage, searchString, isFirstCall: true, ...filter });
   }, [isPageUpdated]);
@@ -250,7 +253,7 @@ const DailyTask = () => {
         </div>
         {/* // )} */}
         <div className="buttons_wrapper">
-          <CustomBtn
+          {/* <CustomBtn
             name={"Filter"}
             onClick={() => {
               setModalStates((prev) => ({ ...prev, filter: true }));
@@ -272,7 +275,7 @@ const DailyTask = () => {
             onClick={() => {
               fetchAssignMaterial();
             }}
-          />
+          /> */}
         </div>
       </div>
       {/* table  */}
@@ -350,7 +353,7 @@ const DailyTask = () => {
                       <h6 className="text-center  ">
                         {roleName == "admin" && stockDetails?.taskStatus == "assigned" && (
                           <div className="d-flex gap-2 justify-content-center align-items-center">
-                            <div title="edit" style={{cursor: "pointer"}}>
+                            <div title="edit" style={{ cursor: "pointer" }}>
                               <svg
                                 // title={`${stockDetails.isActive ? "Update" : ""}`}
                                 // className={`${

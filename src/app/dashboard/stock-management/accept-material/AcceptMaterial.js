@@ -140,7 +140,13 @@ const AcceptMaterial = () => {
       setLoader(true);
       const dataToSend = {
         jobNo: params.get("jobId"),
-        material: savedMaterials,
+        material:
+          savedMaterials.filter((ele) => {
+            if (ele.materialStatus) {
+              delete ele.materialStatus;
+              return ele;
+            }
+          }) ?? [],
         dump: [
           ...savedDump.map((ele) => ({
             materialId: ele.materialId,
@@ -220,12 +226,12 @@ const AcceptMaterial = () => {
             itemCode: material.itemCode || "",
             serialNo: material.serialNo || "",
             parameter: material.parameter,
-            taskStatus: material.taskStatus || "",
+            // taskStatus: material.taskStatus || "",
             // parameter: material.parameter
             //   ? Object.entries(material.parameter).map(([key, value]) => ({ key, value }))
             //   : [],
             quantity: material.quantity || 1,
-            taskStatus: material.taskStatus || "",
+            // taskStatus: material.taskStatus || "",
             materialStatus: material.materialStatus || "",
           }));
 
@@ -251,10 +257,10 @@ const AcceptMaterial = () => {
             itemCode: material.itemCode || "",
             serialNo: material.serialNo || "",
             parameterMaterial: material.parameter,
-            taskStatus: material.taskStatus || "",
+            // taskStatus: material.taskStatus || "",
             quantity: material.quantity || 1,
             status: material.status || "",
-            taskStatus: material.taskStatus || "",
+            // taskStatus: material.taskStatus || "",
             materialStatus: material.materialStatus || "",
           }));
 
@@ -1018,52 +1024,65 @@ const AcceptMaterial = () => {
                         <div className={`table_data ${statusClass}`} key={index}>
                           {/* {console.log(product, "product")} */}
                           <div className="col_20p">
-                            {isEditing && editingIndex === index ? (
-                              <h6 className="action_wrraper">
-                                <CustomBtn
-                                  name={"Save"}
-                                  type="button"
-                                  // rowSelections[product.materialId] === "Dump"}
-                                  onClick={() => handleSaveClick(index, product)}
-                                />
-                              </h6>
+                            {product.materialStatus === "accepted" ||
+                            product.materialStatus === "assigned" ? (
+                              ""
                             ) : (
-                              <div title="edit">
-                                <svg
-                                  title="edit"
-                                  width="27"
-                                  height="27"
-                                  viewBox="0 0 25 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  onClick={() => handleEditClick(index)}
-                                >
-                                  <g clip-path="url(#clip0_279_5204)">
-                                    <path
-                                      d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                                      stroke="#0D6EFD"
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
+                              <>
+                                {" "}
+                                {isEditing && editingIndex === index ? (
+                                  <h6 className="action_wrraper">
+                                    <CustomBtn
+                                      name={"Save"}
+                                      type="button"
+                                      // rowSelections[product.materialId] === "Dump"}
+                                      onClick={() => handleSaveClick(index, product)}
                                     />
-                                    <path
-                                      d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                                      stroke="#0D6EFD"
-                                      stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                    />
-                                  </g>
-                                  <defs>
-                                    <clipPath id="clip0_279_5204">
-                                      <rect
-                                        width="15"
-                                        height="15"
-                                        fill="white"
-                                        transform="translate(5 5)"
-                                      />
-                                    </clipPath>
-                                  </defs>
-                                </svg>
-                              </div>
+                                  </h6>
+                                ) : (
+                                  <div title="edit">
+                                    <svg
+                                      title="edit"
+                                      width="27"
+                                      height="27"
+                                      viewBox="0 0 25 24"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      // onClick={() =>
+                                      //   product.materialStatus === "accepted"
+                                      //     ? disabled
+                                      //     : handleEditClick(index)
+                                      // }
+                                      onClick={() => handleEditClick(index)}
+                                    >
+                                      <g clip-path="url(#clip0_279_5204)">
+                                        <path
+                                          d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                          stroke="#0D6EFD"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                        />
+                                        <path
+                                          d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                          stroke="#0D6EFD"
+                                          stroke-linecap="round"
+                                          stroke-linejoin="round"
+                                        />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_279_5204">
+                                          <rect
+                                            width="15"
+                                            height="15"
+                                            fill="white"
+                                            transform="translate(5 5)"
+                                          />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                  </div>
+                                )}
+                              </>
                             )}
                           </div>
                           <div className="col_7p">
@@ -1477,16 +1496,21 @@ const AcceptMaterial = () => {
                         >
                           {/* {console.log(product, "product")} */}
                           <div className="col_20p">
-                            <div className="check_box">
-                              <input
-                                className="form-check-input"
-                                type="checkbox"
-                                key={product.materialId}
-                                checked={selectedMaterials.includes(product.materialId)}
-                                onChange={() => handleMaterialCheckboxChange(product.materialId)}
-                                disabled={isDisabled}
-                              />
-                            </div>
+                            {product.materialStatus === "accepted" ||
+                            product.materialStatus === "assigned" ? (
+                              ""
+                            ) : (
+                              <div className="check_box">
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  key={product.materialId}
+                                  checked={selectedMaterials.includes(product.materialId)}
+                                  onChange={() => handleMaterialCheckboxChange(product.materialId)}
+                                  disabled={isDisabled}
+                                />
+                              </div>
+                            )}
                           </div>
                           <div className="col_7p">
                             <h6>{index + 1}</h6>

@@ -196,7 +196,7 @@ function CreateProduct({ data }) {
     if (id) {
       getCategoryWiseBrand(id, setLoader, router, setBrandsData);
     }
-  }, [categoryId , brandsData.length > 0]);
+  }, [categoryId, brandsData.length > 0]);
 
   return (
     <>
@@ -205,7 +205,7 @@ function CreateProduct({ data }) {
         <div className="form_modal" style={{ width: "55%" }}>
           <div className="form_modal_header">
             <h5 className="title">
-              {modalStates?.type === "create" ? "Create Product" : "Update Product"}
+              {modalStates?.type === "create" ? "Create Model" : "Update Model"}
             </h5>
             <FontAwesomeIcon
               icon={faCircleXmark}

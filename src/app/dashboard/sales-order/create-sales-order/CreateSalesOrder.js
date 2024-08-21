@@ -88,7 +88,7 @@ const CreateOrder = () => {
         customerNo: values?.mobile,
         customerAddress: values.address,
         contactPerson: values.contactPerson,
-        remark: values.remark,
+        // remark: values.remark,
       };
       let response = await communication.createSalesOrder(dataToSend);
       if (response?.data?.status === "SUCCESS") {
@@ -123,7 +123,7 @@ const CreateOrder = () => {
   };
 
   const addMaterial = () => {
-    const { description, quantity, warranty, note } = getValues();
+    const { description, quantity, warranty, note, remarks } = getValues();
     // console.log('====================================');
     // console.log(description,quantity);
     // console.log('====================================');
@@ -139,6 +139,7 @@ const CreateOrder = () => {
             quantity: quantity,
             warranty: warranty,
             note: note,
+            // remarks: remarks,
           },
         ],
       });
@@ -147,6 +148,7 @@ const CreateOrder = () => {
       setValue("quantity", "");
       setValue("warranty", "");
       setValue("note", "");
+      setValue("remarks", "");
     }
   };
   async function callAPIs(params) {

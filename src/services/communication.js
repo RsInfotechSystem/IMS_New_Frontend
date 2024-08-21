@@ -1609,6 +1609,22 @@ export const communication = {
       throw error;
     }
   },
+  getTechnicianListMaterial: async () => {
+    try {
+      return await axios.get(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/material/get-technician`,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   AssignMaterial: async (data) => {
     try {
       return await axios.post(

@@ -71,7 +71,15 @@ const ReadySalesMaterial = () => {
       setLoader(false);
     }
   }
-
+  const handleSearch = (e) => {
+    setSearchString(e.target.value);
+    let isSearch = true;
+    clearTimeout(timeoutId);
+    let _timeOutId = setTimeout(() => {
+      getSalesOrderList(1, e.target.value, isSearch);
+    }, 2000);
+    setTimeoutId(_timeOutId);
+  };
   useEffect(() => {
     getSalesOrderList(currentPage, searchString);
   }, [isPageUpdated]);
@@ -90,12 +98,7 @@ const ReadySalesMaterial = () => {
         />
       </div>
       <div className="search_btn_wrapper">
-        <Search
-          //   value={searchString}
-          //   onChange={handleSearch}
-
-          placeholder={"Search"}
-        />
+        <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
         {
           // configAccess?.access === "Write" &&
           // <div className="buttons_wrapper">

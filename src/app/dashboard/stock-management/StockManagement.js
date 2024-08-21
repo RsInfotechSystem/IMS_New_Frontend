@@ -55,7 +55,7 @@ const StockManagement = () => {
       const serverResponse = await communication.returnMaterialList(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.data);
-        toast.success(serverResponse.data.message, { autoClose: 1500 });
+        // toast.success(serverResponse.data.message, { autoClose: 1500 });
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
         if (isSearch) {
