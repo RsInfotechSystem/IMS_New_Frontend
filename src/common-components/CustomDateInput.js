@@ -5,7 +5,7 @@ import 'react-calendar/dist/Calendar.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDays } from '@fortawesome/free-regular-svg-icons';
 
-function CustomDateInput({ onChange, value, maxDate, disable, errorState, errorMessage }) {
+function CustomDateInput({ onChange, value, maxDate, disable, errorState, errorMessage, minDate }) {
     return (
         <>
             <DatePicker
@@ -16,7 +16,8 @@ function CustomDateInput({ onChange, value, maxDate, disable, errorState, errorM
                 dayPlaceholder={"dd"}
                 monthPlaceholder={"mm"}
                 yearPlaceholder={"yyyy"}
-                maxDate={![undefined, null, ""]?.includes(maxDate) ? new Date(maxDate) : new Date()}
+                minDate={new Date()}
+                // maxDate={![undefined, null, ""]?.includes(maxDate) ? new Date(maxDate) : new Date()}
                 calendarIcon={<div className="input_calender_icon_wrapper"><FontAwesomeIcon icon={faCalendarDays} className="calender_icon" /></div>}
             />
             {errorState && <p className="validation_message">{errorMessage}</p>}

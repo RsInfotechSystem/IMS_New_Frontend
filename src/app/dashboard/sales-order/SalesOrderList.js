@@ -230,7 +230,7 @@ const SalesOrderList = () => {
                             );
                           }}
                         >
-                          <strong style={{ textDecoration: "none" }}>{data?.salesOrderNo}</strong>
+                          <strong style={{ textDecoration: "none" }} title="Attach material">{data?.salesOrderNo}</strong>
                         </h6>
                       )}
                       {/* <h6>{data?.salesOrderNo}</h6> */}

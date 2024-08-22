@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { faCaretLeft, faCaretRight, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Button from "@/common-components/Button";
+import StockFilter from "@/common-components/StockFilter";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 const TransferMaterialForm = () => {
   const router = useRouter();
@@ -31,7 +32,8 @@ const TransferMaterialForm = () => {
   } = useForm();
   const [loader, setLoader] = useState(false);
   const params = useSearchParams();
-
+  const [modalStates, setModalStates] = useState({ filter: false, modal: false });
+  const [filter, setFilter] = useState({});
   const [page, setPage] = useState(1);
   const [selectedList, setSelectedList] = useState([]);
   const [selectAllCheckedStock, setSelectAllCheckedStock] = useState(false);
@@ -145,6 +147,10 @@ const TransferMaterialForm = () => {
     page = 1,
     searchString,
     isSearch = false,
+    location,
+    categoryId,
+    brandId,
+    modelId,
     categoryValue,
     brandValue,
     locationValue,
@@ -156,6 +162,10 @@ const TransferMaterialForm = () => {
       let payload = {
         page,
         searchString: searchString,
+        location,
+        categoryId,
+        brandId,
+        modelId,
         ...(state.categoryValue.keyType == "category" && { categoryId: state.categoryValue.keyId }),
         ...(state.brandValue.keyType == "brand" && { brandId: state.brandValue.keyId }),
         ...(state.locationValue.keyType == "location" && { location: state.locationValue.keyId }),
@@ -240,7 +250,7 @@ const TransferMaterialForm = () => {
 
     getStatusWiseMaterialList({
       page: 1,
-      isSearch,
+      isSearch
     });
   }, [
     state?.categoryValue?.keyId,
@@ -422,7 +432,7 @@ const TransferMaterialForm = () => {
     setLocationAcess(getCookie("locationId"));
   }, []);
   useEffect(() => {
-    getStatusWiseMaterialList({ page: currentPage, searchString, isFirstCall: true });
+    getStatusWiseMaterialList({ page: currentPage, searchString, isFirstCall: true, });
   }, [isPageUpdated]);
 
   const handleBack = () => {
@@ -434,6 +444,14 @@ const TransferMaterialForm = () => {
   return (
     <>
       {loader && <Loader text={"Loading..."} />}
+      {modalStates?.filter && (
+        <StockFilter
+          setModalStates={setModalStates}
+          apiCall={getStatusWiseMaterialList}
+          filter={filter}
+          setFilter={setFilter}
+        />
+      )}
       <form>
         <div className="top_header">
           <div className="tab_title">Transfer Material Form</div>
@@ -526,8 +544,39 @@ const TransferMaterialForm = () => {
             <div className="d-flex align-items-center justify-content-between py-2">
               <p>Material List</p>
             </div>
-            {/* <Search value="" onChange={() => {}} placeholder="Search" /> */}
-
+            <div className="search_btn_wrapper">
+              {/* <Search value="" onChange={() => {}} placeholder="Search" /> */}
+              {
+                <div className="buttons_wrapper">
+                  <CustomBtn
+                    type="button"
+                    name={"Filter"}
+                    onClick={() => {
+                      setModalStates((prev) => ({ ...prev, filter: true }));
+                    }}
+                    svg={
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 512 512"
+                        fill="#fff"
+                      >
+                        <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
+                      </svg>
+                    }
+                  />
+                  <CustomBtn
+                    type="button"
+                    name={"Reset Filter"}
+                    onClick={() => {
+                      getStatusWiseMaterialList();
+                    }}
+                    style={{ padding: "0px", minWidth: "120px" }}
+                  />
+                </div>
+              }
+            </div>
             {/* table  */}
             <div className="table_wrapper my-3">
               <div className="table_main">
@@ -550,8 +599,7 @@ const TransferMaterialForm = () => {
                       <h5>Sr. No.</h5>
                     </div>
                     <div className="col_50p">
-                      {/* <div className="category_stock d-flex justify-content-between"> */}
-                      {state.categoryFilter ? (
+                      {/* {state.categoryFilter ? (
                         <>
                           <select
                             className="selectBox text-capitalize"
@@ -598,12 +646,12 @@ const TransferMaterialForm = () => {
                             ></Image>
                           </div>
                         </>
-                      )}
-                      {/* </div> */}
+                      )} */}
+                      <h5>Category Name</h5>
+
                     </div>
                     <div className="col_40p">
-                      {/* <div className="commonBlock d-flex justify-content-between"> */}
-                      {state.brandFilter ? (
+                      {/* {state.brandFilter ? (
                         <>
                           <select
                             className="selectBox text-capitalize"
@@ -650,12 +698,12 @@ const TransferMaterialForm = () => {
                             ></Image>
                           </div>
                         </>
-                      )}
-                      {/* </div> */}
+                      )} */}
+                      <h5>Brand Name</h5>
+
                     </div>
                     <div className="col_50p">
-                      {/* <div className="item_code d-flex justify-content-between"> */}
-                      {state.locationFilter ? (
+                      {/* {state.locationFilter ? (
                         <>
                           <select
                             className="selectBox text-capitalize"
@@ -702,12 +750,11 @@ const TransferMaterialForm = () => {
                             ></Image>
                           </div>
                         </>
-                      )}
-                      {/* </div> */}
+                      )} */}
+                      <h5>Location Name</h5>
                     </div>
                     <div className="col_50p">
-                      {/* <div className="commonBlock d-flex justify-content-between"> */}
-                      {state?.modelNameFilter ? (
+                      {/* {state?.modelNameFilter ? (
                         <>
                           <select
                             className="selectBox text-capitalize"
@@ -754,8 +801,8 @@ const TransferMaterialForm = () => {
                             ></Image>
                           </div>
                         </>
-                      )}
-                      {/* </div> */}
+                      )} */}
+                      <h5>Modal Name</h5>
                     </div>
                     <div className="col_50p">
                       <h5>Item Code</h5>

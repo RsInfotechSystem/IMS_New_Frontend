@@ -319,11 +319,6 @@ const CreateOrder = () => {
                   register={{
                     ...register("address", {
                       required: "address is required",
-                      // minLength: { value: 10, message: "contact number must be 10 digit long" },
-                      // maxLength: {
-                      //   value: 10,
-                      //   message: "contact number cannot be grater than 10 digits",
-                      // },
                     }),
                   }}
                   errors={errors.address}
@@ -351,25 +346,7 @@ const CreateOrder = () => {
           <div className="form_wrapper">
             <div className="form_heading">
               <div>
-                {/* <svg
-                    width="21"
-                    height="22"
-                    viewBox="0 0 21 22"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M2.32617 4.64625H3.60367V6.165H2.32617V15.9587H3.56117V17.355H2.32617V20.8512H17.1974V1H2.32617V4.64625ZM6.55617 6.49C6.59367 6.46 6.89492 6.235 7.00242 6.15375L6.99492 6.15125C7.00492 6.1475 7.00992 6.14625 7.01617 6.1425C7.02242 6.135 7.04242 6.12125 7.04617 6.1175L7.05117 6.12375C7.23367 6.01625 7.42242 5.94125 7.63742 5.90875C8.21492 5.82375 8.63617 6.42375 8.90992 6.7675C9.18367 7.1075 9.56367 7.65 9.51742 8.02125C9.48992 8.245 9.23367 8.45125 8.99117 8.65375L8.98242 8.64125C8.91617 8.7125 8.62367 9.01125 8.59867 9.05125C8.46492 9.27375 8.31117 9.7775 8.52617 10.1575C8.72992 10.5262 9.13242 11.1237 9.51367 11.6225C9.91617 12.1062 10.4099 12.635 10.7224 12.9187C11.0499 13.215 11.5887 13.1937 11.8412 13.1212C11.8899 13.1087 12.2837 12.875 12.3349 12.85C12.5962 12.67 12.8599 12.48 13.0937 12.5087C13.4724 12.5562 13.9137 13.0512 14.1874 13.3925C14.4612 13.735 14.9537 14.2825 14.7287 14.8075C14.6424 15.0062 14.5174 15.165 14.3624 15.3138L14.3674 15.3188L14.3399 15.3387C14.3349 15.3438 14.3324 15.3488 14.3324 15.3488L14.3274 15.35C14.2249 15.4275 13.9224 15.6587 13.8849 15.6862C13.4649 15.9575 12.5524 16.2962 11.2699 15.5425C10.3187 14.9812 9.27492 14.0287 8.27867 12.8387L8.27367 12.8425C8.22742 12.7837 8.18367 12.725 8.13992 12.6663C8.09367 12.6088 8.04492 12.555 7.99742 12.495L8.00242 12.4913C7.06742 11.2575 6.37992 10.035 6.05742 8.99625C5.62367 7.59625 6.18492 6.82 6.55617 6.49Z"
-                      fill="#434343"
-                    />
-                    <path d="M2.22375 4.75H1V5.99H2.22375V4.75Z" fill="#434343" />
-                    <path d="M2.22125 16H1V17.1787H2.22125V16Z" fill="#434343" />
-                    <path d="M19.645 3.5H18.5V7.09375H19.645V3.5Z" fill="#434343" />
-                    <path d="M19.6088 14.75H18.5V18.3088H19.6088V14.75Z" fill="#434343" />
-                    <path d="M19.6263 8.5H18.5V13.3688H19.6263V8.5Z" fill="#434343" />
-                  </svg> */}
+
                 <div className="heading">Order Details</div>
               </div>
             </div>
@@ -391,52 +368,18 @@ const CreateOrder = () => {
               </div>
               <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
                 <label>Order Date*</label>
-                {/* <InputBox
-                    type={"number"}
-                    register={{
-                      ...register("mobile", {
-                        required: "contact number is required",
-                        minLength: { value: 10, message: "contact number must be 10 digit long" },
-                        maxLength: {
-                          value: 10,
-                          message: "contact number cannot be grater than 10 digits",
-                        },
-                      }),
-                    }}
-                    errors={errors.mobile}
-                    placeholder={""}
-                    disable={false}
-                  /> */}
                 <CustomDateInput
                   value={filterValues?.orderDate}
-                  maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
+                  minDate={new Date()}
+                  // maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
                   onChange={(date) => {
                     setFilterValues((prev) => ({ ...prev, orderDate: date }));
                   }}
                 />
-                {/* {orderDateError && (
-                    <p className="text-danger text-start" style={{ fontSize: "13px" }}>
-                      {orderDateError}
-                    </p>
-                  )} */}
               </div>
               <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
                 <label>Complete Date*</label>
-                {/* <InputBox
-                    type={"email"}
-                    register={{
-                      ...register("email", {
-                        required: "email is required",
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: "Invalid email address",
-                        },
-                      }),
-                    }}
-                    errors={errors.email}
-                    placeholder={""}
-                    disable={false}
-                  /> */}
+
                 <CustomDateInput
                   maxDate={`31 - 12 - ${new Date()?.getFullYear()}`}
                   value={filterValues?.orderCompleteDate}
@@ -464,18 +407,7 @@ const CreateOrder = () => {
                   disable={false}
                 />
               </div>
-              {/* <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
-                <label>Completion Time</label>
-                <InputBox
-                  type={"text"}
-                  register={{
-                    ...register("gstNumber"),
-                  }}
-                  placeholder={""}
-                  disable={false}
-                  className={"text-uppercase"}
-                />
-              </div> */}
+
               <div className="input_wrapper col-12 col-md-6 col-lg-3 ">
                 <label>Select Location*</label>
                 <SelectBox
@@ -517,9 +449,9 @@ const CreateOrder = () => {
             <Button
               name={"Save & Next"}
               onClick={handleSubmit(employeeDetailSubmit)}
-              // onClick={() => {
-              //   setActiveTab("SUPPLY");
-              // }}
+            // onClick={() => {
+            //   setActiveTab("SUPPLY");
+            // }}
             />
           </div>
         </div>
@@ -536,7 +468,7 @@ const CreateOrder = () => {
                   <div className="row"></div>
                   <div className="row d-flex align-items-end">
                     <div className="col-lg-3 col-md-6 input_wrapper">
-                      <label>Description</label>
+                      <label>Description*</label>
                       <textarea
                         {...register("description")}
                         className="form-control custom_input"
@@ -556,7 +488,7 @@ const CreateOrder = () => {
                       />
                     </div>
                     <div className="col-lg-3 col-md-6 input_wrapper">
-                      <label>warranty *</label>
+                      <label>warranty</label>
                       <InputBox
                         // type={"number"}
                         register={{
@@ -568,7 +500,7 @@ const CreateOrder = () => {
                       />
                     </div>
                     <div className="col-lg-3 col-md-6 input_wrapper">
-                      <label>Note *</label>
+                      <label>Note</label>
                       <InputBox
                         // type={"number"}
                         register={{
@@ -580,7 +512,7 @@ const CreateOrder = () => {
                       />
                     </div>
                     <div className="col-lg-3 col-md-6 input_wrapper">
-                      <label>Remarks *</label>
+                      <label>Remarks</label>
                       <InputBox
                         // type={"number"}
                         register={{
@@ -682,7 +614,7 @@ const CreateOrder = () => {
               type="submit"
               className="btn btn-success"
               onClick={handleSubmit(createOrder)}
-              // onClick={() => handleSubmit(createOrder)}
+            // onClick={() => handleSubmit(createOrder)}
             ></Button>
           </div>
         </div>

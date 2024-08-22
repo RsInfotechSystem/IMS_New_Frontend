@@ -134,10 +134,17 @@ const AttachedSalesOrder = () => {
         [param]: !(prev[modelName] && prev[modelName][param]),
       },
     }));
+    // Function to filter materials based on selectedParameters
+    const filteredMaterials = material.filter((m) => {
+      const modelParameters = selectedParameters[m.modelName];
+      if (!modelParameters) return false;
+
+      return Object.keys(modelParameters).some((param) => modelParameters[param]);
+    });
   };
 
   const handleSelectAllChangeList = (e) => {
-    const checked = e.target.value;
+    const checked = e.target.checked;
     setSelectAllChecked(checked);
     if (checked) {
       const allSelect = modelList?.materialDetails?.map((material) => material._id);
@@ -160,28 +167,14 @@ const AttachedSalesOrder = () => {
 
     // Since we're only allowing one selection at a time, we can simplify this
     setSelectAllChecked(false);
-
-    // setSelectAllChecked(
-    //   !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === stock?.length
-    // );
-    // setSelectedCheckboxes((prevSelected) => {
-    //   if (prevSelected.includes(checkboxId)) {
-    //     // If the checkbox is already in the array, remove it
-    //     return prevSelected.filter((id) => id !== checkboxId);
-    //   } else {
-    //     // If the checkbox is not in the array, add it
-    //     return [...prevSelected, checkboxId];
-    //   }
-    // });
   };
   // console.log("checkboxId", selectedCheckboxes);
   const handleSelectAllChange = (e) => {
     const PreviewChecked = e.target.checked;
-    console.log(PreviewChecked, "PreviewChecked");
-
+    // console.log(PreviewChecked, "PreviewChecked");
     setSelectAllCheckedPreview(PreviewChecked);
     if (PreviewChecked) {
-      const allSelectPriview = material?.map((material) => material._id);
+      const allSelectPriview = material?.filter((material) => !material.disabled)?.map((material) => material._id);
       [];
       setSelectedMaterials(allSelectPriview);
     } else {
@@ -307,8 +300,9 @@ const AttachedSalesOrder = () => {
   }
 
   async function sendReadyMaterial(values) {
+    console.log(materialDetails, "attachedMaterials")
     try {
-      if (attachedMaterials.length === 0) {
+      if (attachedMaterials?.length <= 0) {
         toast.info("Please attach materials.");
         return;
       }
@@ -421,34 +415,24 @@ const AttachedSalesOrder = () => {
     }
   };
 
-  // // console.log("sssss", attachedMaterials);
-  // const handleRemoveAttachedMaterial = (materialId) => {
-  //   setAttachedMaterials((prev) => prev.filter((m) => m._id !== materialId));
-  //   // let materialArray = materialDetails.map((data) =>
-  //   //   data.materialIds.filter((material) => materialId !== material)
-  //   // );
-  //   // setMaterialDetails(materialDetails.map((data) => !data.materialIds.includes(materialId)));
-  //   // console.log(materialArray, "materialArray");
-  // };
   const handleRemoveAttachedMaterial = (materialId) => {
+    // Remove the material from the attached materials list
     setAttachedMaterials((prev) => prev.filter((m) => m._id !== materialId));
-
+    // Re-enable the material by setting `disabled` to false
+    setMaterial((prev) => prev.map((material) => material?._id === materialId ? { ...material, disabled: false } : material))
     // Find the description ID associated with this material
     const descriptionToRemove = materialDetails.find((detail) =>
       detail.materialIds.includes(materialId)
     )?.detailId;
-
     if (descriptionToRemove) {
       removeAttachedDescription(descriptionToRemove);
     }
-
     // Remove the material from materialDetails
     setMaterialDetails((prev) =>
-      prev
-        .map((detail) => ({
-          ...detail,
-          materialIds: detail.materialIds.filter((id) => id !== materialId),
-        }))
+      prev.map((detail) => ({
+        ...detail,
+        materialIds: detail.materialIds.filter((id) => id !== materialId),
+      }))
         .filter((detail) => detail.materialIds.length > 0)
     );
   };
@@ -477,6 +461,7 @@ const AttachedSalesOrder = () => {
       {modalState.viewPdf && (
         <ViewSalesOrder pdfData={modalState?.data} setModalStates={setModalStates} />
       )}
+
 
       {/* ------------------------------- top header ----------------------------------------------- */}
       <div className="top_header">
@@ -513,6 +498,8 @@ const AttachedSalesOrder = () => {
           <div>Back</div>
         </div>
       </div>
+      {console.log(selectedParameters, "selectedParameters")
+      }
       {/* ------------------------------- top header end ----------------------------------------------- */}
       {/* ---------------------------sales order list of discription----------------------------------------------------------*/}
       <div className="form_list_layout_wrapper my-4">
@@ -526,13 +513,14 @@ const AttachedSalesOrder = () => {
               <div className="table_header">
                 <div className="col_20p">
                   <div className="check_box">
-                    <input
+                    <h5>Action</h5>
+                    {/* <input
                       className="form-check-input"
                       type="checkbox"
                       id="selectAllCheckbox"
                       onChange={(e) => handleSelectAllChangeList(e)}
                       checked={selectAllChecked}
-                    />
+                    /> */}
                   </div>
                 </div>
 
@@ -749,6 +737,8 @@ const AttachedSalesOrder = () => {
                   <div className="col-12" style={{ maxHeight: "300px", overflowY: "auto" }}>
                     {parameter.map((modal, index) => (
                       <div key={index} className="modal-container">
+                        {console.log(modal, "modallll")}
+
                         <div className="d-flex gap-2 mb-2">
                           <div
                             onClick={() => toggleModal(modal?.modelName)}
@@ -853,10 +843,10 @@ const AttachedSalesOrder = () => {
                                       checked={selectedMaterials.includes(product._id)}
                                       onChange={() => handleMaterialSelect(product._id)}
                                       disabled={product.disabled}
-                                      // id={product._id}
-                                      // onChange={(e) => handleCheckboxChange(e)}
-                                      // checked={selectedCheckboxes.includes(product._id)}
-                                      // checked={selectedList.some((item) => item._id === product._id)}
+                                    // id={product._id}
+                                    // onChange={(e) => handleCheckboxChange(e)}
+                                    // checked={selectedCheckboxes.includes(product._id)}
+                                    // checked={selectedList.some((item) => item._id === product._id)}
                                     />
                                   </div>
                                 </div>
@@ -928,9 +918,9 @@ const AttachedSalesOrder = () => {
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          // id="selectAllCheckbox"
-                          // onChange={(e) => handleSelectAllChange(e)}
-                          // checked={selectAllChecked}
+                        // id="selectAllCheckbox"
+                        // onChange={(e) => handleSelectAllChange(e)}
+                        // checked={selectAllChecked}
                         />
                       </div>
                     </div>
@@ -967,12 +957,12 @@ const AttachedSalesOrder = () => {
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                                // checked={selectedMaterials.includes(product._id)}
-                                // onChange={() => handleMaterialSelect(product._id)}
-                                // id={product._id}
-                                // onChange={(e) => handleCheckboxChange(e)}
-                                // checked={selectedCheckboxes.includes(product._id)}
-                                // checked={selectedList.some((item) => item._id === product._id)}
+                              // checked={selectedMaterials.includes(product._id)}
+                              // onChange={() => handleMaterialSelect(product._id)}
+                              // id={product._id}
+                              // onChange={(e) => handleCheckboxChange(e)}
+                              // checked={selectedCheckboxes.includes(product._id)}
+                              // checked={selectedList.some((item) => item._id === product._id)}
                               />
                             </div>
                           </div>
@@ -1001,6 +991,7 @@ const AttachedSalesOrder = () => {
                           </div>
                           <div className="col_20p">
                             <Button
+                              type="button"
                               onClick={() => handleRemoveAttachedMaterial(item._id)}
                               name={"Delete"}
                               className="btn-danger"

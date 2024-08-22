@@ -180,6 +180,7 @@ const Inventory = () => {
         {
           <div className="buttons_wrapper">
             <CustomBtn
+
               name={"Filter"}
               onClick={() => {
                 setModalStates((prev) => ({ ...prev, filter: true }));
@@ -197,6 +198,7 @@ const Inventory = () => {
               }
             />
             <CustomBtn
+              type="button"
               name={"Reset Filter"}
               onClick={() => {
                 getStatusWiseMaterialList();
