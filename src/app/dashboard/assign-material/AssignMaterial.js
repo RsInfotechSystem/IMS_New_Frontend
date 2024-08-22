@@ -716,15 +716,15 @@ const AssignMaterial = () => {
                             // disabled={modalStates.isView}
                             >
                               <option value="" className="text-secondary text-lowercase"></option>
-                              {locationList.map((ele, index) => {
+                              {locationList?.map((ele, index) => {
                                 return (
                                   <option
                                     className="small text-capitalize"
-                                    value={ele._id}
+                                    value={ele?._id}
                                     key={index}
                                   >
                                     {" "}
-                                    {ele.name}
+                                    {ele?.name}
                                   </option>
                                 );
                               })}
@@ -751,15 +751,15 @@ const AssignMaterial = () => {
                               onChange={(e) => setUserId(e.target.value)}
                             >
                               <option value="" className="text-secondary text-lowercase"></option>
-                              {TechnicianList.map((ele, index) => {
+                              {TechnicianList?.map((ele, index) => {
                                 return (
                                   <option
                                     className="small text-capitalize"
-                                    value={ele._id}
+                                    value={ele?._id}
                                     key={index}
-                                    selected={ele._id === userId ? true : false}
+                                    selected={ele?._id === userId ? true : false}
                                   >
-                                    {ele.name}
+                                    {ele?.name}
                                   </option>
                                 );
                               })}
@@ -860,7 +860,7 @@ const AssignMaterial = () => {
                       onChange={(e) => setState({ _conditionType: e.target.value })}
                     >
                       <option value="" className="text-secondary text-lowercase"></option>
-                      {state.conditionTypeList.map((item, index) => (
+                      {state?.conditionTypeList?.map((item, index) => (
                         <option
                           className="small text-capitalize"
                           value={item.conditionType}
@@ -949,23 +949,23 @@ const AssignMaterial = () => {
                           </div>
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {filteredMaterial.length > 0 ? (
+                        {filteredMaterial?.length > 0 ? (
                           <>
-                            {filteredMaterial.length > 0 ? (
+                            {filteredMaterial?.length > 0 ? (
                               <>
-                                {filteredMaterial.map((materialData, index) => (
+                                {filteredMaterial?.map((materialData, index) => (
                                   <div className="table_data" key={index}>
-                                    {console.log(materialData, "materialData")}
+                                    {/* {console.log(materialData, "materialData")} */}
 
                                     <div className="col_5p">
                                       <div className="check_box">
                                         <input
                                           className="form-check-input"
                                           type="checkbox"
-                                          id={materialData._id}
+                                          id={materialData?._id}
                                           onChange={(e) => handleCheckboxChange(e, materialData)}
                                           checked={selectedList.some(
-                                            (item) => item._id === materialData._id
+                                            (item) => item?._id === materialData?._id
                                           )}
                                         />
                                       </div>
@@ -981,7 +981,7 @@ const AssignMaterial = () => {
                                     </div>
                                     <div className="col_20p">
                                       <h6>
-                                        {materialData?.rackId.rackName
+                                        {materialData?.rackId?.rackName
                                           ? materialData?.rackId?.rackName
                                           : "-"}
                                       </h6>
@@ -1037,10 +1037,10 @@ const AssignMaterial = () => {
                         ) : (
                           <>
                             {" "}
-                            {material.length > 0 ? (
+                            {material?.length > 0 ? (
                               <>
                                 {" "}
-                                {material.map((materialData, index) => (
+                                {material?.map((materialData, index) => (
                                   <div className="table_data" key={index}>
                                     <div className="col_5p">
                                       {" "}
@@ -1048,10 +1048,10 @@ const AssignMaterial = () => {
                                         <input
                                           className="form-check-input"
                                           type="checkbox"
-                                          id={materialData._id}
+                                          id={materialData?._id}
                                           onChange={(e) => handleCheckboxChange(e, materialData)}
                                           checked={selectedList.some(
-                                            (item) => item._id === materialData._id
+                                            (item) => item?._id === materialData?._id
                                           )}
                                         />
                                       </div>
@@ -1060,15 +1060,15 @@ const AssignMaterial = () => {
                                       <h6>{index + 1}</h6>
                                     </div>
                                     <div className="col_20p">
-                                      <h6>{materialData?.locationId.name}</h6>
+                                      <h6>{materialData?.locationId?.name}</h6>
                                     </div>
                                     <div className="col_20p">
-                                      <h6>{materialData.blockId.blockNo}</h6>
+                                      <h6>{materialData?.blockId?.blockNo}</h6>
                                     </div>
                                     <div className="col_20p">
                                       <h6>
-                                        {materialData?.rackId.rackName
-                                          ? materialData?.rackId.rackName
+                                        {materialData?.rackId?.rackName
+                                          ? materialData?.rackId?.rackName
                                           : "-"}
                                       </h6>
                                     </div>
@@ -1157,9 +1157,9 @@ const AssignMaterial = () => {
                           </div>{" "} */}
                         </div>
                         {/* <div className="table_data_wrapper"> */}
-                        {selectedList.length > 0 ? (
+                        {selectedList?.length > 0 ? (
                           <>
-                            {selectedList.map((materialData, index) => (
+                            {selectedList?.map((materialData, index) => (
                               <div className="table_data" key={index}>
                                 <div className="col_5p">
                                   <div className="check_box">
@@ -1168,7 +1168,7 @@ const AssignMaterial = () => {
                                       type="checkbox"
                                       id={materialData?._id}
                                       onChange={(e) => getStockIds(e, materialData)}
-                                      checked={stockIds.some((item) => item === materialData?._id)}
+                                      checked={stockIds?.some((item) => item === materialData?._id)}
                                     />
                                   </div>
                                 </div>
@@ -1230,7 +1230,7 @@ const AssignMaterial = () => {
                                           // });
                                           return;
                                         }
-                                        if (newQuantity > materialData.reamainingQuantity) {
+                                        if (newQuantity > materialData?.reamainingQuantity) {
                                           // Swal.fire({
                                           //   text: "Assign quantity cannot greater than quantity",
                                           //   icon: "warning",
@@ -1251,7 +1251,7 @@ const AssignMaterial = () => {
                                     type="button"
                                     title="delete"
                                     style={{ border: "none" }}
-                                    onClick={() => handleDeleteMaterial(materialData._id)}
+                                    onClick={() => handleDeleteMaterial(materialData?._id)}
                                   >
                                     <FontAwesomeIcon icon={faTrash} />
                                   </button>

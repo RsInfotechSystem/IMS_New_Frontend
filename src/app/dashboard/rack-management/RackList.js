@@ -133,7 +133,7 @@ const RackList = () => {
         toast.info(serverResponse?.data?.message);
         setIsEnableDisable((prev) => ({ ...prev, modal: false }));
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const deleteRole = async () => {
@@ -304,7 +304,7 @@ const RackList = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {rackList.length > 0 ? (
+            {rackList?.length > 0 ? (
               <>
                 {rackList?.map((rackDetails, index) => {
                   return (
@@ -317,7 +317,7 @@ const RackList = () => {
                             type="checkbox"
                             id={rackDetails._id}
                             onChange={(e) => handleCheckboxChange(e)}
-                            checked={selectedCheckboxes.includes(rackDetails?._id)}
+                            checked={selectedCheckboxes?.includes(rackDetails?._id)}
                           />
                           <label className="form-check-label"></label>
                           {/* </div> */}
@@ -335,16 +335,16 @@ const RackList = () => {
                           <h6>
                             {rackDetails.partitionArray.length > 0
                               ? rackDetails.partitionArray
-                                  .slice(0, showMore ? rackDetails.partitionArray.length : 20)
-                                  .map((item, index) => (
-                                    <span key={index}>
-                                      {item.partitionName}
-                                      {index !==
+                                .slice(0, showMore ? rackDetails.partitionArray.length : 20)
+                                .map((item, index) => (
+                                  <span key={index}>
+                                    {item.partitionName}
+                                    {index !==
                                       (showMore ? rackDetails.partitionArray.length : 20) - 1
-                                        ? ", "
-                                        : ""}
-                                    </span>
-                                  ))
+                                      ? ", "
+                                      : ""}
+                                  </span>
+                                ))
                               : "-"}
                           </h6>
                           <div></div>

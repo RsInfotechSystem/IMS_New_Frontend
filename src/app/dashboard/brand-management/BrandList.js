@@ -4,7 +4,7 @@ import CustomBtn from "@/common-components/CustomBtn";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
 import CreateBrand from "./CreateBrand";
@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+// import CreateBrandUpdated from "./CreateBrandUpdated";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const BrandList = () => {
@@ -66,7 +67,7 @@ const BrandList = () => {
       });
       if (response?.data?.status === "SUCCESS") {
         setSelectedCheckboxes([]);
-       
+
         await getBrandList(1, "");
         toast.success(response?.data?.message);
       } else if (response?.data?.status === "JWT_INVALID") {
@@ -115,6 +116,15 @@ const BrandList = () => {
       e.target.checked ? brandList.map((brandDetails) => brandDetails._id) : []
     );
   };
+  const groupedBrands = brandList.reduce((acc, brand) => {
+    const { category, name } = brand;
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(name);
+    return acc;
+  }, {});
+  // console.log(groupedBrands, "groupedBrands");
 
   useEffect(() => {
     getBrandList(currentPage, searchString);
@@ -135,12 +145,12 @@ const BrandList = () => {
       <div className="top_header">
         <div className="tab_title">Brand Management</div>
         <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -200,94 +210,99 @@ const BrandList = () => {
               </div>
               <div className="col_10p">
                 <h5>Sr. No.</h5>
+              </div>  <div className="col_35p">
+                <h5>Category</h5>
               </div>
               <div className="col_35p">
                 <h5> Brand</h5>
-              </div>
-              <div className="col_35p">
-                <h5>Category</h5>
               </div>
               <div className="col_20p">
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {brandList.length > 0 ? (<>
-            {brandList?.map((data, index) => {
-              return (<>
-                <div
-                  className="table_data"
-                  key={index}
-                >
-                  <div className="col_15p">
-                    <div className="check_box">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id={data._id}
-                        onChange={(e) => handleCheckboxChange(e)}
-                        checked={selectedCheckboxes.includes(data._id)}
-                      />
-                      <label className="form-check-label"></label>
-                    </div>
-                  </div>
-                  <div className="col_10p">
-                    <h6>{((Number(pageLimit) * (page - 1))) + (index + 1)}</h6>
-                  </div>
-
-                  <div className="col_35p">
-                    <h6>{data?.name}</h6>
-                  </div>
-
-                  <div className="col_35p">
-                    <h6>{data?.categoryId?.name}</h6>
-                  </div>
-
-                  <div className="col_20p">
-                    <h6 className="action_wrraper">
-                      <div title="Update">
-                        <svg
-                          onClick={() => {
-                            setModalStates((prev) => ({
-                              ...prev,
-                              modal: true,
-                              type: "update",
-                              id: data?._id,
-                            }));
-                          }}
-                          width="27"
-                          height="27"
-                          viewBox="0 0 25 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g clip-path="url(#clip0_279_5204)">
-                            <path
-                              d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                              stroke="#0D6EFD"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                              stroke="#0D6EFD"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_279_5204">
-                              <rect width="15" height="15" fill="white" transform="translate(5 5)" />
-                            </clipPath>
-                          </defs>
-                        </svg>
+            {brandList?.length > 0 ? (<>
+              {brandList?.map((data, index) => {
+                return (<>
+                  <div
+                    className="table_data"
+                    key={index}
+                  >
+                    <div className="col_15p">
+                      <div className="check_box">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={data?._id}
+                          onChange={(e) => handleCheckboxChange(e)}
+                          checked={selectedCheckboxes.includes(data?._id)}
+                        />
+                        <label className="form-check-label"></label>
                       </div>
-                    </h6>
-                  </div>
-                </div >
-              </>)
-            })}
+                    </div>
+                    <div className="col_10p">
+                      <h6>{((Number(pageLimit) * (page - 1))) + (index + 1)}</h6>
+                    </div>
+                    <div className="col_35p">
+                      <h6>{data?.name}</h6>
+                    </div><div className="col_35p">
+                      <h6>{data?.category}</h6>
+                    </div>
+                    {/* {Object.entries(groupedBrands)?.map(([category, brandList]) => (
+                      <React.Fragment key={category}>
+                        <div className="col_35p">
+                          <h6>{category}</h6>
+                        </div>
+                        <div className="col_35p">
+                          <h6>{brandList.join(",")}</h6>
+                        </div>
+                      </React.Fragment>
+                    ))} */}
+                    <div className="col_20p">
+                      <h6 className="action_wrraper">
+                        <div title="Update">
+                          <svg
+                            onClick={() => {
+                              setModalStates((prev) => ({
+                                ...prev,
+                                modal: true,
+                                type: "update",
+                                id: data?._id,
+                              }));
+                            }}
+                            width="27"
+                            height="27"
+                            viewBox="0 0 25 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g clip-path="url(#clip0_279_5204)">
+                              <path
+                                d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                stroke="#0D6EFD"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                stroke="#0D6EFD"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </g>
+                            <defs>
+                              <clipPath id="clip0_279_5204">
+                                <rect width="15" height="15" fill="white" transform="translate(5 5)" />
+                              </clipPath>
+                            </defs>
+                          </svg>
+                        </div>
+                      </h6>
+                    </div>
+                  </div >
+                </>)
+              })}
             </>
-            ):(
+            ) : (
               <p className="no_data">Data Not Available</p>
             )
             }
@@ -302,7 +317,7 @@ const BrandList = () => {
       } */}
       {
         modalStates?.modal && (
-          <CreateBrand data={{ modalStates, setModalStates, setIsPageUpdated,getBrandList, searchString, currentPage}} />
+          <CreateBrand data={{ modalStates, setModalStates, setIsPageUpdated, getBrandList, searchString, currentPage }} />
         )
       }
     </>

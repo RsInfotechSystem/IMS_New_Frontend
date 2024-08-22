@@ -291,7 +291,7 @@ const StockOut = () => {
                     <h6>{materialDetails?.stockOutBy?.name}</h6>
                   </div>
                   <div className="col_35p">
-                    <h6>{new Date(materialDetails.createdAt).toLocaleDateString()}</h6>
+                    <h6>{new Date(materialDetails?.createdAt).toLocaleDateString()}</h6>
                   </div>
                 </div>
               ))

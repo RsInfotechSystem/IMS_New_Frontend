@@ -20,6 +20,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import ViewSalesOrder from "./ViewSalesOrderPdf";
 import CustomDateInput from "@/common-components/CustomDateInput";
 import { Ruthie } from "next/font/google";
+import CustomTextArea from "@/common-components/CustomTextArea";
 gsap.registerPlugin(useGSAP);
 
 const CreateOrder = () => {
@@ -66,6 +67,7 @@ const CreateOrder = () => {
 
   // Get all categories list
   const createOrder = async (values) => {
+    console.log(values, "values")
     // if (values.description == "") {
     //   toast.info("description is required");
     //   return;
@@ -88,7 +90,7 @@ const CreateOrder = () => {
         customerNo: values?.mobile,
         customerAddress: values.address,
         contactPerson: values.contactPerson,
-        // remark: values.remark,
+        remark: values.remark,
       };
       let response = await communication.createSalesOrder(dataToSend);
       if (response?.data?.status === "SUCCESS") {
@@ -113,10 +115,16 @@ const CreateOrder = () => {
         locationId: _locationId,
       };
       let response = await communication.getalluser(payload);
+      setLoader(true);
       if (response?.data?.status === "SUCCESS") {
         setUser(response?.data?.users);
+        setLoader(false);
+      } else {
+        setUser([])
+        setLoader(false);
       }
     } catch (error) {
+      setLoader(false);
       toast.warn(error.message);
       //   Swal.fire({ text: error.message, icon: "warning" });
     }
@@ -148,7 +156,7 @@ const CreateOrder = () => {
       setValue("quantity", "");
       setValue("warranty", "");
       setValue("note", "");
-      setValue("remarks", "");
+      // setValue("remark", "");
     }
   };
   async function callAPIs(params) {
@@ -511,7 +519,7 @@ const CreateOrder = () => {
                         errors={errors.note}
                       />
                     </div>
-                    <div className="col-lg-3 col-md-6 input_wrapper">
+                    {/* <div className="col-lg-3 col-md-6 input_wrapper">
                       <label>Remarks</label>
                       <InputBox
                         // type={"number"}
@@ -522,8 +530,8 @@ const CreateOrder = () => {
                         }}
                         errors={errors.remarks}
                       />
-                    </div>
-                    <div className="col-lg-3 col-md-6 input_wrapper">
+                    </div> */}
+                    <div className="col-lg-12 input_wrapper d-flex justify-content-center">
                       <Button name={"Add"} type="button" className="" onClick={addMaterial}>
                         {/* Add */}
                       </Button>
@@ -607,6 +615,17 @@ const CreateOrder = () => {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-lg-12 col-md-6 input_wrapper">
+            <label>Remark</label>
+            <CustomTextArea
+              register={{
+                ...register("remark", {
+                  // required: "remarks is required",
+                }),
+              }}
+              errors={errors.remark}
+            />
           </div>
           <div className="d-flex align-items-center justify-content-center gap-3 my-3">
             <Button

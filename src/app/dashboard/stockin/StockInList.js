@@ -202,7 +202,7 @@ const StockInList = () => {
           return;
         }
       });
-    } catch (error) {}
+    } catch (error) { }
   };
   const handleFileChange = (event) => {
     alert("Under Maintainance");
@@ -612,7 +612,7 @@ const StockInList = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {stock.length > 0 ? (
+            {stock?.length > 0 ? (
               <>
                 {stock?.map((stockDetails, index) => (
                   <div className="table_data" key={index}>
@@ -655,7 +655,7 @@ const StockInList = () => {
                       <h6>{stockDetails?.brandId?.name}</h6>
                     </div>
                     <div className="col_50p">
-                      <h6>{stockDetails?.locationId.name}</h6>
+                      <h6>{stockDetails?.locationId?.name}</h6>
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.modelId?.name ? stockDetails?.modelId?.name : "-"}</h6>{" "}
@@ -681,7 +681,7 @@ const StockInList = () => {
                       <h6>{stockDetails?.blockId?.blockNo}</h6>
                     </div>
                     <div className="col_50p">
-                      <h6>{stockDetails?.rackId.rackName ? stockDetails?.rackId.rackName : "-"}</h6>{" "}
+                      <h6>{stockDetails?.rackId?.rackName ? stockDetails?.rackId?.rackName : "-"}</h6>{" "}
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.serialNo ? stockDetails?.serialNo : "--"}</h6>

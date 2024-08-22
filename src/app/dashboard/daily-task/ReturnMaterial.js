@@ -290,7 +290,7 @@ const ReturnMaterial = ({ data }) => {
                     style={{ width: "100%" }}
                   >
                     <option value="">Select location</option>
-                    {locations.map((ele, index) => {
+                    {locations?.map((ele, index) => {
                       return (
                         <option
                           value={ele._id}
@@ -321,7 +321,7 @@ const ReturnMaterial = ({ data }) => {
                     style={{ width: "100%" }}
                   >
                     <option value="">Select Block</option>
-                    {blocks.map((ele, index) => {
+                    {blocks?.map((ele, index) => {
                       return (
                         <option
                           value={ele._id}
@@ -342,7 +342,7 @@ const ReturnMaterial = ({ data }) => {
                   </div>
                 </div>
 
-                {racks.length >= 1 && isRackExist && (
+                {racks?.length >= 1 && isRackExist && (
                   <>
                     {" "}
                     <div className="col-lg-3 col-md-6 input_wrapper">
@@ -356,14 +356,14 @@ const ReturnMaterial = ({ data }) => {
                         style={{ width: "100%" }}
                       >
                         <option value="">Select Rack</option>
-                        {racks.map((ele, index) => {
+                        {racks?.map((ele, index) => {
                           return (
                             <option
-                              value={ele._id}
+                              value={ele?._id}
                               key={index}
-                              selected={ele._id === getValues("rackId") ? true : false}
+                              selected={ele?._id === getValues("rackId") ? true : false}
                             >
-                              {ele.rackName}
+                              {ele?.rackName}
                             </option>
                           );
                         })}
@@ -389,14 +389,14 @@ const ReturnMaterial = ({ data }) => {
                     style={{ width: "100%" }}
                   >
                     <option value="">Select Category</option>
-                    {category.map((ele, index) => {
+                    {category?.map((ele, index) => {
                       return (
                         <option
-                          value={ele.categoryId}
+                          value={ele?.categoryId}
                           key={index}
-                          selected={ele.categoryId === getValues("categoryId") ? true : false}
+                          selected={ele?.categoryId === getValues("categoryId") ? true : false}
                         >
-                          {ele.name}
+                          {ele?.name}
                         </option>
                       );
                     })}
@@ -665,14 +665,14 @@ const ReturnMaterial = ({ data }) => {
                         value={selectedMaterial} // Add value prop to control the selected value
                       >
                         <option value="">Select Material</option>
-                        {dataToAddList.map((ele, index) => {
+                        {dataToAddList?.map((ele, index) => {
                           return (
                             <option
-                              value={ele.categoryId.name}
+                              value={ele?.categoryId?.name}
                               key={index}
-                              data-id={ele.categoryId._id} // Added data-id attribute
+                              data-id={ele?.categoryId?._id} // Added data-id attribute
                             >
-                              {`${ele.categoryId.name} (${ele.itemCode})`}
+                              {`${ele?.categoryId?.name} (${ele?.itemCode})`}
                             </option>
                           );
                         })}
@@ -694,12 +694,12 @@ const ReturnMaterial = ({ data }) => {
                         type="button"
                         className="mt-4 btn btn-success"
                         onClick={handleAddMaterial}
-                        // style={{
-                        //   height: "28px",
-                        //   width: "35px",
-                        //   border: "1px solid #BABABA",
-                        //   marginBottom: "11px",
-                        // }}
+                      // style={{
+                      //   height: "28px",
+                      //   width: "35px",
+                      //   border: "1px solid #BABABA",
+                      //   marginBottom: "11px",
+                      // }}
                       >
                         {/* <Image src={addIcon} alt="add-icon"></Image> */}add
                       </button>

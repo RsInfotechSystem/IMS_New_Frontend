@@ -140,12 +140,12 @@ const RoleList = () => {
       <div className="top_header">
         <div className="tab_title">Role Management</div>
         <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -227,7 +227,7 @@ const RoleList = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {roles.length > 0 ? (
+            {roles?.length > 0 ? (
               <>
                 {roles?.map((roleDetails, index) => {
                   return (
@@ -237,9 +237,9 @@ const RoleList = () => {
                           <input
                             className="form-check-input"
                             type="checkbox"
-                            id={roleDetails._id}
+                            id={roleDetails?._id}
                             onChange={(e) => handleCheckboxChange(e)}
-                            checked={selectedCheckboxes.includes(roleDetails._id)}
+                            checked={selectedCheckboxes.includes(roleDetails?._id)}
                           />
                           <label className="form-check-label"></label>
                         </div>

@@ -102,14 +102,14 @@ const Location = () => {
             <div className="top_header">
                 <div className="tab_title">Location Management</div>
                 <div className="pagination_wrapper">
-                <Pagination
-                    isPageUpdated={isPageUpdated}
-                    setIsPageUpdated={setIsPageUpdated}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    pageCount={pageCount}
-                />
-            </div>
+                    <Pagination
+                        isPageUpdated={isPageUpdated}
+                        setIsPageUpdated={setIsPageUpdated}
+                        currentPage={currentPage}
+                        setCurrentPage={setCurrentPage}
+                        pageCount={pageCount}
+                    />
+                </div>
             </div>
             <div className="search_btn_wrapper">
                 <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
@@ -174,8 +174,8 @@ const Location = () => {
                                                 <h6 className="action_wrraper">
                                                     <div title="edit" >
                                                         <svg
-                                                            title={`${locationDetails.isActive ? "Update" : ""}`}
-                                                            className={`${locationDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
+                                                            title={`${locationDetails?.isActive ? "Update" : ""}`}
+                                                            className={`${locationDetails?.isActive ? "cursor-pointer" : "cursor-not-allowed"
                                                                 }`}
                                                             onClick={() => { setModalStates((prev) => ({ ...prev, modal: true, type: "update", locationId: locationDetails._id })) }}
                                                             width="27" height="27" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -195,10 +195,10 @@ const Location = () => {
                                                         <input
                                                             class="form-check-input cursor-pointer"
                                                             type="checkbox"
-                                                            checked={locationDetails.isActive || false}
-                                                            id={`toggleSwitch${locationDetails._id}`}
+                                                            checked={locationDetails?.isActive || false}
+                                                            id={`toggleSwitch${locationDetails?._id}`}
                                                             onChange={(event) =>
-                                                                setModalStates(pre => ({ ...pre, action: locationDetails.isActive ? "disable" : "enable", locationId: locationDetails._id, deleteLocation: true }))
+                                                                setModalStates(pre => ({ ...pre, action: locationDetails?.isActive ? "disable" : "enable", locationId: locationDetails?._id, deleteLocation: true }))
                                                             }
                                                             style={{ width: "35px", height: "15px" }}
                                                         />
@@ -221,7 +221,7 @@ const Location = () => {
 
                 </div>
             </div>
-            
+
             {modalStates?.modal && <CreateLocation data={{ modalStates, setModalStates, getLocation, }} />}
 
         </>

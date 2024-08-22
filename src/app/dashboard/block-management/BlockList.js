@@ -288,7 +288,7 @@ const BlockList = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {blockList.length > 0 ? (<>
+            {blockList?.length > 0 ? (<>
 
               {blockList?.map((blockDetails, index) => {
                 return (
@@ -299,9 +299,9 @@ const BlockList = () => {
                           <input
                             className="form-check-input"
                             type="checkbox"
-                            id={blockDetails._id}
+                            id={blockDetails?._id}
                             onChange={(e) => handleCheckboxChange(e)}
-                            checked={selectedCheckboxes.includes(blockDetails._id)}
+                            checked={selectedCheckboxes.includes(blockDetails?._id)}
                           />
                           <label className="form-check-label"></label>
                         </div>
@@ -310,16 +310,16 @@ const BlockList = () => {
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_35p">
-                        <h6>{blockDetails.location}</h6>
+                        <h6>{blockDetails?.location}</h6>
                       </div>
                       <div className="col_35p">
-                        <h6>{blockDetails.blockNo}</h6>
+                        <h6>{blockDetails?.blockNo}</h6>
                       </div>
                       <div className="col_35p">
-                        {blockDetails.rackId?.length > 0 ? (
+                        {blockDetails?.rackId?.length > 0 ? (
                           <h6>
                             {blockDetails?.rackId?.map((item, index) => (
-                              <span key={index}>{item.rackName}{index !== blockDetails?.rackId?.length - 1 && <span>, </span>}</span>
+                              <span key={index}>{item?.rackName}{index !== blockDetails?.rackId?.length - 1 && <span>, </span>}</span>
                             ))}
                           </h6>
                         ) : (

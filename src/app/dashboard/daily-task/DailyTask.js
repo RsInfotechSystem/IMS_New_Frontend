@@ -315,7 +315,7 @@ const DailyTask = () => {
                 </div>
               )} */}
             </div>
-            {material.length > 0 ? (
+            {material?.length > 0 ? (
               <>
                 {material?.map((stockDetails, index) => (
                   <div className="table_data" key={index}>
@@ -338,7 +338,7 @@ const DailyTask = () => {
                       <h6>{stockDetails?.createdAt.split("T")[0]}</h6>
                     </div>
                     <div className="col_70p">
-                      <h6>{stockDetails?.userId.name}</h6>
+                      <h6>{stockDetails?.userId?.name}</h6>
                     </div>
                     <div className="col_70p">
                       <h6>{stockDetails?.assignedBy?.name}</h6>
@@ -414,10 +414,9 @@ const DailyTask = () => {
                         {roleName == "admin" && stockDetails?.taskStatus == "acknowledge" && (
                           <div title="edit">
                             <svg
-                              title={`${stockDetails.isActive ? "Update" : ""}`}
-                              className={`${
-                                stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
-                              }`}
+                              title={`${stockDetails?.isActive ? "Update" : ""}`}
+                              className={`${stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
+                                }`}
                               onClick={() =>
                                 router.push(
                                   `/dashboard/assign-material?type=edit&JobNo=${stockDetails?.jobNo}`

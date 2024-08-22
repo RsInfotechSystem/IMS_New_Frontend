@@ -276,7 +276,7 @@ const NrMateial = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {nrMaterial.length > 0 ? (
+            {nrMaterial?.length > 0 ? (
               <>
                 {nrMaterial?.map((materialDetails, index) => {
                   return (

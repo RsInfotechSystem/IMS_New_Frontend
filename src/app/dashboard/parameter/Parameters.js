@@ -59,7 +59,7 @@ const Parameters = () => {
     formState: { errors },
   } = useForm();
   //   const _parameterInput = watch("parameter");
-  async function getAllParameter(page=1, searchString, isSearch = false) {
+  async function getAllParameter(page = 1, searchString, isSearch = false) {
     try {
       setLoader(true);
       const serverResponse = await communication.getAllParameter(page, searchString);
@@ -79,7 +79,7 @@ const Parameters = () => {
       }
       setLoader(false);
     } catch (error) {
-           toast.info(error?.response?.data?.message || error.message)
+      toast.info(error?.response?.data?.message || error.message)
       setLoader(false);
     }
   }
@@ -216,15 +216,15 @@ const Parameters = () => {
                     cancelHandler={() => { setModalStates((prev) => ({ ...prev, modal: false, action: "", locationId: "", deleteLocation: false })) }}
                 />
             } */}
-            {showModal.modal && (
-              <CustomResponseHandlerModal
-                status="warning"
-                // show={showModal}
-                message="Are you sure you want to delete this parameter?"
-                successHandler={successHandler}
-                cancelHandler={cancelHandler}
-              />
-            )}
+      {showModal.modal && (
+        <CustomResponseHandlerModal
+          status="warning"
+          // show={showModal}
+          message="Are you sure you want to delete this parameter?"
+          successHandler={successHandler}
+          cancelHandler={cancelHandler}
+        />
+      )}
       <div className="top_header">
         <div className="tab_title">Parameters</div>
         <Pagination
@@ -290,12 +290,12 @@ const Parameters = () => {
             <div className="table_header">
               <div className="col_10p">
                 <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id="selectAllCheckbox"
-                    onChange={(e) => handleSelectAllChange(e)}
-                    checked={selectAllChecked}
-                  />
+                  className="form-check-input"
+                  type="checkbox"
+                  id="selectAllCheckbox"
+                  onChange={(e) => handleSelectAllChange(e)}
+                  checked={selectAllChecked}
+                />
               </div>
               <div className="col_10p">
                 <h5>Sr. No.</h5>
@@ -311,89 +311,89 @@ const Parameters = () => {
                 <h6>Action</h6>
               </div>
             </div>
-            {parameter.length > 0 ?(
+            {parameter?.length > 0 ? (
               <>
-           
-            {parameter?.map((parameter, index) => {
-              return (
-                <>
-                  <div className="table_data" key={index}>
-                    <div className="col_10p">
-                    <input
+
+                {parameter?.map((parameter, index) => {
+                  return (
+                    <>
+                      <div className="table_data" key={index}>
+                        <div className="col_10p">
+                          <input
                             className="form-check-input"
                             type="checkbox"
-                            id={parameter._id}
+                            id={parameter?._id}
                             onChange={(e) => handleCheckboxChange(e)}
-                            checked={selectedCheckboxes.includes(parameter._id)}
+                            checked={selectedCheckboxes?.includes(parameter?._id)}
                           />
-                      <label className="form-check-label"></label>
-                    </div>
-                    <div className="col_10p">
-                      <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-
-                    </div>
-
-                    <div className="col_30p">
-                      <h6>{parameter?.categoryId?.name}</h6>
-                    </div>
-                    <div className="col_40p">
-                      <h6>{parameter?.parameter.join(", ")}</h6>
-                    </div>
-
-                    <div className="col_10p">
-                      <h6 className="action_wrraper">
-                        <div title="Update">
-                          <svg
-                            onClick={() => {
-                              setModalStates((prev) => ({
-                                ...prev,
-                                modal: true,
-                                type: "update",
-                                id: parameter?._id,
-                              }));
-                            }}
-                            width="27"
-                            height="27"
-                            viewBox="0 0 25 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clip-path="url(#clip0_279_5204)">
-                              <path
-                                d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                                stroke="#0D6EFD"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                              <path
-                                d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                                stroke="#0D6EFD"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_279_5204">
-                                <rect
-                                  width="15"
-                                  height="15"
-                                  fill="white"
-                                  transform="translate(5 5)"
-                                />
-                              </clipPath>
-                            </defs>
-                          </svg>
+                          <label className="form-check-label"></label>
                         </div>
-                      </h6>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
-             </>
-             ):(
+                        <div className="col_10p">
+                          <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+
+                        </div>
+
+                        <div className="col_30p">
+                          <h6>{parameter?.categoryId?.name}</h6>
+                        </div>
+                        <div className="col_40p">
+                          <h6>{parameter?.parameter.join(", ")}</h6>
+                        </div>
+
+                        <div className="col_10p">
+                          <h6 className="action_wrraper">
+                            <div title="Update">
+                              <svg
+                                onClick={() => {
+                                  setModalStates((prev) => ({
+                                    ...prev,
+                                    modal: true,
+                                    type: "update",
+                                    id: parameter?._id,
+                                  }));
+                                }}
+                                width="27"
+                                height="27"
+                                viewBox="0 0 25 24"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <g clip-path="url(#clip0_279_5204)">
+                                  <path
+                                    d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                    stroke="#0D6EFD"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  />
+                                  <path
+                                    d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                    stroke="#0D6EFD"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_279_5204">
+                                    <rect
+                                      width="15"
+                                      height="15"
+                                      fill="white"
+                                      transform="translate(5 5)"
+                                    />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </div>
+                          </h6>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </>
+            ) : (
               <p className="no_data">Data Not Available</p>
-             )
+            )
             }
           </div>
         </div>
@@ -404,7 +404,7 @@ const Parameters = () => {
       </div>
        )} */}
       {modalStates?.modal && (
-        <CreateParameter data={{ modalStates, setModalStates, setIsPageUpdated,getAllParameter }} />
+        <CreateParameter data={{ modalStates, setModalStates, setIsPageUpdated, getAllParameter }} />
       )}
     </>
   );

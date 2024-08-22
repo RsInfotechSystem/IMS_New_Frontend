@@ -401,7 +401,7 @@ const UserManagement = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {user.length > 0 ? (
+            {user?.length > 0 ? (
               <>
                 {user?.map((userDetails, index) => (
                   <div className="table_data" key={index}>
@@ -409,9 +409,9 @@ const UserManagement = () => {
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        id={userDetails._id}
+                        id={userDetails?._id}
                         onChange={(e) => handleCheckboxChange(e)}
-                        checked={selectedCheckboxes.includes(userDetails._id)}
+                        checked={selectedCheckboxes.includes(userDetails?._id)}
                       />
                     </div>
                     <div className="col_10p">
@@ -433,7 +433,7 @@ const UserManagement = () => {
                       <h6>{userDetails?.mobile}</h6>
                     </div>
                     <div className="col_20p">
-                      <h6>{userDetails?.locationId?.map((ele) => ele.name)?.join(", ")}</h6>
+                      <h6>{userDetails?.locationId?.map((ele) => ele?.name)?.join(", ")}</h6>
                       {/* <h6>
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}

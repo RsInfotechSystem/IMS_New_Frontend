@@ -236,13 +236,13 @@ const SalesOrderList = () => {
                       {/* <h6>{data?.salesOrderNo}</h6> */}
                     </div>
                     <div className="col_20p">
-                      <h6>{data?.orderDate.split("T")[0]}</h6>
+                      <h6>{data?.orderDate?.split("T")[0]}</h6>
                     </div>
                     <div className="col_20p">
                       <h6>{data?.orderTakenBy?.name}</h6>
                     </div>
                     <div className="col_25p">
-                      <h6>{data?.completeBy.split("T")[0]}</h6>
+                      <h6>{data?.completeBy?.split("T")[0]}</h6>
                     </div>
                     {/* <div className="col_25p">
                       <h6>{data?.completeBy.split("T")[1].split(".")[0]}</h6>

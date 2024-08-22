@@ -699,7 +699,7 @@ const AttachedSalesOrder = () => {
                         style={{ width: "100%" }}
                       >
                         <option value=""></option>
-                        {model.map((ele, index) => {
+                        {model?.map((ele, index) => {
                           return (
                             <option
                               value={ele._id}
@@ -735,7 +735,7 @@ const AttachedSalesOrder = () => {
                 </div>
                 <div className="row">
                   <div className="col-12" style={{ maxHeight: "300px", overflowY: "auto" }}>
-                    {parameter.map((modal, index) => (
+                    {parameter?.map((modal, index) => (
                       <div key={index} className="modal-container">
                         {console.log(modal, "modallll")}
 
@@ -744,7 +744,7 @@ const AttachedSalesOrder = () => {
                             onClick={() => toggleModal(modal?.modelName)}
                             style={{ cursor: "pointer" }}
                           >
-                            {expandedModals.includes(modal?.modelName) ? "-" : "+"}
+                            {expandedModals?.includes(modal?.modelName) ? "-" : "+"}
                           </div>
 
                           <div
@@ -840,9 +840,9 @@ const AttachedSalesOrder = () => {
                                       className="form-check-input"
                                       type="checkbox"
                                       id="selectAllCheckboxpreview"
-                                      checked={selectedMaterials.includes(product._id)}
-                                      onChange={() => handleMaterialSelect(product._id)}
-                                      disabled={product.disabled}
+                                      checked={selectedMaterials?.includes(product?._id)}
+                                      onChange={() => handleMaterialSelect(product?._id)}
+                                      disabled={product?.disabled}
                                     // id={product._id}
                                     // onChange={(e) => handleCheckboxChange(e)}
                                     // checked={selectedCheckboxes.includes(product._id)}
@@ -895,7 +895,7 @@ const AttachedSalesOrder = () => {
                 <Button
                   type="button"
                   onClick={handleAttachMaterials}
-                  disabled={selectedMaterials.length === 0}
+                  disabled={selectedMaterials?.length === 0}
                   name={" Attach Selected Materials"}
                 ></Button>
               </div>
@@ -946,7 +946,7 @@ const AttachedSalesOrder = () => {
                       <h5 className="action_wrraper">Action</h5>
                     </div>
                   </div>
-                  {console.log(attachedMaterials, "erfe")}
+                  {/* {console.log(attachedMaterials, "erfe")} */}
                   {attachedMaterials?.length > 0 ? (
                     attachedMaterials?.map((item, index) => {
                       return (

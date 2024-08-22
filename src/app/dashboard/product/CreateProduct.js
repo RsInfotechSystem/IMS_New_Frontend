@@ -23,7 +23,7 @@ function CreateProduct({ data }) {
   const [_brandId, _setBrandId] = useState("");
   const router = useRouter();
   const [profile, setProfile] = useState([]);
-  //
+  const [_category, _setCategory] = useState("")
   const [document, setDocument] = useState([]);
   const [otherDocuments, setOtherDocuments] = useState([]);
   //
@@ -47,10 +47,10 @@ function CreateProduct({ data }) {
       return false;
     } else {
       if (selectedFile?.size > 2000000) {
-        toast.info("The selected image exceeds a size of 2 mb");
+        toast.info("The selected image exceeds a size of 2 mb", { autoClose: 1500 });
         return false;
       } else if (otherDocuments.length > 3) {
-        toast.info("The document upload limit is restricted to only 4.");
+        toast.info("The document upload limit is restricted to only 4.", { autoClose: 1500 });
         return false;
       } else {
         if (
@@ -67,7 +67,7 @@ function CreateProduct({ data }) {
           ]);
           setDocument((prev) => [...prev, ...otherDocuments]);
         } else {
-          toast.info("Only JPG, JPEG, PNG, and PDF files are allowed");
+          toast.info("Only JPG, JPEG and PNG files are allowed", { autoClose: 1500 });
           return false;
         }
       }
@@ -99,7 +99,7 @@ function CreateProduct({ data }) {
       };
       if (modalStates?.type === "create") {
         if (otherDocuments.length === 0) {
-          toast.info("Please select the product Image(s)");
+          toast.info("Please select the product Image(s)", { autoClose: 1500 });
           return;
         }
         otherDocuments.forEach((file) => {
@@ -127,7 +127,7 @@ function CreateProduct({ data }) {
         response = await communication.updateProduct(isFileAttached, formData);
       }
       if (response?.data?.status === "SUCCESS") {
-        toast.success(response.data.message);
+        toast.success(response.data.message, { autoClose: 1500 });
         setModalStates((pre) => ({
           modal: false,
           type: "",
@@ -135,14 +135,14 @@ function CreateProduct({ data }) {
         }));
         getProductList(1, "");
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message);
+        toast.info(response.data.message, { autoClose: 1500 });
         router.push("/");
       } else {
-        toast.info(response.data.message);
+        toast.info(response.data.message, { autoClose: 1500 });
       }
       setLoader(false);
     } catch (error) {
-      toast.error(error?.message);
+      toast.error(error?.message, { autoClose: 1500 });
       setLoader(false);
     }
   }
@@ -158,18 +158,22 @@ function CreateProduct({ data }) {
         setValue("name", modelData?.name);
         setValue("categoryId", modelData?.categoryId?._id);
         await getCategoryWiseBrand(modelData?.categoryId?._id, setLoader, router, setBrandsData);
+        _setCategory(modelData?.categoryId?._id)
         _setBrandId(modelData?.brandId?._id);
-        setValue("brandId", modelData?.brandId?._id);
         setValue("description", modelData?.description);
         setOtherDocuments(modelData?.files);
+        if (modelData?.categoryId?._id) {
+          setValue("brandId", modelData?.brandId?._id);
+          _setBrandId(modelData?.brandId?._id);
+        }
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
         router.push("/");
       } else {
-        toast.info(serverResponse.data.message);
+        toast.info(serverResponse.data.message, { autoClose: 1500 });
       }
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message);
+      toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
     } finally {
       setLoader(false);
     }
@@ -183,9 +187,12 @@ function CreateProduct({ data }) {
       await getProductById();
     }
   }
+
   useEffect(() => {
     initialAPICall();
+
   }, []);
+
 
   useEffect(() => {
     getCategory(setLoader, router, setCategoryList);
@@ -196,7 +203,7 @@ function CreateProduct({ data }) {
     if (id) {
       getCategoryWiseBrand(id, setLoader, router, setBrandsData);
     }
-  }, [categoryId, brandsData.length > 0]);
+  }, [categoryId, brandsData?.length > 0]);
 
   return (
     <>
@@ -267,7 +274,7 @@ function CreateProduct({ data }) {
                 <label>Brand*</label>
                 <div className="position-relative">
                   <select
-                    name="categoryId"
+                    name="brandId"
                     className="form-control custom_input"
                     style={{ width: "100%" }}
                     {...register("brandId", {
@@ -277,11 +284,11 @@ function CreateProduct({ data }) {
                     <option value="" className="text-secondary text-lowercase">
                       Select Brand
                     </option>
-                    {brandsData.map((ele, index) => {
+                    {brandsData?.map((ele, index) => {
                       return (
-                        <option className="small text-capitalize" value={ele._id} key={index}>
+                        <option className="small text-capitalize" value={ele?._id} key={index}>
                           {" "}
-                          {ele.name}
+                          {ele?.name}
                         </option>
                       );
                     })}
@@ -320,7 +327,7 @@ function CreateProduct({ data }) {
               {otherDocuments.length > 0 &&
                 otherDocuments?.map((file, index) => {
                   return (
-                    <div className="col-lg-2 col-md-4 mt-1" key={index}>
+                    <div className="col-lg-3 col-md-4 mt-1" key={index}>
                       <div className="document_picker_wrapper">
                         <div className="document_picker overflow-visible">
                           <Image
@@ -391,7 +398,7 @@ function CreateProduct({ data }) {
                   );
                 })}
               {otherDocuments.length < 4 ? (
-                <div className="col-lg-2 col-md-4 mt-1">
+                <div className="col-lg-3 col-md-4 mt-1">
                   <div className="document_picker_wrapper">
                     <label for="otherDocument">
                       <div className="document_picker">

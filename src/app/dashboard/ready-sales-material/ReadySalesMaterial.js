@@ -165,8 +165,8 @@ const ReadySalesMaterial = () => {
                   <h5>Assign to</h5>
                 </div>
               </div>
-              {salesOrder.length > 0 ? (
-                salesOrder.map((data, index) => (
+              {salesOrder?.length > 0 ? (
+                salesOrder?.map((data, index) => (
                   <React.Fragment key={data._id}>
                     {data?.formStatus == "ready" && (
                       <>
@@ -251,8 +251,8 @@ const ReadySalesMaterial = () => {
                   <h5>Assign to</h5>
                 </div>
               </div>
-              {salesOrder.length > 0 ? (
-                salesOrder.map((data, index) => (
+              {salesOrder?.length > 0 ? (
+                salesOrder?.map((data, index) => (
                   <React.Fragment key={data._id}>
                     {data?.formStatus == "generate" && (
                       <>
@@ -289,7 +289,7 @@ const ReadySalesMaterial = () => {
                             <h6>{data?.formStatus}</h6>
                           </div>
                           <div className="col_15p">
-                            <h6>{data.assignTo?.name ? data.assignTo?.name : "--"}</h6>
+                            <h6>{data?.assignTo?.name ? data?.assignTo?.name : "--"}</h6>
                           </div>
                         </div>
                       </>

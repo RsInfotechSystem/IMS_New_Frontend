@@ -243,8 +243,8 @@ const ReceiveMaterialAction = () => {
               onClick={() => {
                 router.back();
               }}
-              //   svg={<FontAwesomeIcon icon={faTrash} />}
-              //   onClick={deletecategory}
+            //   svg={<FontAwesomeIcon icon={faTrash} />}
+            //   onClick={deletecategory}
             />
           </div>
         }
@@ -293,41 +293,41 @@ const ReceiveMaterialAction = () => {
               materialList?.map((material, index) => {
                 return (
                   <>
-                    <div className="table_data" key={material.materialId}>
+                    <div className="table_data" key={material?.materialId}>
                       <div className="col_10p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_40p">
-                        <h6>{material.categoryName}</h6>
+                        <h6>{material?.categoryName}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{material.brand}</h6>
+                        <h6>{material?.brand}</h6>
                       </div>
                       <div className="col_40p">
-                        <h6>{material.location}</h6>
+                        <h6>{material?.location}</h6>
                       </div>
                       <div className="col_40p">
-                        <h6>{material.modelName}</h6>
+                        <h6>{material?.modelName}</h6>
                       </div>
                       <div className="col_40p">
-                        <h6>{material.itemCode ? material.itemCode : "--"}</h6>
+                        <h6>{material?.itemCode ? material?.itemCode : "--"}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{material.serialNo ? material.serialNo : "--"}</h6>
+                        <h6>{material?.serialNo ? material?.serialNo : "--"}</h6>
                       </div>
                       <div className="col_45p">
                         <h6>
                           <select
                             //   name="categoryId"
-                            value={material.blockId}
+                            value={material?.blockId}
                             onChange={(e) => handleChange(e, index, "blockId")}
                             className="form-control custom_input"
                             style={{ width: "100%" }}
                           >
                             <option value="">Select Block</option>
                             {blocks.map((block, idx) => (
-                              <option value={block._id} key={idx} className="small text-capitalize">
-                                {block.blockNo}
+                              <option value={block?._id} key={idx} className="small text-capitalize">
+                                {block?.blockNo}
                               </option>
                             ))}
                           </select>
@@ -337,7 +337,7 @@ const ReceiveMaterialAction = () => {
                         <h6>
                           <select
                             //   name="categoryId"
-                            value={material.rackId}
+                            value={material?.rackId}
                             onChange={(e) => handleChange(e, index, "rackId")}
                             className="form-control custom_input"
                             style={{ width: "100%" }}
@@ -345,9 +345,9 @@ const ReceiveMaterialAction = () => {
                             <option value="" className="text-secondary text-lowercase">
                               Select Rack
                             </option>
-                            {racks[material.blockId]?.map((rack, idx) => (
-                              <option className="small text-capitalize" value={rack._id} key={idx}>
-                                {rack.rackName}
+                            {racks[material?.blockId]?.map((rack, idx) => (
+                              <option className="small text-capitalize" value={rack?._id} key={idx}>
+                                {rack?.rackName}
                               </option>
                             ))}
                           </select>
@@ -357,7 +357,7 @@ const ReceiveMaterialAction = () => {
                         <h6>
                           <select
                             //   name="categoryId"
-                            value={material.partitionName}
+                            value={material?.partitionName}
                             onChange={(e) => handleChange(e, index, "partitionName")}
                             className="form-control custom_input"
                             style={{ width: "100%" }}
@@ -365,16 +365,16 @@ const ReceiveMaterialAction = () => {
                             <option value="" className="text-secondary text-lowercase">
                               Select Partition
                             </option>
-                            {rackPartation[material.rackId]
-                              ? rackPartation[material.rackId].map((partition, idx) => (
-                                  <option
-                                    value={partition.partitionName}
-                                    className="small text-capitalize"
-                                    key={idx}
-                                  >
-                                    {partition.partitionName}
-                                  </option>
-                                ))
+                            {rackPartation[material?.rackId]
+                              ? rackPartation[material?.rackId].map((partition, idx) => (
+                                <option
+                                  value={partition?.partitionName}
+                                  className="small text-capitalize"
+                                  key={idx}
+                                >
+                                  {partition?.partitionName}
+                                </option>
+                              ))
                               : null}
                           </select>
                         </h6>

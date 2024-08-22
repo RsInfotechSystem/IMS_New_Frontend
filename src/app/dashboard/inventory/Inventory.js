@@ -256,7 +256,7 @@ const Inventory = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div> */}
             </div>
-            {material.length > 0 ? (
+            {material?.length > 0 ? (
               <>
                 {material?.map((materialDetails, index) => {
                   return (
@@ -289,7 +289,7 @@ const Inventory = () => {
                         </h6>
                       </div>
                       <div className="col_55p">
-                        <h6>{materialDetails?.locationId.name}</h6>
+                        <h6>{materialDetails?.locationId?.name}</h6>
                       </div>
                       <div className="col_45p">
                         <h6>{materialDetails?.itemCode ? materialDetails?.itemCode : "--"}</h6>

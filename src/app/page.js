@@ -47,10 +47,13 @@ const Page = () => {
       const serverResponse = await communication.login(data);
       if (serverResponse?.data?.status === "SUCCESS") {
         let UserTabAccess = serverResponse?.data?.userDetails?.roleId?.tab?.map((ele) => ele);
-        let TabName = sideNavTabArray?.find((item) => UserTabAccess[0].includes(item.tab))?.url;
-        if (TabName) router.push(`${TabName}`);
-        console.log("ressss", UserTabAccess);
-        console.log("TabName", TabName);
+
+        if (UserTabAccess?.find(ele => ele?.toLowerCase() === "report")) {
+          router.push("/dashboard/report")
+        } else {
+          let TabName = UserTabAccess?.find(ele => ele?.toLowerCase() !== "notification")
+          router.push(sideNavTabArray?.find((item) => TabName?.toLowerCase() === item?.tab?.toLowerCase())?.url)
+        }
         setCookie("inventryToken", serverResponse?.data?.token);
         setCookie("userDetails", serverResponse?.data?.userDetails);
         setCookie("role", serverResponse?.data?.userDetails?.roleId?.role);

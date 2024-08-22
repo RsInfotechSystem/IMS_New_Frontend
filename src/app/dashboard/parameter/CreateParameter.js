@@ -250,7 +250,7 @@ function CreateParameter({ data }) {
                     }),
                   }}
                   errors={errors.category}
-                  style={{fontSize:"10px",color:"red"}}
+                  style={{ fontSize: "10px", color: "red" }}
                 />
               </div>
             </div>

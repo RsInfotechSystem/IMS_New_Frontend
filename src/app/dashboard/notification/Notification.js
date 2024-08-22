@@ -43,7 +43,7 @@ function Notification() {
     getAllNotification(currentPage, searchString);
   }, [isPageUpdated]);
 
- 
+
   const handleCheckboxChange = (e) => {
     const checkboxId = e.target.id;
     setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === notification?.length)))
@@ -69,7 +69,7 @@ function Notification() {
 
   const deleteSelectedNotification = async () => {
     if (selectedCheckboxes.length <= 0) {
-      toast.info("Please select which notification you want to delete",{
+      toast.info("Please select which notification you want to delete", {
         autoClose: 1500 // 1.5 seconds
       });
       return;
@@ -81,22 +81,22 @@ function Notification() {
       };
       let response = await communication.deleteSelectedNotification(payload);
       if (response?.data?.status === "SUCCESS") {
-        toast.success(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.success(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         getAllNotification(currentPage);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         router.push("/");
       } else {
-        toast.info(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
       }
     } catch (error) {
-      toast.info(error.message,{
+      toast.info(error.message, {
         autoClose: 1500 // 1.5 seconds
       });
     } finally {
@@ -111,22 +111,22 @@ function Notification() {
       };
       let response = await communication.deleteNotification(payload);
       if (response?.data?.status === "SUCCESS") {
-        toast.success(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.success(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         getAllNotification(currentPage);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         router.push("/");
       } else {
-        toast.info(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
       }
     } catch (error) {
-      toast.info(error.message,{
+      toast.info(error.message, {
         autoClose: 1500 // 1.5 seconds
       });
     } finally {
@@ -139,22 +139,22 @@ function Notification() {
       setLoader(true);
       let response = await communication.deleteAllNotification();
       if (response?.data?.status === "SUCCESS") {
-        toast.success(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.success(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         getAllNotification(currentPage);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         router.push("/");
       } else {
-        toast.info(response.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(response.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
       }
     } catch (error) {
-      toast.info(error.message,{
+      toast.info(error.message, {
         autoClose: 1500 // 1.5 seconds
       });
     } finally {
@@ -178,9 +178,9 @@ function Notification() {
       } else if (serverResponse.data.status == "FAILED") {
         setNotification([]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(serverResponse.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         router.push("/");
         setLoader(false);
       } else {
@@ -188,7 +188,7 @@ function Notification() {
       }
       setLoader(false);
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message,{
+      toast.info(error?.response?.data?.message || error.message, {
         autoClose: 1500 // 1.5 seconds
       });
       setLoader(false);
@@ -201,19 +201,19 @@ function Notification() {
       if (serverResponse?.data?.status === "SUCCESS") {
         // toast.fire({ text: serverResponse.data.message, icon: "success" });
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.info(serverResponse.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(serverResponse.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
         router.push("/");
         setLoader(false);
       } else {
-        toast.info(serverResponse.data.message,{
-            autoClose: 1500 // 1.5 seconds
-          });
+        toast.info(serverResponse.data.message, {
+          autoClose: 1500 // 1.5 seconds
+        });
       }
       setLoader(false);
     } catch (error) {
-      toast.info(error?.response?.data?.message || error.message,{
+      toast.info(error?.response?.data?.message || error.message, {
         autoClose: 1500 // 1.5 seconds
       });
       setLoader(false);
@@ -242,13 +242,13 @@ function Notification() {
           placeholder={"Search"}
         />
         <CustomBtn
-            name={"Delete"}
-            onClick={() =>
-                selectAllChecked ? deleteAllNotification() : deleteSelectedNotification()
-            }
-            svg={<FontAwesomeIcon icon={faTrash} />}
-          />
-       
+          name={"Delete"}
+          onClick={() =>
+            selectAllChecked ? deleteAllNotification() : deleteSelectedNotification()
+          }
+          svg={<FontAwesomeIcon icon={faTrash} />}
+        />
+
       </div>
       <div className="table_wrapper">
         <div className="table_main">
@@ -289,9 +289,9 @@ function Notification() {
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        id={data._id}
+                        id={data?._id}
                         onChange={(e) => handleCheckboxChange(e)}
-                        checked={selectedCheckboxes.includes(data._id)}
+                        checked={selectedCheckboxes.includes(data?._id)}
                       />
                       <label className="form-check-label"></label>
                     </div>
@@ -311,7 +311,7 @@ function Notification() {
                   <div className="col_20p">
                     <h6 className="action_wrraper">
                       <div title="Delete">
-                      <FontAwesomeIcon icon={faTrash}/>
+                        <FontAwesomeIcon icon={faTrash} />
                       </div>
                     </h6>
                   </div>
@@ -321,7 +321,7 @@ function Notification() {
           </div>
         </div>
       </div >
-   
+
     </>
   );
 }

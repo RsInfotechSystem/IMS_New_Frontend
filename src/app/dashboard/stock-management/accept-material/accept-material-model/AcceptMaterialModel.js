@@ -239,7 +239,7 @@ const AcceptMaterialModel = () => {
                     <option value="" className="text-secondary text-lowercase">
                       Select Location
                     </option>
-                    {locations.map((ele, index) => {
+                    {locations?.map((ele, index) => {
                       return (
                         <option className="small text-capitalize" value={ele._id} key={index}>
                           {" "}
@@ -275,7 +275,7 @@ const AcceptMaterialModel = () => {
                     <option value="" className="text-secondary text-lowercase">
                       Select Block
                     </option>
-                    {blocks.map((ele, index) => {
+                    {blocks?.map((ele, index) => {
                       return (
                         <option className="small text-capitalize" value={ele._id} key={index}>
                           {" "}
@@ -345,7 +345,7 @@ const AcceptMaterialModel = () => {
                     <option value="" className="text-secondary text-lowercase">
                       Select Partation
                     </option>
-                    {rackPartation.map((ele, index) => {
+                    {rackPartation?.map((ele, index) => {
                       return (
                         <option className="small text-capitalize" value={ele._id} key={index}>
                           {" "}
@@ -381,7 +381,7 @@ const AcceptMaterialModel = () => {
                     <option value="" className="text-secondary text-lowercase">
                       Select Category
                     </option>
-                    {category.map((ele, index) => {
+                    {category?.map((ele, index) => {
                       return (
                         <option
                           className="small text-capitalize"
@@ -460,7 +460,7 @@ const AcceptMaterialModel = () => {
                     <option value="" className="text-secondary text-lowercase">
                       Select Status
                     </option>
-                    {stockStatus.map((ele, index) => {
+                    {stockStatus?.map((ele, index) => {
                       return (
                         <option className="small text-capitalize" value={ele} key={index}>
                           {" "}

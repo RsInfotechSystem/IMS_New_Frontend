@@ -275,121 +275,121 @@ const Product = () => {
                 <h5 className="action_wrraper">Action</h5>
               </div>
             </div>
-            {productList.length > 0 ? (
+            {productList?.length > 0 ? (
               <>
-            
-            {productList?.map((data, index) => {
-              return (
-                <div className="table_data" key={index + 1}>
-                  <div className="col_10p">
-                    <div className="check_box">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id={data._id}
-                        onChange={(e) => handleCheckboxChange(e)}
-                        checked={selectedCheckboxes.includes(data._id)}
-                      />
-                      <label className="form-check-label"></label>
-                    </div>
-                  </div>
 
-                  <div className="col_10p">
-                    <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                  </div>
+                {productList?.map((data, index) => {
+                  return (
+                    <div className="table_data" key={index + 1}>
+                      <div className="col_10p">
+                        <div className="check_box">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id={data?._id}
+                            onChange={(e) => handleCheckboxChange(e)}
+                            checked={selectedCheckboxes.includes(data?._id)}
+                          />
+                          <label className="form-check-label"></label>
+                        </div>
+                      </div>
 
-                  <div className="col_20p">
-                    {/* <Image
+                      <div className="col_10p">
+                        <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                      </div>
+
+                      <div className="col_20p">
+                        {/* <Image
                       src={`${getServerUrl()}/getFiles/${data?.files[0]?.fileUrl}`}
                       width={40}
                       height={40}
                       alt="Profile"
                     /> */}
-                    <h6>{data?.name}</h6>
-                  </div>
-                  <div className="col_20p">
-                    <h6>{data?.categoryId?.name}</h6>
-                  </div>
-                  <div className="col_20p">
-                    <h6>{data?.brandId?.name}</h6>
-                  </div>
-                  <div className="col_35p">
-                    {/* <h6>{data?.description}</h6> */}
-                    <h6>{data?.description.substring(0, 100)}
-                      {(data.description?.length > 100) && <div className="custom_button_read" onClick={() => setModalStates(pre => ({ ...pre, showReadMore: true, showReadMoreText: data.description }))}> {data.description?.length > 100 && "Read More"}</div>
-                      }</h6>
-                  </div>
-                  <div className="col_20p">
-                    {data?.files?.map((img, index) => (
-                      <div key={index} style={{ marginRight: 5, backgroundColor: "white" }}>
-                        <div title={img?.documentName}>
-                          <FontAwesomeIcon icon={faImage} style={{ width: 20, height: 20 }}
-                            onClick={() => setModalImageStates(pre => ({ ...pre, showImg: true, url: `${img?.fileUrl}` }))}
-                          />
-                        </div>
+                        <h6>{data?.name}</h6>
                       </div>
-                    ))
-
-
-                    }
-                  </div>
-                  <div className="col_20p">
-                    <h6 className="action_wrraper">
-                      <div
-                        title="edit"
-                        onClick={() =>
-                          setModalStates((pre) => ({
-                            ...pre,
-                            modal: true,
-                            type: "update",
-                            productId: data._id,
-                          }))
-                        }
-                      >
-                        <svg
-                          width="27"
-                          height="27"
-                          viewBox="0 0 25 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <g clip-path="url(#clip0_279_5204)">
-                            <path
-                              d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                              stroke="#0D6EFD"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                            <path
-                              d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                              stroke="#0D6EFD"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                            />
-                          </g>
-                          <defs>
-                            <clipPath id="clip0_279_5204">
-                              <rect
-                                width="15"
-                                height="15"
-                                fill="white"
-                                transform="translate(5 5)"
+                      <div className="col_20p">
+                        <h6>{data?.categoryId?.name}</h6>
+                      </div>
+                      <div className="col_20p">
+                        <h6>{data?.brandId?.name}</h6>
+                      </div>
+                      <div className="col_35p">
+                        {/* <h6>{data?.description}</h6> */}
+                        <h6>{data?.description?.substring(0, 100)}
+                          {(data?.description?.length > 100) && <div className="custom_button_read" onClick={() => setModalStates(pre => ({ ...pre, showReadMore: true, showReadMoreText: data.description }))}> {data.description?.length > 100 && "Read More"}</div>
+                          }</h6>
+                      </div>
+                      <div className="col_20p">
+                        {data?.files?.map((img, index) => (
+                          <div key={index} style={{ marginRight: 5, backgroundColor: "white" }}>
+                            <div title={img?.documentName}>
+                              <FontAwesomeIcon icon={faImage} style={{ width: 20, height: 20 }}
+                                onClick={() => setModalImageStates(pre => ({ ...pre, showImg: true, url: `${img?.fileUrl}` }))}
                               />
-                            </clipPath>
-                          </defs>
-                        </svg>
-                      </div>
-                    </h6>
-                  </div>
+                            </div>
+                          </div>
+                        ))
 
-                </div>
-              );
-            })}
-            </>
-            ):(
+
+                        }
+                      </div>
+                      <div className="col_20p">
+                        <h6 className="action_wrraper">
+                          <div
+                            title="edit"
+                            onClick={() =>
+                              setModalStates((pre) => ({
+                                ...pre,
+                                modal: true,
+                                type: "update",
+                                productId: data?._id,
+                              }))
+                            }
+                          >
+                            <svg
+                              width="27"
+                              height="27"
+                              viewBox="0 0 25 24"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <g clip-path="url(#clip0_279_5204)">
+                                <path
+                                  d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                  stroke="#0D6EFD"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                                <path
+                                  d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                  stroke="#0D6EFD"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_279_5204">
+                                  <rect
+                                    width="15"
+                                    height="15"
+                                    fill="white"
+                                    transform="translate(5 5)"
+                                  />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </div>
+                        </h6>
+                      </div>
+
+                    </div>
+                  );
+                })}
+              </>
+            ) : (
               <p className="no_data">Data Not Available</p>
             )
-          }
+            }
           </div>
         </div>
       </div>
