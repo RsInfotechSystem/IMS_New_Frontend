@@ -222,7 +222,7 @@ const AcceptMaterial = () => {
             brandId: material.brandId?._id || "",
             brand: material.brandId?.name || "",
             modelName: material.modelId?.name || "",
-            status: material.status || "",
+            status: material.stockStatus || "",
             itemCode: material.itemCode || "",
             serialNo: material.serialNo || "",
             parameter: material.parameter,
@@ -259,7 +259,7 @@ const AcceptMaterial = () => {
             parameterMaterial: material.parameter,
             // taskStatus: material.taskStatus || "",
             quantity: material.quantity || 1,
-            status: material.status || "",
+            status: material.stockStatus || "",
             // taskStatus: material.taskStatus || "",
             materialStatus: material.materialStatus || "",
           }));
@@ -663,7 +663,7 @@ const AcceptMaterial = () => {
   // ______________________NEW___________________
 
   const handleCategoryChange = async (index, categoryId) => {
-    console.log(categoryId, "categoryId");
+    // console.log(categoryId, "categoryId");
 
     setValue(`rows[${index}].categoryId`, categoryId);
     const fetchedBrand = await getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData);
@@ -1104,7 +1104,7 @@ const AcceptMaterial = () => {
                             <h6>{product?.modelName}</h6>
                           </div>
                           <div className="col_85p">
-                            <div className="input_scroll">
+                            <div className="input_scroll ">
                               {Object.entries(product?.parameter).map(([key, value], indexTwo) => (
                                 <div
                                   className="col_60p"
@@ -1113,6 +1113,7 @@ const AcceptMaterial = () => {
                                 >
                                   <label>{key}</label>
                                   <InputBox
+                                    className="custom_input"
                                     value={value} // Set the input value to the corresponding value from the object
                                     onChange={(e) =>
                                       handleChangeParameter(e, index, indexTwo, { key, value })
@@ -1123,6 +1124,11 @@ const AcceptMaterial = () => {
                               ))}
                             </div>
                           </div>
+                          {/* <div className="col_85p">
+                            <div className="input_scroll">
+                              <div className="custom_input_wrapper">  <input className=" custom_input" style={{ lineHeight: 2.2 }}></input></div>
+                            </div>
+                          </div> */}
                           <div className="col_40p">
                             <div className="position-relative">
                               <select

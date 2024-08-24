@@ -5456,9 +5456,10 @@ ul .appointment_letter_ul {
 }
 .input_scroll {
   display: flex; /* Align items horizontally */
-  overflow-x: scroll; /* Enable horizontal scrolling */
-  width: 100%; /* Ensure the container takes up full width */
+  overflow-x: auto; /* Enable horizontal scrolling */
+  max-width: 100%; /* Ensure the container takes up full width */
   white-space: nowrap;
+  gap: 2px;
   /* scrollbar-width: thin; */
 }
 .input_box {

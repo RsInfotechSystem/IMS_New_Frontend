@@ -115,7 +115,7 @@ const AttachedSalesOrder = () => {
       // Fetch parameters for the selected category
       const response = await communication.getCategoryWiseParameter({ categoryId });
       if (response?.data?.status === "SUCCESS") {
-        setParameter(response.data.parameter);
+        setParameter(response?.data?.parameter);
       }
     } else {
       setBrandsData([]);

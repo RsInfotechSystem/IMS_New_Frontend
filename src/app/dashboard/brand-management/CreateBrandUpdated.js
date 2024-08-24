@@ -21,6 +21,8 @@ function CreateBrandUpdated({ data }) {
     const [brandInput, setBrandInput] = useState([]);
     const [_brandList, _setBrandList] = useState([]);
     const [CategoryMapData, setCategoryMapData] = useState([]);
+    const [_removeBrandList, _setRemoveBrandList] = useState([])
+    const [addedBrands, setAddedBrands] = useState([])
     const router = useRouter();
     const {
         register,
@@ -34,16 +36,20 @@ function CreateBrandUpdated({ data }) {
             setLoader(true);
             let response;
             if (modalStates?.type === "create") {
-                response = await communication.createBrand({
-                    name: values.name,
+                response = await communication.createMultipleBrandList({
+                    brandList: _brandList,
+                    // name: values.name,
                     categoryId: values.categoryId,
                 });
             } else {
-                response = await communication.updateBrand({
+                let payload = {
                     brandId: modalStates.id,
-                    name: values.name,
+                    removeBrands: _removeBrandList,
+                    brandList: addedBrands,
                     categoryId: values.categoryId,
-                });
+                    // name: values.name,
+                }
+                response = await communication.updateMultipleBrand(payload);
             }
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response.data.message);
@@ -72,15 +78,16 @@ function CreateBrandUpdated({ data }) {
             setLoader(true);
             const responseFromServer = await communication.getBrandById({ brandId: modalStates.id });
             if (responseFromServer?.data?.status === "SUCCESS") {
-                const brandData = responseFromServer?.data?.brand;
-                // console.log("brandData",brandData);
+                const brandData = responseFromServer?.data?.brand
                 setValue("name", brandData.name);
                 setValue("categoryId", brandData?.categoryId?._id);
+                _setBrandList([...responseFromServer?.data?.brand?.brandList?.map((ele) => ele)])
+                // _setRemoveBrandList([...responseFromServer?.data?.brand?.brandList?.map((ele) => ele._id)])
             } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-                toast.info(serverResponse.data.message);
+                toast.info(responseFromServer.data.message);
                 router.push("/");
             } else {
-                toast.info(serverResponse.data.message);
+                toast.info(responseFromServer.data.message);
             }
         } catch (error) {
             toast.error(error?.response?.data?.message || error.message);
@@ -96,22 +103,26 @@ function CreateBrandUpdated({ data }) {
         }
     }
     function addToBrandList() {
-        // console.log(parameterInput, "parameterInput");
 
         if (brandInput) {
             _setBrandList((prev) => [...prev, brandInput]);
+            setAddedBrands((prev) => [...prev, brandInput]);
             setValue("brandId", "");
         } else {
             setError("brandId", {
                 message: "Please enter brand",
             });
         }
-    } function deleteBrandList(id) {
-        _setBrandList(_setBrandList.filter((item, index) => index != id));
+    }
+    function deleteBrandList(id, ele) {
+
+        _setBrandList(_brandList.filter((item, index) => index != id));
+        _setRemoveBrandList(prev => [...prev, ele])
     }
     useEffect(() => {
         initialAPICall();
     }, []);
+
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
@@ -180,10 +191,11 @@ function CreateBrandUpdated({ data }) {
                                                 className="col-lg-4 col-md-5 d-flex align-items-center input_wrapper"
                                                 key={colIndex}
                                             >
-                                                <InputBox value={ele} disable={true} />
+
+                                                <InputBox value={ele?.name ? ele?.name : ele} disable={true} />
                                                 <FontAwesomeIcon
                                                     icon={faTrash}
-                                                    onClick={() => deleteBrandList(rowIndex * 3 + colIndex)}
+                                                    onClick={() => deleteBrandList(rowIndex * 3 + colIndex, ele?._id)}
                                                     className="trash fontAwesome_icon cursor_pointer ml-2"
                                                     style={{ marginLeft: 8 }}
                                                 />

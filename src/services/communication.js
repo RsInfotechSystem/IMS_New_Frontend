@@ -807,7 +807,7 @@ export const communication = {
   //?------------------------Brand-----------------------------
   getAllBrand: async (data) => {
     try {
-      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/get-all-brand`, data, {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/get-all-multiple-brand`, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
@@ -817,9 +817,22 @@ export const communication = {
       throw error;
     }
   },
-  createBrand: async (data) => {
+  //old brand
+  // createBrand: async (data) => {
+  //   try {
+  //     return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/create-brand`, data, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${getCookie("inventryToken")}`,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
+  createMultipleBrandList: async (data) => {
     try {
-      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/create-brand`, data, {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/create-multiple-brand`, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
@@ -829,9 +842,21 @@ export const communication = {
       throw error;
     }
   },
+  // getBrandById: async (data) => {
+  //   try {
+  //     return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/get-brand-by-id`, data, {
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${getCookie("inventryToken")}`,
+  //       },
+  //     });
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
   getBrandById: async (data) => {
     try {
-      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/get-brand-by-id`, data, {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/get-multiple-brand-by-id`, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
@@ -853,9 +878,33 @@ export const communication = {
       throw error;
     }
   },
+  updateMultipleBrand: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/update-multiple-brand`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
   deleteBrand: async (data) => {
     try {
       return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/delete-brand`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteMultipleBrand: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/brand/delete-multiple-brand`, data, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
