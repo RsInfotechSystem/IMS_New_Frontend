@@ -5485,3 +5485,71 @@ ul .appointment_letter_ul {
   opacity: 0.6; /* Make it appear faded */
   pointer-events: none; /* Disable interactions */
 }
+
+.model_div{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+/* .table_data {
+  display: flex;
+  align-items: flex-start;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 0;
+} */
+
+.col_10p { width: 10%; }
+.col_20p { width: 20%; }
+.col_40p { width: 40%; }
+
+.model_row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.model_name, .model_description, .model_files {
+  margin-bottom: 5px;
+}
+
+.custom_button_read {
+  color: blue;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.action_wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.model_divimg {
+  display: flex;
+  flex-direction: column;
+}
+
+.model-description, .model-images {
+  margin-bottom: 10px;
+}
+
+.image-row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.image-icon {
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+.borderModel{
+  border-top: none;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--grey_color_light_shade1);
+}
