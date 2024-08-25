@@ -66,8 +66,7 @@ const BrandList = () => {
       let payload = {
         brandIds: [...selectedCheckboxes],
       }
-      console.log(payload);
-      return
+
       let response = await communication.deleteMultipleBrand(payload);
       if (response?.data?.status === "SUCCESS") {
         setSelectedCheckboxes([]);
@@ -228,8 +227,8 @@ const BrandList = () => {
               {brandList?.map((data, index) => {
                 return (
                   <>
-                    {console.log(data?.brandList?.map((ele) => ele.name), "data")
-                    }
+                    {/* {console.log(data?.brandList?.map((ele) => ele.name), "data")
+                    } */}
                     <div
                       className="table_data"
                       key={index}
