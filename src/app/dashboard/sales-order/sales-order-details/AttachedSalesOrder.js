@@ -869,7 +869,7 @@ const AttachedSalesOrder = () => {
                                   <h6>{product?.rack}</h6>
                                 </div>
                                 <div className="col_25p">
-                                  <h6>{product?.modelId}</h6>
+                                  <h6>{product?.modelId?.name}</h6>
                                 </div>
                                 <div className="col_25p">
                                   <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
@@ -977,7 +977,7 @@ const AttachedSalesOrder = () => {
                             <h6>{item?.brand}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6>{item?.modelId}</h6>
+                            <h6>{item?.modelId?.name}</h6>
                           </div>
                           <div className="col_25p">
                             <h6 className="action_wrraper">
