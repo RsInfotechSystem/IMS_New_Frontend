@@ -272,7 +272,7 @@ const UpdatedProduct = () => {
                                 </div>
                             </div>
 
-                            <div className="col_20p">
+                            <div className="col_20p" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                 <div className="model_div">
                                     <h5 className="action_wrraper">File</h5>
                                 </div>
@@ -334,7 +334,7 @@ const UpdatedProduct = () => {
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="col_20p">
+                                            <div className="col_20p" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                                 <div className="model_divimg">
                                                     {data?.models?.map((model, innerInd) => (
                                                         <div className="model-images" key={innerInd}>
