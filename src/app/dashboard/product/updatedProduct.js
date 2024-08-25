@@ -320,7 +320,7 @@ const UpdatedProduct = () => {
                                                 <div className="model_div">
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
-                                                            <h6>{model?.name}</h6>)
+                                                            <h6 key={innerInd}>{model?.name}</h6>)
                                                     }
                                                     )}
                                                 </div>
@@ -329,7 +329,7 @@ const UpdatedProduct = () => {
                                                 <div className="model_div">
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
-                                                            <h6>{model?.description?.substring(0, 100)}
+                                                            <h6 key={innerInd}>{model?.description?.substring(0, 100)}
                                                                 {(model?.description?.length > 100) && <div className="custom_button_read" onClick={() => setModalStates(pre => ({ ...pre, showReadMore: true, showReadMoreText: model.description }))}> {model.description?.length > 100 && "Read More"}</div>
                                                                 }</h6>
                                                         )
@@ -368,7 +368,7 @@ const UpdatedProduct = () => {
                                                 <div className="model_div" >
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
-                                                            <h6 className="action_wrraper">
+                                                            <h6 className="action_wrraper" key={innerInd}>
                                                                 <div
                                                                     title="edit"
                                                                     onClick={() =>
@@ -426,6 +426,7 @@ const UpdatedProduct = () => {
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
                                                             <div
+                                                                key={innerInd}
                                                                 title="delete"
                                                                 onClick={() => {
                                                                     setModalStates((prev) => ({ ...prev, deleteProduct: true, modelIds: model?._id }));
