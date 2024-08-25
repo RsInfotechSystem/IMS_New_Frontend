@@ -265,12 +265,12 @@ const UpdatedProduct = () => {
                                 <h5>Brand</h5>
                             </div>
                             <div className="col_20p">
-                                <div className="model_div">
+                                <div className="model_div" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                     <h5>Model Name</h5>
                                 </div>
                             </div>
                             <div className="col_35p">
-                                <div className="model_div">
+                                <div className="model_div" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                     <h5>Description</h5>
                                 </div>
                             </div>
