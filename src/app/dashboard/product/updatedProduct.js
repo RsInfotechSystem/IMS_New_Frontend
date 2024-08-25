@@ -75,7 +75,7 @@ const UpdatedProduct = () => {
     };
 
     const deleteProduct = async (modelIds) => {
-        console.log(modelIds, "sssssssss");
+        // console.log(modalStates?.modelIds, "sssssssss");
 
         try {
             setLoader(true);
@@ -87,7 +87,7 @@ const UpdatedProduct = () => {
             //     return false;
             // }
             let response = await communication.deleteModel({
-                modelIds: [modelIds],
+                modelIds: [modalStates?.modelIds],
             });
             if (response?.data?.status === "SUCCESS") {
                 setSelectedCheckboxes([]);
@@ -380,6 +380,10 @@ const UpdatedProduct = () => {
                                                                         }))
                                                                     }
                                                                 >
+                                                                    {
+                                                                        console.log(model?._id, "rrrrrrrrrr")
+
+                                                                    }
                                                                     <svg
                                                                         width="27"
                                                                         height="27"
