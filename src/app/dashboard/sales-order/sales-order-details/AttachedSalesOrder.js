@@ -453,7 +453,7 @@ const AttachedSalesOrder = () => {
     }
   }, [materialIDS]);
   const handleSearch = (e) => {
-    console.log(e.target.value, "sssssssssss");
+    // console.log(e.target.value, "sssssssssss");
 
     setSearchString(e.target.value);
     let isSearch = true;
@@ -465,7 +465,7 @@ const AttachedSalesOrder = () => {
         isSearch,
 
       });
-      console.log(searchString, "searchString");
+      // console.log(searchString, "searchString");
 
     }, 2000);
     setTimeoutId(_timeOutId);

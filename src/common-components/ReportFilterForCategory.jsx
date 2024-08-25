@@ -31,8 +31,12 @@ function ReportFilterForCategory({ setModalStates, apiCall, filter, setFilter })
 
   async function submit(values) {
     try {
-      setFilter({ ...values });
-      await apiCall({  ...values });
+        // const payload = {
+        //     categoryId: values.categoryId,
+        //   };
+      setFilter(values.categoryId);
+    //   console.log(payload,"sssssssss");
+      await apiCall(values.categoryId);
     //   reset(); 
       setModalStates((pre) => ({ filter: false }));
     } catch (error) {

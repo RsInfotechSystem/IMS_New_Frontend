@@ -306,13 +306,16 @@ const StockReportGraph = () => {
       toast.info(error?.response?.data?.message || error.message);
     }
   }
-  async function getCategoryWiseBrandCount(category) {
+  async function getCategoryWiseBrandCount(categoryId) {
     try {
       setLoader(true);
-      const serverResponse = await communication.getCategoryWiseBrandCount({
-        categoryId
-      });
+      const serverResponse = await communication.getCategoryWiseBrandCount({ categoryId });
       if (serverResponse?.data?.status === "SUCCESS") {
+        setState({ _brandData: serverResponse.data.brandCount });
+        setBrandGraphData({
+          labels: serverResponse.data.brandCount.map((brand) => brand.brand),
+          dataset: serverResponse.data.brandCount.map((quantities) => quantities.count),
+        });
         // setMaterial(serverResponse?.data.stock);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
