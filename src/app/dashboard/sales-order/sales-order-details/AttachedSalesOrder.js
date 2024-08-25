@@ -51,6 +51,8 @@ const AttachedSalesOrder = () => {
   const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
     materials: [],
   });
+  const [searchString, setSearchString] = useState("");
+  const [timeoutId, setTimeoutId] = useState();
   const [checkBox, setCheckBox] = useState("");
   const [selectedModels, setSelectedModels] = useState([]);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
@@ -69,6 +71,7 @@ const AttachedSalesOrder = () => {
   const [materialIDS, setMaterialIDS] = useState(null);
   const [selectedParameters, setSelectedParameters] = useState({});
   const categoryId = watch("categoryId");
+  const searchStrings = watch("searchString")
   const brandId = watch("brandId");
   const modelId = watch("modelId");
   async function getBrandWiseModel() {
@@ -260,14 +263,16 @@ const AttachedSalesOrder = () => {
       setLoader(false);
     }
   }
-  async function getLocationWiseMaterial({ isFirstCall } = {}) {
+  async function getLocationWiseMaterial({ isFirstCall, searchString } = {}) {
     try {
       setLoader(true);
       let payload = {
+        searchString,
         locationId: location,
         categoryId: categoryId,
         brandId: brandId,
         modelId: modelId,
+        // searchString: searchString,
         // parameters: Object.keys(selectedModels).map((modelName) => ({
         //   modelName,
         //   parameterList: selectedModels[modelName],
@@ -447,11 +452,31 @@ const AttachedSalesOrder = () => {
       setMaterialDetails((prev) => [...prev, { detailId: checkBox, materialIds: materialIDS }]);
     }
   }, [materialIDS]);
+  const handleSearch = (e) => {
+    console.log(e.target.value, "sssssssssss");
+
+    setSearchString(e.target.value);
+    let isSearch = true;
+    clearTimeout(timeoutId);
+    let _timeOutId = setTimeout(() => {
+      getLocationWiseMaterial({
+        isFirstCall: true,
+        searchString: e.target.value,
+        isSearch,
+
+      });
+      console.log(searchString, "searchString");
+
+    }, 2000);
+    setTimeoutId(_timeOutId);
+  };
   useEffect(() => {
-    if (location && categoryId) {
-      getLocationWiseMaterial({ isFirstCall: true });
+    if ((location && categoryId)) {
+      getLocationWiseMaterial({ isFirstCall: true, searchString });
+    } else {
+
     }
-  }, [location, categoryId, brandId, modelId, selectedParameters]);
+  }, [location, categoryId, brandId, modelId, selectedParameters, searchString]);
   // useEffect(() => {
   //   if (location && categoryId && selectedModels) getLocationWiseMaterial({ isFirstCall: true });
   // }, [location, categoryId, selectedModels]);
@@ -618,6 +643,31 @@ const AttachedSalesOrder = () => {
           <div className="form_list_layout_wrapper">
             <div className="d-flex align-items-center justify-content-between py-2">
               <div className="form_layout">
+                <div className="row">
+                  <div className="custom_input_wrapper col-lg-3 col-md-3">
+                    <label>Serial No./Item Code</label>
+                    <input
+                      type="text"
+                      // name="searchString"
+                      value={searchString}
+                      onChange={(e) => {
+                        handleSearch(e);
+                      }}
+                      // {...register("searchString", {
+                      //   // required: "Category is required",
+                      // })}
+                      className="form_control_assign custom_input"
+                      style={{ width: "100%" }}
+                    />
+                    <div style={{ height: "25px" }}>
+                      {errors.searchString && (
+                        <p className="validation_message" style={{ fontSize: "0.7rem" }}>
+                          {errors.searchString}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
                 <div className="row d-flex align-items-end">
                   <div className="col-lg-3 col-md-6 input_wrapper">
                     <label>Category Name *</label>
@@ -628,7 +678,7 @@ const AttachedSalesOrder = () => {
                         className="form-control custom_input"
                         style={{ width: "100%" }}
                         {...register("categoryId", {
-                          required: "Category is required",
+                          // required: "Category is required",
                         })}
                       >
                         <option value="" className="text-secondary text-lowercase"></option>

@@ -8,6 +8,9 @@ import { toast } from "react-toastify";
 import { communication } from "@/services/communication";
 import CustomBtn from "@/common-components/CustomBtn";
 import StockFilter from "@/common-components/StockFilter";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ReportFilterForCategory from "@/common-components/ReportFilterForCategory";
 
 // Register Chart.js components and plugins
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -307,7 +310,7 @@ const StockReportGraph = () => {
     try {
       setLoader(true);
       const serverResponse = await communication.getCategoryWiseBrandCount({
-        categoryId: category,
+        categoryId
       });
       if (serverResponse?.data?.status === "SUCCESS") {
         // setMaterial(serverResponse?.data.stock);
@@ -384,11 +387,11 @@ const StockReportGraph = () => {
   return (
     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-around" }}>
       {modalStates?.filter && (
-        <StockFilter
+        <ReportFilterForCategory
           setModalStates={setModalStates}
-        // apiCall={getCategoryWiseBrandCount}
-        // filter={filter}
-        // setFilter={setFilter}
+          apiCall={getCategoryWiseBrandCount}
+          filter={filter}
+          setFilter={setFilter}
         />
       )}
 
@@ -417,6 +420,9 @@ const StockReportGraph = () => {
           />
           
         </div> */}
+        <div title="Filter" onClick={() => {
+          setModalStates((prev) => ({ ...prev, filter: true }));
+        }}><FontAwesomeIcon icon={faFilter} /></div>
         <h5 style={{ textAlign: "center" }}>Brand Wise Stock</h5>
         <Pie data={pieData2} options={optionsBrand} />
       </div>
