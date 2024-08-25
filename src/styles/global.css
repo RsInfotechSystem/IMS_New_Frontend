@@ -5565,7 +5565,7 @@ ul .appointment_letter_ul {
   margin-bottom: 0;
 }
 .model_div {
-  border-bottom: 1px solid var(--grey_color_light_shade1);
+  /* border-bottom: 1px solid var(--grey_color_light_shade1); */
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
