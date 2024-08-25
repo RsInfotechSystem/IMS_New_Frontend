@@ -264,12 +264,12 @@ const UpdatedProduct = () => {
                             <div className="col_20p">
                                 <h5>Brand</h5>
                             </div>
-                            <div className="col_20p">
-                                <div className="model_div" style={{ justifyContent: "left", paddingLeft: "3%" }}>
+                            <div className="col_20p" style={{ justifyContent: "left", paddingLeft: "3%" }}>
+                                <div className="model_div" >
                                     <h5>Model Name</h5>
                                 </div>
                             </div>
-                            <div className="col_35p">
+                            <div className="col_35p" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                 <div className="model_div" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                     <h5>Description</h5>
                                 </div>
@@ -316,7 +316,7 @@ const UpdatedProduct = () => {
                                             <div className="col_20p">
                                                 <h6>{data?.brandId?.name}</h6>
                                             </div>
-                                            <div className="col_20p">
+                                            <div className="col_20p" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                                 <div className="model_div">
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
@@ -325,7 +325,7 @@ const UpdatedProduct = () => {
                                                     )}
                                                 </div>
                                             </div>
-                                            <div className="col_35p">
+                                            <div className="col_35p" style={{ justifyContent: "left", paddingLeft: "3%" }}>
                                                 <div className="model_div">
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
