@@ -299,12 +299,6 @@ const Product = () => {
                       </div>
 
                       <div className="col_20p">
-                        {/* <Image
-                      src={`${getServerUrl()}/getFiles/${data?.files[0]?.fileUrl}`}
-                      width={40}
-                      height={40}
-                      alt="Profile"
-                    /> */}
                         <h6>{data?.name}</h6>
                       </div>
                       <div className="col_20p">

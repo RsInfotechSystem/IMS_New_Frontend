@@ -1103,7 +1103,7 @@ const AcceptMaterial = () => {
                           <div className="col_30p">
                             <h6>{product?.modelName}</h6>
                           </div>
-                          <div className="col_85p">
+                          {/* <div className="col_85p">
                             <div className="input_scroll ">
                               {Object.entries(product?.parameter).map(([key, value], indexTwo) => (
                                 <div
@@ -1123,7 +1123,29 @@ const AcceptMaterial = () => {
                                 </div>
                               ))}
                             </div>
+                          </div> */}
+                          <div className="col_85p">
+                            <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
+                              {Object.entries(product?.parameter).map(([key, value], indexTwo) => (
+                                <div
+                                  className="col_60p"
+                                  key={indexTwo}
+                                  style={{ display: "inline-block", minWidth: "150px" }} // Ensure the div takes up enough space to allow scrolling
+                                >
+                                  <label>{key}</label>
+                                  <InputBox
+                                    className="custom_input"
+                                    value={value} // Set the input value to the corresponding value from the object
+                                    onChange={(e) =>
+                                      handleChangeParameter(e, index, indexTwo, { key, value })
+                                    }
+                                    disable={!isEditing || editingIndex !== index} // Disable based on edit state
+                                  />
+                                </div>
+                              ))}
+                            </div>
                           </div>
+
                           {/* <div className="col_85p">
                             <div className="input_scroll">
                               <div className="custom_input_wrapper">  <input className=" custom_input" style={{ lineHeight: 2.2 }}></input></div>
@@ -1536,13 +1558,13 @@ const AcceptMaterial = () => {
                             <h6>{product?.modelName}</h6>
                           </div>
                           <div className="col_85p">
-                            <div className="input_scroll">
+                            <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
                               {Object?.entries(product?.parameterMaterial)?.map(
                                 ([key, value], indexOne) => (
                                   <div
                                     className="col_60p"
                                     key={indexOne}
-                                    style={{ display: "block" }}
+                                    style={{ display: "inline-block", minWidth: "150px" }}
                                   >
                                     <label>{key}</label>
                                     <InputBox
@@ -2051,10 +2073,10 @@ const AcceptMaterial = () => {
                       </h6>
                     </div>
                     <div className="col_85p">
-                      <div className="input_scroll">
+                      <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
                         {cardDataToMap?.parameter[`${index}`]?.map((item, interIndex) => (
                           // <h6>
-                          <div className="col_60p" key={interIndex} style={{ display: "block" }}>
+                          <div className="col_60p" key={interIndex} style={{ display: "inline-block", minWidth: "150px" }}>
                             <label>{item}</label>
                             <InputBox
                               register={{ ...register(`rows[${index}].parameter.${item}`) }}
