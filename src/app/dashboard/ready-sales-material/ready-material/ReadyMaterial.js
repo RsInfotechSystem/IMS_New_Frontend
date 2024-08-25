@@ -187,7 +187,8 @@ const ReadyMaterial = () => {
       let response = await communication.deleteSaleOrder(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response.data.message);
-        router.push("dashboard/ready-sales-material");
+        // router.push("dashboard/ready-sales-material");
+        router.back()
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.info(response.data.message);
         router.push("/");

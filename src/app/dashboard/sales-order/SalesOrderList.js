@@ -35,7 +35,7 @@ const SalesOrderList = () => {
     viewPdf: false,
     data: "",
     deletePo: false,
-    poId: "",
+    orderId: "",
   });
   useEffect(() => {
     setRoleName(getCookie("role"));
@@ -74,13 +74,13 @@ const SalesOrderList = () => {
     }
   }
 
-  async function deletePo(poId) {
+  async function deletePo(orderId) {
     try {
       setLoader(true);
-      setModalStates((prev) => ({ ...prev, deletePo: false, poId: "" }));
-      const serverResponse = await communication.deletePo(poId);
+      setModalStates((prev) => ({ ...prev, deletePo: false, orderId: "" }));
+      const serverResponse = await communication.deletePo(orderId);
       if (serverResponse?.data?.status === "SUCCESS") {
-        await getPOList(1, searchString);
+        await getSalesOrderList(1, searchString);
         toast.success(serverResponse?.data?.message, {
           autoClose: 1500, // 1.5 seconds
         });
@@ -92,7 +92,7 @@ const SalesOrderList = () => {
         router.push("/");
         setLoader(false);
       } else {
-        setPoList([]);
+        setSalesOrder([]);
         setLoader(false);
       }
     } catch (error) {
@@ -115,10 +115,10 @@ const SalesOrderList = () => {
           status="warning"
           message={`Do you want to delete?`}
           successHandler={() => {
-            deletePo(modalState?.poId);
+            deletePo(modalState?.orderId);
           }}
           cancelHandler={() => {
-            setModalStates((prev) => ({ ...prev, deletePo: false, poId: "" }));
+            setModalStates((prev) => ({ ...prev, deletePo: false, orderId: "" }));
           }}
         />
       )}
@@ -297,7 +297,7 @@ const SalesOrderList = () => {
                         <div
                           title="delete"
                           onClick={() =>
-                            setModalStates((prev) => ({ ...prev, deletePo: true, poId: data._id }))
+                            setModalStates((prev) => ({ ...prev, deletePo: true, orderId: data._id }))
                           }
                         >
                           <FontAwesomeIcon icon={faTrash} />

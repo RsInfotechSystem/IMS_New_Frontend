@@ -623,11 +623,11 @@ export const communication = {
       throw error;
     }
   },
-  deletePo: async function (poId) {
+  deletePo: async function (orderId) {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/delete-po`,
-        { poId },
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/delete-sales-order`,
+        { orderId },
         {
           headers: {
             "Content-Type": "application/json",

@@ -5553,3 +5553,25 @@ ul .appointment_letter_ul {
   margin-bottom: 2px;
   border-bottom: 1px solid var(--grey_color_light_shade1);
 }
+.model_row {
+  border-bottom: 1px solid #e0e0e0; /* You can adjust the color to match your header */
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.model_row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+.model_div {
+  border-bottom: 1px solid var(--grey_color_light_shade1);
+  padding-bottom: 5px;
+  margin-bottom: 5px;
+}
+
+.model_div:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}

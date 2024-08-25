@@ -74,18 +74,20 @@ const UpdatedProduct = () => {
         }
     };
 
-    const deleteProduct = async () => {
+    const deleteProduct = async (modelIds) => {
+        console.log(modelIds, "sssssssss");
+
         try {
             setLoader(true);
             setModalStates((prev) => ({ ...prev, deleteProduct: false }));
-            if (selectedCheckboxes.length === 0) {
-                toast.info("Please select at lease one product to delete", {
-                    autoClose: 1500, // 1.5 seconds
-                });
-                return false;
-            }
+            // if (selectedCheckboxes.length === 0) {
+            //     toast.info("Please select at lease one product to delete", {
+            //         autoClose: 1500, // 1.5 seconds
+            //     });
+            //     return false;
+            // }
             let response = await communication.deleteModel({
-                modelIds: [...selectedCheckboxes],
+                modelIds: [modelIds],
             });
             if (response?.data?.status === "SUCCESS") {
                 setSelectedCheckboxes([]);
@@ -155,6 +157,7 @@ const UpdatedProduct = () => {
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
+
             {modalImageStates?.showImg && <CustomImgModal url={modalImageStates?.url} setModalImageStates={setModalImageStates} />}
             {modalStates.deleteProduct && (
                 <CustomResponseHandlerModal
@@ -227,13 +230,13 @@ const UpdatedProduct = () => {
                         }
                     />
 
-                    <CustomBtn
+                    {/* <CustomBtn
                         name={"Delete"}
                         onClick={() => {
                             setModalStates((prev) => ({ ...prev, deleteProduct: true }));
                         }}
                         svg={<FontAwesomeIcon icon={faTrash} />}
-                    />
+                    /> */}
                 </div>
             </div>
             {/* table  */}
@@ -241,7 +244,7 @@ const UpdatedProduct = () => {
                 <div className="table_main">
                     <div className="table_section employee_table" style={{ minWidth: "2000px" }}>
                         <div className="table_header">
-                            <div className="col_10p">
+                            {/* <div className="col_10p">
                                 <div className="check_box">
                                     <input
                                         className="form-check-input"
@@ -251,7 +254,7 @@ const UpdatedProduct = () => {
                                     />
                                     <label className="form-check-label"></label>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="col_10p">
                                 <h5>Sr. No.</h5>
                             </div>
@@ -291,7 +294,7 @@ const UpdatedProduct = () => {
                                 {productList?.map((data, index) => {
                                     return (
                                         <div className="table_data" key={index + 1}>
-                                            <div className="col_10p">
+                                            {/* <div className="col_10p">
                                                 <div className="check_box">
                                                     <input
                                                         className="form-check-input"
@@ -302,7 +305,7 @@ const UpdatedProduct = () => {
                                                     />
                                                     <label className="form-check-label"></label>
                                                 </div>
-                                            </div>
+                                            </div> */}
 
                                             <div className="col_10p">
                                                 <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
@@ -361,7 +364,7 @@ const UpdatedProduct = () => {
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="col_20p">
+                                            <div className="col_20p" style={{ gap: "20px" }}>
                                                 <div className="model_div" >
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
@@ -415,6 +418,22 @@ const UpdatedProduct = () => {
                                                     })}
 
                                                 </div>
+                                                <div className="model_div" >
+                                                    {data?.models?.map((model, innerInd) => {
+                                                        return (
+                                                            <div
+                                                                title="delete"
+                                                                onClick={() => {
+                                                                    setModalStates((prev) => ({ ...prev, deleteProduct: true, modelIds: model?._id }));
+                                                                }}
+                                                            >
+                                                                <FontAwesomeIcon icon={faTrash} />
+                                                            </div>
+
+                                                        )
+                                                    })}
+                                                </div>
+
 
                                             </div>
 
