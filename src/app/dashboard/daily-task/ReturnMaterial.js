@@ -1,3 +1,5 @@
+"use client";
+
 import ButtonLoader from "@/common-components/ButtonLoader";
 import CustomBtn from "@/common-components/CustomBtn";
 import Loader from "@/common-components/Loader";
@@ -257,7 +259,10 @@ const ReturnMaterial = ({ data }) => {
 
   useEffect(() => {
     callAPIs();
+  }, []);
+  useEffect(() => {
     setRoleName(getCookie("role"));
+    console.log("rrrr", getCookie("role"));
   }, []);
 
   return (
@@ -730,8 +735,10 @@ const ReturnMaterial = ({ data }) => {
               </div>
               {/* <div className="form_button_wrapper"> */}
               <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-                {roleName != "admin" && (
-                  <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
+                {roleName !== "admin" && (
+                  <div>
+                    <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
+                  </div>
                 )}
                 <CustomBtn
                   name={"Back"}

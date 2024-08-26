@@ -32,8 +32,9 @@ const ReadyMaterial = () => {
     state: false,
     deleteId: "",
   });
+  const [title, setTitle] = useState("")
 
-  console.log("attachedMaterial", attachedMaterial);
+  // console.log("attachedMaterial", attachedMaterial);
 
 
   const getMaterialById = async () => {
@@ -201,6 +202,9 @@ const ReadyMaterial = () => {
       setLoader(false);
     }
   };
+  useEffect(() => {
+    setTitle(searchParams.get("type") == "NotReady")
+  })
   const cancelHandler = () => {
     setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
   };
@@ -228,16 +232,13 @@ const ReadyMaterial = () => {
         />
       )}
       <div className="top_header">
-        <div className="tab_title">Ready Sales Material for sales</div>
-        {/* {pageCount > 1 && (
-          <Pagination
-            isPageUpdated={isPageUpdated}
-            setIsPageUpdated={setIsPageUpdated}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            pageCount={pageCount}
-          />
-        )} */}
+        {title ? (
+          <div className="tab_title">Sales order Details</div>
+        ) :
+          (
+            <div className="tab_title">Ready Sales Material for sales</div>
+          )}
+
         <div
           className="back_btn"
           onClick={() => {

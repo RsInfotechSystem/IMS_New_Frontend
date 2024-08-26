@@ -287,6 +287,7 @@ const AttachedSalesOrder = () => {
       const serverResponse = await communication.getLocationWiseMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.stock);
+        setLoader(false);
         // setPageCount(serverResponse?.data?.totalPages);
         setState({ materialLists: serverResponse?.data.material });
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
@@ -928,7 +929,7 @@ const AttachedSalesOrder = () => {
                                   <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
                                 </div> */}
                                 <div className="col_20p">
-                                  <h6>{product?.quantity}</h6>
+                                  <h6>{product?.reamainingQuantity}</h6>
                                 </div>
                               </div>
                             );

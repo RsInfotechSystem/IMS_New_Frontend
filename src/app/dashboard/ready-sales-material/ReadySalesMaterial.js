@@ -36,7 +36,7 @@ const ReadySalesMaterial = () => {
     recipeId: "",
   });
   const [salesOrder, setSalesOrder] = useState([]);
-
+  let displayIndex = 0;
   const [recipeUpdateData, setRecipeUpdateData] = useState({
     type: "",
     recipeId: "",
@@ -45,7 +45,6 @@ const ReadySalesMaterial = () => {
   const searchParams = useSearchParams();
   const [timeoutId, setTimeoutId] = useState();
   const [page, setPage] = useState(1);
-
   //export the excel template that will use for bulk upload
   async function getSalesOrderList(page, searchString, isSearch = false) {
     try {
@@ -80,6 +79,7 @@ const ReadySalesMaterial = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
+
   useEffect(() => {
     getSalesOrderList(currentPage, searchString);
   }, [isPageUpdated]);
@@ -258,13 +258,13 @@ const ReadySalesMaterial = () => {
                       <>
                         <div className="table_data" key={index}>
                           <div className="col_10p">
-                            <h6>{index + 1}</h6>
+                            <h6>{++displayIndex}</h6>
                           </div>
                           <div className="col_20p">
                             <h6
                               onClick={() => {
                                 router.push(
-                                  `/dashboard/ready-sales-material/ready-material?orderId=${data._id}`
+                                  `/dashboard/ready-sales-material/ready-material?type=NotReady&orderId=${data?._id}`
                                 );
                               }}
                             >

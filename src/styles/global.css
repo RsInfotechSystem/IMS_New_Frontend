@@ -5569,6 +5569,13 @@ ul .appointment_letter_ul {
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
+.model_div_icon{
+  /* padding-bottom: 5px;
+  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; */
+}
 
 .model_div:last-child {
   border-bottom: none;
