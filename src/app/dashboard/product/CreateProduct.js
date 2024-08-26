@@ -98,10 +98,10 @@ function CreateProduct({ data }) {
         brandId: values.brandId,
       };
       if (modalStates?.type === "create") {
-        if (otherDocuments.length === 0) {
-          toast.info("Please select the product Image(s)", { autoClose: 1500 });
-          return;
-        }
+        // if (otherDocuments?.length === 0) {
+        //   toast.info("Please select the product Image(s)", { autoClose: 1500 });
+        //   return;
+        // }
         otherDocuments.forEach((file) => {
           formData.append("files", file.fileUrl);
         });

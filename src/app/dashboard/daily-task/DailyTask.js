@@ -50,7 +50,7 @@ const DailyTask = () => {
   });
   useEffect(() => {
     setRoleName(getCookie("role"));
-    console.log("rrrr", getCookie("role"));
+    // console.log("rrrr", getCookie("role"));
   }, []);
   async function fetchAssignMaterial({
     page = 1,
@@ -216,42 +216,23 @@ const DailyTask = () => {
       </div>
       <div className="search_btn_wrapper">
         <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
-        {/* {roleName === "admin" && ( */}
-        <div className="search_box">
-          <select
-            // className="inputBox"
-            className="search_input"
-            // style={{
-            //   height: "30px",
-            //   background: "#f5f5f5",
-            //   border: "none",
-            //   width: "100%",
-            // }}
-            // {...register("userId", {
-            //   required: "Technician is required",
-            // })}
-            onChange={(e) => fetchAssignMaterial({ page: currentPage, userId: e.target.value })}
-          >
-            {/* <option>Roshan</option>
-                  <option>Roshan 2</option> */}
-            <option value="">Select Technician</option>
-            {TechnicianList.map((ele, index) => {
-              return (
-                <option value={ele._id} key={index}>
-                  {ele.name}
-                </option>
-              );
-            })}
-          </select>
-          {/* <div style={{ height: "5px" }}>
-                  {errors.userId && (
-                    <p className="text-danger text-start" style={{ fontSize: "0.7rem" }}>
-                      {errors.userId.message}
-                    </p>
-                  )}
-                </div> */}
-        </div>
-        {/* // )} */}
+        {roleName === "admin" && (
+          <div className="search_box">
+            <select
+              className="search_input"
+              onChange={(e) => fetchAssignMaterial({ page: currentPage, userId: e.target.value })}
+            >
+              <option value="">Select Technician</option>
+              {TechnicianList.map((ele, index) => {
+                return (
+                  <option value={ele._id} key={index}>
+                    {ele.name}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        )}
         <div className="buttons_wrapper">
           {/* <CustomBtn
             name={"Filter"}
@@ -463,7 +444,9 @@ const DailyTask = () => {
                             <FontAwesomeIcon icon={faClipboardCheck} />
                           </div>
                         )}
-                        {roleName !== "admin" && stockDetails?.taskStatus == "acknowledge" && "--"}
+                        {roleName == "admin" && (stockDetails?.taskStatus !== "assigned" && stockDetails?.taskStatus !== "acknowledge") && "--"}
+
+                        {roleName !== "admin" && stockDetails?.taskStatus !== "assigned" && "--"}
                       </h6>
                     </div>
                     {/* {roleName == "admin" && stockDetails?.taskStatus == "assigned" ? (

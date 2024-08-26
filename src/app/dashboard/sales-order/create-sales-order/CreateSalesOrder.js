@@ -118,9 +118,11 @@ const CreateOrder = () => {
       setLoader(true);
       if (response?.data?.status === "SUCCESS") {
         setUser(response?.data?.users);
+        toast.success(response?.data?.message);
         setLoader(false);
       } else {
         setUser([])
+        toast.info(response.data.message);
         setLoader(false);
       }
     } catch (error) {
@@ -467,7 +469,7 @@ const CreateOrder = () => {
 
       {activeTab === "SUPPLY" && (
         <div>
-          {loader && <Loader />}
+          {/* {loader && <Loader />} */}
           {/* create add recipe order form  */}
           <div className="">
             <div className="form_list_layout_wrapper">
