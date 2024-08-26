@@ -159,10 +159,14 @@ const ReadyMaterial = () => {
   }
   const showInputDialog = () => {
     Swal.fire({
-      html: `<p>Do you want this order later or cancel?</p>`,
+      html: `<p>Do you want to save this order for later  ?</p>`,
       showCancelButton: true,
-      confirmButtonText: "Later",
-      cancelButtonText: "Cancel",
+      confirmButtonText: "Yes",
+      cancelButtonText: "Finale Sales",
+      customClass: {
+        confirmButton: 'custom-button',
+        cancelButton: 'custom-button'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
         // User clicked "Later"

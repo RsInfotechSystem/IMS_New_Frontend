@@ -5575,3 +5575,7 @@ ul .appointment_letter_ul {
   padding-bottom: 0;
   margin-bottom: 0;
 }
+
+.custom-button, .custom-button {
+  width: 135px;
+}
