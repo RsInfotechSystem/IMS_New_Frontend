@@ -282,7 +282,7 @@ const StockOut = () => {
                     <h6>{materialDetails?.serialNo ? materialDetails?.serialNo : "--"}</h6>
                   </div>
                   <div className="col_35p">
-                    <h6>{materialDetails?.conditionType}</h6>
+                    <h6>{materialDetails?.status}</h6>
                   </div>
                   <div className="col_35p">
                     <h6>{materialDetails?.quantity}</h6>
