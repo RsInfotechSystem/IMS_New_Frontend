@@ -11,6 +11,7 @@ import StockFilter from "@/common-components/StockFilter";
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReportFilterForCategory from "@/common-components/ReportFilterForCategory";
+import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 
 // Register Chart.js components and plugins
 ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
@@ -423,9 +424,19 @@ const StockReportGraph = () => {
           />
           
         </div> */}
-        <div title="Filter" onClick={() => {
-          setModalStates((prev) => ({ ...prev, filter: true }));
-        }}><FontAwesomeIcon icon={faFilter} /></div>
+        <div className="d-flex gap-2">
+          <div title="Filter" onClick={() => {
+            setModalStates((prev) => ({ ...prev, filter: true }));
+          }}><FontAwesomeIcon icon={faFilter} />
+          </div>
+          <div title="Reset Filter"
+            onClick={() => {
+              MaterialByBrand();
+            }}
+          >
+            <FontAwesomeIcon icon={faCircleXmark} />
+          </div>
+        </div>
         <h5 style={{ textAlign: "center" }}>Brand Wise Stock</h5>
         <Pie data={pieData2} options={optionsBrand} />
       </div>
