@@ -516,7 +516,7 @@ const ReturnMaterial = ({ data }) => {
                     )}
                   </div>
                 </div> */}
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                {/* <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Item Code</label>
                   <input
                     disabled
@@ -535,7 +535,7 @@ const ReturnMaterial = ({ data }) => {
                       </p>
                     )}
                   </div>
-                </div>
+                </div> */}
                 <div className="col-lg-3 col-md-6 input_wrapper">
                   <label className="me-1">Serial No</label>
                   <input
@@ -672,7 +672,9 @@ const ReturnMaterial = ({ data }) => {
                               key={index}
                               data-id={ele?.categoryId?._id} // Added data-id attribute
                             >
-                              {`${ele?.categoryId?.name} (${ele?.itemCode})`}
+                              {`${ele?.categoryId?.name} `}
+                              {/* {`${ele?.categoryId?.name} (${ele?.itemCode})`} */}
+                              {/* comment for item code */}
                             </option>
                           );
                         })}

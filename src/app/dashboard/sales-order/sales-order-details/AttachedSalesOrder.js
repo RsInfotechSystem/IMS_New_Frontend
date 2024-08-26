@@ -645,7 +645,7 @@ const AttachedSalesOrder = () => {
               <div className="form_layout">
                 <div className="row">
                   <div className="custom_input_wrapper col-lg-3 col-md-3">
-                    <label>Serial No./Item Code</label>
+                    <label>Serial No.</label>
                     <input
                       type="text"
                       // name="searchString"
@@ -872,9 +872,9 @@ const AttachedSalesOrder = () => {
                           <div className="col_25p">
                             <h5>Serial No</h5>
                           </div>
-                          <div className="col_20p">
+                          {/* <div className="col_20p">
                             <h5>Item Code</h5>
-                          </div>
+                          </div> */}
                           <div className="col_20p">
                             <h5>QTY</h5>
                           </div>
@@ -924,9 +924,9 @@ const AttachedSalesOrder = () => {
                                 <div className="col_25p">
                                   <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                                 </div>
-                                <div className="col_20p">
+                                {/* <div className="col_20p">
                                   <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
-                                </div>
+                                </div> */}
                                 <div className="col_20p">
                                   <h6>{product?.quantity}</h6>
                                 </div>
@@ -989,9 +989,9 @@ const AttachedSalesOrder = () => {
                     <div className="col_25p">
                       <h5 className="action_wrraper">Serial No</h5>
                     </div>
-                    <div className="col_20p">
+                    {/* <div className="col_20p">
                       <h5 className="action_wrraper">Item Code</h5>
-                    </div>
+                    </div> */}
                     <div className="col_20p">
                       <h5 className="action_wrraper">Action</h5>
                     </div>
@@ -1034,11 +1034,11 @@ const AttachedSalesOrder = () => {
                               {item?.serialNo ? item?.serialNo : "--"}
                             </h6>
                           </div>
-                          <div className="col_20p">
+                          {/* <div className="col_20p">
                             <h6 className="action_wrraper ">
                               {item?.itemCode ? item?.itemCode : "--"}
                             </h6>
-                          </div>
+                          </div> */}
                           <div className="col_20p">
                             <Button
                               type="button"

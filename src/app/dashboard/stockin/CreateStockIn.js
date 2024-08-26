@@ -315,8 +315,8 @@ const CreateStockIn = ({ data }) => {
               {modalStates.isView
                 ? "View Details"
                 : modalStates?.type === "create"
-                ? "Create Stock"
-                : "Update Stock"}
+                  ? "Create Stock"
+                  : "Update Stock"}
             </h5>
             <FontAwesomeIcon
               icon={faCircleXmark}
@@ -669,7 +669,7 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-4 col-md-6 input_wrapper">
+                {/* <div className="col-lg-4 col-md-6 input_wrapper">
                   <label>Item Code</label>
                   <InputBox
                     disable={modalStates.isView}
@@ -680,7 +680,7 @@ const CreateStockIn = ({ data }) => {
                     }}
                     errors={errors.itemCode}
                   />
-                </div>{" "}
+                </div> */}
               </div>
               <div className="row">
                 {parameter.length > 0 && (

@@ -269,9 +269,9 @@ const ReceiveMaterialAction = () => {
               <div className="col_40p">
                 <h5>Model Name</h5>
               </div>
-              <div className="col_40p">
+              {/* <div className="col_40p">
                 <h5>Item Code</h5>
-              </div>
+              </div> */}
               <div className="col_30p">
                 <h5>Serial No.</h5>
               </div>
@@ -309,9 +309,9 @@ const ReceiveMaterialAction = () => {
                       <div className="col_40p">
                         <h6>{material?.modelName}</h6>
                       </div>
-                      <div className="col_40p">
+                      {/* <div className="col_40p">
                         <h6>{material?.itemCode ? material?.itemCode : "--"}</h6>
-                      </div>
+                      </div> */}
                       <div className="col_30p">
                         <h6>{material?.serialNo ? material?.serialNo : "--"}</h6>
                       </div>

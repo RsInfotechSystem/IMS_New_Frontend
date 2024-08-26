@@ -680,7 +680,7 @@ const InventoryView = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div className="col-lg-3 col-md-6 input_wrapper">
+                {/* <div className="col-lg-3 col-md-6 input_wrapper">
                   <label>Item Code *</label>
                   <InputBox
                     disable={true}
@@ -691,7 +691,7 @@ const InventoryView = ({ data }) => {
                     }}
                     errors={errors.itemCode}
                   />
-                </div>{" "}
+                </div> */}
                 {/* <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Retail Price Per Item *</label>
                 <InputBox
@@ -730,7 +730,7 @@ const InventoryView = ({ data }) => {
                         type="text"
                         {...register(`parameter[${item}]`)}
                         className="form-control custom_input"
-                        // style={{ width: "100%", height: "31px" }}
+                      // style={{ width: "100%", height: "31px" }}
                       />
                     </div>
                   </React.Fragment>
