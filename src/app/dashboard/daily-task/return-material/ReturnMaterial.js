@@ -425,9 +425,12 @@ const ReturnMaterialUser = () => {
                 </div>
               </div>
               <div className="d-flex align-items-center justify-content-center gap-3 my-3">
-                {/* {roleName != "admin" && ( */}
-                <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
-                {/* // )} */}
+                {roleName != "admin" && (
+                  <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
+                )}
+                {/* {(roleName != "admin" && material?.map((product, ele) => product?.taskStatus !== "assigned")) && (
+                  <CustomBtn name={"Return"} onClick={handleSubmit(onSubmit)} />
+                )} */}
                 <CustomBtn
                   type="button"
                   name="Back"

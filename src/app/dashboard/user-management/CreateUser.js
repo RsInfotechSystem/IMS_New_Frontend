@@ -14,7 +14,7 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 function CreateUser({ data }) {
-    const { modalStates, setModalStates, setIsPageUpdated, locations, roleList, getUserList,searchString,currentPage } = data;
+    const { modalStates, setModalStates, setIsPageUpdated, locations, roleList, getUserList, searchString, currentPage } = data;
     const [propertyType, setPropertyType] = useState([]);
     const [userById, setUserById] = useState("")
     const [selectedLocation, setSelectedLocation] = useState([]);
@@ -49,7 +49,7 @@ function CreateUser({ data }) {
                 setValue("password", serverResponse?.data?.user?.password)
                 setSelectedLocation(serverResponse?.data?.user?.locationId);
                 console.log(serverResponse?.data?.user?.locationId);
-                
+
                 setRoleId(serverResponse?.data?.user?.roleId)
                 setValue("role", serverResponse?.data?.user?.roleId)
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
@@ -190,8 +190,8 @@ function CreateUser({ data }) {
         setValue("locationId", locationId);
     }, [locationId, locations.length]);
 
-    console.log(selectedLocation);
-    
+    // console.log(selectedLocation);
+
 
 
     return (
@@ -221,7 +221,7 @@ function CreateUser({ data }) {
                                         })
                                     }}
                                     errors={errors.role}
-                                />                            
+                                />
                             </div>
                             <div className="input_wrapper col-lg-4 col-md-6 col-sm-6">
                                 <label >User Name*</label>
@@ -265,10 +265,10 @@ function CreateUser({ data }) {
                                     // showCheckbox={true}
                                     disable={false}
                                     keepSearchTerm={true}
-                                    onSelect={(e)=> setSelectedLocation(e)}
-                                    onRemove={(e)=> setSelectedLocation(e)}
-                                    // rules={{ required: "Location is required" }}
-                                    // {...register("location")}
+                                    onSelect={(e) => setSelectedLocation(e)}
+                                    onRemove={(e) => setSelectedLocation(e)}
+                                // rules={{ required: "Location is required" }}
+                                // {...register("location")}
 
                                 />
                                 {validationMessage && <p style={{ color: '#dc3545' }}>{validationMessage}</p>}
@@ -321,7 +321,7 @@ function CreateUser({ data }) {
 
                         <div className="form_button_wrapper">
                             <CustomBtn name={buttonLoader ? <ButtonLoader /> : modalStates?.type === "create" ? "Create" : "Update"} onClick={modalStates?.type == "create" ? handleSubmit(onSubmit) : handleSubmit(updateExistingUser)} />
-                          
+
 
                         </div>
                     </div>

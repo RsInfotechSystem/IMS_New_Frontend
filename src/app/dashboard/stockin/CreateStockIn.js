@@ -484,7 +484,7 @@ const CreateStockIn = ({ data }) => {
                       className="form-control custom_input"
                       style={{ width: "100%" }}
                       {...register("categoryId", {
-                        required: "categoryId is required",
+                        required: "category is required",
                       })}
                     >
                       <option value="" className="text-secondary text-lowercase">
@@ -637,7 +637,7 @@ const CreateStockIn = ({ data }) => {
                     <select
                       disabled={modalStates.isView}
                       {...register("modelId", {
-                        required: "modelId is required",
+                        required: "model is required",
                       })}
                       className="form-control custom_input"
                       style={{ width: "100%" }}

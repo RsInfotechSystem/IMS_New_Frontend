@@ -88,11 +88,15 @@ const RoleList = () => {
   };
   const handleSelectAllChange = (e) => {
     setSelectAllChecked(e.target.checked);
-
-    // Update the array of selected checkboxes based on the "Select All" checkbox
-    setSelectedCheckboxes((prevSelected) =>
-      e.target.checked ? roles.map((brandDetails) => brandDetails._id) : []
-    );
+    // Check if there are any roles available
+    if (selectedCheckboxes.length <= 0) {
+      setSelectedCheckboxes([]);
+    } else {
+      // Update the array of selected checkboxes based on the "Select All" checkbox
+      setSelectedCheckboxes((prevSelected) =>
+        e.target.checked ? roles.map((brandDetails) => brandDetails._id) : []
+      );
+    }
   };
 
   const deleteRole = async () => {

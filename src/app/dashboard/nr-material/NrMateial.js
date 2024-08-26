@@ -293,13 +293,13 @@ const NrMateial = () => {
                                             alt="Profile"
                                         /> */}
                         <h6
-                          onClick={() => {
-                            router.push(
-                              `/dashboard/inventory/inventory-update?stockId=${materialDetails?._id}&type=view`
-                            );
-                          }}
+                        // onClick={() => {
+                        //   router.push(
+                        //     `/dashboard/inventory/inventory-update?stockId=${materialDetails?._id}&type=view`
+                        //   );
+                        // }}
                         >
-                          <strong>{materialDetails?.categoryId?.name}</strong>
+                          {materialDetails?.categoryId?.name}
                         </h6>
                       </div>
                       <div className="col_35p">
