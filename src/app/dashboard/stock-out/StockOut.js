@@ -135,15 +135,31 @@ const StockOut = () => {
     }
   }
 
+  //add search logic for table list
+  const filterMaterial = (materials, searchString) => {
+    if (!searchString) return materials;
+    return materials.filter((item) => {
+      const searchValue = searchString.toLowerCase();
+      return (
+        (item?.categoryId?.name?.toLowerCase().includes(searchValue) || '') ||
+        (item?.brandId?.name?.toLowerCase().includes(searchValue) || '') ||
+        (item?.locationId?.name?.toLowerCase().includes(searchValue) || '') ||
+        (item?.modelId?.name?.toLowerCase().includes(searchValue) || '') ||
+        (item?.serialNo?.toLowerCase().includes(searchValue) || '') ||
+        (item?.itemCode?.toLowerCase().includes(searchValue) || '')
+      );
+    });
+  };
+
   const handleSearch = (e) => {
     setSearchString(e.target.value);
     let isSearch = true;
-    clearTimeout(timeoutId);
-    let _timeOutId = setTimeout(() => {
-      getStatusWiseMaterialList({ page: 1, searchString: e.target.value, isSearch });
-      setCurrentPage(1);
-    }, 2000);
-    setTimeoutId(_timeOutId);
+    // clearTimeout(timeoutId);
+    // let _timeOutId = setTimeout(() => {
+    // getStatusWiseMaterialList({ page: 1, searchString: e.target.value, isSearch });
+    setCurrentPage(1);
+    // }, 10000);
+    // setTimeoutId(_timeOutId);
   };
 
   useEffect(() => {
@@ -249,8 +265,9 @@ const StockOut = () => {
                 <h5>Stock Out Date</h5>
               </div>
             </div>
-            {material?.length > 0 ? (
-              material?.map((materialDetails, index) => (
+            {/* {material?.length > 0 ? ( */}
+            {filterMaterial(material, searchString)?.length > 0 ? (
+              filterMaterial(material, searchString)?.map((materialDetails, index) => (
                 <div className="table_data" key={index}>
                   <div className="col_15p">
                     <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
