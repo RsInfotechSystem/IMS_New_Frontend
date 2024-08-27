@@ -271,10 +271,10 @@ const ReturnMaterialUser = () => {
                                 <h6>{product?.blockId?.blockNo}</h6>
                               </div>
                               <div className="col_25p">
-                                <h6>{product?.rackId?.rackName}</h6>
+                                <h6>{product?.rackId?.rackName ? product?.rackId?.rackName : "--"}</h6>
                               </div>
                               <div className="col_25p">
-                                <h6>{product?.partitionName}</h6>
+                                <h6>{product?.partitionName ? product?.partitionName : "--"}</h6>
                               </div>
                               <div className="col_30p">
                                 <h6>{product?.categoryId?.name}</h6>
@@ -391,10 +391,10 @@ const ReturnMaterialUser = () => {
                                 <h6>{product?.blockId?.blockNo}</h6>
                               </div>
                               <div className="col_25p">
-                                <h6>{product?.rackId?.rackName}</h6>
+                                <h6>{product?.rackId?.rackName ? product?.rackId?.rackName : "--"}</h6>
                               </div>
                               <div className="col_25p">
-                                <h6>{product?.partitionName}</h6>
+                                <h6>{product?.partitionName ? product?.partitionName : "--"}</h6>
                               </div>
                               <div className="col_25p">
                                 <h6>{product?.categoryId?.name}</h6>
