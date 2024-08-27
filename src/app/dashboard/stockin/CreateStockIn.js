@@ -220,6 +220,7 @@ const CreateStockIn = ({ data }) => {
       setLoader(false);
     }
   };
+
   const stockInDetailsSubmit = async (values) => {
     try {
       setLoader(true);
@@ -304,6 +305,7 @@ const CreateStockIn = ({ data }) => {
       getStockById();
     }
   }, []);
+
 
   return (
     <>

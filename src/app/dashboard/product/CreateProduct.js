@@ -155,11 +155,11 @@ function CreateProduct({ data }) {
       });
       if (responseFromServer?.data?.status === "SUCCESS") {
         const modelData = responseFromServer?.data?.model;
+        await getCategoryWiseBrand(modelData?.categoryId?._id, setLoader, router, setBrandsData);
         setValue("name", modelData?.name);
         setValue("categoryId", modelData?.categoryId?._id);
-        await getCategoryWiseBrand(modelData?.categoryId?._id, setLoader, router, setBrandsData);
         _setCategory(modelData?.categoryId?._id)
-        _setBrandId(modelData?.brandId?._id);
+        // _setBrandId(modelData?.brandId?._id);
         setValue("description", modelData?.description);
         setOtherDocuments(modelData?.files);
         if (modelData?.categoryId?._id) {
@@ -286,7 +286,7 @@ function CreateProduct({ data }) {
                     </option>
                     {brandsData?.map((ele, index) => {
                       return (
-                        <option className="small text-capitalize" value={ele?._id} key={index}>
+                        <option className="small text-capitalize" selected={(getValues("brandId") === ele?._id) ? true : false} value={ele?._id} key={index}>
                           {" "}
                           {ele?.name}
                         </option>

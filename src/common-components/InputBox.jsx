@@ -10,6 +10,7 @@ const InputBox = ({
   disable,
   className,
   onChange,
+  onBlur
 }) => {
   return (
     <div className="custom_input_wrapper">
@@ -21,7 +22,8 @@ const InputBox = ({
         className={`form-control custom_input ${className}`}
         style={{ paddingLeft: lefIcon ? 45 : "auto" }}
         placeholder={placeholder}
-        onChange={onChange}
+        // onChange={onChange}
+        onBlur={onBlur}
         disabled={disable}
         onWheel={(e) => {
           e.target.blur();

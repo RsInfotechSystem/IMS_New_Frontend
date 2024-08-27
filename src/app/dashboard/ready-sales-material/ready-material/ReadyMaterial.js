@@ -2,6 +2,7 @@
 import CustomBtn from "@/common-components/CustomBtn";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import InputBox from "@/common-components/InputBox";
+import InputBoxOnChange from "@/common-components/InputBoxOnChange";
 import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
 import { communication } from "@/services/communication";
@@ -32,7 +33,9 @@ const ReadyMaterial = () => {
     state: false,
     deleteId: "",
   });
+
   const [title, setTitle] = useState("")
+  const [localQuantities, setLocalQuantities] = useState({});
 
   // console.log("attachedMaterial", attachedMaterial);
 
@@ -85,25 +88,47 @@ const ReadyMaterial = () => {
     );
   };
 
-  const handleQuantityChange = (materialData, value, product) => {
-    clearTimeout(timeoutId);
-    let _timeOutId = setTimeout(() => {
-      setQuantities((prev) => [
-        ...prev,
-        {
-          detailId: product?._id,
-          materialIds: [
-            {
-              id: materialData?._id,
-              sellingQuantity: Number(value),
-            },
-          ],
-        },
-      ]);
-    }, 2000);
-    setTimeoutId(_timeOutId);
-  };
+  // const handleQuantityChange = (materialData, value, product) => {
+  //   clearTimeout(timeoutId);
+  //   let _timeOutId = setTimeout(() => {
+  //     setQuantities((prev) => [
+  //       ...prev,
+  //       {
+  //         detailId: product?._id,
+  //         materialIds: [
+  //           {
+  //             id: materialData?._id,
+  //             sellingQuantity: Number(value),
+  //           },
+  //         ],
+  //       },
+  //     ]);
+  //   }, 2000);
+  //   setTimeoutId(_timeOutId);
+  // };
 
+  const handleQuantityChange = (materialData, value, product) => {
+    console.log(value, "value");
+
+    console.log(materialData, "materialData");
+
+    setLocalQuantities(prev => ({
+      ...prev,
+      [`${product._id}-${materialData._id}`]: {
+        detailId: product._id,
+        materialIds: [
+          {
+            id: materialData._id,
+            sellingQuantity: Number(value),
+          },
+        ],
+      }
+    }));
+  };
+  const handleInputBlur = () => {
+    // Update the global quantities state when the input loses focus
+    setQuantities(Object.values(localQuantities));
+  };
   async function allsalesOrderSell() {
     try {
       setLoader(true);
@@ -128,7 +153,7 @@ const ReadyMaterial = () => {
 
   async function salesOrderSell(flag = false) {
     try {
-      if (quantities.length < 1) {
+      if (quantities?.length < 1) {
         toast.info("Add quantity for sell");
         return;
       }
@@ -139,7 +164,6 @@ const ReadyMaterial = () => {
         flag: flag,
         materialDetails: quantities,
       };
-      console.log(payload, "payload");
       const serverResponse = await communication.SalesOrderSells(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse.data.message);
@@ -277,6 +301,8 @@ const ReadyMaterial = () => {
       </div>
 
       <div className="table_wrapper my-3">
+        {console.log(quantities, "quantities")}
+
         <div className="table_main">
           <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
             <div className="table_header">
@@ -365,13 +391,15 @@ const ReadyMaterial = () => {
                     {/* {attachedMaterial.formStatus == "ready" && ( */}
                     <div className="col_50p">
                       <h6>
-                        <InputBox
+                        <InputBoxOnChange
                           className="inputBox"
                           type="number"
                           placeholder="Enter Quantity"
+                          value={localQuantities[`${product._id}-${material._id}`]?.materialIds[0]?.sellingQuantity || ''}
                           onChange={(e) => {
                             handleQuantityChange(material, e.target.value, product);
                           }}
+                          onBlur={handleInputBlur}
                         />
                       </h6>
                     </div>

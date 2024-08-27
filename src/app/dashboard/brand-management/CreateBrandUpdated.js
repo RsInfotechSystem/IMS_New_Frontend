@@ -2,6 +2,7 @@
 import ButtonLoader from "@/common-components/ButtonLoader";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
+import InputBoxOnChange from "@/common-components/InputBoxOnChange";
 import Loader from "@/common-components/Loader";
 import SelectBox from "@/common-components/Select";
 import { getCategory } from "@/services/commonApis";
@@ -156,7 +157,7 @@ function CreateBrandUpdated({ data }) {
                             <div className="row d-flex align-items-end">
                                 <div className="input_wrapper col-md-6 col-lg-6">
                                     <label>Brand Name*</label>
-                                    <InputBox
+                                    <InputBoxOnChange
                                         type={"text"}
                                         onChange={(e) => setBrandInput(e.target.value)}
                                         register={{

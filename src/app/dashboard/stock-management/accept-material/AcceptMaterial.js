@@ -25,6 +25,7 @@ import Button from "@/common-components/Button";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import SelectBox from "@/common-components/Select";
 import ColorBox from "@/utilities/colorBox";
+import InputBoxOnChange from "@/common-components/InputBoxOnChange";
 
 const AcceptMaterial = () => {
   const router = useRouter();
@@ -1113,7 +1114,7 @@ const AcceptMaterial = () => {
                                   style={{ display: "inline-block", minWidth: "150px" }} // Ensure the div takes up enough space to allow scrolling
                                 >
                                   <label>{key}</label>
-                                  <InputBox
+                                  <InputBoxOnChange
                                     className="custom_input"
                                     value={value} // Set the input value to the corresponding value from the object
                                     onChange={(e) =>
