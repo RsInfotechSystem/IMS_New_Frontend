@@ -365,10 +365,10 @@ const UpdatedProduct = () => {
                                                 </div>
                                             </div>
                                             <div className="col_20p" style={{ gap: "20px" }}>
-                                                <div className="model_div" >
+                                                <div className="model_div mt-2" >
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
-                                                            <h6 className="action_wrraper" key={innerInd}>
+                                                            <h6 key={innerInd}>
                                                                 <div
                                                                     title="edit"
                                                                     onClick={() =>
