@@ -100,7 +100,11 @@ const ReturnMaterialUser = () => {
       materialIds: selectedMaterials,
       nonMaterialIds: selectedNonMaterials,
     };
-
+    // Check if both arrays are empty
+    if (selectedMaterials.length === 0 && selectedNonMaterials.length === 0) {
+      toast.info("Please select either non-materials or materials for return.");
+      return  // Stop the function from proceeding if both are empty
+    }
     // If either array is empty, set it to an empty array in the payload
     if (selectedMaterials.length === 0) payload.materialIds = [];
     if (selectedNonMaterials.length === 0) payload.nonMaterialIds = [];
@@ -111,8 +115,6 @@ const ReturnMaterialUser = () => {
     try {
       setLoader(true);
       const payload = generatePayload();
-      // console.log(payload, "payyyyy");
-      // console.log(values, "valllll");
       let response = await communication.returnMaterial(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response?.data?.message);

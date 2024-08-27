@@ -285,6 +285,9 @@ const DailyTask = () => {
               <div className="col_50p">
                 <h5>Task Status</h5>
               </div>
+              <div className="col_50p">
+                <h5>Remark</h5>
+              </div>
               {/* {roleName == "admin" && material.map((item) => item?.taskStatus) == "assigned" && ( */}
               <div className="col_20p">
                 <h5>Action</h5>
@@ -304,7 +307,10 @@ const DailyTask = () => {
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
                     <div className="col_50p">
-                      <h6
+                      {stockDetails?.taskStatus === "Complete" ? (<h6
+                      >
+                        {stockDetails?.jobNo}
+                      </h6>) : (<h6
                         style={{ color: "#0000FF", cursor: "pointer" }}
                         onClick={() =>
                           router.push(
@@ -313,7 +319,7 @@ const DailyTask = () => {
                         }
                       >
                         {stockDetails?.jobNo}
-                      </h6>{" "}
+                      </h6>)}
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.createdAt.split("T")[0]}</h6>
@@ -329,6 +335,8 @@ const DailyTask = () => {
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.taskStatus}</h6>
+                    </div><div className="col_50p">
+                      <h6>{stockDetails?.remark ? stockDetails?.remark : "--"}</h6>
                     </div>
                     <div className="col_20p d-flex justify-content-center align-items-center">
                       <h6 className="text-center  ">
@@ -449,81 +457,7 @@ const DailyTask = () => {
                         {roleName !== "admin" && stockDetails?.taskStatus !== "assigned" && "--"}
                       </h6>
                     </div>
-                    {/* {roleName == "admin" && stockDetails?.taskStatus == "assigned" ? (
-                      <div className="col_20p me-1">
-                        <h6 className="action_wrraper">
-                          <>
-                            {" "}
-                            <div title="edit">
-                              <svg
-                                title={`${stockDetails.isActive ? "Update" : ""}`}
-                                className={`${
-                                  stockDetails.isActive ? "cursor-pointer" : "cursor-not-allowed"
-                                }`}
-                                onClick={() => router.push("/dashboard/assign-material")}
-                                width="27"
-                                height="27"
-                                viewBox="0 0 25 24"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                              >
-                                <g clip-path="url(#clip0_279_5204)">
-                                  <path
-                                    d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                                    stroke="#0D6EFD"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                  />
-                                  <path
-                                    d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                                    stroke="#0D6EFD"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                  />
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_279_5204">
-                                    <rect
-                                      width="15"
-                                      height="15"
-                                      fill="white"
-                                      transform="translate(5 5)"
-                                    />
-                                  </clipPath>
-                                </defs>
-                              </svg>
-                            </div>
-                            <div
-                              title="Delete"
-                              // onClick={() => handleDeleteMaterial(stockDetails?.jobNo)}
-                              onClick={() =>
-                                setModalStates((prev) => ({
-                                  ...prev,
-                                  deleteTasks: true,
-                                  jobNo: stockDetails?.jobNo,
-                                }))
-                              }
-                            >
-                              <FontAwesomeIcon icon={faTrash} />
-                            </div>
-                          </>
-                        </h6>
-                      </div>
-                    ) : (
-                      <div className="col_20p me-1">
-                        <h6 className="action_wrraper">--</h6>
-                      </div>
-                    )} */}
 
-                    {/* {roleName !== "admin" && stockDetails?.taskStatus == "assigned" ? (
-                      <div title="Accept" onClick={(e) => acknowledgeMaterial(stockDetails?.jobNo)}>
-                        <FontAwesomeIcon icon={faClipboardCheck} />
-                      </div>
-                    ) : (
-                      <div className="col_20p me-1">
-                        <h6 className="action_wrraper">--</h6>
-                      </div>
-                    )} */}
                   </div>
                 ))}
               </>

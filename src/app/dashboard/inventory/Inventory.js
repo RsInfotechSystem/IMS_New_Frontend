@@ -299,10 +299,10 @@ const Inventory = () => {
                       </div>
 
                       <div className="col_45p">
-                        <h6>{materialDetails?.rack}</h6>
+                        <h6>{materialDetails?.rack ? materialDetails?.rack : "--"}</h6>
                       </div>
                       <div className="col_50p">
-                        <h6>{materialDetails?.partitionName}</h6>
+                        <h6>{materialDetails?.partitionName ? materialDetails?.partitionName : "--"}</h6>
                       </div>
                       <div className="col_35p">
                         <h6>{materialDetails?.serialNo ? materialDetails?.serialNo : "--"}</h6>

@@ -83,19 +83,6 @@ const AcceptMaterial = () => {
   const [rowSelectionsMaterial, SetRowSelectionsMaterial] = useState({});
   const [brandsData, setBrandsData] = useState([]);
   const [isStoreSelected, setIsStoreSelected] = useState(false);
-  // const [addToCart, setAddToCart] = useState([]);
-  // const [cartTable, setCartTable] = useState([
-  //   {
-  //     categoryId: "",
-  //     parameter: {},
-  //     locationId: "",
-  //     blockId: "",
-  //     rackId: "",
-  //     partitionName: "",
-  //     status: "",
-  //     // Add any other properties you want to include
-  //   },
-  // ]);
   const [rowData, setRowData] = useState([{ blocks: [], racks: [], partitions: [] }]);
   const [dumpCount, setDumpCount] = useState(0);
   const [storeCount, setStoreCount] = useState(0);
@@ -137,50 +124,57 @@ const AcceptMaterial = () => {
   // ------------------------ACCEPT MATERIAL------------------------------------------
   const acceptMaterial = async (index) => {
     try {
-      setLoader(true);
-      const dataToSend = {
-        jobNo: params.get("jobId"),
-        material:
-          savedMaterials.filter((ele) => {
-            if (ele.materialStatus) {
-              delete ele.materialStatus;
-              return ele;
-            }
-          }) ?? [],
-        dump: [
-          ...savedDump.map((ele) => ({
-            materialId: ele.materialId,
-            categoryId: ele.categoryId,
-            parameterId: ele.parameterId,
-            parameter: ele.parameter,
-          })),
-          ...rows?.filter((ele) => ele.type === "dump"),
-        ],
-        consume: consumedMaterials?.map((ele) => ({ materialId: ele })) ?? [],
-        addToCart:
-          rows?.filter((ele) => {
-            if (ele.type === "store") {
-              delete ele.type;
-              return ele;
-            }
-          }) ?? [],
-      };
-      // console.log(dataToSend, "dataToSend");
-      let response = await communication.updateStockBeforeAccept(dataToSend);
-      if (response?.data?.status === "SUCCESS") {
-        toast.success(response?.data?.message, { autoClose: 1500 });
-        // acceptMaterial();
-        router.push("/dashboard/stock-management");
-      } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response.data.message, { autoClose: 1500 });
-        router.push("/");
-      } else if (response?.data?.status == "FAILED") {
-        toast.info(response?.data?.message, { autoClose: 1500 });
+
+      if (savedMaterials.length === 0 && savedDump.length === 0 && consumedMaterials.length === 0 && rows.length <= 1) {
+        toast.info("Please add material for Accept");
+        return
       } else {
-        toast.info(response.data.message, { autoClose: 1500 });
+        setLoader(true);
+        const dataToSend = {
+          jobNo: params.get("jobId"),
+          material:
+            savedMaterials.filter((ele) => {
+              if (ele.materialStatus) {
+                delete ele.materialStatus;
+                return ele;
+              }
+            }) ?? [],
+          dump: [
+            ...savedDump.map((ele) => ({
+              materialId: ele.materialId,
+              categoryId: ele.categoryId,
+              parameterId: ele.parameterId,
+              parameter: ele.parameter,
+            })),
+            ...rows?.filter((ele) => ele.type === "dump"),
+          ],
+          consume: consumedMaterials?.map((ele) => ({ materialId: ele })) ?? [],
+          addToCart:
+            rows?.filter((ele) => {
+              if (ele.type === "store") {
+                delete ele.type;
+                return ele;
+              }
+            }) ?? [],
+        };
+        let response = await communication.updateStockBeforeAccept(dataToSend);
+        if (response?.data?.status === "SUCCESS") {
+          toast.success(response?.data?.message, { autoClose: 1500 });
+          // acceptMaterial();
+          setLoader(false);
+          router.push("/dashboard/stock-management");
+        } else if (response?.data?.status === "JWT_INVALID") {
+          toast.info(response.data.message, { autoClose: 1500 });
+          router.push("/");
+        } else if (response?.data?.status == "FAILED") {
+          toast.info(response?.data?.message, { autoClose: 1500 });
+        } else {
+          toast.info(response.data.message, { autoClose: 1500 });
+        }
       }
       setLoader(false);
-    } catch (error) {
+    }
+    catch (error) {
       toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
 
       setLoader(false);
@@ -205,7 +199,6 @@ const AcceptMaterial = () => {
             )
           )
         );
-        // console.log(parameterKeys, "parameterKeyValuePairs");
         setparameterKeys(parameterKeys);
         if (NonMaterial.length > 0) {
           const allMaterials = NonMaterial.flatMap((material) => ({
@@ -267,7 +260,7 @@ const AcceptMaterial = () => {
           setMaterial(allMaterials);
         }
 
-        toast.success(serverResponse.data.message, { autoClose: 1500 });
+        // toast.success(serverResponse.data.message, { autoClose: 1500 });
       } else if (serverResponse?.data?.status === "FAILED") {
         // toast.info(serverResponse.data.message);
         setMaterial([]);
@@ -290,7 +283,7 @@ const AcceptMaterial = () => {
   // ------------------------Retuned MATERIAL data List  end------------------------------------------
   // ------------------------Reject material------------------------------------------
 
-  const rejectMaterial = async (id, status, remark = "") => {
+  const rejectMaterial = async (remark) => {
     try {
       setLoader(true);
       const dataToSend = {
@@ -346,15 +339,12 @@ const AcceptMaterial = () => {
   // ------------------------Non-material handle change------------------------------------------
   const handleChange = (e, index, field) => {
     const { value } = e.target;
-    // console.log(value, "value");
     setNonMaterial((prevList) =>
       prevList.map((item, idx) => (idx === index ? { ...item, [field]: value } : item))
     );
   };
   const handleChangeMaterial = (e, index, field, product) => {
     var { value } = e.target;
-    console.log(e.target.value, " e.target.value rrrrrrr ahndle");
-    console.log(rowSelections[product.materialId], " rrrrrrr handle");
     if (rowSelections[product.materialId] == "Dump") {
       savedDump((prevList) =>
         prevList.map((item, idx) =>
@@ -373,7 +363,6 @@ const AcceptMaterial = () => {
         )
       );
     }
-    // console.log(value, "value");
   };
   useEffect(() => {
     const uniqueLocationIds = [...new Set(nonMaterial.map((material) => material.locationId))];
@@ -442,7 +431,6 @@ const AcceptMaterial = () => {
     setEditingIndex(index);
   };
   const handleSaveClick = (index, product) => {
-    console.log(rowSelections[product.materialId], "rrrrrr rrr");
     if (rowSelections[product.materialId] == "Dump") {
       const materialToDump = {
         ...nonMaterial[index],
@@ -633,7 +621,6 @@ const AcceptMaterial = () => {
     }
   }, [_rackIdForPrtn]);
   const handleRadioChangeCart = (value) => {
-    // console.log(value, "sssss");
 
     setIsStoreSelected(value === "Store");
   };
@@ -658,12 +645,10 @@ const AcceptMaterial = () => {
     // setR((prevCartTable) => [...prevCartTable, newMaterial]);
   };
 
-  // console.log("cartTable", cartTable);
 
   // ______________________NEW___________________
 
   const handleCategoryChange = async (index, categoryId) => {
-    // console.log(categoryId, "categoryId");
 
     setValue(`rows[${index}].categoryId`, categoryId);
     const fetchedBrand = await getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData);
@@ -758,7 +743,6 @@ const AcceptMaterial = () => {
     const fetchInitialLocations = async () => {
       const initialLocations = await getLocations(setLoader, router, setLocationList, true);
       setLocationList(initialLocations);
-      console.log(initialLocations, "initialLocations");
     };
 
     fetchInitialLocations();
@@ -845,7 +829,6 @@ const AcceptMaterial = () => {
     const fetchInitialCategory = async () => {
       const initialCategory = await getParameter(setLoader, router, setCategoryMapData, true);
       setCategoryMapData(initialCategory);
-      console.log(initialCategory, "initialCategory");
     };
 
     fetchInitialCategory();
@@ -897,8 +880,6 @@ const AcceptMaterial = () => {
         </div>
       </div>
       <form>
-        {/* {console.log(savedMaterials, "savedMaterials")} */}
-        {/* {console.log(consumedMaterials, "consumedMaterials")} */}
 
         <div className="form_layout">
           <ColorBox />
@@ -1022,7 +1003,6 @@ const AcceptMaterial = () => {
                             : "status-assigned";
                       return (
                         <div className={`table_data ${statusClass}`} key={index}>
-                          {/* {console.log(product, "product")} */}
                           <div className="col_20p">
                             {product?.materialStatus === "accepted" ||
                               product?.materialStatus === "assigned" ? (
@@ -1187,7 +1167,6 @@ const AcceptMaterial = () => {
                                 checked={isChangeLocationChecked[product.materialId] || false}
                                 disabled={!isEditing || editingIndex !== index}
                               />
-                              {/* {console.log(rowSelections, "rowSelections")} */}
                               <label htmlFor={`changeLocationCheckbox-${product.materialId}`}>
                                 Yes
                               </label>
@@ -1227,29 +1206,6 @@ const AcceptMaterial = () => {
                                   <div className="col_40p">
                                     <div className="position-relative">
                                       <select
-                                        value={product?.rackId}
-                                        onChange={(e) => handleChange(e, index, "rack")}
-                                        disabled={!isEditing || editingIndex !== index}
-                                        className="form-control custom_input"
-                                        style={{ width: "100%" }}
-                                      >
-                                        <option value="" className="text-secondary text-lowercase">
-                                          Select Rack
-                                        </option>
-                                        {racks[product.blockId]?.map((rack, idx) => (
-                                          <option value={rack._id} key={idx}>
-                                            {rack.rackName}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      <div className="select_box_arrow">
-                                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="col_40p">
-                                    <div className="position-relative">
-                                      <select
                                         name="blockId"
                                         className="form-control custom_input"
                                         style={{ width: "100%" }}
@@ -1277,6 +1233,30 @@ const AcceptMaterial = () => {
                                       </div>
                                     </div>
                                   </div>
+                                  <div className="col_40p">
+                                    <div className="position-relative">
+                                      <select
+                                        value={product?.rackId}
+                                        onChange={(e) => handleChange(e, index, "rack")}
+                                        disabled={!isEditing || editingIndex !== index}
+                                        className="form-control custom_input"
+                                        style={{ width: "100%" }}
+                                      >
+                                        <option value="" className="text-secondary text-lowercase">
+                                          Select Rack
+                                        </option>
+                                        {racks[product.blockId]?.map((rack, idx) => (
+                                          <option value={rack._id} key={idx}>
+                                            {rack.rackName}
+                                          </option>
+                                        ))}
+                                      </select>
+                                      <div className="select_box_arrow">
+                                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                                      </div>
+                                    </div>
+                                  </div>
+
                                   <div className="col_40p">
                                     <div className="position-relative">
                                       <select
@@ -1401,7 +1381,6 @@ const AcceptMaterial = () => {
                         />
                       </div>
                     </div>
-                    {/* {console.log("Current selected materials:", selectedItems)} */}
                     <div className="col_7p">
                       <h5>Sr. No.</h5>
                     </div>
@@ -1506,7 +1485,6 @@ const AcceptMaterial = () => {
                   </div>
                   {material?.length > 0 ? (
                     material?.map((product, index) => {
-                      // console.log(product.taskStatus, "sssssssssss");
 
                       const statusClass =
                         product?.materialStatus === "accepted"
@@ -1521,7 +1499,6 @@ const AcceptMaterial = () => {
                             }`}
                           key={index}
                         >
-                          {/* {console.log(product, "product")} */}
                           <div className="col_20p">
                             {product?.materialStatus === "accepted" ||
                               product?.materialStatus === "assigned" ? (
@@ -1589,7 +1566,6 @@ const AcceptMaterial = () => {
                                 disabled={isDisabled}
                               // onClick={() => handleEditClick(index)}
                               />
-                              {/* {console.log(rowSelections, "rowSelections")} */}
                               <label
                                 htmlFor={`changeLocationCheckboxMaterial-${product.materialId}`}
                               >
@@ -1813,7 +1789,6 @@ const AcceptMaterial = () => {
           {/* ------------------------MATERIAL LIST END----------------------------------------------- */}
         </div>
       </form>
-      {/* {console.log(cartTable, "cartTable")} */}
       {/* ------------------------CART LIST START----------------------------------------------- */}
 
       <div className="form_list_layout_wrapper my-4">
@@ -1971,7 +1946,6 @@ const AcceptMaterial = () => {
                 </div>
                 {rows?.map((row, index) => (
                   <div className="table_data" key={index}>
-                    {/* {console.log(row.type, "rrrrsss")} */}
                     <div className="col_7p">
                       <h6>{index + 1}</h6>
                     </div>
@@ -2123,7 +2097,6 @@ const AcceptMaterial = () => {
                       <label>store</label>
                       {/* </h6> */}
                     </div>
-                    {/* {console.log(cartSelectOption, "cartSelectOption")} */}
                     {cartSelectOption[index] === "store" ? (
                       <>
                         <div className="col_40p">
