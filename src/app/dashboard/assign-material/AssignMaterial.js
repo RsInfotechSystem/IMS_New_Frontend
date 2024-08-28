@@ -312,25 +312,25 @@ const AssignMaterial = () => {
 
   //bottom table
 
-  // const handleSelectAllChangeGetStock = (event) => {
-  //   const isChecked = event.target.checked;
+  const handleSelectAllChangeGetStock = (event) => {
+    const isChecked = event.target.checked;
 
-  //   if (isChecked) {
-  //     setSelectAllCheckedStock([...material]);
-  //     const allStockIds = material.map((item) => item._id);
-  //     const allOutput = material.map((item) => ({
-  //       stockId: item._id,
-  //       assignQuantity: quantities[item._id],
-  //     }));
+    if (isChecked) {
+      setSelectAllCheckedStock([...material]);
+      const allStockIds = material.map((item) => item._id);
+      const allOutput = material.map((item) => ({
+        stockId: item._id,
+        assignQuantity: quantities[item._id],
+      }));
 
-  //     setStockIds(allStockIds);
-  //     setOutput(allOutput);
-  //   } else {
-  //     setSelectAllCheckedStock([]);
-  //     setStockIds([]);
-  //     setOutput([]);
-  //   }
-  // };
+      setStockIds(allStockIds);
+      setOutput(allOutput);
+    } else {
+      setSelectAllCheckedStock([]);
+      setStockIds([]);
+      setOutput([]);
+    }
+  };
   const getStockIds = (event, materialData) => {
     const isChecked = event.target.checked;
     setSelectAllCheckedStock(
@@ -1112,10 +1112,10 @@ const AssignMaterial = () => {
                                 className="form-check-input"
                                 type="checkbox"
                                 id="_selectAllCheckbox"
-                                // onChange={(e) => handleSelectAllChangeGetStock(e)}
-                                // checked={selectAllCheckedStock}
-                                onChange={(e) => handleSelectAllChange(e)}
+                                onChange={(e) => handleSelectAllChangeGetStock(e)}
                                 checked={selectAllCheckedStock}
+                              // onChange={(e) => handleSelectAllChange(e)}   neet to fix for edit type
+                              // checked={selectAllCheckedStock}
                               />
                             </div>
                           </div>
