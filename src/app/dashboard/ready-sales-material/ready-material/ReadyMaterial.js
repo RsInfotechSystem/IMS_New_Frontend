@@ -301,21 +301,11 @@ const ReadyMaterial = () => {
       </div>
 
       <div className="table_wrapper my-3">
-        {console.log(quantities, "quantities")}
+        {/* {console.log(quantities, "quantities")} */}
 
         <div className="table_main">
-          <div className="table_section pi_product_table" style={{ minWidth: "1500px" }}>
+          <div className="table_section pi_product_table">
             <div className="table_header">
-              {/* <div className="col_20p">
-                <div className="check_box">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    onChange={(e) => handleSelectAllChange(e)}
-                    checked={selectAllChecked}
-                  />
-                </div>
-              </div> */}
               <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
@@ -327,6 +317,9 @@ const ReadyMaterial = () => {
               </div>
               <div className="col_25p">
                 <h5>Warranty</h5>
+              </div>
+              <div className="col_25p">
+                <h5>Note</h5>
               </div>
               {attachedMaterial?.formStatus == "ready" && (
                 <>
@@ -344,26 +337,13 @@ const ReadyMaterial = () => {
                   </div>
                 </>
               )}
-              <div className="col_25p">
-                <h5 className="action_wrraper">Note</h5>
-              </div>
+
             </div>
 
-            {(attachedMaterial?.materialDetails?.length > 0 && attachedMaterial?.formStatus == "ready") && (
+            {/* {(attachedMaterial?.materialDetails?.length > 0 && attachedMaterial?.formStatus == "ready") && (
               attachedMaterial?.materialDetails?.map((product, index) => {
                 return product?.materialIds?.map((material, materialIndex) => (
                   <div className="table_data" key={material._id}>
-                    {/* <div className="col_20p">
-                      <div className="check_box">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id={material._id}
-                          onChange={(e) => handleCheckboxChange(e)}
-                          checked={selectedCheckboxes.includes(material._id)}
-                        />
-                      </div>
-                    </div> */}
                     <div className="col_10p">
                       <h6>
                         {index + 1}.{materialIndex + 1}
@@ -378,7 +358,6 @@ const ReadyMaterial = () => {
                     <div className="col_25p">
                       <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                     </div>
-                    {/* <div className="col_25p"></div> */}
                     <div className="col_25p">
                       <h6>{material?.categoryId?.name}, </h6>
                     </div>
@@ -388,7 +367,6 @@ const ReadyMaterial = () => {
                     <div className="col_35p">
                       <h6>{material?.modelId?.name}</h6>
                     </div>
-                    {/* {attachedMaterial.formStatus == "ready" && ( */}
                     <div className="col_50p">
                       <h6>
                         <InputBoxOnChange
@@ -403,14 +381,74 @@ const ReadyMaterial = () => {
                         />
                       </h6>
                     </div>
-                    {/* )} */}
                     <div className="col_25p">
                       <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
                     </div>
                   </div>
                 ));
               })
-            )}
+            )} */}
+            <div className="" style={{ width: "100%", display: "flex", flexWrap: "wrap" }}>
+              {(attachedMaterial?.materialDetails?.length > 0 && attachedMaterial?.formStatus == "ready") && (
+                attachedMaterial?.materialDetails?.map((product, index) => {
+                  return (
+                    <div className="table_data_group" style={{ display: "flex", width: "100%", borderBottom: "1px solid var(--grey_color_light_shade1)" }} key={`group-${index}`}>
+                      {/* Left Side with Material Description */}
+                      <div className="" style={{ width: "50%", display: "flex", flexDirection: "column" }}>
+                        <div className="table_data" style={{ flex: 1 }}>
+                          <div className="col_10p">
+                            <h6>{index + 1}</h6>
+                          </div>
+                          <div className="col_35p">
+                            <h6>{product?.materialDescription}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.quantity}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6>{product?.warranty ? product?.warranty : "--"}</h6>
+                          </div>
+                          <div className="col_25p">
+                            <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Right Side with Material Details */}
+                      <div className="" style={{ width: "50%" }}>
+                        {product?.materialIds?.map((material, materialIndex) => (
+                          <div className="table_data" key={material?._id} style={{ display: "flex" }}>
+                            <div className="col_25p">
+                              <h6>{material?.categoryId?.name}</h6>
+                            </div>
+                            <div className="col_25p">
+                              <h6>{material?.brandId?.name}</h6>
+                            </div>
+                            <div className="col_35p">
+                              <h6>{material?.modelId?.name}</h6>
+                            </div>
+                            <div className="col_50p">
+                              <h6>
+                                <InputBoxOnChange
+                                  className="inputBox"
+                                  type="number"
+                                  placeholder="Enter Quantity"
+                                  value={localQuantities[`${product?._id}-${material?._id}`]?.materialIds[0]?.sellingQuantity || ''}
+                                  onChange={(e) => {
+                                    handleQuantityChange(material, e.target.value, product);
+                                  }}
+                                  onBlur={handleInputBlur}
+                                />
+                              </h6>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
 
             {(attachedMaterial?.materialDetails?.length > 0 && attachedMaterial.formStatus == "generate") && (
               attachedMaterial?.materialDetails?.map((product, index) => {
@@ -429,9 +467,6 @@ const ReadyMaterial = () => {
                   <div className="col_25p">
                     <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                   </div>
-                  {/* {attachedMaterial.formStatus == "ready" && ( */}
-
-                  {/* )} */}
                   <div className="col_25p">
                     <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
                   </div>

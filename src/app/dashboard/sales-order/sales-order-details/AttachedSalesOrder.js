@@ -964,17 +964,14 @@ const AttachedSalesOrder = () => {
               <div className="table_main">
                 <div className="table_section pi_product_table">
                   <div className="table_header">
-                    <div className="col_20p">
+                    {/* <div className="col_20p">
                       <div className="check_box">
                         <input
                           className="form-check-input"
                           type="checkbox"
-                        // id="selectAllCheckbox"
-                        // onChange={(e) => handleSelectAllChange(e)}
-                        // checked={selectAllChecked}
                         />
                       </div>
-                    </div>
+                    </div> */}
                     <div className="col_25p">
                       <h5>Sr. No.</h5>
                     </div>
@@ -1002,21 +999,14 @@ const AttachedSalesOrder = () => {
                     attachedMaterials?.map((item, index) => {
                       return (
                         <div className="table_data" key={index}>
-                          <div className="col_20p">
-                            {" "}
+                          {/* <div className="col_20p">
                             <div className="check_box">
                               <input
                                 className="form-check-input"
                                 type="checkbox"
-                              // checked={selectedMaterials.includes(product._id)}
-                              // onChange={() => handleMaterialSelect(product._id)}
-                              // id={product._id}
-                              // onChange={(e) => handleCheckboxChange(e)}
-                              // checked={selectedCheckboxes.includes(product._id)}
-                              // checked={selectedList.some((item) => item._id === product._id)}
                               />
                             </div>
-                          </div>
+                          </div> */}
                           <div className="col_25p">
                             <h6>{index + 1}</h6>
                           </div>

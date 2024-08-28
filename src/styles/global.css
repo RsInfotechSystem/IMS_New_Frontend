@@ -5586,3 +5586,6 @@ ul .appointment_letter_ul {
 .custom-button, .custom-button {
   width: 135px;
 }
+.table_data_group{
+  border-bottom: 1px solid var(--grey_color_light_shade1) !important;
+}
