@@ -804,9 +804,9 @@ const TransferMaterialForm = () => {
                       )} */}
                       <h5>Modal Name</h5>
                     </div>
-                    {/* <div className="col_50p">
-                      <h5>Item Code</h5>
-                    </div> */}
+                    <div className="col_50p">
+                      <h5>Box Item</h5>
+                    </div>
                     <div className="col_50p">
                       <h5>Block Name</h5>
                     </div>
@@ -861,9 +861,9 @@ const TransferMaterialForm = () => {
                                 : "-"}
                             </h6>
                           </div>
-                          {/* <div className="col_50p">
+                          <div className="col_50p">
                             <h6>{materialDetails?.itemCode ? materialDetails?.itemCode : "-"}</h6>
-                          </div> */}
+                          </div>
                           <div className="col_50p">
                             <h6>{materialDetails?.block}</h6>
                           </div>
@@ -982,9 +982,9 @@ const TransferMaterialForm = () => {
                     <div className="col_50p">
                       <h5>Model Name</h5>
                     </div>
-                    {/* <div className="col_50p">
-                      <h5>Item Code</h5>
-                    </div> */}
+                    <div className="col_50p">
+                      <h5>Box Item</h5>
+                    </div>
                     <div className="col_50p">
                       <h5>Serial No.</h5>
                     </div>{" "}
@@ -1016,9 +1016,9 @@ const TransferMaterialForm = () => {
                         <div className="col_50p">
                           <h6>{data?.modelId?.name ? data?.modelId?.name : "-"}</h6>
                         </div>
-                        {/* <div className="col_50p">
+                        <div className="col_50p">
                           <h6>{data?.itemCode ? data?.itemCode : "-"}</h6>
-                        </div> */}
+                        </div>
                         <div className="col_50p">
                           <h6>{data?.serialNo ? data?.serialNo : "-"}</h6>
                         </div>{" "}

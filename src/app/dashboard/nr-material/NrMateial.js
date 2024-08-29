@@ -254,9 +254,9 @@ const NrMateial = () => {
               <div className="col_35p">
                 <h5>Model Name</h5>
               </div>
-              {/* <div className="col_35p">
-                <h5>Item Code</h5>
-              </div> */}
+              <div className="col_35p">
+                <h5>Box Item</h5>
+              </div>
               <div className="col_35p">
                 <h5>Block Name</h5>
               </div>
@@ -313,9 +313,9 @@ const NrMateial = () => {
                           {materialDetails?.modelId?.name ? materialDetails?.modelId?.name : "-"}
                         </h6>
                       </div>
-                      {/* <div className="col_35p">
+                      <div className="col_35p">
                         <h6>{materialDetails?.itemCode ? materialDetails?.itemCode : "--"}</h6>
-                      </div> */}
+                      </div>
                       <div className="col_35p">
                         <h6>{materialDetails?.blockId?.blockNo}</h6>
                       </div>

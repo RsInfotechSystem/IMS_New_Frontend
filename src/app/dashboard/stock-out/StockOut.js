@@ -43,6 +43,8 @@ const StockOut = () => {
     modelNameValue: { keyType: "", keyId: "", keyCount: 0 },
     locationValue: { keyType: "", keyId: "", keyCount: 0 },
   });
+  const [selectAllChecked, setSelectAllChecked] = useState(false);
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
   const [filter, setFilter] = useState({});
   const [modalStates, setModalStates] = useState({
     modal: false,
@@ -51,6 +53,7 @@ const StockOut = () => {
     filter: false,
     isView: false,
   });
+  const [showModal, setShowModal] = useState({ modal: false });
 
   async function getStatusWiseMaterialList({
     page = 1,
@@ -150,7 +153,64 @@ const StockOut = () => {
       );
     });
   };
+  const handleCheckboxChange = (e) => {
+    const checkboxId = e.target.id;
+    setSelectAllChecked(
+      !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === material?.length
+    );
+    setSelectedCheckboxes((prevSelected) => {
+      if (prevSelected.includes(checkboxId)) {
+        // If the checkbox is already in the array, remove it
+        return prevSelected.filter((id) => id !== checkboxId);
+      } else {
+        // If the checkbox is not in the array, add it
+        return [...prevSelected, checkboxId];
+      }
+    });
+  };
+  const handleSelectAllChange = (e) => {
+    setSelectAllChecked(e.target.checked);
 
+    // Update the array of selected checkboxes based on the "Select All" checkbox
+    setSelectedCheckboxes((prevSelected) =>
+      e.target.checked ? stock.map((brandDetails) => brandDetails._id) : []
+    );
+  };
+  const deleteStock = async () => {
+    if (selectedCheckboxes.length > 0) {
+      setShowModal((prev) => ({ ...prev, modal: true }));
+    } else {
+      toast.info("Please select which stock you want to delete");
+    }
+  };
+  const successHandler = async () => {
+    setShowModal((prev) => ({ ...prev, modal: false }));
+    setLoader(true);
+    let payload = {
+      stockOutIds: [...selectedCheckboxes],
+    };
+    try {
+      return
+      let response = await communication.deleteStockOut(payload);
+      if (response?.data?.status === "SUCCESS") {
+        setSelectedCheckboxes([]);
+        toast.success(response.data.message);
+        await getStatusWiseMaterialList(currentPage, searchString);
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response.data.message);
+        router.push("/");
+      } else {
+        toast.info(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoader(false);
+    }
+  };
+  const cancelHandler = () => {
+    setShowModal((prev) => ({ ...prev, modal: false }));
+  };
   const handleSearch = (e) => {
     setSearchString(e.target.value);
     let isSearch = true;
@@ -216,6 +276,21 @@ const StockOut = () => {
             }}
             style={{ padding: "0px", minWidth: "110px" }}
           />
+          <CustomBtn
+            name={"Delete"}
+            // onClick={deleteUser}
+            onClick={deleteStock}
+            svg={<FontAwesomeIcon icon={faTrash} />}
+          />
+          {showModal.modal && (
+            <CustomResponseHandlerModal
+              status="warning"
+              // show={showModal}
+              message="Are you sure you want to delete this stock?"
+              successHandler={successHandler}
+              cancelHandler={cancelHandler}
+            />
+          )}
         </div>
       </div>
 
@@ -225,6 +300,14 @@ const StockOut = () => {
           {/* Rename the class name "purchase_indent_table" to your desired class name and specify its width in pixels. Adjust the width according to each column if needed. */}
           <div className="table_section inventory_table_res" style={{ minWidth: "1800px" }}>
             <div className="table_header">
+              <div className="col_7p">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  onChange={(e) => handleSelectAllChange(e)}
+                  checked={selectAllChecked}
+                />
+              </div>
               <div className="col_15p">
                 <h5>Sr. No.</h5>
               </div>
@@ -240,9 +323,9 @@ const StockOut = () => {
               <div className="col_35p">
                 <h5>Model Name</h5>
               </div>
-              {/* <div className="col_35p">
-                <h5>Item Code</h5>
-              </div> */}
+              <div className="col_35p">
+                <h5>Box Item</h5>
+              </div>
               <div className="col_35p">
                 <h5>Block Name</h5>
               </div>
@@ -269,6 +352,15 @@ const StockOut = () => {
             {filterMaterial(material, searchString)?.length > 0 ? (
               filterMaterial(material, searchString)?.map((materialDetails, index) => (
                 <div className="table_data" key={index}>
+                  <div className="col_7p">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id={materialDetails._id}
+                      onChange={(e) => handleCheckboxChange(e)}
+                      checked={selectedCheckboxes.includes(materialDetails._id)}
+                    />
+                  </div>
                   <div className="col_15p">
                     <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                   </div>
@@ -284,9 +376,9 @@ const StockOut = () => {
                   <div className="col_35p">
                     <h6>{materialDetails?.modelId?.name}</h6>
                   </div>
-                  {/* <div className="col_35p">
+                  <div className="col_35p">
                     <h6>{materialDetails?.itemCode ? materialDetails?.itemCode : "--"}</h6>
-                  </div> */}
+                  </div>
                   <div className="col_35p">
                     <h6>{materialDetails?.blockId?.blockNo}</h6>
                   </div>

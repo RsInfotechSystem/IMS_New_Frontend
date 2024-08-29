@@ -56,7 +56,7 @@ const CreateStockIn = ({ data }) => {
   const [modelId, setModelId] = useState("");
   const [_category, _setCategory] = useState("");
   const [_brand, _setBrand] = useState("");
-
+  const [selectedOption, setSelectedOption] = useState("");
   const {
     register,
     handleSubmit,
@@ -87,6 +87,7 @@ const CreateStockIn = ({ data }) => {
           router,
           setRackPartation
         );
+        setSelectedOption(responseFromServer?.data?.stock?.isBoxAdded ? "Yes" : "No");
         const stockData = responseFromServer?.data?.stock;
         setValue("locationId", stockData?.locationId?._id);
         await getLocationWiseBlock(stockData?.locationId?._id, setLoader, router, setBlocks);
@@ -120,6 +121,118 @@ const CreateStockIn = ({ data }) => {
     }
   }
 
+
+  async function getLocations() {
+    try {
+      setLoader(true);
+      const serverResponse = await communication.getLocations();
+      if (serverResponse?.data?.status === "SUCCESS") {
+        setLocationList(serverResponse?.data?.result);
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.warn(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        setLocationList([]);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.warn(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
+
+  const onSubmit = async (values) => {
+    try {
+      setLoader(true);
+      const dataToSend = {
+        stockId: modalStates?.id,
+        ...values,
+        isBoxAdded: selectedOption === "Yes" ? true : false,
+      };
+      if (selectedOption === "No") {
+        delete dataToSend.itemCode;
+      }
+      let response = await communication.updateStock(dataToSend);
+      if (response?.data?.status === "SUCCESS") {
+        setButtonLoader(false);
+        setSelectedOption("");
+        await getStockList({ currentPage, searchString });
+        setModalStates((prev) => ({ ...prev, modal: false }));
+        toast.success(response?.data?.message, {
+          autoClose: 1500, // 1.5 seconds
+        });
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response?.data?.message, {
+          autoClose: 1500, // 1.5 seconds
+        });
+        router.push("/");
+      } else {
+        toast.info(response.data.message, {
+          autoClose: 1500, // 1.5 seconds
+        });
+      }
+    } catch (error) {
+      toast.info(error?.response?.data?.message || error.message, {
+        autoClose: 1500, // 1.5 seconds
+      });
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const stockInDetailsSubmit = async (values) => {
+    try {
+      const dataToSend = {
+        // stockId: modalStates?.id,
+        ...values,
+        isBoxAdded: selectedOption === "Yes" ? true : false,
+      };
+      setLoader(true);
+      let response = await communication.stockIn(dataToSend);
+      if (response?.data?.status === "SUCCESS") {
+        setModalStates((prev) => ({ ...prev, modal: false }));
+        reset();
+        setValue("locationId", "");
+        setValue("categoryId", "");
+        setValue("modelId", "");
+        setValue("blockId", "");
+        setValue("quantity", "");
+        toast.success(response.data.message);
+        await getStockList({ currentPage, searchString });
+        setLoader(false);
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.warn(response.data.message);
+        router.push("/");
+      } else {
+        toast.warn(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoader(false);
+    }
+  };
+  async function initialAPICall() {
+    setCategoryMapData(await getCategory(router));
+
+    // if (modalStates?.type !== "create") {
+    //   await getBrandById()
+    // }
+  }
+  const handleCategory = async () => {
+    if (getValues("categoryId")) {
+      setBrandsData(
+        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
+      );
+    } else {
+      setBrandsData([]);
+    }
+  };
+  const CheckboxChange = (event) => {
+    setSelectedOption(event.target.value);
+    // setErrorRackFlag("");
+  };
   useEffect(() => {
     setValue("partitionName", isPartationPresent);
   }, [rackPartation && rackPartation.length >= 1]);
@@ -157,116 +270,6 @@ const CreateStockIn = ({ data }) => {
       setValue("parameterId", "");
     }
   }, [categoryId]);
-  async function getLocations() {
-    try {
-      setLoader(true);
-      const serverResponse = await communication.getLocations();
-      if (serverResponse?.data?.status === "SUCCESS") {
-        setLocationList(serverResponse?.data?.result);
-      } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.warn(serverResponse.data.message);
-        router.push("/");
-        setLoader(false);
-      } else {
-        setLocationList([]);
-      }
-      setLoader(false);
-    } catch (error) {
-      toast.warn(error?.response?.data?.message || error.message);
-      setLoader(false);
-    }
-  }
-
-  const onSubmit = async (values) => {
-    try {
-      setLoader(true);
-      const dataToSend = {
-        stockId: modalStates?.id,
-        ...values,
-      };
-      let response = await communication.updateStock(dataToSend);
-      if (response?.data?.status === "SUCCESS") {
-        setButtonLoader(false);
-        await getStockList({ currentPage, searchString });
-        setModalStates((prev) => ({ ...prev, modal: false }));
-        // setIsPageUpdated((prev) => !prev);
-        // setModalStates((pre) => ({
-        //   modal: false,
-        //   type: "",
-        //   id: "",
-        // }));
-        toast.success(response?.data?.message, {
-          autoClose: 1500, // 1.5 seconds
-        });
-      } else if (response?.data?.status === "JWT_INVALID") {
-        toast.info(response?.data?.message, {
-          autoClose: 1500, // 1.5 seconds
-        });
-        router.push("/");
-      } else {
-        toast.info(response.data.message, {
-          autoClose: 1500, // 1.5 seconds
-        });
-      }
-    } catch (error) {
-      toast.info(error?.response?.data?.message || error.message, {
-        autoClose: 1500, // 1.5 seconds
-      });
-      // Swal.fire({
-      //   text: error?.response?.data?.message || error.message,
-      //   icon: "warning",
-      // });
-    } finally {
-      setLoader(false);
-    }
-  };
-
-  const stockInDetailsSubmit = async (values) => {
-    try {
-      setLoader(true);
-      let response = await communication.stockIn(values);
-      if (response?.data?.status === "SUCCESS") {
-        setModalStates((prev) => ({ ...prev, modal: false }));
-        reset();
-        setValue("locationId", "");
-        setValue("categoryId", "");
-        setValue("modelId", "");
-        setValue("blockId", "");
-        setValue("quantity", "");
-        setValue("retailPrice", "");
-        setValue("wholeSalePrice", "");
-        setValue("displayPrice", "");
-        toast.success(response.data.message);
-        await getStockList({ currentPage, searchString });
-        setLoader(false);
-      } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
-        router.push("/");
-      } else {
-        toast.warn(response.data.message);
-      }
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoader(false);
-    }
-  };
-  async function initialAPICall() {
-    setCategoryMapData(await getCategory(router));
-
-    // if (modalStates?.type !== "create") {
-    //   await getBrandById()
-    // }
-  }
-  const handleCategory = async () => {
-    if (getValues("categoryId")) {
-      setBrandsData(
-        await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-      );
-    } else {
-      setBrandsData([]);
-    }
-  };
 
   useEffect(() => {
     setValue("brandId", _brand);
@@ -349,7 +352,6 @@ const CreateStockIn = ({ data }) => {
                       {locationList.map((ele, index) => {
                         return (
                           <option className="small text-capitalize" value={ele._id} key={index}>
-                            {" "}
                             {ele.name}
                           </option>
                         );
@@ -421,7 +423,6 @@ const CreateStockIn = ({ data }) => {
                         {racks.map((ele, index) => {
                           return (
                             <option value={ele._id} key={index}>
-                              {" "}
                               {ele.rackName}
                             </option>
                           );
@@ -671,18 +672,48 @@ const CreateStockIn = ({ data }) => {
                     )}
                   </div>
                 </div>
-                {/* <div className="col-lg-4 col-md-6 input_wrapper">
-                  <label>Item Code</label>
+                {rackPartation?.length > 1 && (
+                  <div className="col-lg-4 col-md-6 input_wrapper">
+                    <label>Do you want to add Box Item ?</label>
+                    <div className="check_box col-12">
+                      <div className="row">
+                        {console.log(selectedOption, "sssssssssssss")
+                        }
+                        <div className="form-check col-12 d-flex gap-3">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value="No"
+                            checked={selectedOption === "No"}
+                            onChange={CheckboxChange}
+                          />
+                          <label className="form-check-label me-5">No</label>
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            value="Yes"
+                            checked={selectedOption === "Yes"}
+                            onChange={CheckboxChange}
+                          />
+                          <label className="form-check-label">Yes</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {selectedOption === "Yes" && (<div className="col-lg-4 col-md-6 input_wrapper">
+                  <label>Box Item*</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{
                       ...register("itemCode", {
-                        // required: "itemCode is required",
+                        required: "Box Item is required",
                       }),
                     }}
                     errors={errors.itemCode}
                   />
-                </div> */}
+                </div>)}
+
               </div>
               <div className="row">
                 {parameter.length > 0 && (
@@ -696,8 +727,10 @@ const CreateStockIn = ({ data }) => {
                             disabled={modalStates.isView}
                             type="text"
                             register={{
-                              ...register(`parameter[${item}]`, {}),
+                              ...register(`parameter[${item}]`,),
+
                             }}
+                          // errors={errors.parameter}
                           />
                         </div>
                       </React.Fragment>

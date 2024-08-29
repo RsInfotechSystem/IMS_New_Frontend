@@ -680,18 +680,18 @@ const InventoryView = ({ data }) => {
                     )}
                   </div>
                 </div>
-                {/* <div className="col-lg-3 col-md-6 input_wrapper">
-                  <label>Item Code *</label>
+                <div className="col-lg-3 col-md-6 input_wrapper">
+                  <label>Box Item</label>
                   <InputBox
                     disable={true}
                     register={{
                       ...register("itemCode", {
-                        required: "itemCode is required",
+                        required: "Box Item is required",
                       }),
                     }}
                     errors={errors.itemCode}
                   />
-                </div> */}
+                </div>
                 {/* <div className="col-lg-3 col-md-6 input_wrapper">
                 <label>Retail Price Per Item *</label>
                 <InputBox

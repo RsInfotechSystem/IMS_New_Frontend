@@ -513,18 +513,18 @@ const AcceptMaterialModel = () => {
                   disable
                 />
               </div>
-              {/* <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Item Code</label>
+              <div className="col-lg-3 col-md-6 input_wrapper">
+                <label>Box Item</label>
                 <InputBox
                   register={{
                     ...register("itemCode", {
-                      required: "Item Code is required",
+                      required: "Box Item is required",
                     }),
                   }}
                   disable
                   errors={errors.itemCode}
                 />
-              </div> */}
+              </div>
               {/* <div className="row m-0 mt-2 mb-3 ps-5"> */}
               {parameter?.map((item, index) => (
                 <div className="col-lg-3 col-md-6 input_wrapper" key={index}>

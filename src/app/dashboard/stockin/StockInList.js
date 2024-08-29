@@ -324,46 +324,8 @@ const StockInList = () => {
     } else {
       setRespondHandlerModalState({ state: true, deleteId: selectedCheckboxes });
     }
-    // Swal.fire({
-    //   text: "Are you sure you want to delete this stock?",
-    //   icon: "warning",
-    //   showCancelButton: true,
-    //   confirmButtonColor: "#5149E4",
-    //   cancelButtonColor: "#d33",
-    //   confirmButtonText: "Yes, delete it",
-    //   cancelButtonText: "No, cancel",
-    //   reverseButtons: true,
-    // }).then(async function (result) {
-    //   if (result.isConfirmed) {
-    //   } else {
-    //   }
-    // });
   };
-  async function getBrandWiseModel() {
-    try {
-      // props.setLoader(true);
-      const payload = {
-        brandId: brandId,
-      };
-      const serverResponse = await communication.brandWiseModel(payload);
-      if (serverResponse?.data?.status === "SUCCESS") {
-        setModel(serverResponse?.data?.model);
-      } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        Swal.fire({ text: serverResponse.data.message, icon: "warning" });
-        router.push("/");
-        props.setLoader(false);
-      } else {
-        setModel([]);
-      }
-      // props.setLoader(false);
-    } catch (error) {
-      Swal.fire({
-        text: error?.response?.data?.message || error.message,
-        icon: "warning",
-      });
-      // props.setLoader(false);
-    }
-  }
+
   const handleSearch = (e) => {
     setSearchString(e.target.value);
     let isSearch = true;
@@ -378,65 +340,6 @@ const StockInList = () => {
     }, 2000);
     setTimeoutId(_timeOutId);
   };
-
-  // useEffect(() => {
-  //   getStockList(currentPage, searchString);
-  // }, [isPageUpdated]);
-
-  // useEffect(() => {
-  //   const id = getValues("locationId");
-  //   if (id) {
-  //     getLocationWiseBlock(id, setLoader, router, setBlocks);
-  //   }
-  // }, [location]);
-  // useEffect(() => {
-  //   const id = getValues("brandId");
-  //   if (id) {
-  //     getBrandWiseModel(id);
-  //   }
-  // }, [brandId]);
-
-  // useEffect(() => {
-  //   const id = getValues("blockId");
-  //   if (id) {
-  //     const rackDetails = blocks.find((ele) => ele._id === id);
-  //     setRacks(rackDetails?.rackId ?? []);
-  //   } else {
-  //     setRacks([]);
-  //   }
-  // }, [rack]);
-
-  // useEffect(() => {
-  //   const id = getValues("categoryId");
-  //   if (id) {
-  //     const parameterDetails = category.find((ele) => ele.categoryId === id);
-  //     setValue("parameterId", parameterDetails?._id);
-  //     setParameter(parameterDetails.parameter ?? []);
-  //   } else {
-  //     setParameter([]);
-  //     setValue("parameterId", "");
-  //   }
-  // }, [categoryId]);
-  // useEffect(() => {
-  //   const id = getValues("rackId");
-  //   if (id) {
-  //     getRackPartation(id, setLoader, router, setRackPartation);
-  //   } else {
-  //     setRackPartation([]);
-  //   }
-  // }, [_rackIdForPrtn]);
-  // useEffect(() => {
-  //   getLocations(setLoader, router, setLocations);
-  //   getParameter(setLoader, router, setCategory);
-  //   // getBrands(setLoader, router, setBrands);
-  //   // getAllModels(setLoader, router, setModelList);
-  // }, []);
-  // useEffect(() => {
-  //   const id = getValues("categoryId");
-  //   if (id) {
-  //     getCategoryWiseBrand(id, setLoader, router, setBrandsData);
-  //   }
-  // }, [categoryId]);
 
   useEffect(() => {
     getStockList({ page: currentPage, searchString, isFirstCall: true });
@@ -537,10 +440,10 @@ const StockInList = () => {
 
           <CustomBtn
             name={"Delete"}
-            // onClick={deleteUser}
             onClick={deleteStock}
             svg={<FontAwesomeIcon icon={faTrash} />}
           />
+
         </div>
       </div>
       {/* table  */}
@@ -581,9 +484,9 @@ const StockInList = () => {
               <div className="col_50p">
                 <h5>Model Name</h5>
               </div>
-              {/* <div className="col_50p">
-                <h5>Item Code</h5>
-              </div> */}
+              <div className="col_50p">
+                <h5>Box Item</h5>
+              </div>
               {/* <div className="col_50p">
                 <h5>QTY</h5>
               </div> */}
@@ -663,10 +566,9 @@ const StockInList = () => {
                     {/* <div className="col_50p">
                       <h6>{stockDetails?.mobile}</h6>
                     </div> */}
-                    {/* <div className="col_50p">
+                    <div className="col_50p">
                       <h6>{stockDetails?.itemCode ? stockDetails?.itemCode : "-"}</h6>
-                      
-                    </div> */}
+                    </div>
                     {/* <div className="col_50p">
                       <h6>{stockDetails?.quantity ? stockDetails?.quantity : "-"}</h6>
                     </div> */}

@@ -233,9 +233,9 @@ const ReturnMaterialUser = () => {
                         <div className="col_25p">
                           <h5>Serial No</h5>
                         </div>{" "}
-                        {/* <div className="col_25p">
-                          <h5>Item Code</h5>
-                        </div> */}
+                        <div className="col_25p">
+                          <h5>Box Item</h5>
+                        </div>
                         <div className="col_25p">
                           <h5>QTY</h5>
                         </div>
@@ -288,9 +288,9 @@ const ReturnMaterialUser = () => {
                               <div className="col_25p">
                                 <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                               </div>{" "}
-                              {/* <div className="col_25p">
+                              <div className="col_25p">
                                 <h6>{product?.itemCode}</h6>
-                              </div> */}
+                              </div>
                               <div className="col_25p">
                                 <h6>{product?.assignQuantity}</h6>
                               </div>
@@ -355,9 +355,9 @@ const ReturnMaterialUser = () => {
                         <div className="col_25p">
                           <h5>Serial No</h5>
                         </div>{" "}
-                        {/* <div className="col_25p">
-                          <h5>Item Code</h5>
-                        </div> */}
+                        <div className="col_25p">
+                          <h5>Box Item</h5>
+                        </div>
                         <div className="col_25p">
                           <h5>QTY</h5>
                         </div>
@@ -408,9 +408,9 @@ const ReturnMaterialUser = () => {
                               <div className="col_25p">
                                 <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                               </div>{" "}
-                              {/* <div className="col_25p">
+                              <div className="col_25p">
                                 <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
-                              </div> */}
+                              </div>
                               <div className="col_25p">
                                 <h6>{product?.assignQuantity}</h6>
                               </div>

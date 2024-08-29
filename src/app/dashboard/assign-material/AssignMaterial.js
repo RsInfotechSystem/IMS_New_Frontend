@@ -923,9 +923,9 @@ const AssignMaterial = () => {
                           <div className="col_20p">
                             <h5>Serial No.</h5>
                           </div>
-                          {/* <div className="col_20p">
-                            <h5>Item Code</h5>
-                          </div> */}
+                          <div className="col_20p">
+                            <h5>Box Item</h5>
+                          </div>
                           <div className="col_20p">
                             <h5>Status</h5>
                           </div>
@@ -991,11 +991,11 @@ const AssignMaterial = () => {
                                         {materialData?.serialNo ? materialData?.serialNo : "-"}
                                       </h6>
                                     </div>
-                                    {/* <div className="col_20p">
+                                    <div className="col_20p">
                                       <h6>
                                         {materialData?.itemCode ? materialData?.itemCode : "-"}
                                       </h6>
-                                    </div> */}
+                                    </div>
                                     <div className="col_20p">
                                       <h6>{materialData?.status}</h6>
                                     </div>

@@ -2408,4 +2408,20 @@ export const communication = {
     }
   },
   ////////////////////////////////end////////////////////////////////////////////
+
+
+  // -----------stock out del--------------
+  deleteStockOut: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/material/delete-stock-out-materials`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
 };
+

@@ -914,9 +914,9 @@ const AcceptMaterial = () => {
                     <div className="col_25p">
                       <h5>Serial No</h5>
                     </div>{" "}
-                    {/* <div className="col_25p">
-                      <h5>Item Code</h5>
-                    </div>{" "} */}
+                    <div className="col_25p">
+                      <h5>Box Item</h5>
+                    </div>{" "}
                     <div className="col_30p">
                       <h5>Category</h5>
                     </div>
@@ -1072,9 +1072,9 @@ const AcceptMaterial = () => {
                           <div className="col_25p">
                             <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                           </div>{" "}
-                          {/* <div className="col_25p">
+                          <div className="col_25p">
                             <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
-                          </div> */}
+                          </div>
                           <div className="col_30p">
                             <h6>{product?.categoryName}</h6>
                           </div>
@@ -1388,9 +1388,9 @@ const AcceptMaterial = () => {
                     <div className="col_25p">
                       <h5>Serial No</h5>
                     </div>
-                    {/* <div className="col_25p">
-                      <h5>Item Code</h5>
-                    </div> */}
+                    <div className="col_25p">
+                      <h5>Box Item</h5>
+                    </div>
                     <div className="col_25p">
                       <h5>Category</h5>
                     </div>
@@ -1523,9 +1523,9 @@ const AcceptMaterial = () => {
                           <div className="col_25p">
                             <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                           </div>{" "}
-                          {/* <div className="col_25p">
+                          <div className="col_25p">
                             <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
-                          </div> */}
+                          </div>
                           <div className="col_25p">
                             <h6>{product?.categoryName}</h6>
                           </div>
@@ -1848,9 +1848,9 @@ const AcceptMaterial = () => {
                   <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Serial No</h5>
                   </div>
-                  {/* <div className="col_40p">
-                    <h5 style={{ textAlign: "center" }}>Item Code</h5>
-                  </div> */}
+                  <div className="col_40p">
+                    <h5 style={{ textAlign: "center" }}>Box Item</h5>
+                  </div>
                   <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Quantity</h5>
                   </div>
@@ -1959,15 +1959,15 @@ const AcceptMaterial = () => {
                         />
                       </h6>
                     </div>
-                    {/* <div className="col_40p">
+                    <div className="col_40p">
                       <h6>
                         <input
                           {...register(`rows[${index}].itemCode`)}
-                          placeholder="Enter Item Code"
+                          placeholder="Enter Box Item"
                           className="form-control"
                         />
                       </h6>
-                    </div> */}
+                    </div>
                     <div className="col_40p">
                       <h6>
                         <input

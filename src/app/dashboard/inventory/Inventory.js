@@ -228,9 +228,9 @@ const Inventory = () => {
               <div className="col_55p">
                 <h5>Location Name</h5>
               </div>
-              {/* <div className="col_45p">
-                <h5>Item Code</h5>
-              </div> */}
+              <div className="col_45p">
+                <h5>Box Item</h5>
+              </div>
               <div className="col_45p">
                 <h5>Block Name</h5>
               </div>
@@ -291,9 +291,9 @@ const Inventory = () => {
                       <div className="col_55p">
                         <h6>{materialDetails?.locationId?.name}</h6>
                       </div>
-                      {/* <div className="col_45p">
+                      <div className="col_45p">
                         <h6>{materialDetails?.itemCode ? materialDetails?.itemCode : "--"}</h6>
-                      </div> */}
+                      </div>
                       <div className="col_45p">
                         <h6>{materialDetails?.blockId?.blockNo}</h6>
                       </div>

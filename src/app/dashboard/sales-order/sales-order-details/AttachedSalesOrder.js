@@ -524,8 +524,6 @@ const AttachedSalesOrder = () => {
           <div>Back</div>
         </div>
       </div>
-      {console.log(selectedParameters, "selectedParameters")
-      }
       {/* ------------------------------- top header end ----------------------------------------------- */}
       {/* ---------------------------sales order list of discription----------------------------------------------------------*/}
       <div className="form_list_layout_wrapper my-4">
@@ -786,46 +784,48 @@ const AttachedSalesOrder = () => {
                 </div>
                 <div className="row">
                   <div className="col-12" style={{ maxHeight: "300px", overflowY: "auto" }}>
-                    {parameter?.map((modal, index) => (
-                      <div key={index} className="modal-container">
-                        {console.log(modal, "modallll")}
+                    {parameter?.length > 0 ? (
+                      parameter?.map((modal, index) => (
+                        <div key={index} className="modal-container">
+                          {/* {console.log(modal, "modallll")} */}
 
-                        <div className="d-flex gap-2 mb-2">
-                          <div
-                            onClick={() => toggleModal(modal?.modelName)}
-                            style={{ cursor: "pointer" }}
-                          >
-                            {expandedModals?.includes(modal?.modelName) ? "-" : "+"}
+                          <div className="d-flex gap-2 mb-2">
+                            <div
+                              onClick={() => toggleModal(modal?.modelName)}
+                              style={{ cursor: "pointer" }}
+                            >
+                              {expandedModals?.includes(modal?.modelName) ? "-" : "+"}
+                            </div>
+
+                            <div
+                              onClick={() => toggleModal(modal?.modelName)}
+                              style={{ cursor: "pointer" }}
+                            >
+                              {modal?.modelName}
+                            </div>
                           </div>
 
-                          <div
-                            onClick={() => toggleModal(modal?.modelName)}
-                            style={{ cursor: "pointer" }}
-                          >
-                            {modal?.modelName}
-                          </div>
+                          {expandedModals.includes(modal?.modelName) && (
+                            <ul className="parameter-list" style={{ listStyle: "none" }}>
+                              {modal?.parameterList?.map((param, paramIndex) => (
+                                <li key={paramIndex}>
+                                  <input
+                                    type="checkbox"
+                                    className="me-3"
+                                    // id={`modelName:${modal?.modelName}value:${param}`}
+                                    // onChange={(e) => handleCheckboxSelect(e, modal.modelName, param)}
+                                    id={`modelName:${modal?.modelName}value:${param}`}
+                                    onChange={() => handleParameterSelect(modal?.modelName, param)}
+                                    checked={selectedParameters[modal?.modelName]?.[param] || false}
+                                  />
+                                  {param}
+                                </li>
+                              ))}
+                            </ul>
+                          )}
                         </div>
+                      ))) : ("")}
 
-                        {expandedModals.includes(modal?.modelName) && (
-                          <ul className="parameter-list" style={{ listStyle: "none" }}>
-                            {modal.parameterList.map((param, paramIndex) => (
-                              <li key={paramIndex}>
-                                <input
-                                  type="checkbox"
-                                  className="me-3"
-                                  // id={`modelName:${modal?.modelName}value:${param}`}
-                                  // onChange={(e) => handleCheckboxSelect(e, modal.modelName, param)}
-                                  id={`modelName:${modal?.modelName}value:${param}`}
-                                  onChange={() => handleParameterSelect(modal.modelName, param)}
-                                  checked={selectedParameters[modal.modelName]?.[param] || false}
-                                />
-                                {param}
-                              </li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    ))}
                   </div>
                 </div>
                 {/* ---------------------------list of material----------------------------------------------------------*/}
@@ -873,9 +873,9 @@ const AttachedSalesOrder = () => {
                           <div className="col_25p">
                             <h5>Serial No</h5>
                           </div>
-                          {/* <div className="col_20p">
-                            <h5>Item Code</h5>
-                          </div> */}
+                          <div className="col_20p">
+                            <h5>Box Item</h5>
+                          </div>
                           <div className="col_20p">
                             <h5>QTY</h5>
                           </div>
@@ -925,9 +925,9 @@ const AttachedSalesOrder = () => {
                                 <div className="col_25p">
                                   <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
                                 </div>
-                                {/* <div className="col_20p">
+                                <div className="col_20p">
                                   <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
-                                </div> */}
+                                </div>
                                 <div className="col_20p">
                                   <h6>{product?.reamainingQuantity}</h6>
                                 </div>
@@ -987,9 +987,9 @@ const AttachedSalesOrder = () => {
                     <div className="col_25p">
                       <h5 className="action_wrraper">Serial No</h5>
                     </div>
-                    {/* <div className="col_20p">
-                      <h5 className="action_wrraper">Item Code</h5>
-                    </div> */}
+                    <div className="col_20p">
+                      <h5 className="action_wrraper">Box Item</h5>
+                    </div>
                     <div className="col_20p">
                       <h5 className="action_wrraper">Action</h5>
                     </div>
@@ -1025,11 +1025,11 @@ const AttachedSalesOrder = () => {
                               {item?.serialNo ? item?.serialNo : "--"}
                             </h6>
                           </div>
-                          {/* <div className="col_20p">
+                          <div className="col_20p">
                             <h6 className="action_wrraper ">
                               {item?.itemCode ? item?.itemCode : "--"}
                             </h6>
-                          </div> */}
+                          </div>
                           <div className="col_20p">
                             <Button
                               type="button"
