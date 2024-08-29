@@ -874,7 +874,7 @@ const AttachedSalesOrder = () => {
                             <h5>Serial No</h5>
                           </div>
                           <div className="col_20p">
-                            <h5>Box Item</h5>
+                            <h5>Box NO</h5>
                           </div>
                           <div className="col_20p">
                             <h5>QTY</h5>
@@ -988,7 +988,7 @@ const AttachedSalesOrder = () => {
                       <h5 className="action_wrraper">Serial No</h5>
                     </div>
                     <div className="col_20p">
-                      <h5 className="action_wrraper">Box Item</h5>
+                      <h5 className="action_wrraper">Box NO</h5>
                     </div>
                     <div className="col_20p">
                       <h5 className="action_wrraper">Action</h5>

@@ -270,7 +270,7 @@ const ReceiveMaterialAction = () => {
                 <h5>Model Name</h5>
               </div>
               <div className="col_40p">
-                <h5>Box Item</h5>
+                <h5>Box NO</h5>
               </div>
               <div className="col_30p">
                 <h5>Serial No.</h5>

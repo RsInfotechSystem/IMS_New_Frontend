@@ -229,7 +229,7 @@ const Inventory = () => {
                 <h5>Location Name</h5>
               </div>
               <div className="col_45p">
-                <h5>Box Item</h5>
+                <h5>Box NO</h5>
               </div>
               <div className="col_45p">
                 <h5>Block Name</h5>

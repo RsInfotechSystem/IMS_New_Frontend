@@ -234,7 +234,7 @@ const ReturnMaterialUser = () => {
                           <h5>Serial No</h5>
                         </div>{" "}
                         <div className="col_25p">
-                          <h5>Box Item</h5>
+                          <h5>Box NO</h5>
                         </div>
                         <div className="col_25p">
                           <h5>QTY</h5>
@@ -356,7 +356,7 @@ const ReturnMaterialUser = () => {
                           <h5>Serial No</h5>
                         </div>{" "}
                         <div className="col_25p">
-                          <h5>Box Item</h5>
+                          <h5>Box NO</h5>
                         </div>
                         <div className="col_25p">
                           <h5>QTY</h5>

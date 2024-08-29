@@ -136,7 +136,7 @@ const TransferMaterialDetails = () => {
                 <h5>Model</h5>
               </div>
               <div className="col_30p">
-                <h5>Box Item</h5>
+                <h5>Box NO</h5>
               </div>{" "}
               <div className="col_30p">
                 <h5>Serial No</h5>

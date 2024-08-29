@@ -924,7 +924,7 @@ const AssignMaterial = () => {
                             <h5>Serial No.</h5>
                           </div>
                           <div className="col_20p">
-                            <h5>Box Item</h5>
+                            <h5>Box NO</h5>
                           </div>
                           <div className="col_20p">
                             <h5>Status</h5>

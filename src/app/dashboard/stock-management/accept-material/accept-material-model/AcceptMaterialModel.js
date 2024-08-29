@@ -514,11 +514,11 @@ const AcceptMaterialModel = () => {
                 />
               </div>
               <div className="col-lg-3 col-md-6 input_wrapper">
-                <label>Box Item</label>
+                <label>Box NO</label>
                 <InputBox
                   register={{
                     ...register("itemCode", {
-                      required: "Box Item is required",
+                      required: "Box NO is required",
                     }),
                   }}
                   disable

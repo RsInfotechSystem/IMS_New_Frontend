@@ -915,7 +915,7 @@ const AcceptMaterial = () => {
                       <h5>Serial No</h5>
                     </div>{" "}
                     <div className="col_25p">
-                      <h5>Box Item</h5>
+                      <h5>Box NO</h5>
                     </div>{" "}
                     <div className="col_30p">
                       <h5>Category</h5>
@@ -1389,7 +1389,7 @@ const AcceptMaterial = () => {
                       <h5>Serial No</h5>
                     </div>
                     <div className="col_25p">
-                      <h5>Box Item</h5>
+                      <h5>Box NO</h5>
                     </div>
                     <div className="col_25p">
                       <h5>Category</h5>
@@ -1849,7 +1849,7 @@ const AcceptMaterial = () => {
                     <h5 style={{ textAlign: "center" }}>Serial No</h5>
                   </div>
                   <div className="col_40p">
-                    <h5 style={{ textAlign: "center" }}>Box Item</h5>
+                    <h5 style={{ textAlign: "center" }}>Box NO</h5>
                   </div>
                   <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Quantity</h5>
@@ -1963,7 +1963,7 @@ const AcceptMaterial = () => {
                       <h6>
                         <input
                           {...register(`rows[${index}].itemCode`)}
-                          placeholder="Enter Box Item"
+                          placeholder="Enter Box NO"
                           className="form-control"
                         />
                       </h6>

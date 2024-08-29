@@ -485,7 +485,7 @@ const StockInList = () => {
                 <h5>Model Name</h5>
               </div>
               <div className="col_50p">
-                <h5>Box Item</h5>
+                <h5>Box NO</h5>
               </div>
               {/* <div className="col_50p">
                 <h5>QTY</h5>

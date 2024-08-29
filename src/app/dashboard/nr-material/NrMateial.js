@@ -255,7 +255,7 @@ const NrMateial = () => {
                 <h5>Model Name</h5>
               </div>
               <div className="col_35p">
-                <h5>Box Item</h5>
+                <h5>Box NO</h5>
               </div>
               <div className="col_35p">
                 <h5>Block Name</h5>

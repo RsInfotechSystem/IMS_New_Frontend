@@ -805,7 +805,7 @@ const TransferMaterialForm = () => {
                       <h5>Modal Name</h5>
                     </div>
                     <div className="col_50p">
-                      <h5>Box Item</h5>
+                      <h5>Box NO</h5>
                     </div>
                     <div className="col_50p">
                       <h5>Block Name</h5>
@@ -983,7 +983,7 @@ const TransferMaterialForm = () => {
                       <h5>Model Name</h5>
                     </div>
                     <div className="col_50p">
-                      <h5>Box Item</h5>
+                      <h5>Box NO</h5>
                     </div>
                     <div className="col_50p">
                       <h5>Serial No.</h5>

@@ -674,7 +674,7 @@ const CreateStockIn = ({ data }) => {
                 </div>
                 {rackPartation?.length > 1 && (
                   <div className="col-lg-4 col-md-6 input_wrapper">
-                    <label>Do you want to add Box Item ?</label>
+                    <label>Do you want to add Box NO ?</label>
                     <div className="check_box col-12">
                       <div className="row">
                         {console.log(selectedOption, "sssssssssssss")
@@ -702,12 +702,12 @@ const CreateStockIn = ({ data }) => {
                   </div>
                 )}
                 {selectedOption === "Yes" && (<div className="col-lg-4 col-md-6 input_wrapper">
-                  <label>Box Item*</label>
+                  <label>Box NO*</label>
                   <InputBox
                     disable={modalStates.isView}
                     register={{
                       ...register("itemCode", {
-                        required: "Box Item is required",
+                        required: "Box NO is required",
                       }),
                     }}
                     errors={errors.itemCode}
