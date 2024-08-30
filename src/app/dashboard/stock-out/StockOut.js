@@ -190,7 +190,6 @@ const StockOut = () => {
       stockOutIds: [...selectedCheckboxes],
     };
     try {
-      return
       let response = await communication.deleteStockOut(payload);
       if (response?.data?.status === "SUCCESS") {
         setSelectedCheckboxes([]);

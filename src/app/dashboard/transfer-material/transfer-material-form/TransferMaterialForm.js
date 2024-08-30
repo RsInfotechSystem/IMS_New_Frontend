@@ -987,10 +987,10 @@ const TransferMaterialForm = () => {
                     </div>
                     <div className="col_50p">
                       <h5>Serial No.</h5>
-                    </div>{" "}
+                    </div>
                     <div className="col_50p">
                       <h5>Status</h5>
-                    </div>{" "}
+                    </div>
                     <div className="col_50p">
                       <h5>QTY</h5>
                     </div>

@@ -18,6 +18,8 @@ import React, { useEffect, useMemo, useReducer, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import ViewSalesOrder from "../create-sales-order/ViewSalesOrderPdf";
+import InputBox from "@/common-components/InputBox";
+import InputBoxOnChange from "@/common-components/InputBoxOnChange";
 const AttachedSalesOrder = () => {
   const router = useRouter();
   const {
@@ -68,8 +70,12 @@ const AttachedSalesOrder = () => {
   const [attachedMaterials, setAttachedMaterials] = useState([]);
   const [materialsPayload, setMaterialPayload] = useState([]);
   const [materialDetails, setMaterialDetails] = useState([]);
-  const [materialIDS, setMaterialIDS] = useState(null);
+  const [nonMaterialIDS, setNonMaterialIDS] = useState(null);
   const [selectedParameters, setSelectedParameters] = useState({});
+  const [inputCheck, setInputCheck] = useState([])
+  const [selectedDiscription, setSelectedDiscription] = useState("")
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [quantity, setQuantity] = useState({});
   const categoryId = watch("categoryId");
   const searchStrings = watch("searchString")
   const brandId = watch("brandId");
@@ -158,9 +164,9 @@ const AttachedSalesOrder = () => {
     }
   };
 
-  const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e, product) => {
     const checkboxId = e;
-    console.log(e);
+    setSelectedDiscription(product)
     if (attachedDescriptions.includes(checkboxId)) {
       return; // Don't allow changing if already attached
     }
@@ -242,11 +248,7 @@ const AttachedSalesOrder = () => {
           )
         );
         setLocation(serverResponse?.data?.salesorder?.orderLocation?._id);
-        // setPageCount(serverResponse?.data?.totalPages);
-        // setPage(page);
-        // if (isSearch) {
-        //   setCurrentPage(1);
-        // }
+
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -256,10 +258,7 @@ const AttachedSalesOrder = () => {
       setLoader(false);
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
-      // Swal.fire({
-      //   text: error?.response?.data?.message || error.message,
-      //   icon: "warning",
-      // });
+
       setLoader(false);
     }
   }
@@ -287,6 +286,7 @@ const AttachedSalesOrder = () => {
       const serverResponse = await communication.getLocationWiseMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial(serverResponse?.data.stock);
+        setInputCheck(serverResponse?.data.stock?.map((ele) => ele?.categoryId?.isReplaceable))
         setLoader(false);
         // setPageCount(serverResponse?.data?.totalPages);
         setState({ materialLists: serverResponse?.data.material });
@@ -306,16 +306,12 @@ const AttachedSalesOrder = () => {
   }
 
   async function sendReadyMaterial(values) {
-    console.log(materialDetails, "attachedMaterials")
+    console.log(attachedMaterials, "attachedMaterials")
     try {
       if (attachedMaterials?.length <= 0) {
         toast.info("Please attach materials.");
         return;
       }
-      // if (payloadIds.length !== modelList?.materialDetails?.length) {
-      //   toast.info("Please attached all material.");
-      //   return;
-      // }
       setLoader(true);
       setMaterialPayload(attachedMaterials.map((_id) => _id._id));
       let payload = {
@@ -323,7 +319,7 @@ const AttachedSalesOrder = () => {
         materialDetails: materialDetails,
       };
       console.log("payload", payload);
-      // console.log("payload", payload);
+      return
       const serverResponse = await communication.sendReadyMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse?.data?.message);
@@ -344,20 +340,7 @@ const AttachedSalesOrder = () => {
       setLoader(false);
     }
   }
-  const handleChange = (modelData, value) => {
-    // console.log("valueRRRRR", modelData, value);
-    setPayloadIds([...payloadIds, { detailId: modelData._id, materialId: value }]);
-  };
-  useEffect(() => {
-    setRoleName(getCookie("role"));
-  }, []);
-  useEffect(() => {
-    getSalesOrderById();
-    // getMaterialById();
-  }, []);
-  useEffect(() => {
-    if (location) getLocationWiseMaterial({ isFirstCall: true });
-  }, [_location]);
+
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
   }
@@ -381,55 +364,131 @@ const AttachedSalesOrder = () => {
     });
   };
 
+  // const handleAttachMaterials = () => {
+  //   if (checkBox) {
+  //     const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m._id));
+  //     // console.log(selectedDiscription?.reamainingQuantity, "dddddddd");
+  //     console.log(newAttachedMaterials, "newAttachedMaterials");
+  //     const SelectedMaterialDisable = material?.map((material) => {
+  //       if (selectedMaterials.includes(material._id)) {
+  //         return { ...material, disabled: true };
+  //       }
+  //       return material;
+  //     });
+  //     setMaterial(SelectedMaterialDisable);
+  //     setAttachedMaterials((prev) => [...prev, ...newAttachedMaterials]);
+  //     // Add the selected description to attachedDescriptions
+  //     setAttachedDescriptions((prev) => [...prev, checkBox]);
+
+  //     // Associate materials with the description
+  //     setMaterialDetails((prev) => [
+  //       ...prev,
+  //       {
+  //         detailId: checkBox,
+  //         materialIds: newAttachedMaterials.map((m) => m._id),
+  //       },
+  //     ]);
+
+  //     setSelectedMaterials([]);
+  //     setMaterialIDS(newAttachedMaterials.map((item) => item._id));
+  //     setTimeout(() => {
+  //       setCheckBox("");
+  //       setMaterialIDS(null);
+  //     }, 600);
+  //   } else {
+  //     toast.info("Please select discription");
+  //   }
+  // };
+
   const handleAttachMaterials = () => {
     if (checkBox) {
-      const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m._id));
+      // Validate that all selected materials with an InputBox have a non-empty quantity
+      // Filter materials that have an inputCheck flag set to true, indicating a quantity is required
+      const materialsRequiringQuantity = material.filter((m) =>
+        selectedMaterials.includes(m._id) && inputCheck[material.indexOf(m)]
+      );
+
+      // Validate that all selected materials that require a quantity have a non-empty quantity
+      if (materialsRequiringQuantity.length > 0) {
+        const invalidMaterials = materialsRequiringQuantity.filter(
+          (m) => !quantity[m?._id] || quantity[m?._id] === ''
+        );
+
+        if (invalidMaterials.length > 0) {
+          toast.info("Please enter a quantity for all selected materials that require it");
+          return; // Stop further execution if validation fails
+        }
+      }
+
+
+      const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m?._id)).map((m) => {
+        const sellingQuantity = quantity[m?._id];
+        return {
+          id: m?._id,
+          location: m?.location,
+          category: m?.category,
+          brand: m?.brand,
+          block: m?.block,
+          rack: m?.rack,
+          modelId: m?.modelId,
+          serialNo: m?.serialNo,
+          itemCode: m?.itemCode,
+          reamainingQuantity: m?.reamainingQuantity,
+          sellingQuantity: sellingQuantity || null, // Include sellingQuantity if available
+        };
+      });
+      ;
       console.log(newAttachedMaterials, "newAttachedMaterials");
-      // not working remove logic
-      // const SelectedMaterialRemove = material.filter((material) => {
-      //   !selectedMaterials.includes(material._id);
-      // });
       const SelectedMaterialDisable = material?.map((material) => {
         if (selectedMaterials.includes(material._id)) {
           return { ...material, disabled: true };
         }
         return material;
       });
+
       setMaterial(SelectedMaterialDisable);
       setAttachedMaterials((prev) => [...prev, ...newAttachedMaterials]);
-      // Add the selected description to attachedDescriptions
       setAttachedDescriptions((prev) => [...prev, checkBox]);
+      // Split materials into those with and without sellingQuantity
+      const withQuantity = newAttachedMaterials.filter((m) => m.sellingQuantity);
+      const withoutQuantity = newAttachedMaterials.filter((m) => !m.sellingQuantity);
 
-      // Associate materials with the description
+      // Set materialDetails with separate nonMaterialIDS and materialIds
       setMaterialDetails((prev) => [
         ...prev,
         {
           detailId: checkBox,
-          materialIds: newAttachedMaterials.map((m) => m._id),
+          nonMaterialIDS: withoutQuantity.map((m) => m.id),
+          materialIds: withQuantity.map((m) => ({ id: m.id, sellingQuantity: m.sellingQuantity })),
         },
       ]);
 
       setSelectedMaterials([]);
-      setMaterialIDS(newAttachedMaterials.map((item) => item._id));
+      setNonMaterialIDS(newAttachedMaterials.map((item) => item._id));
 
-      setTimeout(() => {
-        setCheckBox("");
-        setMaterialIDS(null);
-      }, 600);
+      // Instead of setTimeout, we immediately reset checkBox and materialIDS
+      setCheckBox("");
+      setNonMaterialIDS(null);
     } else {
-      toast.info("Please select discription");
+      toast.info("Please select description");
     }
   };
-
   const handleRemoveAttachedMaterial = (materialId) => {
+    console.log(materialId, "sssssssssss");
+
     // Remove the material from the attached materials list
-    setAttachedMaterials((prev) => prev.filter((m) => m._id !== materialId));
+    setAttachedMaterials((prev) => prev.filter((m) => m.id !== materialId));
     // Re-enable the material by setting `disabled` to false
     setMaterial((prev) => prev.map((material) => material?._id === materialId ? { ...material, disabled: false } : material))
     // Find the description ID associated with this material
+    // const descriptionToRemove = materialDetails.find((detail) =>
+    //   detail.nonMaterialIDS.includes(materialId)
+    // )?.detailId;
     const descriptionToRemove = materialDetails.find((detail) =>
-      detail.materialIds.includes(materialId)
+      detail.nonMaterialIDS.includes(materialId) ||
+      detail.materialIds.some((m) => m.id === materialId)
     )?.detailId;
+
     if (descriptionToRemove) {
       removeAttachedDescription(descriptionToRemove);
     }
@@ -437,22 +496,32 @@ const AttachedSalesOrder = () => {
     setMaterialDetails((prev) =>
       prev.map((detail) => ({
         ...detail,
-        materialIds: detail.materialIds.filter((id) => id !== materialId),
+        nonMaterialIDS: detail.nonMaterialIDS.filter((id) => id !== materialId),
+        materialIds: detail.materialIds.filter((m) => m.id !== materialId),
       }))
-        .filter((detail) => detail.materialIds.length > 0)
+        .filter((detail) => detail.nonMaterialIDS.length > 0 || detail.materialIds.length > 0)
     );
   };
   const removeAttachedDescription = (descriptionId) => {
     setAttachedDescriptions((prev) => prev.filter((id) => id !== descriptionId));
   };
+
+
+  const handleQuantityChange = (product, value) => {
+    console.log(`Product ID: ${product._id}, Quantity: ${value}`);
+    setQuantity((prevQuantities) => ({
+      ...prevQuantities,
+      [product._id]: value,
+    }));
+  }
   useEffect(() => {
     initialAPICall();
   }, []);
   useEffect(() => {
-    if (materialIDS) {
-      setMaterialDetails((prev) => [...prev, { detailId: checkBox, materialIds: materialIDS }]);
+    if (nonMaterialIDS) {
+      setMaterialDetails((prev) => [...prev, { detailId: checkBox, nonMaterialIDS: nonMaterialIDS }]);
     }
-  }, [materialIDS]);
+  }, [nonMaterialIDS]);
   const handleSearch = (e) => {
     // console.log(e.target.value, "sssssssssss");
 
@@ -478,6 +547,17 @@ const AttachedSalesOrder = () => {
 
     }
   }, [location, categoryId, brandId, modelId, selectedParameters, searchString]);
+
+  useEffect(() => {
+    setRoleName(getCookie("role"));
+  }, []);
+  useEffect(() => {
+    getSalesOrderById();
+    // getMaterialById();
+  }, []);
+  useEffect(() => {
+    if (location) getLocationWiseMaterial({ isFirstCall: true });
+  }, [_location]);
   // useEffect(() => {
   //   if (location && categoryId && selectedModels) getLocationWiseMaterial({ isFirstCall: true });
   // }, [location, categoryId, selectedModels]);
@@ -531,6 +611,8 @@ const AttachedSalesOrder = () => {
           <p>Sales Order List</p>
         </div>
         {/* table  */}
+        {console.log(quantity, "mmmmmmm")}
+
         <div className="table_wrapper my-3">
           <div className="table_main">
             <div className="table_section pi_product_table">
@@ -586,7 +668,7 @@ const AttachedSalesOrder = () => {
                               className="form-check-input"
                               type="checkbox"
                               id={product._id}
-                              onChange={() => handleCheckboxChange(product._id)}
+                              onChange={() => handleCheckboxChange(product._id, product)}
                               checked={selectedCheckboxes.includes(product._id)}
                               disabled={attachedDescriptions.includes(product._id)}
                             />
@@ -830,8 +912,9 @@ const AttachedSalesOrder = () => {
                 </div>
                 {/* ---------------------------list of material----------------------------------------------------------*/}
                 <div className="form_list_layout_wrapper my-4">
-                  <div className="d-flex align-items-center justify-content-between">
+                  <div className="">
                     <p>Sales Order Item Preview</p>
+                    <p>{selectedDiscription?.materialDescription}</p>
                   </div>
                   {/* table */}
                   <div className="table_wrapper my-3">
@@ -879,13 +962,17 @@ const AttachedSalesOrder = () => {
                           <div className="col_20p">
                             <h5>QTY</h5>
                           </div>
+                          {inputCheck?.every((ele) => ele == false) && (
+                            <div className="col_20p">
+                              <h5>Action</h5>
+                            </div>
+                          )}
                         </div>
                         {material?.length > 0 ? (
                           material?.map((product, index) => {
                             return (
                               <div className="table_data" key={index}>
                                 <div className="col_20p">
-                                  {" "}
                                   <div className="check_box">
                                     <input
                                       className="form-check-input"
@@ -894,10 +981,6 @@ const AttachedSalesOrder = () => {
                                       checked={selectedMaterials?.includes(product?._id)}
                                       onChange={() => handleMaterialSelect(product?._id)}
                                       disabled={product?.disabled}
-                                    // id={product._id}
-                                    // onChange={(e) => handleCheckboxChange(e)}
-                                    // checked={selectedCheckboxes.includes(product._id)}
-                                    // checked={selectedList.some((item) => item._id === product._id)}
                                     />
                                   </div>
                                 </div>
@@ -917,7 +1000,7 @@ const AttachedSalesOrder = () => {
                                   <h6>{product?.block}</h6>
                                 </div>
                                 <div className="col_25p">
-                                  <h6>{product?.rack}</h6>
+                                  <h6>{product?.rack ? product?.rack : "--"}</h6>
                                 </div>
                                 <div className="col_25p">
                                   <h6>{product?.modelId?.name}</h6>
@@ -931,7 +1014,21 @@ const AttachedSalesOrder = () => {
                                 <div className="col_20p">
                                   <h6>{product?.reamainingQuantity}</h6>
                                 </div>
+                                {console.log(inputCheck, "sssssss")
+                                }
+                                {inputCheck?.every((ele) => ele === false) && (
+                                  <div className="col_20p">
+                                    <InputBoxOnChange
+                                      value={quantity[product?._id]}
+                                      onChange={(e) => {
+                                        handleQuantityChange(product, e.target.value);
+                                      }}
+                                    />
+                                  </div>
+                                )}
                               </div>
+
+
                             );
                           })
                         ) : (
@@ -1033,7 +1130,7 @@ const AttachedSalesOrder = () => {
                           <div className="col_20p">
                             <Button
                               type="button"
-                              onClick={() => handleRemoveAttachedMaterial(item._id)}
+                              onClick={() => handleRemoveAttachedMaterial(item.id)}
                               name={"Delete"}
                               className="btn-danger"
                             >
