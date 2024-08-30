@@ -76,163 +76,12 @@ const AttachedSalesOrder = () => {
   const [selectedDiscription, setSelectedDiscription] = useState("")
   const [isProcessing, setIsProcessing] = useState(false);
   const [quantity, setQuantity] = useState({});
+  const [_quantity, _setQuantity] = useState([]);
   const categoryId = watch("categoryId");
   const searchStrings = watch("searchString")
   const brandId = watch("brandId");
   const modelId = watch("modelId");
-  async function getBrandWiseModel() {
-    try {
-      // props.setLoader(true);
-      const payload = {
-        brandId: brandId,
-      };
-      const serverResponse = await communication.brandWiseModel(payload);
-      if (serverResponse?.data?.status === "SUCCESS") {
-        setModel(serverResponse?.data?.model);
-      } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.warn(serverResponse.data.message);
-        router.push("/");
-        setLoader(false);
-      } else {
-        setModel([]);
-      }
-      // props.setLoader(false);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || error.message);
-      // props.setLoader(false);
-    }
-  }
-  useEffect(() => {
-    const id = getValues("brandId");
-    if (id) {
-      getBrandWiseModel(id);
-    }
-  }, [brandId]);
-  // const handleCategory = async () => {
-  //   if (getValues("categoryId")) {
-  //     setBrandsData(
-  //       await getCategoryWiseBrand(getValues("categoryId"), setLoader, router, setBrandsData)
-  //     );
-  //   } else {
-  //     setBrandsData([]);
-  //   }
-  // };
-  const handleCategory = async () => {
-    const categoryId = getValues("categoryId");
-    if (categoryId) {
-      setBrandsData(await getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData));
-      // Fetch parameters for the selected category
-      const response = await communication.getCategoryWiseParameter({ categoryId });
-      if (response?.data?.status === "SUCCESS") {
-        setParameter(response?.data?.parameter);
-      }
-    } else {
-      setBrandsData([]);
-      setParameter([]);
-    }
-  };
-
-  useMemo(() => {
-    handleCategory();
-  }, [categoryId]);
-  const handleParameterSelect = (modelName, param) => {
-    setSelectedParameters((prev) => ({
-      ...prev,
-      [modelName]: {
-        ...(prev[modelName] || {}),
-        [param]: !(prev[modelName] && prev[modelName][param]),
-      },
-    }));
-    // Function to filter materials based on selectedParameters
-    const filteredMaterials = material.filter((m) => {
-      const modelParameters = selectedParameters[m.modelName];
-      if (!modelParameters) return false;
-
-      return Object.keys(modelParameters).some((param) => modelParameters[param]);
-    });
-  };
-
-  const handleSelectAllChangeList = (e) => {
-    const checked = e.target.checked;
-    setSelectAllChecked(checked);
-    if (checked) {
-      const allSelect = modelList?.materialDetails?.map((material) => material._id);
-      [];
-      setSelectedCheckboxes(allSelect);
-    } else {
-      setSelectedCheckboxes([]);
-    }
-  };
-
-  const handleCheckboxChange = (e, product) => {
-    const checkboxId = e;
-    setSelectedDiscription(product)
-    if (attachedDescriptions.includes(checkboxId)) {
-      return; // Don't allow changing if already attached
-    }
-    setCheckBox(checkboxId);
-    // Set the selectedCheckboxes to an array with only the current checkbox ID
-    setSelectedCheckboxes([checkboxId]);
-
-    // Since we're only allowing one selection at a time, we can simplify this
-    setSelectAllChecked(false);
-  };
-  // console.log("checkboxId", selectedCheckboxes);
-  const handleSelectAllChange = (e) => {
-    const PreviewChecked = e.target.checked;
-    // console.log(PreviewChecked, "PreviewChecked");
-    setSelectAllCheckedPreview(PreviewChecked);
-    if (PreviewChecked) {
-      const allSelectPriview = material?.filter((material) => !material.disabled)?.map((material) => material._id);
-      [];
-      setSelectedMaterials(allSelectPriview);
-    } else {
-      setSelectedMaterials([]);
-    }
-  };
-
-  const handleMaterialSelect = (materialId) => {
-    let updatedSelectedMaterials = [];
-    if (selectedMaterials.includes(materialId)) {
-      updatedSelectedMaterials = selectedMaterials.filter((id) => id !== materialId);
-    } else {
-      updatedSelectedMaterials = [...selectedMaterials, materialId];
-    }
-    setSelectedMaterials(updatedSelectedMaterials);
-    // setSelectedMaterials((prev) =>
-    //   prev.includes(materialId) ? prev.filter((id) => id !== materialId) : [...prev, materialId]
-    // );
-  };
-  useEffect(() => {
-    const fetchMaterial = async () => {
-      const id = getValues("categoryId");
-
-      try {
-        let payload = {
-          categoryId: id,
-        };
-        // if (id) {
-        //   let response = await communication.getCategoryWiseParameter(payload);
-        //   if (response?.data?.status === "SUCCESS") {
-        //     setParameter(response?.data?.parameter);
-        //   }
-        // }
-      } catch (error) {
-        toast.warn(error.message);
-      }
-    };
-    fetchMaterial();
-  }, [categoryId]);
-  const toggleModal = (modelName) => {
-    setExpandedModals((prevExpandedModals) => {
-      if (prevExpandedModals.includes(modelName)) {
-        return prevExpandedModals.filter((modal) => modal !== modelName);
-      } else {
-        return [...prevExpandedModals, modelName];
-      }
-    });
-  };
-  // ________________________API FOR USER__________________________________
+  // ________________________API for send material__________________________________
   async function getSalesOrderById() {
     try {
       setLoader(true);
@@ -344,6 +193,197 @@ const AttachedSalesOrder = () => {
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
   }
+  async function getBrandWiseModel() {
+    try {
+      // props.setLoader(true);
+      const payload = {
+        brandId: brandId,
+      };
+      const serverResponse = await communication.brandWiseModel(payload);
+      if (serverResponse?.data?.status === "SUCCESS") {
+        setModel(serverResponse?.data?.model);
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.warn(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        setModel([]);
+      }
+      // props.setLoader(false);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
+      // props.setLoader(false);
+    }
+  }
+
+  const handleParameterSelect = (modelName, param) => {
+    setSelectedParameters((prev) => ({
+      ...prev,
+      [modelName]: {
+        ...(prev[modelName] || {}),
+        [param]: !(prev[modelName] && prev[modelName][param]),
+      },
+    }));
+    // Function to filter materials based on selectedParameters
+    const filteredMaterials = material.filter((m) => {
+      const modelParameters = selectedParameters[m.modelName];
+      if (!modelParameters) return false;
+
+      return Object.keys(modelParameters).some((param) => modelParameters[param]);
+    });
+  };
+
+  const handleSelectAllChangeList = (e) => {
+    const checked = e.target.checked;
+    setSelectAllChecked(checked);
+    if (checked) {
+      const allSelect = modelList?.materialDetails?.map((material) => material._id);
+      [];
+      setSelectedCheckboxes(allSelect);
+    } else {
+      setSelectedCheckboxes([]);
+    }
+  };
+
+  const handleCheckboxChange = (e, product) => {
+    const checkboxId = e;
+    setSelectedDiscription(product)
+    if (attachedDescriptions.includes(checkboxId)) {
+      return; // Don't allow changing if already attached
+    }
+    setCheckBox(checkboxId);
+    // Set the selectedCheckboxes to an array with only the current checkbox ID
+    setSelectedCheckboxes([checkboxId]);
+
+    // Since we're only allowing one selection at a time, we can simplify this
+    setSelectAllChecked(false);
+  };
+  // console.log("checkboxId", selectedCheckboxes);
+  const handleSelectAllChange = (e) => {
+    const PreviewChecked = e.target.checked;
+    // console.log(PreviewChecked, "PreviewChecked");
+    setSelectAllCheckedPreview(PreviewChecked);
+    if (PreviewChecked) {
+      const allSelectPriview = material?.filter((material) => !material.disabled)?.map((material) => material._id);
+      [];
+      setSelectedMaterials(allSelectPriview);
+    } else {
+      setSelectedMaterials([]);
+    }
+  };
+
+  const handleMaterialSelect = (materialId, materialData) => {
+    // console.log(_quantity, "Quantity to check:");
+    // console.log(materialData, "Material info:");
+    // console.log(materialData?.reamainingQuantity, "Remaining quantity:");
+    // console.log(selectedDiscription?.quantity, "sssssssssss");
+
+
+    const remainingQuantity = materialData?.reamainingQuantity;
+    const selectedQuantity = selectedDiscription?.quantity;
+    // Function to safely get quantity from a material
+    const getSafeQuantity = (mat) => {
+      if (!mat) return 0;
+      return mat._quantity !== undefined ? Number(mat._quantity) : (mat.remainingQuantity || 0);
+    };
+
+    // Check if _quantity is available to determine if it's a material or non-material
+    if (_quantity?.length > 0) {
+      // This is a material
+      const quantityNum = Number(_quantity);
+      if (isNaN(quantityNum)) {
+        toast.error("Invalid quantity entered");
+        return;
+      }
+      // Calculate current total quantity, always including the new quantity
+      var currentTotalQuantity = selectedMaterials.reduce((total, id) => {
+        if (id === materialId) {
+          // For the current material, always use the new quantity
+          return total + quantityNum;
+        }
+        const mat = material.find(m => m._id === id);
+        return total + getSafeQuantity(mat);
+      }, 0);
+
+      // If the material is not already selected, add its quantity to the total
+      if (!selectedMaterials.includes(materialId)) {
+        currentTotalQuantity += quantityNum;
+      }
+
+      if (currentTotalQuantity > selectedQuantity) {
+        toast.error("Adding this quantity would exceed the total required quantity");
+        return;
+      }
+
+      if (quantityNum > selectedQuantity) {
+        toast.error("Selected quantity exceeds the allowed quantity");
+        return;
+      }
+    } else {
+      // This is a non-material
+      // console.log("Non-material check:", remainingQuantity, selectedQuantity);
+      if (remainingQuantity > selectedQuantity) {
+        console.log("Showing error for non-material");
+        toast.error("Remaining quantity exceeds the required quantity");
+        return;
+      }
+
+
+      // Check if adding this non-material would exceed the total required quantity
+      const currentTotalQuantity = selectedMaterials.reduce((total, id) => {
+        if (id === materialId) {
+          return total + remainingQuantity;
+        }
+        const mat = material.find(m => m._id === id);
+        return total + (mat._quantity !== undefined ? Number(mat._quantity) : mat.remainingQuantity);
+      }, 0);
+      console.log(material, "ssssssssssa");
+      // console.log(material.find(m => m._id === id), "rrrrrr");
+
+      if (currentTotalQuantity > selectedQuantity) {
+        toast.error("Adding this non-material would exceed the total required quantity");
+        return;
+      }
+    }
+
+    // If all checks pass, update the selected materials
+    let updatedSelectedMaterials = selectedMaterials.includes(materialId)
+      ? selectedMaterials.filter((id) => id !== materialId)
+      : [...selectedMaterials, materialId];
+
+    setSelectedMaterials(updatedSelectedMaterials);
+  };
+
+  useEffect(() => {
+    const fetchMaterial = async () => {
+      const id = getValues("categoryId");
+
+      try {
+        let payload = {
+          categoryId: id,
+        };
+        // if (id) {
+        //   let response = await communication.getCategoryWiseParameter(payload);
+        //   if (response?.data?.status === "SUCCESS") {
+        //     setParameter(response?.data?.parameter);
+        //   }
+        // }
+      } catch (error) {
+        toast.warn(error.message);
+      }
+    };
+    fetchMaterial();
+  }, [categoryId]);
+  const toggleModal = (modelName) => {
+    setExpandedModals((prevExpandedModals) => {
+      if (prevExpandedModals.includes(modelName)) {
+        return prevExpandedModals.filter((modal) => modal !== modelName);
+      } else {
+        return [...prevExpandedModals, modelName];
+      }
+    });
+  };
+
   const handleCheckboxSelect = (e, modalName, param) => {
     const { checked } = e.target;
 
@@ -402,25 +442,21 @@ const AttachedSalesOrder = () => {
 
   const handleAttachMaterials = () => {
     if (checkBox) {
-      // Validate that all selected materials with an InputBox have a non-empty quantity
-      // Filter materials that have an inputCheck flag set to true, indicating a quantity is required
       const materialsRequiringQuantity = material.filter((m) =>
         selectedMaterials.includes(m._id) && inputCheck[material.indexOf(m)]
       );
 
       // Validate that all selected materials that require a quantity have a non-empty quantity
-      if (materialsRequiringQuantity.length > 0) {
-        const invalidMaterials = materialsRequiringQuantity.filter(
-          (m) => !quantity[m?._id] || quantity[m?._id] === ''
-        );
+      // if (materialsRequiringQuantity.length > 0) {
+      //   const invalidMaterials = materialsRequiringQuantity.filter(
+      //     (m) => !quantity[m?._id] || quantity[m?._id] === ''
+      //   );
 
-        if (invalidMaterials.length > 0) {
-          toast.info("Please enter a quantity for all selected materials that require it");
-          return; // Stop further execution if validation fails
-        }
-      }
-
-
+      //   if (invalidMaterials.length > 0) {
+      //     toast.info("Please enter a quantity for all selected materials that require it");
+      //     return; // Stop further execution if validation fails
+      //   }
+      // }
       const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m?._id)).map((m) => {
         const sellingQuantity = quantity[m?._id];
         return {
@@ -474,7 +510,6 @@ const AttachedSalesOrder = () => {
     }
   };
   const handleRemoveAttachedMaterial = (materialId) => {
-    console.log(materialId, "sssssssssss");
 
     // Remove the material from the attached materials list
     setAttachedMaterials((prev) => prev.filter((m) => m.id !== materialId));
@@ -505,10 +540,34 @@ const AttachedSalesOrder = () => {
   const removeAttachedDescription = (descriptionId) => {
     setAttachedDescriptions((prev) => prev.filter((id) => id !== descriptionId));
   };
+  useEffect(() => {
+    const id = getValues("brandId");
+    if (id) {
+      getBrandWiseModel(id);
+    }
+  }, [brandId]);
+  const handleCategory = async () => {
+    const categoryId = getValues("categoryId");
+    if (categoryId) {
+      setBrandsData(await getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData));
+      // Fetch parameters for the selected category
+      const response = await communication.getCategoryWiseParameter({ categoryId });
+      if (response?.data?.status === "SUCCESS") {
+        setParameter(response?.data?.parameter);
+      }
+    } else {
+      setBrandsData([]);
+      setParameter([]);
+    }
+  };
 
+  useMemo(() => {
+    handleCategory();
+  }, [categoryId]);
 
   const handleQuantityChange = (product, value) => {
     console.log(`Product ID: ${product._id}, Quantity: ${value}`);
+    _setQuantity(value)
     setQuantity((prevQuantities) => ({
       ...prevQuantities,
       [product._id]: value,
@@ -523,7 +582,6 @@ const AttachedSalesOrder = () => {
     }
   }, [nonMaterialIDS]);
   const handleSearch = (e) => {
-    // console.log(e.target.value, "sssssssssss");
 
     setSearchString(e.target.value);
     let isSearch = true;
@@ -611,8 +669,6 @@ const AttachedSalesOrder = () => {
           <p>Sales Order List</p>
         </div>
         {/* table  */}
-        {console.log(quantity, "mmmmmmm")}
-
         <div className="table_wrapper my-3">
           <div className="table_main">
             <div className="table_section pi_product_table">
@@ -648,10 +704,6 @@ const AttachedSalesOrder = () => {
                 <div className="col_25p">
                   <h5 className="action_wrraper">Note</h5>
                 </div>
-
-                {/* <div className="col_20p">
-                  <h5 className="action_wrraper">Remove</h5>
-                </div> */}
               </div>
               {modelList?.materialDetails?.length > 0 ? (
                 modelList?.materialDetails?.map((product, index) => {
@@ -981,7 +1033,7 @@ const AttachedSalesOrder = () => {
                                       type="checkbox"
                                       id="selectAllCheckboxpreview"
                                       checked={selectedMaterials?.includes(product?._id)}
-                                      onChange={() => handleMaterialSelect(product?._id)}
+                                      onChange={() => handleMaterialSelect(product?._id, product)}
                                       disabled={product?.disabled}
                                     />
                                   </div>
@@ -1016,8 +1068,7 @@ const AttachedSalesOrder = () => {
                                 <div className="col_20p">
                                   <h6>{product?.reamainingQuantity}</h6>
                                 </div>
-                                {console.log(inputCheck, "sssssss")
-                                }
+
                                 {inputCheck?.every((ele) => ele === false) && (
                                   <div className="col_20p">
                                     <InputBoxOnChange
