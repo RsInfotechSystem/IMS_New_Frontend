@@ -174,7 +174,7 @@ function CreateRole({ data }) {
               />
             </div>
             <div className="check_box col-12">
-              
+
               <div className="row m-0">
                 <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
                   <input
@@ -419,7 +419,17 @@ function CreateRole({ data }) {
                     Report
                   </label>
                 </div>
-
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Dump Material"
+                    type="checkbox"
+                    {...register("Dump Material")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Dump Material">
+                    Dump Material
+                  </label>
+                </div>
               </div>
             </div>
             <div className="form_button_wrapper">

@@ -869,8 +869,6 @@ const AttachedSalesOrder = () => {
                     {parameter?.length > 0 ? (
                       parameter?.map((modal, index) => (
                         <div key={index} className="modal-container">
-                          {/* {console.log(modal, "modallll")} */}
-
                           <div className="d-flex gap-2 mb-2">
                             <div
                               onClick={() => toggleModal(modal?.modelName)}
@@ -887,7 +885,7 @@ const AttachedSalesOrder = () => {
                             </div>
                           </div>
 
-                          {expandedModals.includes(modal?.modelName) && (
+                          {expandedModals.includes(modal?.modelName) && modal?.parameterList?.length > 0 && (
                             <ul className="parameter-list" style={{ listStyle: "none" }}>
                               {modal?.parameterList?.map((param, paramIndex) => (
                                 <li key={paramIndex}>
@@ -906,7 +904,11 @@ const AttachedSalesOrder = () => {
                             </ul>
                           )}
                         </div>
-                      ))) : ("")}
+                      ))) : (
+                      <small className="text-center text-secondary p-2 small d-block">
+                        No Parameter Exits
+                      </small>
+                    )}
 
                   </div>
                 </div>
