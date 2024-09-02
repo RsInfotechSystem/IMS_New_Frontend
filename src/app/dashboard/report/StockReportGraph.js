@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { communication } from "@/services/communication";
 import CustomBtn from "@/common-components/CustomBtn";
 import StockFilter from "@/common-components/StockFilter";
-import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faFilterCircleXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReportFilterForCategory from "@/common-components/ReportFilterForCategory";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
@@ -434,7 +434,8 @@ const StockReportGraph = () => {
               MaterialByBrand();
             }}
           >
-            <FontAwesomeIcon icon={faCircleXmark} />
+            {/* <FontAwesomeIcon icon={faCircleXmark} /> */}
+            <FontAwesomeIcon icon={faFilterCircleXmark} />
           </div>
         </div>
         <h5 style={{ textAlign: "center" }}>Brand Wise Stock</h5>
