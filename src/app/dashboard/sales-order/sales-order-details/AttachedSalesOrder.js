@@ -1103,7 +1103,10 @@ const AttachedSalesOrder = () => {
           </div>
           {/* ---------------------------filter for material end----------------------------------------------------------*/}
           {/* ---------------------------attached material----------------------------------------------------------*/}
-
+          {console.log(selectedDiscription, "selectedDiscription")}
+          {console.log(attachedMaterials, "attachedMaterials")}
+          {console.log(attachedDescriptions, "attachedDescriptions")
+          }
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Attached Sales Order</p>

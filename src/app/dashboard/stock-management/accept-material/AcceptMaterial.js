@@ -147,7 +147,7 @@ const AcceptMaterial = () => {
               parameterId: ele.parameterId,
               parameter: ele.parameter,
             })),
-            ...rows?.filter((ele) => ele.type === "dump"),
+            ...rows?.filter((ele) => ele.type === "dump").map(({ categoryId, parameterId, parameter, quantity }) => { return { categoryId, parameterId, parameter, quantity } }),
           ],
           consume: consumedMaterials?.map((ele) => ({ materialId: ele })) ?? [],
           addToCart:
@@ -158,6 +158,7 @@ const AcceptMaterial = () => {
               }
             }) ?? [],
         };
+        // console.log(dataToSend, "sakshi");
         let response = await communication.updateStockBeforeAccept(dataToSend);
         if (response?.data?.status === "SUCCESS") {
           toast.success(response?.data?.message, { autoClose: 1500 });
@@ -220,6 +221,7 @@ const AcceptMaterial = () => {
             itemCode: material.itemCode || "",
             serialNo: material.serialNo || "",
             parameter: material.parameter,
+            parameterId: material.parameterId?._id,
             // taskStatus: material.taskStatus || "",
             // parameter: material.parameter
             //   ? Object.entries(material.parameter).map(([key, value]) => ({ key, value }))
@@ -251,6 +253,7 @@ const AcceptMaterial = () => {
             itemCode: material.itemCode || "",
             serialNo: material.serialNo || "",
             parameterMaterial: material.parameter,
+            parameterId: material.parameterId?._id,
             // taskStatus: material.taskStatus || "",
             quantity: material.quantity || 1,
             status: material.stockStatus || "",
@@ -506,6 +509,25 @@ const AcceptMaterial = () => {
       [materialId]: value,
     }));
   };
+  // const handleRadioChangeMaterial = (materialId, value, materialObj) => {
+  //   if (value === "Dump") {
+  //     seSaveDump((prevState) => [...prevState, materialObj]);
+  //     setSavedMaterials((prevState) =>
+  //       prevState.filter(material => material.materialId !== materialId
+  //       )
+  //     );
+  //   } else {
+  //     setSavedMaterials((prevState) => [...prevState, materialObj]);
+  //     seSaveDump((prevState) =>
+  //       prevState.filter(material => material.materialId !== materialId)
+  //     );
+  //   }
+
+  //   SetRowSelectionsMaterial((prevSelections) => ({
+  //     ...prevSelections,
+  //     [materialId]: value,
+  //   }));
+  // };
   // -----------------------------Material Checkbox end-----------------------------------
   // -----------------------------CART MATERIAL SECTION-----------------------------------
 
@@ -881,7 +903,8 @@ const AcceptMaterial = () => {
         </div>
       </div>
       <form>
-
+        {console.log(savedMaterials, "sssssssssss")
+        }
         <div className="form_layout">
           <ColorBox />
           {/* ------------------------NON MATERIAL LIST START----------------------------------------------- */}
@@ -1537,7 +1560,7 @@ const AcceptMaterial = () => {
                           </div>
                           <div className="col_85p">
                             <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
-                              {Object?.entries(product?.parameterMaterial)?.map(
+                              {product?.parameterMaterial && Object?.entries(product?.parameterMaterial)?.map(
                                 ([key, value], indexOne) => (
                                   <div
                                     className="col_60p"
@@ -1845,24 +1868,24 @@ const AcceptMaterial = () => {
                   <div className="col_7p">
                     <h5>Sr. No.</h5>
                   </div>
-                  <div className="col_40p">
+                  {/* <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Serial No</h5>
                   </div>
                   <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Box NO</h5>
-                  </div>
+                  </div> */}
                   <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Quantity</h5>
                   </div>
                   <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Category</h5>
                   </div>
-                  <div className="col_40p">
+                  {/* <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Brand</h5>
                   </div>
                   <div className="col_40p">
                     <h5 style={{ textAlign: "center" }}>Model</h5>
-                  </div>
+                  </div> */}
                   <div className="col_85p">
                     <div className="input_scroll" style={{ scrollbarWidth: "none" }}>
                       <h5 style={{ textAlign: "center" }}>Parameter</h5>
@@ -1950,7 +1973,7 @@ const AcceptMaterial = () => {
                     <div className="col_7p">
                       <h6>{index + 1}</h6>
                     </div>
-                    <div className="col_40p">
+                    {/* <div className="col_40p">
                       <h6>
                         <input
                           {...register(`rows[${index}].serialNo`)}
@@ -1967,7 +1990,7 @@ const AcceptMaterial = () => {
                           className="form-control"
                         />
                       </h6>
-                    </div>
+                    </div> */}
                     <div className="col_40p">
                       <h6>
                         <input
@@ -2002,7 +2025,7 @@ const AcceptMaterial = () => {
                       </div>
                       {/* </h6> */}
                     </div>
-                    <div className="col_40p">
+                    {/* <div className="col_40p">
                       <h6>
                         <div className="position-relative">
                           <select
@@ -2046,7 +2069,7 @@ const AcceptMaterial = () => {
                           </div>
                         </div>
                       </h6>
-                    </div>
+                    </div> */}
                     <div className="col_85p">
                       <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
                         {cardDataToMap?.parameter[`${index}`]?.map((item, interIndex) => (
