@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import Loader from "@/common-components/Loader";
 import CustomDateInput from "@/common-components/CustomDateInput";
 import Swal from "sweetalert2";
+import CustomDateInputWithMaxDate from "@/common-components/CustomDateInputWithMazDate";
 
 // Register the necessary Chart.js components
 ChartJS.register(
@@ -84,7 +85,7 @@ const SellGraph = () => {
         backgroundColor: "#2D3E9A",
       },
     },
-   
+
     responsive: true,
     scales: {
       y: {
@@ -143,7 +144,7 @@ const SellGraph = () => {
       <div className="dashboard_filter_wrapper">
         <div>
           <label>Start Date</label>
-          <CustomDateInput
+          <CustomDateInputWithMaxDate
             value={filterValues?.startDate}
             onChange={(date) => {
               setFilterValues((prev) => ({ ...prev, startDate: date }));
@@ -152,7 +153,7 @@ const SellGraph = () => {
         </div>
         <div>
           <label>End Date</label>
-          <CustomDateInput
+          <CustomDateInputWithMaxDate
             value={filterValues?.endDate}
             onChange={(date) => {
               setFilterValues((prev) => ({ ...prev, endDate: date }));
