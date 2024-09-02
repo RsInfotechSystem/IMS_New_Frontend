@@ -328,7 +328,7 @@ const AssignMaterial = () => {
       setStockIds(allStockIds);
       setOutput(allOutput);
     } else {
-      setSelectAllCheckedStock([]);
+      setSelectAllCheckedStock(false);
       setStockIds([]);
       setOutput([]);
     }
@@ -349,6 +349,7 @@ const AssignMaterial = () => {
       // Remove materialData from selectedList
       setStockIds((prev) => prev.filter((item) => item !== materialData._id));
       setOutput((pre) => pre.filter((item) => item.stockId !== materialData._id));
+      setSelectAllCheckedStock(false);
     }
   };
 
@@ -548,6 +549,7 @@ const AssignMaterial = () => {
         userId: userId,
       };
       console.log(payload, "payload");
+
       let response = await communication.AssignMaterial(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response.data.message);
