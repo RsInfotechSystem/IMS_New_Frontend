@@ -337,6 +337,7 @@ const ReadyMaterial = () => {
                   </div>
                 </>
               )}
+              {console.log(attachedMaterial, "sssssssssss")}
 
             </div>
 
@@ -409,13 +410,13 @@ const ReadyMaterial = () => {
                             <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                           </div>
                           <div className="col_25p">
-                            <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+                            <h6>{product?.note ? product?.note : "--"}</h6>
                           </div>
                         </div>
                       </div>
                       {/* Right Side with Material Details */}
                       <div className="" style={{ width: "50%" }}>
-                        {product?.materialIds?.map((material, materialIndex) => (
+                        {product?.stockIds?.map((material, materialIndex) => (
                           <div className="table_data" key={material?._id} style={{ display: "flex" }}>
                             <div className="col_25p">
                               <h6>{material?.categoryId?.name}</h6>
@@ -468,7 +469,7 @@ const ReadyMaterial = () => {
                     <h6>{product?.warranty ? product?.warranty : "--"}</h6>
                   </div>
                   <div className="col_25p">
-                    <h6 className="action_wrraper">{product?.note ? product?.note : "--"}</h6>
+                    <h6>{product?.note ? product?.note : "--"}</h6>
                   </div>
                 </div>
               }
