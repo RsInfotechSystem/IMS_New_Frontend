@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { communication } from "@/services/communication";
 import { useRouter } from "next/navigation";
 import Loader from "@/common-components/Loader";
+import SellGraphLine from "./SellGraphLine";
 
 const Report = () => {
     const router = useRouter();
@@ -74,6 +75,7 @@ const Report = () => {
                         {activeTab === "attendance" &&
                             <>
                                 <SellGraph />
+                                {/* <SellGraphLine /> */}
                             </>
                         }
                         {activeTab === "shift" &&

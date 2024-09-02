@@ -2423,6 +2423,8 @@ export const communication = {
       throw error;
     }
   },
+  // -----------Dump API--------------
+
 
   getDumpMaterial: async (data) => {
     try {
@@ -2436,6 +2438,18 @@ export const communication = {
           },
         }
       );
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteDumpMaterial: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/material/delete-dump-material`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
     } catch (error) {
       throw error;
     }

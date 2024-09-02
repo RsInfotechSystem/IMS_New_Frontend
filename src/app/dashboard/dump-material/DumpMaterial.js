@@ -15,6 +15,10 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import StockFilter from "@/common-components/StockFilter";
 import InputBox from "@/common-components/InputBox";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
+import StockFilterForDump from "@/common-components/StockFilterForDump";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const DumpMaterial = () => {
@@ -31,17 +35,24 @@ const DumpMaterial = () => {
     const [material, setMaterial] = useState([]);
     const [timeoutId, setTimeoutId] = useState();
     const [filter, setFilter] = useState({});
+    const [selectAllChecked, setSelectAllChecked] = useState(false);
+    const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
+    const [showModal, setShowModal] = useState({ modal: false });
 
-    async function getStatusWiseMaterialList({
+    async function getDumpMaterialList({
         page = 1,
         searchString,
         isSearch = false,
+        categoryId,
+        brandId,
     } = {}) {
         try {
             setLoader(true);
             let payload = {
                 page,
                 searchString: searchString,
+                categoryId,
+                brandId,
 
             };
             const serverResponse = await communication.getDumpMaterial(payload);
@@ -70,23 +81,80 @@ const DumpMaterial = () => {
         let isSearch = true;
         clearTimeout(timeoutId);
         let _timeOutId = setTimeout(() => {
-            getStatusWiseMaterialList({ page: 1, searchString: e.target.value, isSearch, ...filter });
+            getDumpMaterialList({ page: 1, searchString: e.target.value, isSearch, ...filter });
             setCurrentPage(1);
         }, 2000);
         setTimeoutId(_timeOutId);
     };
+    const handleCheckboxChange = (e) => {
+        const checkboxId = e.target.id;
+        setSelectAllChecked(
+            !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === material?.length
+        );
+        setSelectedCheckboxes((prevSelected) => {
+            if (prevSelected.includes(checkboxId)) {
+                // If the checkbox is already in the array, remove it
+                return prevSelected.filter((id) => id !== checkboxId);
+            } else {
+                // If the checkbox is not in the array, add it
+                return [...prevSelected, checkboxId];
+            }
+        });
+    };
+    const handleSelectAllChange = (e) => {
+        setSelectAllChecked(e.target.checked);
+
+        // Update the array of selected checkboxes based on the "Select All" checkbox
+        setSelectedCheckboxes((prevSelected) =>
+            e.target.checked ? material.map((materialDetails) => materialDetails._id) : []
+        );
+    };
+    const deleteDump = async () => {
+        if (selectedCheckboxes.length > 0) {
+            setShowModal((prev) => ({ ...prev, modal: true }));
+        } else {
+            toast.info("Please select which material you want to delete");
+        }
+    };
+    const successHandler = async () => {
+        setShowModal((prev) => ({ ...prev, modal: false }));
+        setLoader(true);
+        let payload = {
+            dumpIds: [...selectedCheckboxes],
+        };
+        try {
+            let response = await communication.deleteDumpMaterial(payload);
+            if (response?.data?.status === "SUCCESS") {
+                setSelectedCheckboxes([]);
+                toast.success(response.data.message);
+                await getDumpMaterialList(currentPage, searchString);
+            } else if (response?.data?.status === "JWT_INVALID") {
+                toast.info(response.data.message);
+                router.push("/");
+            } else {
+                toast.info(response.data.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        } finally {
+            setLoader(false);
+        }
+    };
+    const cancelHandler = () => {
+        setShowModal((prev) => ({ ...prev, modal: false }));
+    };
 
     useEffect(() => {
-        getStatusWiseMaterialList({ page: currentPage, searchString, isFirstCall: true });
+        getDumpMaterialList({ page: currentPage, searchString, ...filter });
     }, [isPageUpdated]);
 
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
             {modalStates?.filter && (
-                <StockFilter
+                <StockFilterForDump
                     setModalStates={setModalStates}
-                    apiCall={getStatusWiseMaterialList}
+                    apiCall={getDumpMaterialList}
                     filter={filter}
                     setFilter={setFilter}
                 />
@@ -133,10 +201,25 @@ const DumpMaterial = () => {
                             type="button"
                             name={"Reset Filter"}
                             onClick={() => {
-                                getStatusWiseMaterialList();
+                                getDumpMaterialList();
                             }}
                             style={{ padding: "0px", minWidth: "120px" }}
                         />
+                        <CustomBtn
+                            name={"Delete"}
+                            // onClick={deleteUser}
+                            onClick={deleteDump}
+                            svg={<FontAwesomeIcon icon={faTrash} />}
+                        />
+                        {showModal.modal && (
+                            <CustomResponseHandlerModal
+                                status="warning"
+                                // show={showModal}
+                                message="Are you sure you want to delete this material?"
+                                successHandler={successHandler}
+                                cancelHandler={cancelHandler}
+                            />
+                        )}
                     </div>
                 }
             </div>
@@ -145,6 +228,14 @@ const DumpMaterial = () => {
                 <div className="table_main">
                     <div className="table_section inventory_table_res" >
                         <div className="table_header">
+                            <div className="col_7p">
+                                <input
+                                    type="checkbox"
+                                    className="form-check-input"
+                                    onChange={(e) => handleSelectAllChange(e)}
+                                    checked={selectAllChecked}
+                                />
+                            </div>
                             <div className="col_15p">
                                 <h5>Sr. No.</h5>
                             </div>
@@ -154,7 +245,7 @@ const DumpMaterial = () => {
                             <div className="col_30p">
                                 <h5>Brand Name</h5>
                             </div>
-                            <div className="col_85p">
+                            <div className="col_85p" style={{ justifyContent: "left" }}>
                                 <div className="input_scroll" style={{ scrollbarWidth: "none" }}>
                                     <h5 style={{ textAlign: "center" }}>Parameter</h5>
                                 </div>
@@ -166,8 +257,16 @@ const DumpMaterial = () => {
                                 {material?.map((materialDetails, index) => {
                                     return (
                                         <div className="table_data" key={index}>
-                                            {console.log(materialDetails, "saksgi")}
-
+                                            {/* {console.log(materialDetails, "saksgi")} */}
+                                            <div className="col_7p">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="checkbox"
+                                                    id={materialDetails._id}
+                                                    onChange={(e) => handleCheckboxChange(e)}
+                                                    checked={selectedCheckboxes.includes(materialDetails._id)}
+                                                />
+                                            </div>
                                             <div className="col_15p">
                                                 <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                             </div>
@@ -177,7 +276,7 @@ const DumpMaterial = () => {
                                                 </h6>
                                             </div>
                                             <div className="col_30p">
-                                                <h6>{materialDetails?.brandId?.name}</h6>
+                                                <h6>{materialDetails?.brandId?.name ? materialDetails?.brandId?.name : "--"}</h6>
                                             </div>
                                             <div className="col_85p" style={{ justifyContent: "left" }}>
                                                 <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
