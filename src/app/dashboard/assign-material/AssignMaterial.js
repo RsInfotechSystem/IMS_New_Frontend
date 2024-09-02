@@ -61,7 +61,7 @@ const AssignMaterial = () => {
   const [errors, setErrors] = useState({});
   const [assignedMaterial, setAssignedMaterial] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
-
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState([])
   const {
     register,
     // handleSubmit,
@@ -316,9 +316,11 @@ const AssignMaterial = () => {
     const isChecked = event.target.checked;
 
     if (isChecked) {
-      setSelectAllCheckedStock([...material]);
-      const allStockIds = material.map((item) => item._id);
-      const allOutput = material.map((item) => ({
+      setSelectAllCheckedStock([...selectedList]);
+      const allStockIds = selectedList.map((item) => item._id);
+      console.log(allStockIds, "allStockIds");
+
+      const allOutput = selectedList.map((item) => ({
         stockId: item._id,
         assignQuantity: quantities[item._id],
       }));
@@ -545,7 +547,7 @@ const AssignMaterial = () => {
         materialDetails: output,
         userId: userId,
       };
-      // console.log(payload, "payload");
+      console.log(payload, "payload");
       let response = await communication.AssignMaterial(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response.data.message);
@@ -1108,13 +1110,15 @@ const AssignMaterial = () => {
                         <div className="table_header">
                           <div className="col_5p">
                             <div className="check_box">
+                              {console.log(selectAllCheckedStock, "ssssss")}
+                              {console.log(stockIds, "rrrrrr")}
                               <input
                                 className="form-check-input"
                                 type="checkbox"
                                 id="_selectAllCheckbox"
                                 onChange={(e) => handleSelectAllChangeGetStock(e)}
                                 checked={selectAllCheckedStock}
-                              // onChange={(e) => handleSelectAllChange(e)}   neet to fix for edit type
+                              // onChange={(e) => handleSelectAllChangeStock(e)}
                               // checked={selectAllCheckedStock}
                               />
                             </div>
