@@ -36,25 +36,17 @@ const DumpMaterial = () => {
         page = 1,
         searchString,
         isSearch = false,
-        isFirstCall,
-        location,
-        categoryId,
-        brandId,
-        modelId,
     } = {}) {
         try {
             setLoader(true);
             let payload = {
                 page,
                 searchString: searchString,
-                location,
-                categoryId,
-                brandId,
-                modelId,
+
             };
-            const serverResponse = await communication.getInventoryMaterial(payload);
+            const serverResponse = await communication.getDumpMaterial(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
-                setMaterial(serverResponse?.data.stock);
+                setMaterial(serverResponse?.data.material);
                 setPageCount(serverResponse?.data?.totalPages);
                 setPage(page);
                 if (isSearch) {
@@ -174,6 +166,8 @@ const DumpMaterial = () => {
                                 {material?.map((materialDetails, index) => {
                                     return (
                                         <div className="table_data" key={index}>
+                                            {console.log(materialDetails, "saksgi")}
+
                                             <div className="col_15p">
                                                 <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                             </div>
@@ -187,7 +181,7 @@ const DumpMaterial = () => {
                                             </div>
                                             <div className="col_85p" style={{ justifyContent: "left" }}>
                                                 <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
-                                                    {materialDetails?.parameter && typeof materialDetails?.parameter === 'object' ? Object?.entries(materialDetails?.parameter)?.map(
+                                                    {/* {materialDetails?.parameter ? Object?.entries(materialDetails?.parameter)?.map(
                                                         ([key, value], indexOne) => (
                                                             <div
                                                                 className="col_60p"
@@ -201,7 +195,23 @@ const DumpMaterial = () => {
                                                                 />
                                                             </div>
                                                         )
-                                                    ) : []}
+                                                    ) : []} */}
+                                                    {Array?.isArray(materialDetails?.parameter) && materialDetails.parameter?.map((paramObject, index) => (
+                                                        Object?.entries(paramObject).map(([key, value], indexOne) => (
+                                                            <div
+                                                                className="col_60p"
+                                                                key={`${index}-${indexOne}`}
+                                                                style={{ display: "inline-block", minWidth: "150px" }}
+                                                            >
+                                                                <label>{key}</label>
+                                                                <InputBox
+                                                                    value={value} // Set the input value to the corresponding value from the object
+                                                                // disabled={!isEditing || editingIndex !== index} // Disable based on edit state
+                                                                />
+                                                            </div>
+                                                        ))
+                                                    ))}
+
                                                 </div>
                                             </div>
                                         </div>
