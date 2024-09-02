@@ -168,7 +168,6 @@ const AttachedSalesOrder = () => {
         materialDetails: materialDetails,
       };
       console.log("payload", payload);
-      return
       const serverResponse = await communication.sendReadyMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse?.data?.message);
@@ -494,7 +493,7 @@ const AttachedSalesOrder = () => {
         ...prev,
         {
           detailId: checkBox,
-          nonMaterialIDS: withoutQuantity.map((m) => m.id),
+          nonMaterialIds: withoutQuantity.map((m) => m.id),
           materialIds: withQuantity.map((m) => ({ id: m.id, sellingQuantity: m.sellingQuantity })),
         },
       ]);
