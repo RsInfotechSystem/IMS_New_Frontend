@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import Loader from "@/common-components/Loader";
 import CustomDateInput from "@/common-components/CustomDateInput";
 import Swal from "sweetalert2";
-import CustomDateInputWithMaxDate from "@/common-components/CustomDateInputWithMazDate";
+import CustomDateInputWithMaxDate from "@/common-components/CustomDateInputWithMaxDate";
 
 // Register the necessary Chart.js components
 ChartJS.register(

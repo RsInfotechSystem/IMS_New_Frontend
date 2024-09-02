@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { communication } from "@/services/communication";
 import { useRouter } from "next/navigation";
 import CustomDateInput from "@/common-components/CustomDateInput";
-import CustomDateInputWithMaxDate from "@/common-components/CustomDateInputWithMazDate";
+import CustomDateInputWithMaxDate from "@/common-components/CustomDateInputWithMaxDate";
 
 const SellGraphLine = () => {
     const router = useRouter();
