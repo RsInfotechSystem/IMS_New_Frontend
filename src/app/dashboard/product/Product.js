@@ -252,7 +252,7 @@ const Product = () => {
                   <label className="form-check-label"></label>
                 </div>
               </div>
-              <div className="col_10p">
+              <div className="col_7p">
                 <h5>Sr. No.</h5>
               </div>
 
@@ -294,7 +294,7 @@ const Product = () => {
                         </div>
                       </div>
 
-                      <div className="col_10p">
+                      <div className="col_7p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
 
