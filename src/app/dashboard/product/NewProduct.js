@@ -244,7 +244,7 @@ const NewProduct = () => {
                 <div className="table_main">
                     <div className="table_section employee_table">
                         <div className="table_header" style={{ display: "flex", width: "100%" }}>
-                            <div className="col_20p">
+                            <div className="col_10p">
                                 <h5>Sr. No.</h5>
                             </div>
                             <div className="col_40p">
@@ -278,7 +278,7 @@ const NewProduct = () => {
                                         {/* Left Side with Material Description */}
                                         <div style={{ width: "50%", display: "flex", flexDirection: "column" }}>
                                             <div className="table_data" style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                                <div className="col_20p">
+                                                <div className="col_12p">
                                                     <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                                 </div>
                                                 <div className="col_40p">

@@ -255,10 +255,10 @@ const UpdatedProduct = () => {
                                     <label className="form-check-label"></label>
                                 </div>
                             </div> */}
-                            <div className="col_10p">
+                            <div className="col_7p">
                                 <h5>Sr. No.</h5>
                             </div>
-                            <div className="col_20p">
+                            <div className="col_15p">
                                 <h5>Category</h5>
                             </div>
                             <div className="col_20p">
@@ -307,10 +307,10 @@ const UpdatedProduct = () => {
                                                 </div>
                                             </div> */}
 
-                                            <div className="col_10p">
+                                            <div className="col_7p">
                                                 <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                             </div>
-                                            <div className="col_20p">
+                                            <div className="col_15p">
                                                 <h6>{data?.categoryId?.name}</h6>
                                             </div>
                                             <div className="col_20p">

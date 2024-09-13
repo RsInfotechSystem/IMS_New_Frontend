@@ -373,7 +373,7 @@ const UserManagement = () => {
                   checked={selectAllChecked}
                 />
               </div>
-              <div className="col_10p">
+              <div className="col_5p">
                 <h5>Sr. No.</h5>
               </div>
               <div className="col_15p">
@@ -382,7 +382,7 @@ const UserManagement = () => {
               <div className="col_30p">
                 <h5>User Name</h5>
               </div>
-              <div className="col_30p">
+              <div className="col_25p">
                 <h5>Role Type</h5>
               </div>
               <div className="col_35p">
@@ -394,7 +394,7 @@ const UserManagement = () => {
               <div className="col_20p">
                 <h5>Location</h5>
               </div>
-              <div className="col_25p">
+              <div className="col_45p">
                 <h5>Password</h5>
               </div>
               <div className="col_20p">
@@ -414,7 +414,7 @@ const UserManagement = () => {
                         checked={selectedCheckboxes.includes(userDetails?._id)}
                       />
                     </div>
-                    <div className="col_10p">
+                    <div className="col_5p">
                       <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                     </div>
                     <div className="col_15p">
@@ -423,7 +423,7 @@ const UserManagement = () => {
                     <div className="col_30p">
                       <h6>{userDetails?.name}</h6>
                     </div>
-                    <div className="col_30p">
+                    <div className="col_25p">
                       <h6>{userDetails?.role}</h6>
                     </div>
                     <div className="col_35p">
@@ -438,7 +438,7 @@ const UserManagement = () => {
                           {roleDetails?.tab?.join(', ')}
                         </h6> */}
                     </div>
-                    <div className="col_25p">
+                    <div className="col_45p">
                       {passwordVisibility[userDetails._id] ? (
                         <h6 style={{ display: "inline-flex", alignItems: "center" }}>
                           {userDetails.password}
