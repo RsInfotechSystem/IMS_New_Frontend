@@ -49,10 +49,10 @@ function CreateBlock({ data }) {
     }
     try {
       let payload = {
-        locationId: values.locationId,
-        blockNo: values.blockNo,
+        locationId: values?.locationId,
+        blockNo: values?.blockNo,
         isRackAdded: selectedOption === "Yes" ? true : false,
-        rackId: propertyType.map((ele) => ele._id),
+        rackId: propertyType?.map((ele) => ele?._id),
       };
       // if (rackIds) {
       //   payload.rackId = [rackIds];
@@ -60,7 +60,7 @@ function CreateBlock({ data }) {
       setLoader(true);
       const serverResponse = await communication.createBlock(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        toast.success(serverResponse.data.message);
+        toast.success(serverResponse?.data?.message);
         setSelectedOption("");
         setButtonLoader(false);
         setModalStates((prev) => ({ ...prev, modal: false }));
@@ -68,14 +68,14 @@ function CreateBlock({ data }) {
         setPropertyType([]);
         reset();
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.warn(serverResponse.data.message);
+        toast.warn(serverResponse?.data?.message);
         router.push("/");
       } else {
-        toast.warn(serverResponse.data.message);
+        toast.warn(serverResponse?.data?.message);
       }
       setLoader(false);
     } catch (error) {
-      toast.error(error?.response?.data?.message || error.message);
+      toast.error(error?.response?.data?.message || error?.message);
       setLoader(false);
     }
   };
@@ -87,7 +87,7 @@ function CreateBlock({ data }) {
       if (serverResponse?.data?.status === "SUCCESS") {
         setLocationList(serverResponse?.data?.result);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
-        toast.warn(serverResponse.data.message);
+        toast.warn(serverResponse?.data?.message);
         router.push("/");
         setLoader(false);
       } else {
@@ -95,7 +95,7 @@ function CreateBlock({ data }) {
       }
       setLoader(false);
     } catch (error) {
-      toast.warn(error?.response?.data?.message || error.message);
+      toast.warn(error?.response?.data?.message || error?.message);
       setLoader(false);
     }
   }
@@ -109,24 +109,25 @@ function CreateBlock({ data }) {
       });
       if (response?.data?.status === "SUCCESS") {
         // setDefaultRack([...response?.data?.block?.rackName]);
-        setLocationId(response?.data.block.locationId._id);
+        setLocationId(response?.data?.block?.locationId?._id);
         setBlockId(response?.data?.block?._id);
         setValue("blockNo", response?.data?.block?.blockNo);
         setSelectedOption(response?.data?.block?.isRackAdded ? "Yes" : "No");
         if (response?.data?.block?.isRackAdded) {
           setPropertyType(response?.data?.block?.rackId);
-          await getActiveRack(response?.data.block.locationId._id);
+          await getActiveRack(response?.data.block?.locationId?._id);
         } else {
-          setPropertyType([]);
+          await getActiveRack(response?.data?.block?.locationId?._id);
+          // setPropertyType([]);
         }
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
         router.push("/");
       } else {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.message);
     } finally {
       setLoader(false);
     }
@@ -139,14 +140,14 @@ function CreateBlock({ data }) {
       if (response?.data?.status === "SUCCESS") {
         setRackList(response?.data?.rack);
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
         router.push("/");
       } else {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
         setRackList([]);
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.message);
       setRackList([]);
     } finally {
       setLoader(false);
@@ -154,7 +155,7 @@ function CreateBlock({ data }) {
   };
 
   const updateExistingBlock = async (values) => {
-    let rackIds = values.rackName ? values.rackName : "";
+    let rackIds = values?.rackName ? values?.rackName : "";
     if (selectedOption == "") {
       setErrorRackFlag("Please confirm one");
       return;
@@ -162,10 +163,10 @@ function CreateBlock({ data }) {
     try {
       let payload = {
         blockId: blockId,
-        locationId: values.locationId,
-        blockNo: values.blockNo,
+        locationId: values?.locationId,
+        blockNo: values?.blockNo,
         isRackAdded: selectedOption === "Yes" ? true : false,
-        rackId: selectedOption === "Yes" ? propertyType.map((ele) => ele._id) : [],
+        rackId: selectedOption === "Yes" ? propertyType?.map((ele) => ele?._id) : [],
         // isRackAdded: true, //bypass
       };
 
@@ -194,7 +195,7 @@ function CreateBlock({ data }) {
   };
 
   const CheckboxChange = (event) => {
-    setSelectedOption(event.target.value);
+    setSelectedOption(event?.target?.value);
     setErrorRackFlag("");
   };
 
@@ -217,7 +218,7 @@ function CreateBlock({ data }) {
 
   useEffect(() => {
     setValue("locationId", locationId);
-  }, [locationId, locationList.length >= 1]);
+  }, [locationId, locationList?.length >= 1]);
 
   useEffect(() => {
     // getBlockById();
@@ -268,8 +269,8 @@ function CreateBlock({ data }) {
                       required: "location is required",
                     }),
                   }}
-                  onChange={(e) => _setlocationId(e.target.value)}
-                  errors={errors.locationId}
+                  onChange={(e) => _setlocationId(e?.target?.value)}
+                  errors={errors?.locationId}
                 />
               </div>
               <div className="input_wrapper col-md-6">
@@ -281,13 +282,13 @@ function CreateBlock({ data }) {
                       required: "Block Name is required",
                     }),
                   }}
-                  errors={errors.blockNo}
+                  errors={errors?.blockNo}
                 />
               </div>
             </div>
             <div className="row">
               <div className="check_box col-md-6">
-              <label>Want to add rack ? *</label>
+                <label>Want to add rack ? *</label>
 
                 <div className="row">
                   {" "}
