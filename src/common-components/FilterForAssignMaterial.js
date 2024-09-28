@@ -155,8 +155,8 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
             .flatMap((item) =>
               Object.entries(item.parameter || {}).map(([key, value]) =>
                 JSON.stringify({
-                  parameterId: key.toUpperCase(), // Convert parameterId to uppercase
-                  parameterName: value.toUpperCase(), // Convert parameterName to uppercase
+                  parameterId: typeof key === 'string' ? key.toUpperCase() : key,
+                  parameterName: typeof value === 'string' ? value.toUpperCase() : value,
                 })
               )
             )
@@ -170,14 +170,12 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
           return acc;
         }, []);
 
-      
-
       setOptions((prev) => ({
         ...prev,
         brand: brandOptions,
         model: modelOptions,
         parameter: parameterOptions,
-        
+
       }));
     } else {
       setOptions((prev) => ({
@@ -214,7 +212,7 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
             item.categoryId === value.categoryId &&
             item.brandId === value.brandId &&
             item.modelId === value.modelId &&
-            item.parameterId === value.parameterId 
+            item.parameterId === value.parameterId
         );
 
         if (isSelected) {
@@ -223,14 +221,14 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
               item.categoryId !== value.categoryId ||
               item.brandId !== value.brandId ||
               item.modelId !== value.modelId ||
-              item.parameterId !== value.parameterId 
+              item.parameterId !== value.parameterId
           );
         } else {
           newValues[section] = [...newValues[section], value];
         }
       }
-      console.log(newValues,"newValues");
-      
+      console.log(newValues, "newValues");
+
       onFiltersChange({
         categoryId: newValues.category.length > 0 ? newValues.category[0].categoryId : "",
         brandId: newValues.brand.length > 0 ? newValues.brand[0].brandId : "",
