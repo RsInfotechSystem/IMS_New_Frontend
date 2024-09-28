@@ -111,39 +111,39 @@ const AssignMaterial = () => {
       let payload = {
         searchString: "",
         location: id,
-        ...(state.status.keyType === "status" && { status: state.status.keyId }),
-        ...(state.status.keyType === "conditionType" && { status: state.conditionType.keyId }),
+        ...(state?.status?.keyType === "status" && { status: state?.status?.keyId }),
+        ...(state?.status?.keyType === "conditionType" && { status: state?.conditionType?.keyId }),
       };
       // Fetch the data
       const serverResponse = await communication.getMaterialList(payload);
 
       if (serverResponse?.data?.status === "SUCCESS") {
-        setMaterial(serverResponse.data.stock);
-        setState({ filterListori: serverResponse.data.stock });
-        setState({ filterListCondition: serverResponse.data.stock });
+        setMaterial(serverResponse?.data?.stock);
+        setState({ filterListori: serverResponse?.data?.stock });
+        setState({ filterListCondition: serverResponse?.data?.stock });
         // toast.success(serverResponse.data.message);
 
         if (isFirstCall) {
-          const stock = serverResponse.data.stock || [];
+          const stock = serverResponse?.data?.stock || [];
 
           setState({
-            statusArray: Array.from(
+            statusArray: Array?.from(
               new Set(
-                stock.map((item) =>
+                stock?.map((item) =>
                   JSON.stringify({
-                    status: item.status || "unknown",
+                    status: item?.status || "unknown",
                   })
                 )
               )
-            ).map((item) => JSON.parse(item)),
+            )?.map((item) => JSON.parse(item)),
 
-            conditionTypeList: Array.from(
+            conditionTypeList: Array?.from(
               new Set(
-                stock.map((item) =>
-                  JSON.stringify({ conditionType: item.conditionType || "unknown" })
+                stock?.map((item) =>
+                  JSON.stringify({ conditionType: item?.conditionType || "unknown" })
                 )
               )
-            ).map((item) => JSON.parse(item)),
+            )?.map((item) => JSON.parse(item)),
           });
         }
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
@@ -160,22 +160,22 @@ const AssignMaterial = () => {
     }
   }
   useEffect(() => {
-    let filteredList = state.filterListori;
+    let filteredList = state?.filterListori;
 
-    if (state._status) {
+    if (state?._status) {
       filteredList = filteredList.filter((i) =>
-        i.status.toLocaleLowerCase().includes(state._status.toLocaleLowerCase())
+        i?.status?.toLocaleLowerCase()?.includes(state?._status?.toLocaleLowerCase())
       );
     }
 
-    if (state._conditionType) {
-      filteredList = filteredList.filter((i) =>
-        i.conditionType.toLocaleLowerCase().includes(state._conditionType.toLocaleLowerCase())
+    if (state?._conditionType) {
+      filteredList = filteredList?.filter((i) =>
+        i?.conditionType?.toLocaleLowerCase()?.includes(state?._conditionType?.toLocaleLowerCase())
       );
     }
 
     setMaterial(filteredList);
-  }, [state._status, state._conditionType]);
+  }, [state?._status, state?._conditionType]);
 
   // useEffect(() => {
   //   const id = getValues("locationId");
@@ -249,15 +249,15 @@ const AssignMaterial = () => {
     // console.log((materialData, "eleeeeeeeeeeeee"));
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
-      [materialData._id]: newQuantity,
+      [materialData?._id]: newQuantity,
     }));
 
     // console.log("quaa", quantities);
     setOutput((pre) =>
-      pre.map((ele) => {
-        if (ele.stockId === materialData._id) {
+      pre?.map((ele) => {
+        if (ele?.stockId === materialData?._id) {
           return {
-            stockId: ele.stockId,
+            stockId: ele?.stockId,
             assignQuantity: newQuantity,
           };
         } else {
@@ -278,25 +278,25 @@ const AssignMaterial = () => {
   // };
   //top table
   const handleCheckboxChange = (event, materialData) => {
-    const isChecked = event.target.checked;
+    const isChecked = event?.target?.checked;
 
     if (isChecked) {
       // Add materialData to selectedList
       setSelectedList((prev) => [...prev, materialData]);
     } else {
       // Remove materialData from selectedList
-      setSelectedList((prev) => prev.filter((item) => item._id !== materialData._id));
-      setStockIds((prev) => prev.filter((item) => item !== materialData._id));
-      setOutput((pre) => pre.filter((item) => item.stockId !== materialData._id));
+      setSelectedList((prev) => prev?.filter((item) => item?._id !== materialData?._id));
+      setStockIds((prev) => prev?.filter((item) => item !== materialData?._id));
+      setOutput((pre) => pre?.filter((item) => item?.stockId !== materialData?._id));
       setQuantities((prevQuantities) => ({
         ...prevQuantities,
-        [materialData._id]: 1,
+        [materialData?._id]: 1,
       }));
     }
   };
 
   const handleSelectAllChange = (event) => {
-    const isChecked = event.target.checked;
+    const isChecked = event?.target?.checked;
 
     if (isChecked) {
       // Select all checkboxes
@@ -313,16 +313,16 @@ const AssignMaterial = () => {
   //bottom table
 
   const handleSelectAllChangeGetStock = (event) => {
-    const isChecked = event.target.checked;
+    const isChecked = event?.target?.checked;
 
     if (isChecked) {
       setSelectAllCheckedStock([...selectedList]);
-      const allStockIds = selectedList.map((item) => item._id);
+      const allStockIds = selectedList?.map((item) => item?._id);
       console.log(allStockIds, "allStockIds");
 
       const allOutput = selectedList.map((item) => ({
-        stockId: item._id,
-        assignQuantity: quantities[item._id],
+        stockId: item?._id,
+        assignQuantity: quantities[item?._id],
       }));
 
       setStockIds(allStockIds);
@@ -334,35 +334,35 @@ const AssignMaterial = () => {
     }
   };
   const getStockIds = (event, materialData) => {
-    const isChecked = event.target.checked;
+    const isChecked = event?.target?.checked;
     setSelectAllCheckedStock(
-      !stockIds.includes(isChecked) && stockIds.length + 1 === material?.length
+      !stockIds?.includes(isChecked) && stockIds?.length + 1 === material?.length
     );
     if (isChecked) {
       // Add materialData to selectedList
-      setStockIds((prev) => [...prev, materialData._id]);
+      setStockIds((prev) => [...prev, materialData?._id]);
       setOutput((pre) => [
         ...pre,
-        { stockId: materialData._id, assignQuantity: quantities[materialData?._id] },
+        { stockId: materialData?._id, assignQuantity: quantities[materialData?._id] },
       ]);
     } else {
       // Remove materialData from selectedList
-      setStockIds((prev) => prev.filter((item) => item !== materialData._id));
-      setOutput((pre) => pre.filter((item) => item.stockId !== materialData._id));
+      setStockIds((prev) => prev?.filter((item) => item !== materialData?._id));
+      setOutput((pre) => pre?.filter((item) => item?.stockId !== materialData?._id));
       setSelectAllCheckedStock(false);
     }
   };
 
   ///new
   const handleCheckboxChangeStock = (e) => {
-    const checkboxId = e.target.id;
+    const checkboxId = e?.target?.id;
     setSelectAllChecked(
-      !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === user?.length
+      !selectedCheckboxes?.includes(checkboxId) && selectedCheckboxes?.length + 1 === user?.length
     );
     setSelectedCheckboxes((prevSelected) => {
-      if (prevSelected.includes(checkboxId)) {
+      if (prevSelected?.includes(checkboxId)) {
         // If the checkbox is already in the array, remove it
-        return prevSelected.filter((id) => id !== checkboxId);
+        return prevSelected?.filter((id) => id !== checkboxId);
       } else {
         // If the checkbox is not in the array, add it
         return [...prevSelected, checkboxId];
@@ -370,11 +370,11 @@ const AssignMaterial = () => {
     });
   };
   const handleSelectAllChangeStock = (e) => {
-    setSelectAllChecked(e.target.checked);
+    setSelectAllChecked(e?.target?.checked);
 
     // Update the array of selected checkboxes based on the "Select All" checkbox
     setSelectedCheckboxes((prevSelected) =>
-      e.target.checked ? user.map((brandDetails) => brandDetails._id) : []
+      e?.target?.checked ? user?.map((brandDetails) => brandDetails?._id) : []
     );
   };
 
@@ -447,36 +447,36 @@ const AssignMaterial = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    if (formValues.searchString) {
+    if (formValues?.searchString) {
       // If searching by serial number, no other fields are required
       return true;
     } else {
       // If not searching by serial number, all other fields are required
-      if (!formValues.categoryId) newErrors.categoryId = "Category is required";
-      if (!formValues.brandId) newErrors.brandId = "Brand is required";
+      if (!formValues?.categoryId) newErrors?.categoryId = "Category is required";
+      if (!formValues?.brandId) newErrors?.brandId = "Brand is required";
       // if (!formValues.status) newErrors.status = "Status is required";
       // if (!formValues.conditionType) newErrors.conditionType = "Condition is required";
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    return Object?.keys(newErrors)?.length === 0;
   };
 
   const handleSubmit = async (value) => {
     // e.preventDefault();
     if (!validateForm()) return;
-    const payload = formValues.searchString
-      ? { searchString: formValues.searchString }
+    const payload = formValues?.searchString
+      ? { searchString: formValues?.searchString }
       : {
-        categoryId: formValues.categoryId,
-        status: formValues.status,
-        brandId: formValues.brandId,
-        conditionType: formValues.conditionType,
+        categoryId: formValues?.categoryId,
+        status: formValues?.status,
+        brandId: formValues?.brandId,
+        conditionType: formValues?.conditionType,
 
-        parametersToMatch: Object.entries(selectedParameters).flatMap(([modelName, params]) =>
-          Object.entries(params)
+        parametersToMatch: Object?.entries(selectedParameters)?.flatMap(([modelName, params]) =>
+          Object?.entries(params)
             .filter(([_, isSelected]) => isSelected)
-            .map(([param]) => ({ modelName, parameterList: [param] }))
+            ?.map(([param]) => ({ modelName, parameterList: [param] }))
         ),
       };
 
@@ -498,7 +498,7 @@ const AssignMaterial = () => {
         });
         // toast.success(response.data.message);
         reset();
-        setMaterial(response?.data.stock);
+        setMaterial(response?.data?.stock);
         setParameter(response?.data?.parameterId);
         // setQuantities(
         //   response?.data.stock.reduce((acc, material) => {
@@ -509,21 +509,21 @@ const AssignMaterial = () => {
         // );
         setQuantities((prevQuantities) => ({
           ...prevQuantities,
-          ...response?.data.stock.reduce((acc, material) => {
-            acc[material._id] = 1;
+          ...response?.data?.stock?.reduce((acc, material) => {
+            acc[material?._id] = 1;
             return acc;
           }, {}),
         }));
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
+        toast.warn(response.data?.message);
         router.push("/");
       } else {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
         setMaterial([]);
       }
       setLoader(false);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error?.message);
       setLoader(false);
     }
   };
@@ -539,7 +539,7 @@ const AssignMaterial = () => {
         toast.warn("Please Select Technician");
         return;
       }
-      if (output.length <= 0) {
+      if (output?.length <= 0) {
         toast.warn("Please Select At least one material");
         return;
       }
@@ -560,13 +560,13 @@ const AssignMaterial = () => {
         setStockIds([]);
         // router.back();
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
         router.push("/");
       } else {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
       }
     } catch (error) {
-      toast.error(response.data.message);
+      toast.error(response?.data?.message);
     } finally {
       setLoader(false);
     }
@@ -578,7 +578,7 @@ const AssignMaterial = () => {
         toast.warn("Please Select Technician");
         return;
       }
-      if (output.length <= 0) {
+      if (output?.length <= 0) {
         toast.warn("Please Select At least one material");
         return;
       }
@@ -586,7 +586,7 @@ const AssignMaterial = () => {
       let payload = {
         materialDetails: output,
         userId: userId,
-        jobNo: param.get("JobNo"),
+        jobNo: param?.get("JobNo"),
       };
       // console.log(payload, "payload");
       let response = await communication.UpdateAssignMaterial(payload);
@@ -601,13 +601,13 @@ const AssignMaterial = () => {
         setUserId("");
         setValue("locationId", "");
       } else if (response?.data?.status === "JWT_INVALID") {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
         router.push("/");
       } else {
-        toast.warn(response.data.message);
+        toast.warn(response?.data?.message);
       }
     } catch (error) {
-      toast.error(response.data.message);
+      toast.error(response?.data?.message);
     } finally {
       setLoader(false);
     }
@@ -623,11 +623,11 @@ const AssignMaterial = () => {
   }, []);
 
   useEffect(() => {
-    const id = formValues.categoryId;
+    const id = formValues?.categoryId;
     if (id) {
       getCategoryWiseBrand(id, setLoader, router, setBrandsData);
     }
-  }, [formValues.categoryId]);
+  }, [formValues?.categoryId]);
   // const fetchMaterial = async (id) => {
   //   try {
   //     let payload = {
@@ -659,7 +659,7 @@ const AssignMaterial = () => {
       setLoader(true);
       let payload = {
         // location: "66b0ad1b9d8190631daebeec",
-        jobNo: param.get("JobNo"),
+        jobNo: param?.get("JobNo"),
       };
       const responseFromServer = await communication.getMaterialAssignByJob(payload); // bypass
       if (responseFromServer?.data?.status === "SUCCESS") {
@@ -684,7 +684,7 @@ const AssignMaterial = () => {
     }
   }
   useEffect(() => {
-    if (param.get("type") === "edit") {
+    if (param?.get("type") === "edit") {
       setIsEdit(true);
       getAssignMaterialByJobNo();
     } else {
@@ -738,9 +738,9 @@ const AssignMaterial = () => {
                             </div>
                           </div>
                           <div style={{ height: "5px" }}>
-                            {errors.locationId && (
+                            {errors?.locationId && (
                               <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                                {errors.locationId.message}
+                                {errors?.locationId?.message}
                               </p>
                             )}
                           </div>
@@ -752,7 +752,7 @@ const AssignMaterial = () => {
                               name="locationId"
                               className="form-control custom_input"
                               style={{ width: "100%" }}
-                              onChange={(e) => setUserId(e.target.value)}
+                              onChange={(e) => setUserId(e?.target?.value)}
                             >
                               <option value="" className="text-secondary text-lowercase"></option>
                               {TechnicianList?.map((ele, index) => {
@@ -773,9 +773,9 @@ const AssignMaterial = () => {
                             </div>
                           </div>
                           <div style={{ height: "5px" }}>
-                            {errors.locationId && (
+                            {errors?.locationId && (
                               <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                                {errors.locationId.message}
+                                {errors?.locationId?.message}
                               </p>
                             )}
                           </div>
@@ -793,9 +793,9 @@ const AssignMaterial = () => {
                             style={{ width: "100%" }}
                           />
                           <div style={{ height: "25px" }}>
-                            {errors.searchString && (
+                            {errors?.searchString && (
                               <p className="validation_message" style={{ fontSize: "0.7rem" }}>
-                                {errors.searchString}
+                                {errors?.searchString}
                               </p>
                             )}
                           </div>
@@ -834,7 +834,7 @@ const AssignMaterial = () => {
                       name="status"
                       className="form-control custom_input"
                       style={{ width: "100%" }}
-                      onChange={(e) => setState({ _status: e.target.value })}
+                      onChange={(e) => setState({ _status: e?.target?.value })}
                     >
                       <option value="" className="text-secondary text-lowercase"></option>
                       {state?.statusArray?.map((ele, index) => {
@@ -867,10 +867,10 @@ const AssignMaterial = () => {
                       {state?.conditionTypeList?.map((item, index) => (
                         <option
                           className="small text-capitalize"
-                          value={item.conditionType}
+                          value={item?.conditionType}
                           key={index}
                         >
-                          {item.conditionType}
+                          {item?.conditionType}
                         </option>
                       ))}
                       {/* <option value="" className="text-secondary text-lowercase"></option>
@@ -1018,11 +1018,11 @@ const AssignMaterial = () => {
                                     <div className="col_45p">
                                       <div className="input_scroll">
                                         {materialData?.parameter &&
-                                          Object.entries(materialData?.parameter).map(
+                                          Object?.entries(materialData?.parameter)?.map(
                                             ([key, value], index, array) => (
                                               <h6 key={key}>
                                                 {key}
-                                                {index < array.length - 1 && ", "}
+                                                {index < array?.length - 1 && ", "}
                                               </h6>
                                             )
                                           )}
@@ -1112,8 +1112,8 @@ const AssignMaterial = () => {
                         <div className="table_header">
                           <div className="col_5p">
                             <div className="check_box">
-                              {console.log(selectAllCheckedStock, "ssssss")}
-                              {console.log(stockIds, "rrrrrr")}
+                              {/* {console.log(selectAllCheckedStock, "ssssss")}
+                              {console.log(stockIds, "rrrrrr")} */}
                               <input
                                 className="form-check-input"
                                 type="checkbox"
@@ -1224,11 +1224,11 @@ const AssignMaterial = () => {
                                       style={{ width: "100%" }}
                                       value={quantities[materialData?._id]}
                                       onChange={(e) => {
-                                        handleQuantityChange(materialData, e.target.value);
+                                        handleQuantityChange(materialData, e?.target?.value);
                                       }}
-                                      onFocus={(e) => e.target.select()}
+                                      onFocus={(e) => e?.target?.select()}
                                       onBlur={(e) => {
-                                        let newQuantity = e.target.value;
+                                        let newQuantity = e?.target?.value;
                                         if (!/^\d+$/.test(newQuantity)) {
                                           // Swal.fire({
                                           //   text: "Please enter a valid number",
