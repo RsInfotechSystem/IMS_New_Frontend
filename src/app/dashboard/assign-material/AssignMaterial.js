@@ -447,8 +447,8 @@ const AssignMaterial = () => {
       return true;
     } else {
       // If not searching by serial number, all other fields are required
-      if (!formValues?.categoryId) newErrors?.categoryId = "Category is required";
-      if (!formValues?.brandId) newErrors?.brandId = "Brand is required";
+      if (!formValues?.categoryId) newErrors.categoryId = "Category is required";
+      if (!formValues?.brandId) newErrors.brandId = "Brand is required";
       // if (!formValues.status) newErrors.status = "Status is required";
       // if (!formValues.conditionType) newErrors.conditionType = "Condition is required";
     }
