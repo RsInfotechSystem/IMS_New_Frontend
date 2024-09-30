@@ -20,6 +20,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import CustomDateInput from "@/common-components/CustomDateInput";
 import { Ruthie } from "next/font/google";
 import CustomTextArea from "@/common-components/CustomTextArea";
+import ViewSalesOrder from "../../sales-order/create-sales-order/ViewSalesOrderPdf";
 gsap.registerPlugin(useGSAP);
 
 const CreateInitialRepair = () => {
