@@ -6,7 +6,6 @@ const ViewSalesOrderDetails = ({ data, setModalStates }) => {
   return (
     <>
       <div className="main_detail_wrapper">
-        {/* {console.log(data, "data")} */}
         <div className="purchase_indent_view_wrapper">
           <div className="view_wrapper_header">
             <div className="d-flex align-items-center justify-content-center gap-2">

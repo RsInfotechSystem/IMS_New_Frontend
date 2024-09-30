@@ -12,6 +12,5 @@ export const monthConverter = (date) => {
         }
         return `${month}`
     } catch (error) {
-        console.log(error?.message);
     }
 }

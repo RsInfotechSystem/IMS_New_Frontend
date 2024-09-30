@@ -63,7 +63,6 @@ const StockReportGraph = () => {
   const handlePieClick = (event, elements) => {
     if (elements.length > 0) {
       const clickedElementIndex = elements[0].index;
-      // console.log(clickedElementIndex, "clickedElementIndex");
 
       let materialDetails = state._categoryData[clickedElementIndex];
       router.push(
@@ -157,7 +156,6 @@ const StockReportGraph = () => {
     onClick: (event, elements) => {
       if (elements.length > 0) {
         const clickedElementIndex = elements[0].index;
-        // console.log(clickedElementIndex, "clickedElementIndex");
 
         let materialDetails = state._brandData[clickedElementIndex];
         router.push(

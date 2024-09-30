@@ -188,7 +188,6 @@ const AssignMaterial = () => {
   //     });
   //   }
   // }, [state?.status?.keyId]);
-  // console.log(state, "state");
 
   const technicianList = async (id) => {
     try {
@@ -229,7 +228,6 @@ const AssignMaterial = () => {
   const handleFiltersChange = (filters) => {
     setSelectedFilters(filters);
   };
-  console.log("material", material);
 
   const filteredMaterial = material.filter(
     (item) =>
@@ -246,13 +244,11 @@ const AssignMaterial = () => {
 
   // Handler for quantity change
   const handleQuantityChange = (materialData, newQuantity) => {
-    // console.log((materialData, "eleeeeeeeeeeeee"));
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
       [materialData?._id]: newQuantity,
     }));
 
-    // console.log("quaa", quantities);
     setOutput((pre) =>
       pre?.map((ele) => {
         if (ele?.stockId === materialData?._id) {
@@ -318,7 +314,6 @@ const AssignMaterial = () => {
     if (isChecked) {
       setSelectAllCheckedStock([...selectedList]);
       const allStockIds = selectedList?.map((item) => item?._id);
-      console.log(allStockIds, "allStockIds");
 
       const allOutput = selectedList.map((item) => ({
         stockId: item?._id,
@@ -548,7 +543,6 @@ const AssignMaterial = () => {
         materialDetails: output,
         userId: userId,
       };
-      console.log(payload, "payload");
 
       let response = await communication.AssignMaterial(payload);
       if (response?.data?.status === "SUCCESS") {
@@ -588,7 +582,6 @@ const AssignMaterial = () => {
         userId: userId,
         jobNo: param?.get("JobNo"),
       };
-      // console.log(payload, "payload");
       let response = await communication.UpdateAssignMaterial(payload);
       if (response?.data?.status === "SUCCESS") {
         toast.success(response.data.message);
@@ -699,7 +692,6 @@ const AssignMaterial = () => {
         <Loader />
       ) : (
         <div className="kitchen_wrapper">
-          {/* {console.log(isView, "statestate")} */}
           <div className="row">
             <div className="col-12 col-lg-4 col-md-4">
               <div className="form_view pt-0">
@@ -959,7 +951,6 @@ const AssignMaterial = () => {
                               <>
                                 {filteredMaterial?.map((materialData, index) => (
                                   <div className="table_data" key={index}>
-                                    {/* {console.log(materialData, "materialData")} */}
 
                                     <div className="col_5p">
                                       <div className="check_box">
@@ -1112,8 +1103,7 @@ const AssignMaterial = () => {
                         <div className="table_header">
                           <div className="col_5p">
                             <div className="check_box">
-                              {/* {console.log(selectAllCheckedStock, "ssssss")}
-                              {console.log(stockIds, "rrrrrr")} */}
+
                               <input
                                 className="form-check-input"
                                 type="checkbox"

@@ -179,7 +179,6 @@ function CreateProduct({ data }) {
     }
   };
 
-  // console.log(otherDocuments, "otherDocuments");
 
   async function initialAPICall() {
     setCategoryList(await getCategory(router));

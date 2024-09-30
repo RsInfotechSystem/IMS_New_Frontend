@@ -257,7 +257,6 @@ const DumpMaterial = () => {
                                 {material?.map((materialDetails, index) => {
                                     return (
                                         <div className="table_data" key={index}>
-                                            {/* {console.log(materialDetails, "saksgi")} */}
                                             <div className="col_7p">
                                                 <input
                                                     className="form-check-input"

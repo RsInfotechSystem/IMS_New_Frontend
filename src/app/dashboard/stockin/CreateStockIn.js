@@ -677,8 +677,7 @@ const CreateStockIn = ({ data }) => {
                     <label>Do you want to add Box NO ?</label>
                     <div className="check_box col-12">
                       <div className="row">
-                        {console.log(selectedOption, "sssssssssssss")
-                        }
+
                         <div className="form-check col-12 d-flex gap-3">
                           <input
                             className="form-check-input"

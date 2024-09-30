@@ -67,7 +67,6 @@ const CreateOrder = () => {
 
   // Get all categories list
   const createOrder = async (values) => {
-    console.log(values, "values")
     // if (values.description == "") {
     //   toast.info("description is required");
     //   return;
@@ -134,9 +133,7 @@ const CreateOrder = () => {
 
   const addMaterial = () => {
     const { description, quantity, warranty, note, remarks } = getValues();
-    // console.log('====================================');
-    // console.log(description,quantity);
-    // console.log('====================================');
+
     if (!description || !quantity) {
       toast.info("Add Material");
       return;

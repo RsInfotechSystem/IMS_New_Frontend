@@ -50,7 +50,6 @@ const DailyTask = () => {
   });
   useEffect(() => {
     setRoleName(getCookie("role"));
-    // console.log("rrrr", getCookie("role"));
   }, []);
   async function fetchAssignMaterial({
     page = 1,
@@ -103,7 +102,6 @@ const DailyTask = () => {
   }
 
   async function acknowledgeMaterial(stockDetails) {
-    // console.log(stockDetails, "stockDetails");
     try {
       setLoader(true);
       const serverResponse = await communication.acknowledgeMaterial({
@@ -155,7 +153,6 @@ const DailyTask = () => {
       //   jobNo: jobNo,
       // };
 
-      // console.log(payload, "payloadpayload");
       let response = await communication.deleteAssignMaterial({ jobNo: jobNo });
       if (response?.data?.status === "SUCCESS") {
         await fetchAssignMaterial(1, searchString);

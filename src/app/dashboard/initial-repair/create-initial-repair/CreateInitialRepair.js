@@ -25,7 +25,7 @@ gsap.registerPlugin(useGSAP);
 const CreateInitialRepair = () => {
     const router = useRouter();
     const params = useSearchParams();
-   
+
 
     const [activeTab, setActiveTab] = useState("INFO");
     const [loader, setLoader] = useState(false);
@@ -37,11 +37,11 @@ const CreateInitialRepair = () => {
         formState: { errors },
         setValue,
     } = useForm();
-    
+
     // State to store the values of the selected category
-   
+
     const [_locationId, _setLocationId] = useState("");
-   
+
     const [state, setState] = useReducer((state, newState) => ({ ...state, ...newState }), {
         materials: [],
     });
@@ -59,8 +59,7 @@ const CreateInitialRepair = () => {
 
     // Get all categories list
     const createRepairData = async (values) => {
-        console.log(values, "values")
-    
+
         try {
             if (!filterValues.queryDate) {
                 toast.info("Date is required");
@@ -69,10 +68,10 @@ const CreateInitialRepair = () => {
 
             setLoader(true);
             const dataToSend = {
-                serviceTicketNo: values.serviceTicketNo, 
-                supportNo: values.supportNo, 
-                queryDate: filterValues.queryDate, 
-                serviceReqReceivedFrom: values.serviceReqReceivedFrom, 
+                serviceTicketNo: values.serviceTicketNo,
+                supportNo: values.supportNo,
+                queryDate: filterValues.queryDate,
+                serviceReqReceivedFrom: values.serviceReqReceivedFrom,
             };
             let response = await communication.createRepair(dataToSend);
             if (response?.data?.status === "SUCCESS") {
@@ -114,18 +113,18 @@ const CreateInitialRepair = () => {
     //     }
     // };
 
-  
+
     // useEffect(() => {
     //     if (_locationId) {
     //         getalluser();
     //     }
     // }, [_locationId]);
 
-  
 
-   
 
-  
+
+
+
 
     return (
         <>
@@ -141,7 +140,7 @@ const CreateInitialRepair = () => {
                     className="back_btn"
                     onClick={() => {
                         activeTab === "INFO" ? router.push("/dashboard/initial-repair") : setActiveTab("INFO");
-                       
+
                     }}
                 >
                     <div>
@@ -436,13 +435,13 @@ const CreateInitialRepair = () => {
                         <Button
                             name={"Save & Next"}
                             onClick={handleSubmit(createRepairData)}
-                     
+
                         />
                     </div>
                 </div>
             )}
 
-         
+
         </>
     );
 };

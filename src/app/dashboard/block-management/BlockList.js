@@ -102,7 +102,6 @@ const BlockList = () => {
     );
   };
   const handleEnableDisable = async (blockId) => {
-    // console.log((blockId, "blcokId"));
     try {
       const serverResponse = await communication.changeBlockStatus({ blockId: blockId });
       if (serverResponse?.data?.status === "SUCCESS") {

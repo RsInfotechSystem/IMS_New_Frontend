@@ -35,7 +35,6 @@ const ReceiveMaterialDetails = () => {
         transferMaterialId: params.get("materialId"),
       });
       if (serverResponse?.data?.status === "SUCCESS") {
-        // console.log("serverResponse", serverResponse?.data?.transferMaterial);
         setMaterial(serverResponse?.data?.transferMaterial[0]);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.warn(serverResponse.data.message);

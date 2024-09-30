@@ -66,11 +66,9 @@ const TransferMaterialForm = () => {
     locationValue: { keyType: "", keyId: "", keyCount: 0 },
   });
   const onSubmit = async (values) => {
-    // console.log("Form submitted with values: ", values);
     try {
       setLoader(true);
       const invalidQuantities = selectedList.filter((id) => !quantities[id]);
-      // console.log("rrrrrrrrrrrrrrrrr>>>>>dd", invalidQuantities);
       // const invalidQuantities = selectedList.filter((id) => !quantities[id]);
 
       // if (invalidQuantities.length < 0) {
@@ -101,7 +99,6 @@ const TransferMaterialForm = () => {
         fromLocation: values.fromLocation,
         toLocation: values.toLocation,
       };
-      console.log("payload", payload);
       const serverResponse = await communication.transferMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         // router.push("/admin/dashboard/transfer-material");
@@ -174,7 +171,6 @@ const TransferMaterialForm = () => {
         }),
       };
 
-      // console.log(categoryValue, brandValue, "rr");
       const serverResponse = await communication.getInventoryMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         const updatedStock = serverResponse?.data?.stock?.map((item) => ({
@@ -289,7 +285,6 @@ const TransferMaterialForm = () => {
       // Select all checkboxes
       const allMaterialIds = material.map((item) => item._id);
       setSelectedList(allMaterialIds);
-      // console.log("selectedlist", allMaterialIds);
     } else {
       // Deselect all checkboxes
       setSelectedList([]);
@@ -440,7 +435,6 @@ const TransferMaterialForm = () => {
     router.back();
     return;
   };
-  // console.log(errors, "rrrrrrrr  eeeeeee");
   return (
     <>
       {loader && <Loader text={"Loading..."} />}

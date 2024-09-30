@@ -158,7 +158,6 @@ const AcceptMaterial = () => {
               }
             }) ?? [],
         };
-        // console.log(dataToSend, "sakshi");
         let response = await communication.updateStockBeforeAccept(dataToSend);
         if (response?.data?.status === "SUCCESS") {
           toast.success(response?.data?.message, { autoClose: 1500 });
@@ -551,7 +550,6 @@ const AcceptMaterial = () => {
   };
 
   // const handleReturnClick = (material) => {
-  //   // console.log("Material to Return:", material);
   //   // Add the returned material to the savedMaterials state as an object
   //   if (!material.status || material.status === "") {
   //     // You can customize this message or alert as needed
@@ -748,7 +746,6 @@ const AcceptMaterial = () => {
   // useEffect(() => {
   //   // Update parameters for each row based on the categoryId
   //   rows.forEach((row, index) => {
-  //     console.log(row, "row");
 
   //     const categoryId = row.categoryId;
   //     if (categoryId) {
@@ -903,8 +900,7 @@ const AcceptMaterial = () => {
         </div>
       </div>
       <form>
-        {console.log(savedMaterials, "sssssssssss")
-        }
+
         <div className="form_layout">
           <ColorBox />
           {/* ------------------------NON MATERIAL LIST START----------------------------------------------- */}

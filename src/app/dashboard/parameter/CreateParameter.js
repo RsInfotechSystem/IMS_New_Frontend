@@ -53,7 +53,6 @@ function CreateParameter({ data }) {
   const category = watch("category");
 
   function addToPrameterList() {
-    // console.log(parameterInput, "parameterInput");
 
     if (parameterInput) {
       _setPrameterList((prev) => [...prev, parameterInput]);

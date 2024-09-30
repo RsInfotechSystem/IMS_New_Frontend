@@ -141,7 +141,6 @@ const StockInList = () => {
       };
       const serverResponse = await communication.getStockList(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
-        // console.log("serverResponse?.data", serverResponse?.data);
         setStock(serverResponse?.data.stock);
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);

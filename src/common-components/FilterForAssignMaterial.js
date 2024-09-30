@@ -227,7 +227,6 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
           newValues[section] = [...newValues[section], value];
         }
       }
-      console.log(newValues, "newValues");
 
       onFiltersChange({
         categoryId: newValues.category.length > 0 ? newValues.category[0].categoryId : "",
@@ -246,7 +245,6 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
       setExpandedSections((prev) => ({ ...prev, [sections[nextIndex]]: true }));
     }
 
-    console.log("Selected values:", selectedValues);
   };
 
   return (

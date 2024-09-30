@@ -169,10 +169,7 @@ const ReturnMaterial = ({ data }) => {
         materialId: modalStates?.id,
       });
       if (responseFromServer?.data?.status === "SUCCESS") {
-        // console.log(
-        //   responseFromServer.data.materialData,
-        //   "rrrrrrrrrrr sdata brand materialData?.brandId"
-        // );
+
         // Set default values for each form field
         setIsRackExist(responseFromServer?.data?.material.rackId._id);
         setDataToAddList(responseFromServer?.data?.material.dataToAddList);
@@ -194,7 +191,6 @@ const ReturnMaterial = ({ data }) => {
         setValue("status", materialData?.status);
         setValue("categoryId", materialData?.categoryId._id);
         setValue("rackId", materialData?.rackId._id);
-        // console.log(materialData?.brandId._id, "rrrrrr materialData?.brandId._id");
         setValue("brandId", materialData?.brandId._id);
         setValue("brandIds", materialData?.brandId.name);
         setBlockvalue(materialData?.blockId._id);
@@ -230,7 +226,6 @@ const ReturnMaterial = ({ data }) => {
   // }, [modelName]);
   useEffect(() => {
     const id = getValues("locationId");
-    // console.log("iddddddd", id);
     if (id) {
       getLocationWiseBlock(id, setLoader, router, setBlocks);
     }
@@ -262,7 +257,6 @@ const ReturnMaterial = ({ data }) => {
   }, []);
   useEffect(() => {
     setRoleName(getCookie("role"));
-    console.log("rrrr", getCookie("role"));
   }, []);
 
   return (

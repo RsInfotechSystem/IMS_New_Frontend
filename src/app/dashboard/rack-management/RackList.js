@@ -114,7 +114,6 @@ const RackList = () => {
   };
 
   const handleEnableDisable = async (rackId) => {
-    console.log((rackId, "rackId"));
     try {
       const serverResponse = await communication.changeRackStatus({ rackId: rackId });
       if (serverResponse?.data?.status === "SUCCESS") {
@@ -416,7 +415,6 @@ const RackList = () => {
                                     rackId: rackDetails?._id,
                                   })
                                 }
-                                // onChange={(e)=> console.log(rackDetails?._id)}
                                 style={{ width: "35px", height: "15px" }}
                               />
                               {/* <input
@@ -431,7 +429,6 @@ const RackList = () => {
                                                                 action: rackDetails?.isActive ? "enable" : "disable",
                                                                 rackId: e.target.value,
                                                             });
-                                                            // console.log(rackDetails._id)
                                                         }}
                                                     /> */}
                               {/* <label

@@ -37,7 +37,6 @@ const ReadyMaterial = () => {
   const [title, setTitle] = useState("")
   const [localQuantities, setLocalQuantities] = useState({});
 
-  // console.log("attachedMaterial", attachedMaterial);
 
 
   const getMaterialById = async () => {
@@ -48,7 +47,6 @@ const ReadyMaterial = () => {
       });
       if (response?.data?.status === "SUCCESS") {
         setAttachedMaterial(response.data?.salesorder);
-        // console.log("wdef", resssponse.data?.salesorder);
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
         router.push("/");
@@ -108,9 +106,7 @@ const ReadyMaterial = () => {
   // };
 
   const handleQuantityChange = (materialData, value, product) => {
-    console.log(value, "value");
 
-    console.log(materialData, "materialData");
 
     setLocalQuantities(prev => ({
       ...prev,
@@ -301,7 +297,6 @@ const ReadyMaterial = () => {
       </div>
 
       <div className="table_wrapper my-3">
-        {/* {console.log(quantities, "quantities")} */}
 
         <div className="table_main">
           <div className="table_section pi_product_table">
@@ -337,7 +332,6 @@ const ReadyMaterial = () => {
                   </div>
                 </>
               )}
-              {console.log(attachedMaterial, "sssssssssss")}
 
             </div>
 

@@ -75,7 +75,6 @@ const UpdatedProduct = () => {
     };
 
     const deleteProduct = async (modelIds) => {
-        // console.log(modalStates?.modelIds, "sssssssss");
 
         try {
             setLoader(true);
@@ -380,10 +379,7 @@ const UpdatedProduct = () => {
                                                                         }))
                                                                     }
                                                                 >
-                                                                    {
-                                                                        console.log(model?._id, "rrrrrrrrrr")
 
-                                                                    }
                                                                     <svg
                                                                         width="27"
                                                                         height="27"

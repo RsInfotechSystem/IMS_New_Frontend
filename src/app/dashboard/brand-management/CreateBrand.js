@@ -70,7 +70,6 @@ function CreateBrand({ data }) {
       const responseFromServer = await communication.getBrandById({ brandId: modalStates.id });
       if (responseFromServer?.data?.status === "SUCCESS") {
         const brandData = responseFromServer?.data?.brand;
-        // console.log("brandData",brandData);
         setValue("name", brandData.name);
         setValue("categoryId", brandData?.categoryId?._id);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {

@@ -75,7 +75,6 @@ const NewProduct = () => {
     };
 
     const deleteProduct = async (modelIds) => {
-        // console.log(modalStates?.modelIds, "sssssssss");
 
         try {
             setLoader(true);

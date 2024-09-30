@@ -79,7 +79,6 @@ function CreateBlock({ data }) {
       setLoader(false);
     }
   };
-  // console.log("data", data);
   async function getLocations() {
     try {
       setLoader(true);
@@ -235,7 +234,6 @@ function CreateBlock({ data }) {
   //     getActiveRack(_locationId);
   //   }
   // }, [_locationId]);
-  // console.log("rajjjjjj", _locationId);
 
   return (
     <>

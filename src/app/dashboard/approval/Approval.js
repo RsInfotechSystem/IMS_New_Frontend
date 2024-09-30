@@ -247,7 +247,6 @@ const Approval = () => {
       const serverResponse = await communication.getTransferMaterialToApprove(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         setMaterial([]);
-        // console.log(serverResponse.data, "rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
         setTrasferMaterial(serverResponse?.data?.material);
         setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
@@ -314,7 +313,6 @@ const Approval = () => {
 
   async function approvedTransferMaterials(id) {
     try {
-      console.log("Material ID:", id);
       setLoader(true);
       const serverResponse = await communication.approvedTransferMaterials({
         transferMaterialId: id,

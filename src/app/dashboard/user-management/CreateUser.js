@@ -48,7 +48,6 @@ function CreateUser({ data }) {
                 setValue("mobile", serverResponse?.data?.user?.mobile)
                 setValue("password", serverResponse?.data?.user?.password)
                 setSelectedLocation(serverResponse?.data?.user?.locationId);
-                console.log(serverResponse?.data?.user?.locationId);
 
                 setRoleId(serverResponse?.data?.user?.roleId)
                 setValue("role", serverResponse?.data?.user?.roleId)
@@ -183,14 +182,12 @@ function CreateUser({ data }) {
         // }
     };
 
-    // console.log("selectedLocationId", selectedLocationId,"selectedLocation",selectedLocation)
 
 
     useEffect(() => {
         setValue("locationId", locationId);
     }, [locationId, locations.length]);
 
-    // console.log(selectedLocation);
 
 
 

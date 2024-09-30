@@ -1492,7 +1492,6 @@ export const communication = {
     }
   },
   getSalesOrderById: async (data) => {
-    // console.log("data", data);
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/inventory/get-sales-order-by-id`,
@@ -2189,7 +2188,6 @@ export const communication = {
     }
   },
   getModelList: async (data) => {
-    // console.log("data", data);
     try {
       return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/model/get-model-list`, data, {
         headers: {
@@ -2471,6 +2469,6 @@ export const communication = {
       throw error;
     }
   },
- 
+
 };
 

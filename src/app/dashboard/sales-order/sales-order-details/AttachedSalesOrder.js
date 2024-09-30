@@ -155,7 +155,6 @@ const AttachedSalesOrder = () => {
   }
 
   async function sendReadyMaterial(values) {
-    console.log(attachedMaterials, "attachedMaterials")
     try {
       if (attachedMaterials?.length <= 0) {
         toast.info("Please attach materials.");
@@ -167,7 +166,6 @@ const AttachedSalesOrder = () => {
         orderId: searchParams.get("orderId"),
         materialDetails: materialDetails,
       };
-      console.log("payload", payload);
       const serverResponse = await communication.sendReadyMaterial(payload);
       if (serverResponse?.data?.status === "SUCCESS") {
         toast.success(serverResponse?.data?.message);
@@ -257,10 +255,8 @@ const AttachedSalesOrder = () => {
     // Since we're only allowing one selection at a time, we can simplify this
     setSelectAllChecked(false);
   };
-  // console.log("checkboxId", selectedCheckboxes);
   const handleSelectAllChange = (e) => {
     const PreviewChecked = e.target.checked;
-    // console.log(PreviewChecked, "PreviewChecked");
     setSelectAllCheckedPreview(PreviewChecked);
     if (PreviewChecked) {
       const allSelectPriview = material?.filter((material) => !material.disabled)?.map((material) => material._id);
@@ -272,10 +268,7 @@ const AttachedSalesOrder = () => {
   };
 
   const handleMaterialSelect = (materialId, materialData) => {
-    // console.log(_quantity, "Quantity to check:");
-    // console.log(materialData, "Material info:");
-    // console.log(materialData?.reamainingQuantity, "Remaining quantity:");
-    // console.log(selectedDiscription?.quantity, "sssssssssss");
+
 
 
     const remainingQuantity = materialData?.reamainingQuantity;
@@ -320,9 +313,7 @@ const AttachedSalesOrder = () => {
       }
     } else {
       // This is a non-material
-      // console.log("Non-material check:", remainingQuantity, selectedQuantity);
       if (remainingQuantity > selectedQuantity) {
-        console.log("Showing error for non-material");
         toast.error("Remaining quantity exceeds the required quantity");
         return;
       }
@@ -336,8 +327,6 @@ const AttachedSalesOrder = () => {
         const mat = material.find(m => m._id === id);
         return total + (mat._quantity !== undefined ? Number(mat._quantity) : mat.remainingQuantity);
       }, 0);
-      console.log(material, "ssssssssssa");
-      // console.log(material.find(m => m._id === id), "rrrrrr");
 
       if (currentTotalQuantity > selectedQuantity) {
         toast.error("Adding this non-material would exceed the total required quantity");
@@ -406,8 +395,6 @@ const AttachedSalesOrder = () => {
   // const handleAttachMaterials = () => {
   //   if (checkBox) {
   //     const newAttachedMaterials = material.filter((m) => selectedMaterials.includes(m._id));
-  //     // console.log(selectedDiscription?.reamainingQuantity, "dddddddd");
-  //     console.log(newAttachedMaterials, "newAttachedMaterials");
   //     const SelectedMaterialDisable = material?.map((material) => {
   //       if (selectedMaterials.includes(material._id)) {
   //         return { ...material, disabled: true };
@@ -473,7 +460,6 @@ const AttachedSalesOrder = () => {
         };
       });
       ;
-      console.log(newAttachedMaterials, "newAttachedMaterials");
       const SelectedMaterialDisable = material?.map((material) => {
         if (selectedMaterials.includes(material._id)) {
           return { ...material, disabled: true };
@@ -565,7 +551,6 @@ const AttachedSalesOrder = () => {
   }, [categoryId]);
 
   const handleQuantityChange = (product, value) => {
-    console.log(`Product ID: ${product._id}, Quantity: ${value}`);
     _setQuantity(value)
     setQuantity((prevQuantities) => ({
       ...prevQuantities,
@@ -592,7 +577,6 @@ const AttachedSalesOrder = () => {
         isSearch,
 
       });
-      // console.log(searchString, "searchString");
 
     }, 2000);
     setTimeoutId(_timeOutId);
@@ -1103,10 +1087,7 @@ const AttachedSalesOrder = () => {
           </div>
           {/* ---------------------------filter for material end----------------------------------------------------------*/}
           {/* ---------------------------attached material----------------------------------------------------------*/}
-          {console.log(selectedDiscription, "selectedDiscription")}
-          {console.log(attachedMaterials, "attachedMaterials")}
-          {console.log(attachedDescriptions, "attachedDescriptions")
-          }
+
           <div className="form_list_layout_wrapper my-4">
             <div className="d-flex align-items-center justify-content-between">
               <p>Attached Sales Order</p>
@@ -1146,7 +1127,6 @@ const AttachedSalesOrder = () => {
                       <h5 className="action_wrraper">Action</h5>
                     </div>
                   </div>
-                  {/* {console.log(attachedMaterials, "erfe")} */}
                   {attachedMaterials?.length > 0 ? (
                     attachedMaterials?.map((item, index) => {
                       return (

@@ -127,7 +127,6 @@ const BrandList = () => {
     acc[category].push(name);
     return acc;
   }, {});
-  // console.log(groupedBrands, "groupedBrands");
 
   useEffect(() => {
     getBrandList(currentPage, searchString);
@@ -227,8 +226,7 @@ const BrandList = () => {
               {brandList?.map((data, index) => {
                 return (
                   <>
-                    {/* {console.log(data?.brandList?.map((ele) => ele.name), "data")
-                    } */}
+
                     <div
                       className="table_data"
                       key={index}
