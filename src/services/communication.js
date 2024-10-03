@@ -2453,11 +2453,44 @@ export const communication = {
     }
   },
   // Initial Repair 
+  repairMaterialList: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/repair/get-repair-list`,
+        data,
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   createRepair: async (data) => {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/repair/create-repair`,
         data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getRepairMaterialById: async (repairId) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/repair/get-repair-by-id`,
+        repairId,
         {
           headers: {
             "Content-Type": "application/json",
