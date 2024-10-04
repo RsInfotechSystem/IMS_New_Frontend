@@ -90,7 +90,6 @@ const RepairTask = () => {
     }
     const handleChange = (e, index) => {
         const { name, value } = e.target;
-        console.log(e.target, "e.target");
 
         setRowData(prevData => {
             const newData = [...prevData];
@@ -104,12 +103,11 @@ const RepairTask = () => {
             setLoader(true);
             const payload = {
                 materiald: material[index]._id,
-                status: rowData[index].status,
-                stockRequired: rowData[index].stockRequired,
+                systemStatus: rowData[index].status,
+                stockRequired: rowData[index].stockRequired === "Yes" ? true : false,
                 remark: rowData[index].remark
             };
-            console.log(payload, "payload");
-
+            console.log(payload, "payload")
             let response = await communication.technicianRepairRemark(payload);
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response?.data?.message);
@@ -161,7 +159,6 @@ const RepairTask = () => {
                 />
             </div>
             <div className="table_wrapper">
-                {console.log(rowData, "rowData")}
 
                 <div className="table_main">
                     <div className="table_section inventory_table_res">
@@ -236,6 +233,8 @@ const RepairTask = () => {
                                             <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
                                                     name="stockRequired"
+                                                    // id={`yes_${index}`}
+                                                    // name={`stockRequired ${index}`}
                                                     value="Yes"
                                                     checked={rowData[index]?.stockRequired === "Yes"}
                                                     onChange={(e) => handleChange(e, index)}
@@ -250,6 +249,8 @@ const RepairTask = () => {
                                             <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
                                                     name="stockRequired"
+                                                    // id={`no_${index}`}
+                                                    // name={`stockRequired ${index}`}
                                                     value="No"
                                                     checked={rowData[index]?.stockRequired === "No"}
                                                     onChange={(e) => handleChange(e, index)}

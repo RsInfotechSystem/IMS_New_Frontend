@@ -19,6 +19,7 @@ import { faFileInvoice, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import StockFilterForDump from "@/common-components/StockFilterForDump";
+import Button from "@/common-components/Button";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -67,6 +68,55 @@ const AllInitialRepair = () => {
                 setLoader(false);
             } else {
                 // toast.info(serverResponse.data.message);
+            }
+            setLoader(false);
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
+            setLoader(false);
+        }
+    }
+    const showInputDialog = () => {
+        Swal.fire({
+            html: `<p>Do you want move forward with this order ?</p>`,
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                confirmButton: 'custom-button',
+                cancelButton: 'custom-button'
+            }
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                // yes== go ahead
+                const flag = "go ahead"; // Set the flag to true
+                responseToTech(flag);
+            } else {
+                // const flag = "";
+                // responseToTech(flag);
+            }
+        });
+    };
+    async function responseToTech(flag = "") {
+        try {
+
+            setLoader(true);
+            let payload = {
+                materiald: params.get("repairId"),
+                sendResponse: flag
+            };
+            console.log(payload, "payload")
+            const serverResponse = await communication.responseToTech(payload);
+            if (serverResponse?.data?.status === "SUCCESS") {
+                toast.success(serverResponse.data.message);
+                repairMaterialById();
+                // router.back();
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+                setLoader(false);
+            } else {
+                toast.info(serverResponse.data.message);
             }
             setLoader(false);
         } catch (error) {
@@ -153,7 +203,7 @@ const AllInitialRepair = () => {
                             <div className="col_70p">
                                 <h5>Remark</h5>
                             </div>
-                            <div className="col_30p">
+                            <div className="col_70p">
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
 
@@ -178,16 +228,10 @@ const AllInitialRepair = () => {
                                         <div className="col_70p">
                                             <h6>{stockDetails?.remark}</h6>
                                         </div>
-                                        <div className="col_30p">
+                                        <div className="col_70p">
                                             <h6 className="action_wrraper">
-                                                <div
-                                                    title="delete"
-                                                    onClick={() =>
-                                                        setModalStates((prev) => ({ ...prev, deletePo: true, poId: data._id }))
-                                                    }
-                                                >
-                                                    <FontAwesomeIcon icon={faTrash} />
-                                                </div>
+                                                <CustomBtn name={"Go Ahed"} onClick={(e) => showInputDialog()} />
+                                                <CustomBtn name={"Close"} />
                                             </h6>
                                         </div>
 

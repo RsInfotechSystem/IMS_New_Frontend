@@ -2539,7 +2539,23 @@ export const communication = {
   technicianRepairRemark: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/send-repair-material-remark`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/repair/send-repair-material-remark`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  responseToTech: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/repair/respond-on-repair-remark`,
         data,
         {
           headers: {
