@@ -385,7 +385,7 @@ const ConsumeMaterial = () => {
                                                     <div className="col_25p">
                                                         <h6>{product?.stockId?.modelId?.name}</h6>
                                                     </div>
-                                                    <div className="col_85p">
+                                                    <div className="col_85p" style={{display:"flex",justifyContent:"start"}}>
                                                         <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
                                                             {product?.stockId?.parameter && Object?.entries(product?.stockId?.parameter)?.map(
                                                                 ([key, value], indexOne) => (
