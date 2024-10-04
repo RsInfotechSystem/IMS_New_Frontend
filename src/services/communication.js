@@ -2603,5 +2603,17 @@ export const communication = {
       throw error;
     }
   },
+  deleteRepairJob: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/repair/delete-repair-job`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 

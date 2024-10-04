@@ -185,9 +185,10 @@ const ConsumeMaterial = () => {
             setConsumedMaterials(selectedMaterials);
             setLoader(true);
             let payload = {
-                selectedMaterials
+                repairmMaterialId: params.get("repairId"),
+                materialIds: selectedMaterials
             };
-            console.log(payload, "payload");
+            // console.log(payload, "payload");
             const serverResponse = await communication.handleRepairConsume(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
@@ -351,8 +352,8 @@ const ConsumeMaterial = () => {
                                                     key={index}
                                                 >
                                                     <div className="col_20p">
-                                                        {product?.materialStatus === "accepted" ||
-                                                            product?.materialStatus === "assigned" ? (
+                                                        {product?.materialStatus === "acceptedd" ||
+                                                            product?.materialStatus === "assignedd" ? (
                                                             ""
                                                         ) : (
                                                             <div className="check_box">
@@ -362,7 +363,7 @@ const ConsumeMaterial = () => {
                                                                     key={product?.stockId?._id}
                                                                     checked={selectedMaterials.includes(product?.stockId?._id)}
                                                                     onChange={() => handleMaterialCheckboxChange(product?.stockId?._id)}
-                                                                    disabled={isDisabled}
+                                                                // disabled={isDisabled}
                                                                 />
                                                             </div>
                                                         )}

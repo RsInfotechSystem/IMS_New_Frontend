@@ -100,23 +100,21 @@ const InitialRepair = () => {
             e.target.checked ? material.map((materialDetails) => materialDetails._id) : []
         );
     };
-    const deleteDump = async () => {
-        if (selectedCheckboxes.length > 0) {
-            setShowModal((prev) => ({ ...prev, modal: true }));
-        } else {
-            toast.info("Please select which material you want to delete");
-        }
-    };
+
     const handleDeleteTask = async (jobNo) => {
         try {
             setLoader(true);
             setModalStates((prev) => ({ ...prev, deleteTasks: false, jobNo: "" }));
 
-            let response = await communication.deleteDumpMaterial(payload);
+            const payload = {
+                repairId: jobNo
+            }
+            let response = await communication.deleteRepairJob(payload);
             if (response?.data?.status === "SUCCESS") {
                 setSelectedCheckboxes([]);
                 toast.success(response.data.message);
-                await getDumpMaterialList(currentPage, searchString);
+                setModalStates(false)
+                await RepairMaterialList(currentPage, searchString);
             } else if (response?.data?.status === "JWT_INVALID") {
                 toast.info(response.data.message);
                 router.push("/");
