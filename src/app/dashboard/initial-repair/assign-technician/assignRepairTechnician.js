@@ -58,29 +58,22 @@ const AssignToTechnician = () => {
     } = useForm()
     const onSubmit = async () => {
         try {
-            const isAllSelected = materialList.every(
-                (material) => material.blockId && material.rackId && material.partitionName
-            );
-
-            if (!isAllSelected) {
-                toast.warn(
-                    "Please select both a block and a rack and a paratition Name for all materials before submitting."
-                );
-                return;
-            }
             setLoader(true);
+            const repairMaterials = selectedItems.map((item) => ({
+                materialId: item.id,
+                materialAssignTo: item.user,
+            }));
             const dataToSend = {
-                selectedItems,
+                repairId: params.get("repairId"),
+                repairMaterials: repairMaterials
             };
             setLoader(true);
             console.log(dataToSend, "dataToSend");
-
-            return
-            let response = await communication.updateStockAfterReceive(dataToSend);
+            let response = await communication.assignRepairToTech(dataToSend);
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response.data.message);
                 setLoader(false);
-                router.push("/dashboard/receive-material");
+                router.push("/dashboard/initial-repair");
             } else if (response?.data?.status === "JWT_INVALID") {
                 toast.warn(response.data.message);
                 router.push("/");

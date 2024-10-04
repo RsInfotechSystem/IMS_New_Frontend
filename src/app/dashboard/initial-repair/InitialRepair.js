@@ -288,6 +288,9 @@ const InitialRepair = () => {
                             <div className="col_50p">
                                 <h5>Remark</h5>
                             </div>
+                            <div className="col_50p">
+                                <h5>Status</h5>
+                            </div>
                             <div className="col_30p">
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
@@ -334,6 +337,9 @@ const InitialRepair = () => {
                                             <h6>{stockDetails?.initialCheckedBy}</h6>
                                         </div><div className="col_50p">
                                             <h6>{stockDetails?.initialRemark ? stockDetails?.initialRemark : "--"}</h6>
+                                        </div>
+                                        <div className="col_50p">
+                                            <h6>{stockDetails?.taskStatus ? stockDetails?.taskStatus : "--"}</h6>
                                         </div>
                                         <div className="col_30p">
                                             <h6 className="action_wrraper">
@@ -407,12 +413,13 @@ const InitialRepair = () => {
                         )}
                     </div>
                 </div>
-            </div>
+            </div >
             {modalState?.modal && (
                 <CreateInitialRepair
                     data={{ modalState, setModalStates, setIsPageUpdated }}
                 />
-            )}
+            )
+            }
 
         </>
     );
