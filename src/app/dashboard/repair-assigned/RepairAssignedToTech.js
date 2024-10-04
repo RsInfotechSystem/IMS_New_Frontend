@@ -23,17 +23,18 @@ const RepairTask = () => {
     const [loader, setLoader] = useState(false);
     const [material, setMaterial] = useState([]);
     const [timeoutId, setTimeoutId] = useState();
+    const [rowData, setRowData] = useState([]);
     const [searchString, setSearchString] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const [isPageUpdated, setIsPageUpdated] = useState(false);
     const [pageCount, setPageCount] = useState(1);
-    const [rowData, setRowData] = useState(
-        material.map(() => ({
-            status: "",
-            stockRequired: "",
-            remark: "",
-        }))
-    );
+    // const [rowData, setRowData] = useState(
+    //     material.map(() => ({
+    //         status: "",
+    //         stockRequired: "",
+    //         remark: "",
+    //     }))
+    // );
     const [modalStates, setModalStates] = useState({
         deleteTasks: false,
         modal: false,
@@ -48,6 +49,13 @@ const RepairTask = () => {
             const serverResponse = await communication.repairMaterialAssignedToTechList();
             if (serverResponse?.data?.status === "SUCCESS") {
                 setMaterial(serverResponse?.data?.materials);
+                setRowData(
+                    serverResponse?.data?.materials.map((item) => ({
+                        status: item?.systemStatus || "",
+                        stockRequired: item?.stockRequired === true ? "Yes" : item?.stockRequired === false ? "No" : "",
+                        remark: item?.remark || "",
+                    }))
+                );
                 // toast.success(serverResponse.data.message);
                 setPageCount(serverResponse?.data?.totalPages);
                 setPage(page);
@@ -83,7 +91,7 @@ const RepairTask = () => {
             const payload = {
                 materiald: material[index]._id,
                 systemStatus: rowData[index].status,
-                stockRequired: rowData[index].stockRequired === "Yes" ? true : false,
+                stockRequired: rowData[index].stockRequired === "Yes" ? true : rowData[index].stockRequired === "No" ? false : null,
                 remark: rowData[index].remark
             };
             let response = await communication.technicianRepairRemark(payload);
@@ -213,7 +221,7 @@ const RepairTask = () => {
                                             </div>
                                         </div>
                                         <div className="col_50p">
-                                            <div className="check_box me-1" style={{ gap: "0" }}>
+                                            {/* <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
                                                     // name="stockRequired"
                                                     id={`yes_${index}`}
@@ -244,6 +252,32 @@ const RepairTask = () => {
                                                 />
                                                 <label htmlFor={`stockRequired ${stockDetails?._id}`}
                                                 >No</label>
+                                            </div> */}
+                                            <div className="check_box me-1" style={{ gap: "0" }}>
+                                                <input
+                                                    id={`yes_${index}`}
+                                                    name="stockRequired"
+                                                    value="Yes"
+                                                    disabled={!isEditing || editingIndex !== index}
+                                                    checked={rowData[index]?.stockRequired === "Yes"}
+                                                    onChange={(e) => handleChange(e, index)}
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                />
+                                                <label htmlFor={`yes_${index}`}>Yes</label>
+                                            </div>
+                                            <div className="check_box me-1" style={{ gap: "0" }}>
+                                                <input
+                                                    id={`no_${index}`}
+                                                    name="stockRequired"
+                                                    value="No"
+                                                    disabled={!isEditing || editingIndex !== index}
+                                                    checked={rowData[index]?.stockRequired === "No"}
+                                                    onChange={(e) => handleChange(e, index)}
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                />
+                                                <label htmlFor={`no_${index}`}>No</label>
                                             </div>
                                         </div>
                                         <div className="col_50p">
