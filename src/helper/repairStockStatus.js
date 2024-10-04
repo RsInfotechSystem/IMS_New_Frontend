@@ -1,1 +1,1 @@
-export const stockRepairStatus = ["Repairable", "Non-Repairable", "Repairable With Stock"]
+export const stockRepairStatus = ["Repairable", "Non-Repairable"]

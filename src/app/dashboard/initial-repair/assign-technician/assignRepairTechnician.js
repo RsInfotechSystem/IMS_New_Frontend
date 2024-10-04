@@ -68,7 +68,6 @@ const AssignToTechnician = () => {
                 repairMaterials: repairMaterials
             };
             setLoader(true);
-            console.log(dataToSend, "dataToSend");
             let response = await communication.assignRepairToTech(dataToSend);
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response.data.message);
@@ -239,8 +238,6 @@ const AssignToTechnician = () => {
                 }
             </div>
             {/* table  */}
-            {console.log(selectedItems, "selectedItems")
-            }
             <div className="table_wrapper">
                 <div className="table_main">
                     <div className="table_section employee_table">

@@ -29,6 +29,10 @@ import InputBoxOnChange from "@/common-components/InputBoxOnChange";
 
 const ConsumeMaterial = () => {
     const router = useRouter();
+    const [isPageUpdated, setIsPageUpdated] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pageCount, setPageCount] = useState(1);
+    const [searchString, setSearchString] = useState("");
     const [nonMaterial, setNonMaterial] = useState([]);
     const params = useSearchParams();
     const [loader, setLoader] = useState(false);
@@ -122,153 +126,20 @@ const ConsumeMaterial = () => {
     const _rackIdForPrtn = watch("rackId");
     const locationCart = watch("locationIdCart");
     const rows = watch("rows");
-    // ------------------------ACCEPT MATERIAL------------------------------------------
-    const acceptMaterial = async (index) => {
-        try {
 
-            if (savedMaterials.length === 0 && savedDump.length === 0 && consumedMaterials.length === 0 && rows.length <= 1) {
-                toast.info("Please add material for Accept");
-                return
-            } else {
-                setLoader(true);
-                const dataToSend = {
-                    jobNo: params.get("jobId"),
-                    material:
-                        savedMaterials.filter((ele) => {
-                            if (ele.materialStatus) {
-                                delete ele.materialStatus;
-                                return ele;
-                            }
-                        }) ?? [],
-                    dump: [
-                        ...savedDump.map((ele) => ({
-                            materialId: ele.materialId,
-                            categoryId: ele.categoryId,
-                            parameterId: ele.parameterId,
-                            parameter: ele.parameter,
-                        })),
-                        ...rows?.filter((ele) => ele.type === "dump").map(({ categoryId, parameterId, parameter, quantity }) => { return { categoryId, parameterId, parameter, quantity } }),
-                    ],
-                    consume: consumedMaterials?.map((ele) => ({ materialId: ele })) ?? [],
-                    addToCart:
-                        rows?.filter((ele) => {
-                            if (ele.type === "store") {
-                                delete ele.type;
-                                return ele;
-                            }
-                        }) ?? [],
-                };
-                let response = await communication.updateStockBeforeAccept(dataToSend);
-                if (response?.data?.status === "SUCCESS") {
-                    toast.success(response?.data?.message, { autoClose: 1500 });
-                    // acceptMaterial();
-                    setLoader(false);
-                    router.push("/dashboard/stock-management");
-                } else if (response?.data?.status === "JWT_INVALID") {
-                    toast.info(response.data.message, { autoClose: 1500 });
-                    router.push("/");
-                } else if (response?.data?.status == "FAILED") {
-                    toast.info(response?.data?.message, { autoClose: 1500 });
-                } else {
-                    toast.info(response.data.message, { autoClose: 1500 });
-                }
-            }
-            setLoader(false);
-        }
-        catch (error) {
-            toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
-
-            setLoader(false);
-        }
-    };
-    // ------------------------Retuned MATERIAL data List------------------------------------------
-    async function returnedMaterialByJobNo({ page = 1, searchString } = {}) {
+    async function TechnicianConsumedMaterial() {
         try {
             setLoader(true);
-            let payload = {
-                // page,
-                // searchString: searchString,
-                jobNo: params.get("jobId"),
-            };
-            const serverResponse = await communication.getReturnMaterialByJob(payload);
+            const serverResponse = await communication.technicianConsumedMaterial();
             if (serverResponse?.data?.status === "SUCCESS") {
-                const NonMaterial = serverResponse?.data?.material?.nonMaterials;
-                const parameterKeys = Array.from(
-                    new Set(
-                        NonMaterial.flatMap((material) =>
-                            material.parameter ? Object.keys(material.parameter) : []
-                        )
-                    )
-                );
-                setparameterKeys(parameterKeys);
-                if (NonMaterial.length > 0) {
-                    const allMaterials = NonMaterial.flatMap((material) => ({
-                        materialId: material._id,
-                        categoryId: material.categoryId?._id || "",
-                        blockId: material.blockId?._id || "",
-                        blockName: material.blockId?.blockNo || "",
-                        rackId: material.rackId?._id || "",
-                        rackName: material.rackId?.rackName || "",
-                        partitionName: material.partitionName || "",
-                        categoryName: material.categoryId?.name || "",
-                        locationId: material.locationId?._id || "",
-                        location: material.locationId?.name || "",
-                        brandId: material.brandId?._id || "",
-                        brand: material.brandId?.name || "",
-                        modelName: material.modelId?.name || "",
-                        status: material.stockStatus || "",
-                        itemCode: material.itemCode || "",
-                        serialNo: material.serialNo || "",
-                        parameter: material.parameter,
-                        parameterId: material.parameterId?._id,
-                        // taskStatus: material.taskStatus || "",
-                        // parameter: material.parameter
-                        //   ? Object.entries(material.parameter).map(([key, value]) => ({ key, value }))
-                        //   : [],
-                        quantity: material.quantity || 1,
-                        // taskStatus: material.taskStatus || "",
-                        materialStatus: material.materialStatus || "",
-                    }));
-
-                    setNonMaterial(allMaterials);
-                    setCartParameter(allMaterials);
-                }
-                const material = serverResponse?.data?.material?.materials;
-                if (material.length > 0) {
-                    const allMaterials = material.flatMap((material) => ({
-                        materialId: material._id,
-                        categoryId: material.categoryId?._id || "",
-                        blockId: material.blockId?._id || "",
-                        blockName: material.blockId?.blockNo || "",
-                        rackId: material.rackId?._id || "",
-                        rackName: material.rackId?.rackName || "",
-                        partitionName: material.partitionName || "",
-                        categoryName: material.categoryId?.name || "",
-                        locationId: material.locationId?._id || "",
-                        location: material.locationId?.name || "",
-                        brandId: material.brandId?._id || "",
-                        brand: material.brandId?.name || "",
-                        modelName: material.modelId?.name || "",
-                        itemCode: material.itemCode || "",
-                        serialNo: material.serialNo || "",
-                        parameterMaterial: material.parameter,
-                        parameterId: material.parameterId?._id,
-                        // taskStatus: material.taskStatus || "",
-                        quantity: material.quantity || 1,
-                        status: material.stockStatus || "",
-                        // taskStatus: material.taskStatus || "",
-                        materialStatus: material.materialStatus || "",
-                    }));
-
-                    setMaterial(allMaterials);
-                }
-
-                // toast.success(serverResponse.data.message, { autoClose: 1500 });
+                setMaterial(serverResponse?.data?.material);
+                // toast.success(serverResponse.data.message);
+                setPageCount(serverResponse?.data?.totalPages);
             } else if (serverResponse?.data?.status === "FAILED") {
                 // toast.info(serverResponse.data.message);
                 setMaterial([]);
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
-                toast.info(serverResponse.data.message, { autoClose: 1500 });
+                toast.info(serverResponse.data.message);
                 router.push("/");
                 setLoader(false);
             } else {
@@ -276,164 +147,10 @@ const ConsumeMaterial = () => {
             }
             setLoader(false);
         } catch (error) {
-            toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
+            toast.info(error?.response?.data?.message || error.message);
             setLoader(false);
         }
     }
-    useEffect(() => {
-        returnedMaterialByJobNo();
-    }, []);
-    // ------------------------Retuned MATERIAL data List  end------------------------------------------
-    // ------------------------Reject material------------------------------------------
-
-    const rejectMaterial = async (remark) => {
-        try {
-            setLoader(true);
-            const dataToSend = {
-                jobNo: params.get("jobId"),
-                material: selectedItems,
-                // status: status,
-                remark: remark,
-            };
-            let response = await communication.rejectMaterial(dataToSend);
-            if (response?.data?.status === "SUCCESS") {
-                toast.success(response?.data?.message, { autoClose: 1500 });
-                // fetchReturnMaterialList(1, searchString);
-                router.push("/dashboard/stock-management");
-            } else if (response?.data?.status === "JWT_INVALID") {
-                toast.info(response.data.message, { autoClose: 1500 });
-                router.push("/");
-            } else {
-                toast.info(response?.data?.message, { autoClose: 1500 });
-            }
-            setLoader(false);
-        } catch (error) {
-            toast.info(error?.response?.data?.message || error.message, { autoClose: 1500 });
-
-            setLoader(false);
-        }
-    };
-    const cancelHandler = () => {
-        setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
-    };
-
-    const showInputDialog = () => {
-        Swal.fire({
-            html: '<input placeholder="Enter Remark for Rejection" type="text" id="remarkInput" class="swal2-input">',
-            showCancelButton: true,
-            confirmButtonText: "Submit",
-            preConfirm: () => {
-                const remarkInput = document.getElementById("remarkInput");
-                return remarkInput.value;
-            },
-        }).then((result) => {
-            if (result.isConfirmed) {
-                const remark = result.value;
-                if (remark) {
-                    rejectMaterial(remark);
-                } else {
-                    toast.info("Remark required if you want to reject.", { autoClose: 1500 });
-                }
-            }
-        });
-    };
-    // ------------------------Reject material------------------------------------------
-
-    // ------------------------Non-material handle change------------------------------------------
-    const handleChange = (e, index, field) => {
-        const { value } = e.target;
-        setNonMaterial((prevList) =>
-            prevList.map((item, idx) => (idx === index ? { ...item, [field]: value } : item))
-        );
-    };
-    const handleChangeMaterial = (e, index, field, product) => {
-        var { value } = e.target;
-        if (rowSelections[product.materialId] == "Dump") {
-            savedDump((prevList) =>
-                prevList.map((item, idx) =>
-                    item.materialId === product.materialId ? { ...item, [field]: e.target.value } : item
-                )
-            );
-        } else {
-            setMaterial((prevList) =>
-                prevList.map((item, idx) =>
-                    item.materialId === product.materialId ? { ...item, [field]: e.target.value } : item
-                )
-            );
-            setSavedMaterials((prevList) =>
-                prevList.map((item, idx) =>
-                    item.materialId === product.materialId ? { ...item, [field]: e.target.value } : item
-                )
-            );
-        }
-    };
-    useEffect(() => {
-        const uniqueLocationIds = [...new Set(nonMaterial.map((material) => material.locationId))];
-        uniqueLocationIds.forEach((locationId) => {
-            if (locationId) {
-                getLocationWiseBlock(locationId, setLoader, router, setBlocks);
-            }
-        });
-    }, [nonMaterial]);
-    useEffect(() => {
-        nonMaterial.forEach((material) => {
-            if (material.blockId) {
-                const rackDetails = blocks?.find((ele) => ele._id === material.blockId);
-                setRacks((prevRacks) => ({
-                    ...prevRacks,
-                    [material.blockId]: rackDetails?.rackId ?? [],
-                }));
-            }
-        });
-    }, [nonMaterial, blocks]);
-    useEffect(() => {
-        nonMaterial.forEach((material) => {
-            if (material.rackId) {
-                getRackPartation(material.rackId, setLoader, router, (partitions) => {
-                    setRackPartation((prevPartitions) => ({
-                        ...prevPartitions,
-                        [material.rackId]: partitions,
-                    }));
-                });
-            }
-        });
-    }, [nonMaterial]);
-    useEffect(() => {
-        const uniqueLocationIds = [...new Set(material.map((material) => material.locationId))];
-        uniqueLocationIds.forEach((locationId) => {
-            if (locationId) {
-                getLocationWiseBlock(locationId, setLoader, router, setBlocks);
-            }
-        });
-    }, [material]);
-    useEffect(() => {
-        material.forEach((material) => {
-            if (material.blockId) {
-                const rackDetails = blocks?.find((ele) => ele._id === material.blockId);
-                setRacks((prevRacks) => ({
-                    ...prevRacks,
-                    [material.blockId]: rackDetails?.rackId ?? [],
-                }));
-            }
-        });
-    }, [material, blocks]);
-    useEffect(() => {
-        material.forEach((material) => {
-            if (material.rackId) {
-                getRackPartation(material.rackId, setLoader, router, (partitions) => {
-                    setRackPartation((prevPartitions) => ({
-                        ...prevPartitions,
-                        [material.rackId]: partitions,
-                    }));
-                });
-            }
-        });
-    }, [material]);
-
-
-    // ------------------------Non-material handle change end------------------------------------------
-
-    // -----------------------------Material Checkbox-----------------------------------
     const handleSelectAllMaterials = (e) => {
         const isChecked = e.target.checked;
         setAllMaterialsSelected(isChecked);
@@ -443,7 +160,6 @@ const ConsumeMaterial = () => {
             setSelectedMaterials([]);
         }
     };
-
     const handleMaterialCheckboxChange = (materialId) => {
         setSelectedMaterials((prevSelected) => {
             let updatedSelected;
@@ -460,371 +176,51 @@ const ConsumeMaterial = () => {
             return updatedSelected;
         });
     };
-    // consume click handler
-    const handleConsumeClick = () => {
-        setConsumedMaterials(selectedMaterials);
-        toast.success("Materials consume.");
-    };
-    // Function to handle the checkbox change
-    const handleCheckboxChangeInMaterial = (materialId) => {
-        setIsChangeLocationCheckedMaterial((prevState) => ({
-            ...prevState,
-            [materialId]: !prevState[materialId],
-        }));
-    };
-    const isAnyCheckboxCheckedMaterial = () => {
-        return Object.values(isChangeLocationCheckedMaterial).some((isChecked) => isChecked);
-    };
-    const handleRadioChangeMaterial = (materialId, value, materialObj) => {
-        if (value == "Dump") {
-            seSaveDump((pevState) => [...pevState, materialObj]);
-        } else {
-            setSavedMaterials((pevState) => [...pevState, materialObj]);
-        }
-        SetRowSelectionsMaterial((prevSelections) => ({
-            ...prevSelections,
-            [materialId]: value,
-        }));
-    };
-
-    // -----------------------------Material Checkbox end-----------------------------------
-    // -----------------------------CART MATERIAL SECTION-----------------------------------
-
-    const handleChangeParameter = (e, productIndex, parameterIndex, parameter) => {
-        const { value } = e.target; // Get the new value from the input
-
-        // Update the nonMaterial state
-        setNonMaterial((prev) => {
-            // Create a shallow copy of the previous state
-            const updatedNonMaterial = [...prev];
-            // Update the specific parameter for the specific product
-            updatedNonMaterial[productIndex] = {
-                ...updatedNonMaterial[productIndex],
-                parameter: {
-                    ...updatedNonMaterial[productIndex].parameter,
-                    [parameter.key]: value, // Use the key to update the correct parameter
-                },
+    // const handleConsumeClick = () => {
+    //     setConsumedMaterials(selectedMaterials);
+    //     toast.success("Materials consume.");
+    // };
+    async function handleRepairConsume() {
+        try {
+            setConsumedMaterials(selectedMaterials);
+            setLoader(true);
+            let payload = {
+                selectedMaterials
             };
-            return updatedNonMaterial; // Return the updated state
-        });
-    };
-
-    // const handleReturnClick = (material) => {
-    //   // Add the returned material to the savedMaterials state as an object
-    //   if (!material.status || material.status === "") {
-    //     // You can customize this message or alert as needed
-    //     alert("Please select a status before returning the material.");
-    //     return; // Prevent the function from executing further
-    //   }
-    //   const materialToReturn = {
-    //     ...material,
-    //     materialStatus: "RETURNED", // Update status or any other property if needed
-    //   };
-    //   setDisabledButtons((prevState) => ({
-    //     ...prevState,
-    //     [material.materialId]: true,
-    //   }));
-    //   setMaterialToReturn(materialToReturn);
-    //   setSavedMaterials((prevMaterials) => [...prevMaterials, materialToReturn]);
-    // };
-
-    // const handleDumpClick = () => {
-    //   // Extract the IDs from each nonMaterial item
-    //   const materialIds = nonMaterial.map((material) => material._id);
-    //   // Update the savedMaterials state with the array of IDs
-    //   setDumpMaterial((prevMaterials) => [...prevMaterials, ...materialIds]);
-    // };
-    // Function to handle the checkbox change
-    const handleCheckboxChange = (materialId) => {
-        setIsChangeLocationChecked((prevState) => ({
-            ...prevState,
-            [materialId]: !prevState[materialId],
-        }));
-    };
-    const isAnyCheckboxChecked = () => {
-        return Object.values(isChangeLocationChecked).some((isChecked) => isChecked);
-    };
-
-    const handleRadioChange = (materialId, selection) => {
-        const previousSelection = rowSelections[materialId];
-
-        // Update rowSelections state here
-        setRowSelections((prev) => ({
-            ...prev,
-            [materialId]: selection,
-        }));
-
-        // Update counts based on selection
-        if (selection === "Dump") {
-            if (previousSelection !== "Dump") {
-                setDumpCount((prevCount) => prevCount + 1);
-                if (previousSelection === "Store") {
-                    setStoreCount((prevCount) => prevCount - 1);
-                }
-            }
-        } else if (selection === "Store") {
-            if (previousSelection !== "Store") {
-                setStoreCount((prevCount) => prevCount + 1);
-                if (previousSelection === "Dump") {
-                    setDumpCount((prevCount) => prevCount - 1);
-                }
-            }
-        }
-    };
-
-    useEffect(() => {
-        getParameter(setLoader, router, setCategoryMapData);
-    }, []);
-
-    useEffect(() => {
-        Object.entries(rowCategories).forEach(([index, categoryId]) => {
-            if (categoryId) {
-                const parameterDetails = CategoryMapData.find((ele) => ele._id === categoryId);
-                setValue(`parameterId_${index}`, parameterDetails?._id);
-
-                setRowParameters((prev) => ({
-                    ...prev,
-                    [index]: parameterDetails?.parameter ?? [],
-                }));
+            console.log(payload, "payload");
+            const serverResponse = await communication.handleRepairConsume(payload);
+            if (serverResponse?.data?.status === "SUCCESS") {
+                toast.success(serverResponse.data.message);
+                // TechnicianConsumedMaterial();
+                router.push("/dashboard/repair-assigned");
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+                setLoader(false);
             } else {
-                setRowParameters((prev) => ({ ...prev, [index]: [] }));
-                setValue(`parameterId_${index}`, "");
+                toast.info(serverResponse.data.message);
             }
-        });
-    }, [rowCategories, CategoryMapData]);
-
+            setLoader(false);
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
+            setLoader(false);
+        }
+    }
     useEffect(() => {
-        const id = getValues("rackId");
-        if (id) {
-            getRackPartation(id, setLoader, router, setRackPartationCart);
-        } else {
-            setRackPartationCart([]);
-        }
-    }, [_rackIdForPrtn]);
-    const handleRadioChangeCart = (value) => {
+        TechnicianConsumedMaterial({ page: currentPage, searchString, });
+    }, [isPageUpdated]);
 
-        setIsStoreSelected(value === "Store");
-    };
-    const handleAddRow = () => {
-        const newMaterial = {
-            categoryId: "",
-            parameter: {},
-            parameterId: "",
-            // selection: "",
-            locationId: "",
-            blockId: "",
-            rackId: "",
-            partitionName: "",
-            status: "",
-            blocks: [],
-            racks: [],
-            partitions: [],
-            quantity: "",
-        };
-
-        setValue("rows", [...rows, newMaterial]);
-        // setR((prevCartTable) => [...prevCartTable, newMaterial]);
-    };
-
-
-    // ______________________NEW___________________
-
-    const handleCategoryChange = async (index, categoryId) => {
-
-        setValue(`rows[${index}].categoryId`, categoryId);
-        const fetchedBrand = await getCategoryWiseBrand(categoryId, setLoader, router, setBrandsData);
-
-        setBrandsData(fetchedBrand);
-        if (categoryId) {
-            const parameterDetails = CategoryMapData?.find((ele) => ele?.categoryId === categoryId);
-            setCardDataToMap((pre) => ({
-                ...pre,
-                brand: {
-                    ...pre.brand,
-                    [`${index}`]: fetchedBrand ?? [],
-                },
-                parameter: {
-                    ...pre.parameter,
-                    [`${index}`]: parameterDetails?.parameter ?? [],
-                },
-                model: {
-                    ...pre.model,
-                    [`${index}`]: [],
-                },
-            }));
-            _setCartParameter(parameterDetails.parameter);
-            // Update the parameter value for the row
-            setValue(`rows[${index}].parameterId`, parameterDetails?._id ?? "");
-        } else {
-            setCardDataToMap((pre) => ({
-                ...pre,
-                brand: {
-                    ...pre.brand,
-                    [`${index}`]: [],
-                },
-                parameter: {
-                    ...pre.parameter,
-                    [`${index}`]: [],
-                },
-                model: {
-                    ...pre.model,
-                    [`${index}`]: [],
-                },
-            }));
-            setValue(`rows[${index}].parameterId`, "");
-        }
-
-        // Reset dependent fields
-        // setValue(`rows[${index}].model`, "");
-    };
-
-    const handleBrandChange = async (index, brandId) => {
-        setValue(`rows[${index}].brandId`, brandId);
-        if (brandId) {
-            const fetchedModel = await getBrandWiseModel(brandId, setLoader, router, setModel, true);
-            setModel(fetchedModel);
-            setCardDataToMap((pre) => ({
-                ...pre,
-                model: {
-                    ...pre.model,
-                    [`${index}`]: fetchedModel ?? [],
-                },
-            }));
-        } else {
-            setCardDataToMap((pre) => ({
-                ...pre,
-                model: {
-                    ...pre.model,
-                    [`${index}`]: [],
-                },
-            }));
-        }
-
-        // Reset dependent fields
-        // setValue(`rows[${index}].modelId`, "");
-    };
-    // useEffect(() => {
-    //   // Update parameters for each row based on the categoryId
-    //   rows.forEach((row, index) => {
-
-    //     const categoryId = row.categoryId;
-    //     if (categoryId) {
-    //       const parameterDetails = CategoryMapData.find((ele) => ele._id === categoryId);
-
-    //       setValue(`rows[${index}].parameter`, parameterDetails?.parameter ?? []);
-    //     } else {
-    //       setValue(`rows[${index}].parameter`, []);
-    //     }
-    //   });
-    // }, [rows, CategoryMapData]);
-
-    useEffect(() => {
-        // Function to fetch initial location data
-        const fetchInitialLocations = async () => {
-            const initialLocations = await getLocations(setLoader, router, setLocationList, true);
-            setLocationList(initialLocations);
-        };
-
-        fetchInitialLocations();
-    }, []); // Empty dependency array ensures this runs only on the first render
-
-    // Handle location change and fetch dependent blocks
-    const handleLocationChange = async (index, locationId) => {
-        setValue(`rows[${index}].locationId`, locationId);
-        let fetchedBlocks = [];
-        if (locationId) {
-            fetchedBlocks = await getLocationWiseBlock(
-                locationId,
-                setLoader,
-                router,
-                setBlocksCart,
-                true
-            );
-        }
-        setCardDataToMap((pre) => ({
-            ...pre,
-            block: {
-                ...pre.block,
-                [`${index}`]: fetchedBlocks ?? [],
-            },
-            rack: {
-                ...pre.rack,
-                [`${index}`]: [],
-            },
-            partition: {
-                ...pre.partition,
-                [`${index}`]: [],
-            },
-        }));
-
-        // Reset dependent fields
-        setValue(`rows[${index}].blockId`, "");
-        setValue(`rows[${index}].rackId`, "");
-        setValue(`rows[${index}].partitionName`, "");
-    };
-    // Handle block change and fetch dependent racks
-    const handleBlockChange = async (index, blockId) => {
-        setValue(`rows[${index}].blockId`, blockId);
-        const fetchedRacks = cardDataToMap?.block[`${index}`]?.find((ele) => ele?._id === blockId);
-        setCartRacks(fetchedRacks?.rackId ?? []);
-        setCardDataToMap((pre) => ({
-            ...pre,
-            rack: {
-                ...pre.rack,
-                [`${index}`]: fetchedRacks?.rackId ?? [],
-            },
-            partition: {
-                ...pre.partition,
-                [`${index}`]: [],
-            },
-        }));
-
-        // Reset dependent fields
-        setValue(`rows[${index}].rackId`, "");
-        setValue(`rows[${index}].partitionName`, "");
-    };
-
-    // Handle rack change and fetch dependent partitions
-    const handleRackChange = async (index, rackId) => {
-        let fetchedPartitions = [];
-        if (rackId) {
-            fetchedPartitions = await getRackPartation(rackId, setLoader, router, setPartitions, true);
-        }
-
-        setPartitions(fetchedPartitions);
-        setCardDataToMap((pre) => ({
-            ...pre,
-            partition: {
-                ...pre.partition,
-                [`${index}`]: fetchedPartitions ?? [],
-            },
-        }));
-
-        // Reset dependent field
-        setValue(`rows[${index}].rackId`, rackId);
-        setValue(`rows[${index}].partitionName`, "");
-    };
-    useEffect(() => {
-        // Function to fetch initial location data
-        const fetchInitialCategory = async () => {
-            const initialCategory = await getParameter(setLoader, router, setCategoryMapData, true);
-            setCategoryMapData(initialCategory);
-        };
-
-        fetchInitialCategory();
-    }, []);
     return (
         <>
             {loader && <Loader />}
-            {respondHandlerModalState.state && (
+            {/* {respondHandlerModalState.state && (
                 <CustomResponseHandlerModal
                     status="warning"
                     message="Are you sure you want to dump this material?"
                     cancelHandler={cancelHandler}
                     successHandler={() => dumpMaterial()}
                 />
-            )}
-
+            )} */}
             <div className="top_header">
                 <div className="tab_title">Returned Material</div>
                 <div
@@ -863,8 +259,6 @@ const ConsumeMaterial = () => {
 
                 <div className="form_layout">
                     <ColorBox />
-
-                    {/* ------------------------MATERIAL LIST START----------------------------------------------- */}
                     <div className="form_list_layout_wrapper my-4">
                         <div className="d-flex align-items-center justify-content-between">
                             <p>Material List</p>
@@ -873,7 +267,7 @@ const ConsumeMaterial = () => {
                                     <CustomBtn
                                         name={"Consume"}
                                         type="button"
-                                        onClick={() => handleConsumeClick()}
+                                        onClick={() => handleRepairConsume()}
                                         svg={
                                             <svg
                                                 width="24"
@@ -965,9 +359,9 @@ const ConsumeMaterial = () => {
                                                                 <input
                                                                     className="form-check-input"
                                                                     type="checkbox"
-                                                                    key={product.materialId}
-                                                                    checked={selectedMaterials.includes(product.materialId)}
-                                                                    onChange={() => handleMaterialCheckboxChange(product.materialId)}
+                                                                    key={product?.stockId?._id}
+                                                                    checked={selectedMaterials.includes(product?.stockId?._id)}
+                                                                    onChange={() => handleMaterialCheckboxChange(product?.stockId?._id)}
                                                                     disabled={isDisabled}
                                                                 />
                                                             </div>
@@ -977,23 +371,23 @@ const ConsumeMaterial = () => {
                                                         <h6>{index + 1}</h6>
                                                     </div>
                                                     <div className="col_25p">
-                                                        <h6>{product?.serialNo ? product?.serialNo : "--"}</h6>
+                                                        <h6>{product?.stockId?.serialNo ? product?.stockId?.serialNo : "--"}</h6>
                                                     </div>{" "}
                                                     <div className="col_25p">
-                                                        <h6>{product?.itemCode ? product?.itemCode : "--"}</h6>
+                                                        <h6>{product?.stockId?.itemCode ? product?.stockId?.itemCode : "--"}</h6>
                                                     </div>
                                                     <div className="col_25p">
-                                                        <h6>{product?.categoryName}</h6>
+                                                        <h6>{product?.stockId?.categoryId?.name}</h6>
                                                     </div>
                                                     <div className="col_25p">
-                                                        <h6>{product?.brand}</h6>
+                                                        <h6>{product?.stockId?.brandId?.name}</h6>
                                                     </div>
                                                     <div className="col_25p">
-                                                        <h6>{product?.modelName}</h6>
+                                                        <h6>{product?.stockId?.modelId?.name}</h6>
                                                     </div>
                                                     <div className="col_85p">
                                                         <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
-                                                            {product?.parameterMaterial && Object?.entries(product?.parameterMaterial)?.map(
+                                                            {product?.stockId?.parameter && Object?.entries(product?.stockId?.parameter)?.map(
                                                                 ([key, value], indexOne) => (
                                                                     <div
                                                                         className="col_60p"
@@ -1023,7 +417,6 @@ const ConsumeMaterial = () => {
                             </div>
                         </div>
                     </div>
-                    {/* ------------------------MATERIAL LIST END----------------------------------------------- */}
                 </div>
             </form>
 

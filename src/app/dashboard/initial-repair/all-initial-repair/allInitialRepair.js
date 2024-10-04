@@ -105,7 +105,6 @@ const AllInitialRepair = () => {
                 materiald: params.get("repairId"),
                 sendResponse: flag
             };
-            console.log(payload, "payload")
             const serverResponse = await communication.responseToTech(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);

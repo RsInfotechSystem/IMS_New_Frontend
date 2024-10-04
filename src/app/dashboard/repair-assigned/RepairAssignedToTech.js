@@ -1,45 +1,25 @@
 "use client";
 
 import Pagination from "@/common-components/Pagination";
-import Search from "@/common-components/Search";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useReducer, useRef, useState } from "react";
-import Image from "next/image";
 import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import { toast } from "react-toastify";
-import filterIcon from "../../../../public/images/filter.png";
-import { getCookie, getCookies } from "cookies-next";
-// import ReturnMaterial from "./ReturnMaterial";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faClipboardCheck, faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";
-import CustomBtn from "@/common-components/CustomBtn";
-import StockFilter from "@/common-components/StockFilter";
-import { getCookiesData } from "@/utilities/getCookiesData";
-import { stockStatus } from "@/helper/stockStatusArray";
 import Button from "@/common-components/Button";
-import InputBox from "@/common-components/InputBox";
 import { stockRepairStatus } from "@/helper/repairStockStatus";
-import { useForm } from "react-hook-form";
-import InputBoxOnChange from "@/common-components/InputBoxOnChange";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const RepairTask = () => {
-    const [respondHandlerModalState, setRespondHandlerModalState] = useState({
-        state: false,
-        deleteId: "",
-    });
-    const [respondHandlerActiveModalState, setRespondHandlerActiveModalState] = useState({
-        action: "disable",
-        state: false,
-        userId: "",
-    });
-    const [filter, setFilter] = useState({});
+
     const [page, setPage] = useState(1);
     const router = useRouter();
-    const [TechnicianList, setTechnicianList] = useState([]);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingIndex, setEditingIndex] = useState(null);
     const [loader, setLoader] = useState(false);
     const [material, setMaterial] = useState([]);
     const [timeoutId, setTimeoutId] = useState();
@@ -47,7 +27,6 @@ const RepairTask = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isPageUpdated, setIsPageUpdated] = useState(false);
     const [pageCount, setPageCount] = useState(1);
-    const [roleName, setRoleName] = useState("");
     const [rowData, setRowData] = useState(
         material.map(() => ({
             status: "",
@@ -107,7 +86,6 @@ const RepairTask = () => {
                 stockRequired: rowData[index].stockRequired === "Yes" ? true : false,
                 remark: rowData[index].remark
             };
-            console.log(payload, "payload")
             let response = await communication.technicianRepairRemark(payload);
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response?.data?.message);
@@ -124,7 +102,10 @@ const RepairTask = () => {
             setLoader(false);
         }
     }
-
+    const handleEditClick = (index) => {
+        setIsEditing(true);
+        setEditingIndex(index);
+    };
 
 
     useEffect(() => {
@@ -196,7 +177,8 @@ const RepairTask = () => {
                                             <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                         </div>
                                         <div className="col_25p">
-                                            <h6>{stockDetails?.serialTag}</h6>
+                                            <h6 style={{ color: "#0000FF", cursor: "pointer" }}
+                                                onClick={() => { router.push("/dashboard/repair-assigned/repair-assigned-consumed") }}>{stockDetails?.serialTag}</h6>
                                         </div>
                                         <div className="col_25p">
                                             <h6>{stockDetails?.category}</h6>
@@ -208,10 +190,11 @@ const RepairTask = () => {
                                             <div className="position-relative">
                                                 <select
                                                     name="status"
-                                                    value={rowData[index]?.status}
+                                                    value={rowData[index]?.status || stockDetails?.systemStatus}
                                                     onChange={(e) => handleChange(e, index)}
                                                     className="form-control custom_input"
                                                     style={{ width: "100%" }}
+                                                    disabled={!isEditing || editingIndex !== index}
                                                 >
                                                     <option value="" className="text-secondary text-lowercase">
                                                         Select Status
@@ -232,32 +215,34 @@ const RepairTask = () => {
                                         <div className="col_50p">
                                             <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
-                                                    name="stockRequired"
-                                                    // id={`yes_${index}`}
-                                                    // name={`stockRequired ${index}`}
+                                                    // name="stockRequired"
+                                                    id={`yes_${index}`}
+                                                    name={`stockRequired ${stockDetails?._id}`}
                                                     value="Yes"
-                                                    checked={rowData[index]?.stockRequired === "Yes"}
+                                                    disabled={!isEditing || editingIndex !== index}
+                                                    checked={rowData[index]?.stockRequired === "Yes" || stockDetails?.stockRequired}
                                                     onChange={(e) => handleChange(e, index)}
                                                     className="form-check-input"
                                                     type="radio"
                                                 />
-                                                <label
+                                                <label htmlFor={`stockRequired ${stockDetails?._id}`}
                                                 >
                                                     Yes
                                                 </label>
                                             </div>
                                             <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
-                                                    name="stockRequired"
-                                                    // id={`no_${index}`}
-                                                    // name={`stockRequired ${index}`}
+                                                    // name="stockRequired"
+                                                    id={`no_${index}`}
+                                                    name={`stockRequired ${stockDetails?._id}`}
                                                     value="No"
-                                                    checked={rowData[index]?.stockRequired === "No"}
+                                                    disabled={!isEditing || editingIndex !== index}
+                                                    checked={rowData[index]?.stockRequired === "No" || stockDetails?.stockRequired}
                                                     onChange={(e) => handleChange(e, index)}
                                                     className="form-check-input"
                                                     type="radio"
                                                 />
-                                                <label
+                                                <label htmlFor={`stockRequired ${stockDetails?._id}`}
                                                 >No</label>
                                             </div>
                                         </div>
@@ -267,7 +252,8 @@ const RepairTask = () => {
                                                 <input
                                                     type="text"
                                                     name="remark"
-                                                    value={rowData[index]?.remark}
+                                                    disabled={!isEditing || editingIndex !== index}
+                                                    value={rowData[index]?.remark || stockDetails?.remark}
                                                     onChange={(e) => handleChange(e, index)}
                                                     className="form_control_assign custom_input"
                                                     style={{ width: "100%" }}
@@ -281,8 +267,50 @@ const RepairTask = () => {
                                             /> */}
                                         </div>
                                         <div className="col_20p d-flex justify-content-center align-items-center">
-                                            <Button name={"Save"} type="button" className="" onClick={() => technicianRepairRemark(index)} >
-                                            </Button>
+                                            {!stockDetails?.systemStatus && isEditing && editingIndex === index ? (
+                                                <Button name={"Save"} type="button" className="" onClick={() => technicianRepairRemark(index)} >
+                                                </Button>
+                                            ) :
+                                                (
+                                                    <div title="edit">
+                                                        <svg
+                                                            title="edit"
+                                                            width="27"
+                                                            height="27"
+                                                            viewBox="0 0 25 24"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            onClick={() => handleEditClick(index)}
+                                                        >
+                                                            <g clip-path="url(#clip0_279_5204)">
+                                                                <path
+                                                                    d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                                                    stroke="#0D6EFD"
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                />
+                                                                <path
+                                                                    d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                                                    stroke="#0D6EFD"
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                />
+                                                            </g>
+                                                            <defs>
+                                                                <clipPath id="clip0_279_5204">
+                                                                    <rect
+                                                                        width="15"
+                                                                        height="15"
+                                                                        fill="white"
+                                                                        transform="translate(5 5)"
+                                                                    />
+                                                                </clipPath>
+                                                            </defs>
+                                                        </svg>
+                                                    </div>
+                                                )
+                                            }
+
                                         </div>
 
                                     </div>

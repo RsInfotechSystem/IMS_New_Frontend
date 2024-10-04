@@ -18,8 +18,6 @@ const CreateRepairPdf = ({ setModalStates, pdfData, toast }) => {
 
     return (
         <div className="form_modal_wrapper z-3 fade_animation">
-            {console.log(pdfData, "pdfData")}
-
             <div className="form_modal bg-white" style={{ width: "60%" }}>
                 <div className="form_modal_header">
                     <div className="">

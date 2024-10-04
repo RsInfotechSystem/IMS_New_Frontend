@@ -6,19 +6,10 @@ import Search from "@/common-components/Search";
 import { useRouter } from "next/navigation";
 import { useEffect, useReducer, useState } from "react";
 import { communication, getServerUrl } from "@/services/communication";
-import Loader from "@/common-components/Loader";
-import { getCookiesData } from "@/utilities/getCookiesData";
-import Link from "next/link";
-import Image from "next/image";
-import { formatDate } from "@/helper/formatDate";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
-import StockFilter from "@/common-components/StockFilter";
-import InputBox from "@/common-components/InputBox";
 import { faFileInvoice, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
-import StockFilterForDump from "@/common-components/StockFilterForDump";
 import CreateInitialRepair from "./create-initial-repair/CreateInitialRepair";
 import CreateRepairPdf from "./create-initial-repair/CreatePDF";
 
@@ -30,7 +21,7 @@ const InitialRepair = () => {
         filter: false, modal: false, viewPO: false,
         viewPdf: false,
         data: "",
-        deletePo: false,
+        deleteTask: false,
         orderId: "",
     });
     const [searchString, setSearchString] = useState("");
@@ -39,7 +30,6 @@ const InitialRepair = () => {
     const [isPageUpdated, setIsPageUpdated] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageCount, setPageCount] = useState(1);
-
     const [page, setPage] = useState(1);
     const [material, setMaterial] = useState([]);
     const [timeoutId, setTimeoutId] = useState();
@@ -52,22 +42,13 @@ const InitialRepair = () => {
         page = 1,
         searchString,
         userId,
-        isSearch = false,
-        isFirstCall,
-        location,
-        categoryId,
-        brandId,
-        modelId,
+        isSearch = false
     } = {}) {
         try {
             setLoader(true);
             let payload = {
                 page,
                 searchString: searchString,
-                location,
-                categoryId,
-                brandId,
-                modelId,
             };
             if (userId) {
                 payload.userId = userId;
@@ -126,13 +107,11 @@ const InitialRepair = () => {
             toast.info("Please select which material you want to delete");
         }
     };
-    const successHandler = async () => {
-        setShowModal((prev) => ({ ...prev, modal: false }));
-        setLoader(true);
-        let payload = {
-            dumpIds: [...selectedCheckboxes],
-        };
+    const handleDeleteTask = async (jobNo) => {
         try {
+            setLoader(true);
+            setModalStates((prev) => ({ ...prev, deleteTasks: false, jobNo: "" }));
+
             let response = await communication.deleteDumpMaterial(payload);
             if (response?.data?.status === "SUCCESS") {
                 setSelectedCheckboxes([]);
@@ -149,9 +128,6 @@ const InitialRepair = () => {
         } finally {
             setLoader(false);
         }
-    };
-    const cancelHandler = () => {
-        setShowModal((prev) => ({ ...prev, modal: false }));
     };
 
     useEffect(() => {
@@ -184,32 +160,6 @@ const InitialRepair = () => {
                 />
                 {
                     <div className="buttons_wrapper">
-                        {/* <CustomBtn
-
-                            name={"Filter"}
-                            onClick={() => {
-                                setModalStates((prev) => ({ ...prev, filter: true }));
-                            }}
-                            svg={
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 512 512"
-                                    fill="#fff"
-                                >
-                                    <path d="M3.9 54.9C10.5 40.9 24.5 32 40 32l432 0c15.5 0 29.5 8.9 36.1 22.9s4.6 30.5-5.2 42.5L320 320.9 320 448c0 12.1-6.8 23.2-17.7 28.6s-23.8 4.3-33.5-3l-64-48c-8.1-6-12.8-15.5-12.8-25.6l0-79.1L9 97.3C-.7 85.4-2.8 68.8 3.9 54.9z" />
-                                </svg>
-                            }
-                        /> */}
-                        {/* <CustomBtn
-                            type="button"
-                            name={"Reset Filter"}
-                            onClick={() => {
-                                getDumpMaterialList();
-                            }}
-                            style={{ padding: "0px", minWidth: "120px" }}
-                        /> */}
                         <CustomBtn
                             name={"Create"}
                             onClick={() => {
@@ -236,18 +186,19 @@ const InitialRepair = () => {
                                 </svg>
                             }
                         />
-                        {/* <CustomBtn
-                            name={"Delete"}
-                            // onClick={deleteDump}
-                            svg={<FontAwesomeIcon icon={faTrash} />}
-                        /> */}
-                        {showModal.modal && (
+
+                        {modalState.deleteTask && (
                             <CustomResponseHandlerModal
                                 status="warning"
                                 // show={showModal}
                                 message="Are you sure you want to delete this material?"
-                                successHandler={successHandler}
-                                cancelHandler={cancelHandler}
+                                successHandler={() => {
+                                    handleDeleteTask(modalState?.jobNo)
+                                }}
+                                cancelHandler={() => {
+                                    // setModalStates((prev) => ({ ...prev, deleteTasks: false, jobNo: "" }));
+                                    setModalStates(false)
+                                }}
                             />
                         )}
                     </div>
@@ -357,9 +308,6 @@ const InitialRepair = () => {
                                                     onClick={() => {
                                                         router.push(`/dashboard/initial-repair/assign-technician?repairId=${stockDetails?._id}`);
                                                     }}
-                                                // onClick={() => {
-                                                //     router.push(`/dashboard/initial-repair/assign-technician`);
-                                                // }}
                                                 >
                                                     <svg
                                                         width="27"
@@ -397,7 +345,7 @@ const InitialRepair = () => {
                                                 <div
                                                     title="delete"
                                                     onClick={() =>
-                                                        setModalStates((prev) => ({ ...prev, deletePo: true, poId: stockDetails._id }))
+                                                        setModalStates((prev) => ({ ...prev, deleteTask: true, jobNo: stockDetails._id }))
                                                     }
                                                 >
                                                     <FontAwesomeIcon icon={faTrash} />
