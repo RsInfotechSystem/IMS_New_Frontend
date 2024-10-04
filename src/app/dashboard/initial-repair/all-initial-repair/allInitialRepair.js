@@ -75,7 +75,7 @@ const AllInitialRepair = () => {
             setLoader(false);
         }
     }
-    const showInputDialog = () => {
+    const showInputDialog = (id) => {
         Swal.fire({
             html: `<p>Do you want move forward with this order ?</p>`,
             showCancelButton: true,
@@ -89,23 +89,48 @@ const AllInitialRepair = () => {
 
             if (result.isConfirmed) {
                 // yes== go ahead
-                const flag = "go ahead"; // Set the flag to true
-                responseToTech(flag);
+                const flag = "goahead"; // Set the flag to true
+                responseToTech(flag, id);
             } else {
                 // const flag = "";
                 // responseToTech(flag);
             }
         });
     };
-    async function responseToTech(flag = "") {
+    async function responseToTech(flag = "", id) {
         try {
 
             setLoader(true);
             let payload = {
-                materiald: params.get("repairId"),
+                materiald: id,
                 sendResponse: flag
             };
             const serverResponse = await communication.responseToTech(payload);
+            if (serverResponse?.data?.status === "SUCCESS") {
+                toast.success(serverResponse.data.message);
+                repairMaterialById();
+                // router.back();
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+                setLoader(false);
+            } else {
+                toast.info(serverResponse.data.message);
+            }
+            setLoader(false);
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
+            setLoader(false);
+        }
+    }
+
+    async function closeRepairMaterial(materialId) {
+        try {
+            setLoader(true);
+            let payload = {
+                materiald: materialId,
+            };
+            const serverResponse = await communication.closeRepairMaterial(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
                 repairMaterialById();
@@ -229,8 +254,8 @@ const AllInitialRepair = () => {
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">
-                                                <CustomBtn name={"Go Ahed"} onClick={(e) => showInputDialog()} />
-                                                <CustomBtn name={"Close"} />
+                                                <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
+                                                <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} />
                                             </h6>
                                         </div>
 
