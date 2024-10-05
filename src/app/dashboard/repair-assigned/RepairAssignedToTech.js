@@ -32,6 +32,7 @@ const RepairTask = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isPageUpdated, setIsPageUpdated] = useState(false);
     const [pageCount, setPageCount] = useState(1);
+    const [responceFromCustomer, setResponceFromCustomer] = useState("")
     // const [rowData, setRowData] = useState(
     //     material.map(() => ({
     //         status: "",
@@ -65,6 +66,7 @@ const RepairTask = () => {
 
                 // Set the modified materials array to state (assuming you're using React's useState hook)
                 setMaterial(updatedMaterials);
+                // setResponceFromCustomer(serverResponse?.data?.materials.map((item) => item?.sendResponse ))
                 // setMaterial(serverResponse?.data?.materials.map((item) => {}));
                 setRowData(
                     serverResponse?.data?.materials.map((item) => ({
@@ -140,6 +142,7 @@ const RepairTask = () => {
             };
             let response = await communication.technicianRepairRemark(payload);
             if (response?.data?.status === "SUCCESS") {
+                setIsEditing(false);
                 RepairMaterialAssignedToTechList({ page: currentPage, searchString });
                 toast.success(response?.data?.message);
                 router.push("/dashboard/repair-assigned");
@@ -215,6 +218,9 @@ const RepairTask = () => {
                             </div>
                             <div className="col_50p">
                                 <h5>Remark</h5>
+                            </div>
+                            <div className="col_30p">
+                                <h5>Client Response</h5>
                             </div>
                             <div className="col_20p text-center">
                                 <h5>Action</h5>
@@ -334,6 +340,9 @@ const RepairTask = () => {
                                                 value={rowData[index]?.remark}
                                                 onChange={(e) => handleChange(e, index)}
                                             /> */}
+                                        </div>
+                                        <div className="col_30p">
+                                            <h6>{stockDetails?.sendResponse ? stockDetails?.sendResponse : "--"}</h6>
                                         </div>
                                         <div className="col_20p d-flex justify-content-center align-items-center">
                                             {isEditing && editingIndex === index ? (
