@@ -139,7 +139,7 @@ const InitialRepair = () => {
                 <CreateRepairPdf pdfData={modalState?.data} setModalStates={setModalStates} />
             )}
             <div className="top_header">
-                <div className="tab_title">Initial Repair</div>
+                <div className="tab_title">Repair Job List</div>
                 <Pagination
                     isPageUpdated={isPageUpdated}
                     setIsPageUpdated={setIsPageUpdated}
@@ -288,7 +288,7 @@ const InitialRepair = () => {
                                             <h6>{stockDetails?.initialRemark ? stockDetails?.initialRemark : "--"}</h6>
                                         </div>
                                         <div className="col_50p">
-                                            <h6>{stockDetails?.taskStatus ? stockDetails?.taskStatus : "--"}</h6>
+                                            <h6>{stockDetails?.taskStatus == "commented" ? "Inprocess" : stockDetails?.taskStatus ? stockDetails?.taskStatus : "--"}</h6>
                                         </div>
                                         <div className="col_30p">
                                             <h6 className="action_wrraper">
