@@ -192,7 +192,7 @@ const ConsumeMaterial = () => {
             const serverResponse = await communication.handleRepairConsume(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
-                // TechnicianConsumedMaterial();
+                TechnicianConsumedMaterial();
                 router.push("/dashboard/repair-assigned");
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse.data.message);
@@ -386,7 +386,7 @@ const ConsumeMaterial = () => {
                                                     <div className="col_25p">
                                                         <h6>{product?.stockId?.modelId?.name}</h6>
                                                     </div>
-                                                    <div className="col_85p" style={{display:"flex",justifyContent:"start"}}>
+                                                    <div className="col_85p" style={{ display: "flex", justifyContent: "start" }}>
                                                         <div className="input_scroll" style={{ maxWidth: '100%', overflowX: 'auto' }}>
                                                             {product?.stockId?.parameter && Object?.entries(product?.stockId?.parameter)?.map(
                                                                 ([key, value], indexOne) => (

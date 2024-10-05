@@ -430,6 +430,39 @@ function CreateRole({ data }) {
                     Dump Material
                   </label>
                 </div>
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Repair Material"
+                    type="checkbox"
+                    {...register("Repair Material")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Repair Material">
+                    Repair Material
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Repair Supplies"
+                    type="checkbox"
+                    {...register("Repair Supplies")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Repair Supplies">
+                    Repair Supplies
+                  </label>
+                </div>
+                <div className="col-lg-4 col-md-6 col-sm-6 checkbox_main d-flex align-items-center">
+                  <input
+                    id="Repair Task"
+                    type="checkbox"
+                    {...register("Repair Task")}
+                    className="checkbox"
+                  />
+                  <label className="fs-9" htmlFor="Repair Task">
+                    Repair Task
+                  </label>
+                </div>
               </div>
             </div>
             <div className="form_button_wrapper">
