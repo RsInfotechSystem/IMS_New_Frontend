@@ -8,14 +8,18 @@ import Loader from "@/common-components/Loader";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import { toast } from "react-toastify";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleDown, faClipboardCheck, faFilter, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+    faAngleDown,
+    faClipboardCheck,
+    faFilter,
+    faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import Button from "@/common-components/Button";
 import { stockRepairStatus } from "@/helper/repairStockStatus";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const RepairTask = () => {
-
     const [page, setPage] = useState(1);
     const router = useRouter();
     const [isEditing, setIsEditing] = useState(false);
@@ -42,17 +46,31 @@ const RepairTask = () => {
         id: "",
     });
 
-
     async function RepairMaterialAssignedToTechList() {
         try {
             setLoader(true);
             const serverResponse = await communication.repairMaterialAssignedToTechList();
             if (serverResponse?.data?.status === "SUCCESS") {
-                setMaterial(serverResponse?.data?.materials);
+                const updatedMaterials = serverResponse?.data?.materials.map((material, index) => {
+                    const modifiedMaterial = { ...material }; // Create a copy of each material object
+
+                    // If stockRequired exists, rename it to stockRequired_{index}
+                    if ("stockRequired" in modifiedMaterial) {
+                        modifiedMaterial[`stockRequired_${index}`] = modifiedMaterial.stockRequired;
+                        delete modifiedMaterial.stockRequired; // Remove the original stockRequired key
+                    }
+
+                    return modifiedMaterial; // Return the modified material object
+                });
+
+                // Set the modified materials array to state (assuming you're using React's useState hook)
+                setMaterial(updatedMaterials);
+                // setMaterial(serverResponse?.data?.materials.map((item) => {}));
                 setRowData(
                     serverResponse?.data?.materials.map((item) => ({
                         status: item?.systemStatus || "",
-                        stockRequired: item?.stockRequired === true ? "Yes" : item?.stockRequired === false ? "No" : "",
+                        stockRequired:
+                            item?.stockRequired === true ? "Yes" : item?.stockRequired === false ? "No" : "",
                         remark: item?.remark || "",
                     }))
                 );
@@ -77,12 +95,16 @@ const RepairTask = () => {
     }
     const handleChange = (e, index) => {
         const { name, value } = e.target;
-
-        setRowData(prevData => {
-            const newData = [...prevData];
-            newData[index] = { ...newData[index], [name]: value };
-            return newData;
+        setMaterial((prev) => {
+            let preData = [...prev];
+            preData[index] = { ...preData[index], [name]: value == "yes" ? true : false };
+            return preData;
         });
+        // setRowData((prevData) => {
+        //   const newData = [...prevData];
+        //   newData[index] = { ...newData[index], [name]: value };
+        //   return newData;
+        // });
     };
 
     const technicianRepairRemark = async (index) => {
@@ -91,8 +113,15 @@ const RepairTask = () => {
             const payload = {
                 materiald: material[index]._id,
                 systemStatus: rowData[index].status,
-                stockRequired: rowData[index].stockRequired === "Yes" ? true : rowData[index].stockRequired === "No" ? false : null,
-                remark: rowData[index].remark
+                stockRequired: material[index][`stockRequired_${index}`],
+                // stockDetails[`stockRequired_${index}`]
+                // stockRequired:
+                //   rowData[index].stockRequired === "Yes"
+                //     ? true
+                //     : rowData[index].stockRequired === "No"
+                //     ? false
+                //     : null,
+                remark: rowData[index].remark,
             };
             let response = await communication.technicianRepairRemark(payload);
             if (response?.data?.status === "SUCCESS") {
@@ -109,15 +138,14 @@ const RepairTask = () => {
         } finally {
             setLoader(false);
         }
-    }
+    };
     const handleEditClick = (index) => {
         setIsEditing(true);
         setEditingIndex(index);
     };
 
-
     useEffect(() => {
-        RepairMaterialAssignedToTechList({ page: currentPage, searchString, });
+        RepairMaterialAssignedToTechList({ page: currentPage, searchString });
     }, [isPageUpdated]);
     return (
         <>
@@ -148,7 +176,6 @@ const RepairTask = () => {
                 />
             </div>
             <div className="table_wrapper">
-
                 <div className="table_main">
                     <div className="table_section inventory_table_res">
                         <div className="table_header">
@@ -177,6 +204,7 @@ const RepairTask = () => {
                                 <h5>Action</h5>
                             </div>
                         </div>
+
                         {material?.length > 0 ? (
                             <>
                                 {material?.map((stockDetails, index) => (
@@ -185,8 +213,14 @@ const RepairTask = () => {
                                             <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                         </div>
                                         <div className="col_25p">
-                                            <h6 style={{ color: "#0000FF", cursor: "pointer" }}
-                                                onClick={() => { router.push("/dashboard/repair-assigned/repair-assigned-consumed") }}>{stockDetails?.serialTag}</h6>
+                                            <h6
+                                                style={{ color: "#0000FF", cursor: "pointer" }}
+                                                onClick={() => {
+                                                    router.push("/dashboard/repair-assigned/repair-assigned-consumed");
+                                                }}
+                                            >
+                                                {stockDetails?.serialTag}
+                                            </h6>
                                         </div>
                                         <div className="col_25p">
                                             <h6>{stockDetails?.category}</h6>
@@ -221,67 +255,56 @@ const RepairTask = () => {
                                             </div>
                                         </div>
                                         <div className="col_50p">
-                                            {/* <div className="check_box me-1" style={{ gap: "0" }}>
+                                            <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
-                                                    // name="stockRequired"
-                                                    id={`yes_${index}`}
-                                                    name={`stockRequired ${stockDetails?._id}`}
-                                                    value="Yes"
-                                                    disabled={!isEditing || editingIndex !== index}
-                                                    checked={rowData[index]?.stockRequired === "Yes" || stockDetails?.stockRequired}
                                                     onChange={(e) => handleChange(e, index)}
-                                                    className="form-check-input"
-                                                    type="radio"
+                                                    type="radio" // Change to radio
+                                                    name={`stockRequired_${index}`} // Unique name for each group
+                                                    value="yes"
+                                                    checked={stockDetails[`stockRequired_${index}`] === true} // Check if true for "Yes"
                                                 />
-                                                <label htmlFor={`stockRequired ${stockDetails?._id}`}
+                                                <label
                                                 >
                                                     Yes
                                                 </label>
                                             </div>
                                             <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
-                                                    // name="stockRequired"
-                                                    id={`no_${index}`}
-                                                    name={`stockRequired ${stockDetails?._id}`}
-                                                    value="No"
-                                                    disabled={!isEditing || editingIndex !== index}
-                                                    checked={rowData[index]?.stockRequired === "No" || stockDetails?.stockRequired}
                                                     onChange={(e) => handleChange(e, index)}
-                                                    className="form-check-input"
-                                                    type="radio"
+                                                    type="radio" // Change to radio
+                                                    name={`stockRequired_${index}`} // Unique name for each group
+                                                    value="no"
+                                                    checked={stockDetails[`stockRequired_${index}`] === false} // Check if false for "No"
                                                 />
-                                                <label htmlFor={`stockRequired ${stockDetails?._id}`}
+                                                <label
                                                 >No</label>
+                                            </div>
+                                            {/* <div className="col_50p">
+                                                <label>
+                                                    <input
+                                                        onChange={(e) => handleChange(e, index)}
+                                                        type="radio" // Change to radio
+                                                        name={`stockRequired_${index}`} // Unique name for each group
+                                                        value="yes"
+                                                        checked={stockDetails[`stockRequired_${index}`] === true} // Check if true for "Yes"
+                                                    />{" "}
+                                                    Yes
+                                                </label>
+                                                <br />
+                                                <label>
+                                                    <input
+                                                        onChange={(e) => handleChange(e, index)}
+                                                        type="radio" // Change to radio
+                                                        name={`stockRequired_${index}`} // Unique name for each group
+                                                        value="no"
+                                                        checked={stockDetails[`stockRequired_${index}`] === false} // Check if false for "No"
+                                                    />{" "}
+                                                    No
+                                                </label>
                                             </div> */}
-                                            <div className="check_box me-1" style={{ gap: "0" }}>
-                                                <input
-                                                    id={`yes_${index}`}
-                                                    name="stockRequired"
-                                                    value="Yes"
-                                                    disabled={!isEditing || editingIndex !== index}
-                                                    checked={rowData[index]?.stockRequired === "Yes"}
-                                                    onChange={(e) => handleChange(e, index)}
-                                                    className="form-check-input"
-                                                    type="radio"
-                                                />
-                                                <label htmlFor={`yes_${index}`}>Yes</label>
-                                            </div>
-                                            <div className="check_box me-1" style={{ gap: "0" }}>
-                                                <input
-                                                    id={`no_${index}`}
-                                                    name="stockRequired"
-                                                    value="No"
-                                                    disabled={!isEditing || editingIndex !== index}
-                                                    checked={rowData[index]?.stockRequired === "No"}
-                                                    onChange={(e) => handleChange(e, index)}
-                                                    className="form-check-input"
-                                                    type="radio"
-                                                />
-                                                <label htmlFor={`no_${index}`}>No</label>
-                                            </div>
+
                                         </div>
                                         <div className="col_50p">
-
                                             <div className="custom_input_wrapper">
                                                 <input
                                                     type="text"
@@ -292,7 +315,6 @@ const RepairTask = () => {
                                                     className="form_control_assign custom_input"
                                                     style={{ width: "100%" }}
                                                 />
-
                                             </div>
                                             {/* <InputBoxOnChange
                                                 name="remark"
@@ -301,52 +323,52 @@ const RepairTask = () => {
                                             /> */}
                                         </div>
                                         <div className="col_20p d-flex justify-content-center align-items-center">
-                                            {!stockDetails?.systemStatus && isEditing && editingIndex === index ? (
-                                                <Button name={"Save"} type="button" className="" onClick={() => technicianRepairRemark(index)} >
-                                                </Button>
-                                            ) :
-                                                (
-                                                    <div title="edit">
-                                                        <svg
-                                                            title="edit"
-                                                            width="27"
-                                                            height="27"
-                                                            viewBox="0 0 25 24"
-                                                            fill="none"
-                                                            xmlns="http://www.w3.org/2000/svg"
-                                                            onClick={() => handleEditClick(index)}
-                                                        >
-                                                            <g clip-path="url(#clip0_279_5204)">
-                                                                <path
-                                                                    d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                                                                    stroke="#0D6EFD"
-                                                                    stroke-linecap="round"
-                                                                    stroke-linejoin="round"
+                                            {isEditing && editingIndex === index ? (
+                                                <Button
+                                                    name={"Save"}
+                                                    type="button"
+                                                    className=""
+                                                    onClick={() => technicianRepairRemark(index)}
+                                                ></Button>
+                                            ) : (
+                                                <div title="edit">
+                                                    <svg
+                                                        title="edit"
+                                                        width="27"
+                                                        height="27"
+                                                        viewBox="0 0 25 24"
+                                                        fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        onClick={() => handleEditClick(index)}
+                                                    >
+                                                        <g clip-path="url(#clip0_279_5204)">
+                                                            <path
+                                                                d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                                                stroke="#0D6EFD"
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                            />
+                                                            <path
+                                                                d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                                                stroke="#0D6EFD"
+                                                                stroke-linecap="round"
+                                                                stroke-linejoin="round"
+                                                            />
+                                                        </g>
+                                                        <defs>
+                                                            <clipPath id="clip0_279_5204">
+                                                                <rect
+                                                                    width="15"
+                                                                    height="15"
+                                                                    fill="white"
+                                                                    transform="translate(5 5)"
                                                                 />
-                                                                <path
-                                                                    d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                                                                    stroke="#0D6EFD"
-                                                                    stroke-linecap="round"
-                                                                    stroke-linejoin="round"
-                                                                />
-                                                            </g>
-                                                            <defs>
-                                                                <clipPath id="clip0_279_5204">
-                                                                    <rect
-                                                                        width="15"
-                                                                        height="15"
-                                                                        fill="white"
-                                                                        transform="translate(5 5)"
-                                                                    />
-                                                                </clipPath>
-                                                            </defs>
-                                                        </svg>
-                                                    </div>
-                                                )
-                                            }
-
+                                                            </clipPath>
+                                                        </defs>
+                                                    </svg>
+                                                </div>
+                                            )}
                                         </div>
-
                                     </div>
                                 ))}
                             </>

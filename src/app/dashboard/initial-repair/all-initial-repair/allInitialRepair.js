@@ -75,7 +75,7 @@ const AllInitialRepair = () => {
             setLoader(false);
         }
     }
-    const showInputDialog = () => {
+    const showInputDialog = (id) => {
         Swal.fire({
             html: `<p>Do you want move forward with this order ?</p>`,
             showCancelButton: true,
@@ -90,19 +90,19 @@ const AllInitialRepair = () => {
             if (result.isConfirmed) {
                 // yes== go ahead
                 const flag = "go ahead"; // Set the flag to true
-                responseToTech(flag);
+                responseToTech(flag, id);
             } else {
                 // const flag = "";
                 // responseToTech(flag);
             }
         });
     };
-    async function responseToTech(flag = "") {
+    async function responseToTech(flag = "", id) {
         try {
 
             setLoader(true);
             let payload = {
-                materiald: params.get("repairId"),
+                materiald: id,
                 sendResponse: flag
             };
             const serverResponse = await communication.responseToTech(payload);
@@ -229,7 +229,7 @@ const AllInitialRepair = () => {
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">
-                                                <CustomBtn name={"Go Ahed"} onClick={(e) => showInputDialog()} />
+                                                <CustomBtn name={"Go Ahed"} onClick={(e) => showInputDialog(stockDetails?._id)} />
                                                 <CustomBtn name={"Close"} />
                                             </h6>
                                         </div>
