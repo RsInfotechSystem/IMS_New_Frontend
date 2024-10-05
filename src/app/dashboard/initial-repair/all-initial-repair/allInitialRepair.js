@@ -157,7 +157,7 @@ const AllInitialRepair = () => {
     return (
         <>
             <div className="top_header">
-                <div className="tab_title">Initial Repair</div>
+                <div className="tab_title">Repair Material List</div>
                 <div
                     className="back_btn"
                     onClick={() => {
@@ -228,6 +228,9 @@ const AllInitialRepair = () => {
                                 <h5>Action Taken</h5>
                             </div>
                             <div className="col_70p">
+                                <h5>Stock Required</h5>
+                            </div>
+                            <div className="col_70p">
                                 <h5>Technician Remark</h5>
                             </div>
                             <div className="col_70p">
@@ -253,10 +256,13 @@ const AllInitialRepair = () => {
                                             <h6>{stockDetails?.itemDescriptionNproblemObserved}</h6>
                                         </div>
                                         <div className="col_70p">
-                                            <h6>{stockDetails?.actionTaken}</h6>
+                                            <h6>{stockDetails?.actionTaken ? stockDetails?.actionTaken : "--"}</h6>
                                         </div>
                                         <div className="col_70p">
-                                            <h6>{stockDetails?.remark}</h6>
+                                            <h6>{stockDetails?.stockRequired == true ? "Yes" : stockDetails?.stockRequired == false ? "No" : "--"}</h6>
+                                        </div>
+                                        <div className="col_70p">
+                                            <h6>{stockDetails?.remark ? stockDetails?.remark : "--"}</h6>
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">

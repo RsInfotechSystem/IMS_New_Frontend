@@ -139,7 +139,7 @@ const InitialRepair = () => {
                 <CreateRepairPdf pdfData={modalState?.data} setModalStates={setModalStates} />
             )}
             <div className="top_header">
-                <div className="tab_title">Initial Repair</div>
+                <div className="tab_title">Repair Job List</div>
                 <Pagination
                     isPageUpdated={isPageUpdated}
                     setIsPageUpdated={setIsPageUpdated}

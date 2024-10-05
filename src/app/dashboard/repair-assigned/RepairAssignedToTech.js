@@ -181,7 +181,7 @@ const RepairTask = () => {
             {loader && <Loader text="Fetching Data..." />}
 
             <div className="top_header">
-                <div className="tab_title">Task Assigned</div>
+                <div className="tab_title">Repair Task</div>
 
                 <Pagination
                     isPageUpdated={isPageUpdated}
@@ -261,7 +261,7 @@ const RepairTask = () => {
                                                     </option>
                                                     {stockRepairStatus?.map((ele, index) => {
                                                         return (
-                                                            <option value={ele} key={index}>
+                                                            <option value={ele?.toLocaleLowerCase()} key={index}>
                                                                 {ele}
                                                             </option>
                                                         );
