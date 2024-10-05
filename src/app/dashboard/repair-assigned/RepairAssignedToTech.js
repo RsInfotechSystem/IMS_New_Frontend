@@ -93,6 +93,16 @@ const RepairTask = () => {
             setLoader(false);
         }
     }
+
+    const handleRemarkChange = (e, index) => {
+        const { name, value } = e.target;
+
+        setRowData((prevData) => {
+            const newData = [...prevData];
+            newData[index] = { ...newData[index], [name]: value };
+            return newData;
+        });
+    };
     const handleChange = (e, index) => {
         const { name, value } = e.target;
         setMaterial((prev) => {
@@ -105,6 +115,11 @@ const RepairTask = () => {
         //   newData[index] = { ...newData[index], [name]: value };
         //   return newData;
         // });
+        setRowData((prev) => {
+            let preData = [...prev];
+            preData[index] = { ...preData[index], [name]: value == "yes" ? true : false };
+            return preData;
+        });
     };
 
     const technicianRepairRemark = async (index) => {
@@ -125,6 +140,7 @@ const RepairTask = () => {
             };
             let response = await communication.technicianRepairRemark(payload);
             if (response?.data?.status === "SUCCESS") {
+                RepairMaterialAssignedToTechList({ page: currentPage, searchString });
                 toast.success(response?.data?.message);
                 router.push("/dashboard/repair-assigned");
             } else if (response?.data?.status === "JWT_INVALID") {
@@ -216,7 +232,9 @@ const RepairTask = () => {
                                             <h6
                                                 style={{ color: "#0000FF", cursor: "pointer" }}
                                                 onClick={() => {
-                                                    router.push(`/dashboard/repair-assigned/repair-assigned-consumed?repairId=${stockDetails?._id}`);
+                                                    router.push(
+                                                        `/dashboard/repair-assigned/repair-assigned-consumed?repairId=${stockDetails?._id}`
+                                                    );
                                                 }}
                                             >
                                                 {stockDetails?.serialTag}
@@ -233,7 +251,7 @@ const RepairTask = () => {
                                                 <select
                                                     name="status"
                                                     value={rowData[index]?.status || stockDetails?.systemStatus}
-                                                    onChange={(e) => handleChange(e, index)}
+                                                    onChange={(e) => handleRemarkChange(e, index)}
                                                     className="form-control custom_input"
                                                     style={{ width: "100%" }}
                                                     disabled={!isEditing || editingIndex !== index}
@@ -263,10 +281,7 @@ const RepairTask = () => {
                                                     value="yes"
                                                     checked={stockDetails[`stockRequired_${index}`] === true} // Check if true for "Yes"
                                                 />
-                                                <label
-                                                >
-                                                    Yes
-                                                </label>
+                                                <label>Yes</label>
                                             </div>
                                             <div className="check_box me-1" style={{ gap: "0" }}>
                                                 <input
@@ -276,8 +291,7 @@ const RepairTask = () => {
                                                     value="no"
                                                     checked={stockDetails[`stockRequired_${index}`] === false} // Check if false for "No"
                                                 />
-                                                <label
-                                                >No</label>
+                                                <label>No</label>
                                             </div>
                                             {/* <div className="col_50p">
                                                 <label>
@@ -302,7 +316,6 @@ const RepairTask = () => {
                                                     No
                                                 </label>
                                             </div> */}
-
                                         </div>
                                         <div className="col_50p">
                                             <div className="custom_input_wrapper">
@@ -311,7 +324,7 @@ const RepairTask = () => {
                                                     name="remark"
                                                     disabled={!isEditing || editingIndex !== index}
                                                     value={rowData[index]?.remark || stockDetails?.remark}
-                                                    onChange={(e) => handleChange(e, index)}
+                                                    onChange={(e) => handleRemarkChange(e, index)}
                                                     className="form_control_assign custom_input"
                                                     style={{ width: "100%" }}
                                                 />
