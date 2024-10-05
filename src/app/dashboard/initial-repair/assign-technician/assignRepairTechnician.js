@@ -268,6 +268,9 @@ const AssignToTechnician = () => {
                             <div className="col_30p">
                                 <h5>Remark</h5>
                             </div>
+                            <div className="col_30p">
+                                <h5>Status</h5>
+                            </div>
                             <div className="col_40p">
                                 <h5>Technician</h5>
                             </div>
@@ -305,6 +308,9 @@ const AssignToTechnician = () => {
                                             </div>
                                             <div className="col_30p">
                                                 <h6>{material?.remark}</h6>
+                                            </div>
+                                            <div className="col_30p">
+                                                <h6>{material?.materialStatus == "commented" ? "Inprocess" : material?.materialStatus ? material?.materialStatus : "--"}</h6>
                                             </div>
                                             <div className="col_45p">
                                                 <h6>
