@@ -233,6 +233,9 @@ const AllInitialRepair = () => {
                             <div className="col_70p">
                                 <h5>Technician Remark</h5>
                             </div>
+                            <div className="col_50p">
+                                <h5>Status</h5>
+                            </div>
                             <div className="col_70p">
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
@@ -263,6 +266,9 @@ const AllInitialRepair = () => {
                                         </div>
                                         <div className="col_70p">
                                             <h6>{stockDetails?.remark ? stockDetails?.remark : "--"}</h6>
+                                        </div>
+                                        <div className="col_50p">
+                                            <h6>{stockDetails?.materialStatus == "commented" ? "Inprocess" : stockDetails?.materialStatus ? stockDetails?.materialStatus : "--"}</h6>
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">

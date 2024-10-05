@@ -223,7 +223,7 @@ const ConsumeMaterial = () => {
                 />
             )} */}
             <div className="top_header">
-                <div className="tab_title">Returned Material</div>
+                <div className="tab_title">Assigned Materials</div>
                 <div
                     className="back_btn"
                     onClick={() => {
@@ -259,7 +259,7 @@ const ConsumeMaterial = () => {
             <form>
 
                 <div className="form_layout">
-                    <ColorBox />
+                    {/* <ColorBox /> */}
                     <div className="form_list_layout_wrapper my-4">
                         <div className="d-flex align-items-center justify-content-between">
                             <p>Material List</p>
