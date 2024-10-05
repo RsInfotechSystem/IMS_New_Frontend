@@ -118,7 +118,7 @@ const CreateInitialRepair = () => {
         // }
     };
     const addMaterial = () => {
-        const { serialTag, category, itemDescriptionNproblemObserved, remark } = getValues();
+        const { serialTag, category, itemDescriptionNproblemObserved, actionTaken } = getValues();
 
         if (!itemDescriptionNproblemObserved || !serialTag) {
             toast.info("Add Material");
@@ -131,7 +131,7 @@ const CreateInitialRepair = () => {
                         serialTag: serialTag,
                         category: category,
                         itemDescriptionNproblemObserved: itemDescriptionNproblemObserved,
-                        remark: remark,
+                        actionTaken: actionTaken,
                         // workAssignTo: workAssignTo,
                         // actionTaken: actionTaken,
                     },
@@ -140,7 +140,7 @@ const CreateInitialRepair = () => {
             // Clear the input fields after adding
             setValue("category", "");
             setValue("itemDescriptionNproblemObserved", "");
-            setValue("remark", "");
+            setValue("actionTaken", "");
             setValue("serialTag", "");
             // setValue("actionTaken", "");
         }
@@ -435,11 +435,11 @@ const CreateInitialRepair = () => {
                                             <InputBox
                                                 // type={"text"}
                                                 register={{
-                                                    ...register("remark", {
+                                                    ...register("actionTaken", {
                                                         // required: "quantity is required",
                                                     }),
                                                 }}
-                                                errors={errors.remark}
+                                                errors={errors?.actionTaken}
                                             />
                                         </div>
                                         <div className="col-lg-12 input_wrapper d-flex justify-content-center">
@@ -502,7 +502,7 @@ const CreateInitialRepair = () => {
                                                     </div>
                                                     <div className="col_25p">
                                                         <h6 className="action_wrraper">
-                                                            {product?.remark ? product?.remark : "--"}
+                                                            {product?.actionTaken ? product?.actionTaken : "--"}
                                                         </h6>
                                                     </div>
                                                     <div className="col_20p">
