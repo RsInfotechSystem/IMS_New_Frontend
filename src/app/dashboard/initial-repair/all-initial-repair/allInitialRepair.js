@@ -225,7 +225,10 @@ const AllInitialRepair = () => {
                                 <h5>Description</h5>
                             </div>
                             <div className="col_70p">
-                                <h5>Remark</h5>
+                                <h5>Action Taken</h5>
+                            </div>
+                            <div className="col_70p">
+                                <h5>Technician Remark</h5>
                             </div>
                             <div className="col_70p">
                                 <h5 className="action_wrraper">Action</h5>
@@ -248,6 +251,9 @@ const AllInitialRepair = () => {
                                         </div>
                                         <div className="col_70p">
                                             <h6>{stockDetails?.itemDescriptionNproblemObserved}</h6>
+                                        </div>
+                                        <div className="col_70p">
+                                            <h6>{stockDetails?.actionTaken}</h6>
                                         </div>
                                         <div className="col_70p">
                                             <h6>{stockDetails?.remark}</h6>
