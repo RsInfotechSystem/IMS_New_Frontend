@@ -2606,7 +2606,7 @@ export const communication = {
   handleRepairConsume: async (data) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/repair/get-assigned-material-list`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/repair/consume-assigned-material`,
         data,
 
         {

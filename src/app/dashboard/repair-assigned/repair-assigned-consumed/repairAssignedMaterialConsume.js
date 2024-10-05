@@ -360,9 +360,9 @@ const ConsumeMaterial = () => {
                                                                 <input
                                                                     className="form-check-input"
                                                                     type="checkbox"
-                                                                    key={product?.stockId?._id}
-                                                                    checked={selectedMaterials.includes(product?.stockId?._id)}
-                                                                    onChange={() => handleMaterialCheckboxChange(product?.stockId?._id)}
+                                                                    key={product?._id}
+                                                                    checked={selectedMaterials.includes(product?._id)}
+                                                                    onChange={() => handleMaterialCheckboxChange(product?._id)}
                                                                 // disabled={isDisabled}
                                                                 />
                                                             </div>

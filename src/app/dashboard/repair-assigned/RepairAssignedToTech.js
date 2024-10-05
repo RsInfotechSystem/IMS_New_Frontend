@@ -216,7 +216,7 @@ const RepairTask = () => {
                                             <h6
                                                 style={{ color: "#0000FF", cursor: "pointer" }}
                                                 onClick={() => {
-                                                    router.push("/dashboard/repair-assigned/repair-assigned-consumed");
+                                                    router.push(`/dashboard/repair-assigned/repair-assigned-consumed?repairId=${stockDetails?._id}`);
                                                 }}
                                             >
                                                 {stockDetails?.serialTag}
