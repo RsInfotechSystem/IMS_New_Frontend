@@ -34,9 +34,6 @@ const InitialRepair = () => {
     const [material, setMaterial] = useState([]);
     const [timeoutId, setTimeoutId] = useState();
     const [filter, setFilter] = useState({});
-    const [selectAllChecked, setSelectAllChecked] = useState(false);
-    const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-    const [showModal, setShowModal] = useState({ modal: false });
 
     async function RepairMaterialList({
         page = 1,
@@ -90,15 +87,6 @@ const InitialRepair = () => {
             setCurrentPage(1);
         }, 2000);
         setTimeoutId(_timeOutId);
-    };
-
-    const handleSelectAllChange = (e) => {
-        setSelectAllChecked(e.target.checked);
-
-        // Update the array of selected checkboxes based on the "Select All" checkbox
-        setSelectedCheckboxes((prevSelected) =>
-            e.target.checked ? material.map((materialDetails) => materialDetails._id) : []
-        );
     };
 
     const handleDeleteTask = async (jobNo) => {
@@ -257,7 +245,7 @@ const InitialRepair = () => {
                                                 style={{ color: "#0000FF", cursor: "pointer" }}
                                                 onClick={() =>
                                                     router.push(
-                                                        `/dashboard/initial-repair/all-initial-repair?repairId=${stockDetails?._id}`
+                                                        `/dashboard/initial-repair/all-initial-repair-item?repairId=${stockDetails?._id}`
                                                     )
                                                 }
                                             >
@@ -301,7 +289,7 @@ const InitialRepair = () => {
                                                 >
                                                     <FontAwesomeIcon icon={faFileInvoice} />
                                                 </div>
-                                                <div
+                                                {/* <div
                                                     title="edit"
                                                     onClick={() => {
                                                         router.push(`/dashboard/initial-repair/assign-technician?repairId=${stockDetails?._id}`);
@@ -339,7 +327,7 @@ const InitialRepair = () => {
                                                             </clipPath>
                                                         </defs>
                                                     </svg>
-                                                </div>
+                                                </div> */}
                                                 <div
                                                     title="delete"
                                                     onClick={() =>

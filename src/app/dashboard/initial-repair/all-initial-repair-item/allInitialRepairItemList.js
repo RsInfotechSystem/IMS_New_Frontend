@@ -23,7 +23,7 @@ import Button from "@/common-components/Button";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
-const AllInitialRepair = () => {
+const AllInitialRepairItemList = () => {
     const router = useRouter();
     const params = useSearchParams()
     const [modalState, setModalStates] = useState({
@@ -148,7 +148,16 @@ const AllInitialRepair = () => {
             setLoader(false);
         }
     }
-
+    const handleSearch = (e) => {
+        setSearchString(e.target.value);
+        let isSearch = true;
+        clearTimeout(timeoutId);
+        let _timeOutId = setTimeout(() => {
+            repairMaterialById({ page: 1, searchString: e.target.value, isSearch, ...filter });
+            setCurrentPage(1);
+        }, 2000);
+        setTimeoutId(_timeOutId);
+    };
     useEffect(() => {
         repairMaterialById({ page: currentPage, searchString, isFirstCall: true, ...filter });
     }, [isPageUpdated]);
@@ -291,4 +300,4 @@ const AllInitialRepair = () => {
     );
 };
 
-export default AllInitialRepair;
+export default AllInitialRepairItemList;

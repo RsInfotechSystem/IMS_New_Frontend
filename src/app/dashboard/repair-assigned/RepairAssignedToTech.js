@@ -126,20 +126,29 @@ const RepairTask = () => {
 
     const technicianRepairRemark = async (index) => {
         try {
+            if (!material[index][`stockRequired_${index}`]) {
+                toast.info("Stock Required field is missing. Please provide a value.");
+                return;
+            }
+            if (!rowData[index].remark) {
+                toast.info("Remark field is empty. Please provide a remark.");
+                return;
+            }
+            if (!rowData[index].status) {
+                toast.info("Stock Status is missing. Please select a status.");
+                return;
+            }
+
             setLoader(true);
             const payload = {
                 materiald: material[index]._id,
                 systemStatus: rowData[index].status,
                 stockRequired: material[index][`stockRequired_${index}`],
-                // stockDetails[`stockRequired_${index}`]
-                // stockRequired:
-                //   rowData[index].stockRequired === "Yes"
-                //     ? true
-                //     : rowData[index].stockRequired === "No"
-                //     ? false
-                //     : null,
                 remark: rowData[index].remark,
             };
+            console.log(payload, "payload");
+
+            return
             let response = await communication.technicianRepairRemark(payload);
             if (response?.data?.status === "SUCCESS") {
                 setIsEditing(false);
@@ -199,16 +208,16 @@ const RepairTask = () => {
                     <div className="table_section inventory_table_res">
                         <div className="table_header">
                             <div className="col_20p">
-                                <h5>Sr. No.</h5>
+                                <h5 className="text-center">Sr. No.</h5>
                             </div>
                             <div className="col_25p">
-                                <h5>Serial Tag</h5>
+                                <h5 className="text-center">Serial Tag</h5>
                             </div>
                             <div className="col_25p">
-                                <h5>Category</h5>
+                                <h5 className="text-center">Category</h5>
                             </div>
                             <div className="col_50p">
-                                <h5>Description</h5>
+                                <h5 className="text-center">Description</h5>
                             </div>
                             <div className="col_50p">
                                 <h5 className="text-center">Status</h5>
@@ -217,13 +226,13 @@ const RepairTask = () => {
                                 <h5 className="text-center">Stock Required</h5>
                             </div>
                             <div className="col_50p">
-                                <h5>Remark</h5>
+                                <h5 className="text-center">Remark</h5>
                             </div>
                             <div className="col_30p">
                                 <h5>Client Response</h5>
                             </div>
-                            <div className="col_20p text-center">
-                                <h5>Action</h5>
+                            <div className="col_20p">
+                                <h5 className="text-center">Action</h5>
                             </div>
                         </div>
 
@@ -232,10 +241,11 @@ const RepairTask = () => {
                                 {material?.map((stockDetails, index) => (
                                     <div className="table_data" key={index}>
                                         <div className="col_20p">
-                                            <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                                            <h6 className="text-center">{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                         </div>
                                         <div className="col_25p">
                                             <h6
+                                                className="text-center"
                                                 style={{ color: "#0000FF", cursor: "pointer" }}
                                                 onClick={() => {
                                                     router.push(
@@ -247,10 +257,10 @@ const RepairTask = () => {
                                             </h6>
                                         </div>
                                         <div className="col_25p">
-                                            <h6>{stockDetails?.category}</h6>
+                                            <h6 className="text-center">{stockDetails?.category}</h6>
                                         </div>
                                         <div className="col_50p">
-                                            <h6>{stockDetails?.itemDescriptionNproblemObserved}</h6>
+                                            <h6 className="text-center">{stockDetails?.itemDescriptionNproblemObserved}</h6>
                                         </div>
                                         <div className="col_50p">
                                             <div className="position-relative">
@@ -342,7 +352,7 @@ const RepairTask = () => {
                                             /> */}
                                         </div>
                                         <div className="col_30p">
-                                            <h6>{stockDetails?.sendResponse ? stockDetails?.sendResponse : "--"}</h6>
+                                            <h6 className="text-center">{stockDetails?.sendResponse ? stockDetails?.sendResponse : "--"}</h6>
                                         </div>
                                         <div className="col_20p d-flex justify-content-center align-items-center">
                                             {isEditing && editingIndex === index ? (

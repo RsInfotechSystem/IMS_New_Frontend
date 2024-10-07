@@ -1,8 +1,8 @@
 import React from "react";
-import AssignMaterialToTech from "./assignRepairMaterial";
+import RepairMaterialListForAssign from "./repairMaterialListForAssign";
 
 function Page() {
-    return <AssignMaterialToTech />;
+    return <RepairMaterialListForAssign />;
 }
 
 export default Page;

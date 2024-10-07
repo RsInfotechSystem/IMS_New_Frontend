@@ -39,98 +39,23 @@ const ConsumeMaterial = () => {
     const [material, setMaterial] = useState([]);
     const [selectedMaterials, setSelectedMaterials] = useState([]);
     const [allMaterialsSelected, setAllMaterialsSelected] = useState(false);
-    const [blocks, setBlocks] = useState([]);
-    const [blocksCart, setBlocksCart] = useState([]);
-    const [racks, setRacks] = useState([]);
-    const [Cartracks, setCartRacks] = useState([]);
-    const [rackPartation, setRackPartation] = useState([]);
-    const [rackPartationCart, setRackPartationCart] = useState([]);
-    const [locationList, setLocationList] = useState([]);
-    const [rejectItem, setRejectItem] = useState("");
-    const [parameterKeys, setparameterKeys] = useState([]);
     const [consumedMaterials, setConsumedMaterials] = useState([]);
-    const [cartParameter, setCartParameter] = useState([]);
-    const [respondHandlerModalState, setRespondHandlerModalState] = useState({
-        state: false,
-        jobNo: "",
-    });
-    const [cartSelectOption, setCartSelectOption] = useState({});
-    const [CategoryMapData, setCategoryMapData] = useState([]);
-    const [cardDataToMap, setCardDataToMap] = useState({
-        block: {
-            0: [],
-        },
-        rack: {
-            0: [],
-        },
-        partition: {
-            0: [],
-        },
-        brand: {
-            0: [],
-        },
-        parameter: {
-            0: [],
-        },
-        model: {
-            0: [],
-        },
-    });
     const [_parameter, __setParameter] = useState([]);
-    const [model, setModel] = useState([]);
-    const [selectedItems, setSelectedItems] = useState([]);
-    const [isEditing, setIsEditing] = useState(false);
-    const [editingIndex, setEditingIndex] = useState(null);
-    const [dumpMaterial, setDumpMaterial] = useState([]);
     const [_category, _setCategory] = useState("");
-    const [isChangeLocationChecked, setIsChangeLocationChecked] = useState("");
-    const [isChangeLocationCheckedMaterial, setIsChangeLocationCheckedMaterial] = useState("");
-    const [rowSelectionsMaterial, SetRowSelectionsMaterial] = useState({});
-    const [brandsData, setBrandsData] = useState([]);
-    const [isStoreSelected, setIsStoreSelected] = useState(false);
-    const [rowData, setRowData] = useState([{ blocks: [], racks: [], partitions: [] }]);
-    const [dumpCount, setDumpCount] = useState(0);
-    const [storeCount, setStoreCount] = useState(0);
-    const [partitions, setPartitions] = useState([]);
     const [_cartParameter, _setCartParameter] = useState([]);
-    const [rowSelections, setRowSelections] = useState({});
-    const [rowCategories, setRowCategories] = useState({});
-    const [rowParameters, setRowParameters] = useState({});
-    const [savedDump, seSaveDump] = useState([]);
-    const [savedMaterials, setSavedMaterials] = useState([]);
-    const [cartData, setCartData] = useState([]);
     const { register, handleSubmit, setValue, watch, getValues } = useForm({
         defaultValues: {
-            rows: [
-                {
-                    serialNo: "",
-                    itemCode: "",
-                    quantity: "",
-                    categoryId: "",
-                    brandId: "",
-                    modelId: "",
-                    parameter: "",
-                    // selection: "",
-                    locationId: "",
-                    blockId: "",
-                    rackId: "",
-                    partitionName: "",
-                    conditionType: "",
-                    status: "",
-                },
-            ],
         },
     });
-    const categoryId = watch("categoryId");
-    const rack = watch("blockId");
-    const _rackIdForPrtn = watch("rackId");
-    const locationCart = watch("locationIdCart");
-    const rows = watch("rows");
+
 
     async function TechnicianConsumedMaterial() {
         try {
             setLoader(true);
-            const serverResponse = await communication.technicianConsumedMaterial();
+            let payload = {
+                repairMaterialId: params.get("repairId")
+            }
+            const serverResponse = await communication.technicianConsumedMaterial(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 setMaterial(serverResponse?.data?.material);
                 // toast.success(serverResponse.data.message);

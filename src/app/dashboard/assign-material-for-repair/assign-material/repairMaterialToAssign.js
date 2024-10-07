@@ -2,11 +2,10 @@
 
 import { communication } from "@/services/communication";
 import { useEffect, useMemo, useReducer, useState } from "react";
-import { getCategory, getCategoryWiseBrand, getCategoryWiseParameter } from "@/services/commonApis";
+import { getCategory, getCategoryWiseBrand } from "@/services/commonApis";
 import { useForm } from "react-hook-form";
 import { useRouter, useSearchParams } from "next/navigation";
 import Loader from "@/common-components/Loader";
-import { stockStatus } from "@/utilities/stock-status-array";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleDown, faTrash } from "@fortawesome/free-solid-svg-icons";
 import CustomBtn from "@/common-components/CustomBtn";
@@ -27,7 +26,6 @@ const AssignMaterialToTech = () => {
     const [output, setOutput] = useState([]);
     const [brandsData, setBrandsData] = useState([]);
     const [CategoryMapData, setCategoryMapData] = useState([]);
-    const [brandMapData, setBrandMapData] = useState([]);
     const [selectedParameters, setSelectedParameters] = useState({});
     const [_material, _setMaterial] = useState();
     const router = useRouter();
@@ -48,7 +46,6 @@ const AssignMaterialToTech = () => {
         brandId: "",
         modelId: "",
     });
-    const [expandedModals, setExpandedModals] = useState([]);
     const [quantities, setQuantities] = useState([]);
     const [locationList, setLocationList] = useState([]);
     const [formValues, setFormValues] = useState({
@@ -82,6 +79,10 @@ const AssignMaterialToTech = () => {
     const categoryId = watch("categoryId");
     const brandId = watch("brandId");
     // get-location
+    useEffect(() => {
+        const paramUser = param.get("assignTo")
+        setUserId(paramUser)
+    }, [userId, TechnicianList])
     async function getLocations() {
         try {
             setLoader(true);
@@ -177,18 +178,6 @@ const AssignMaterialToTech = () => {
         setMaterial(filteredList);
     }, [state?._status, state?._conditionType]);
 
-    // useEffect(() => {
-    //   const id = getValues("locationId");
-    //   if (id) {
-    //     setState({ statusFilter: true });
-    //     let isSearch = true;
-    //     getMaterialList({
-    //       page: 1,
-    //       isSearch,
-    //     });
-    //   }
-    // }, [state?.status?.keyId]);
-
     const technicianList = async (id) => {
         try {
             setLoader(true);
@@ -210,24 +199,7 @@ const AssignMaterialToTech = () => {
             setLoader(false);
         }
     };
-    useEffect(() => {
-        getLocations();
-    }, []);
-    useEffect(() => {
-        const id = getValues("locationId");
-        if (id) {
-            technicianList(id);
-        }
-    }, [locationList.length >= 1 && location]);
-    useEffect(() => {
-        const id = getValues("locationId");
-        if (id) {
-            getMaterialList({ id, isFirstCall: true });
-        }
-    }, [locationList.length >= 1 && location]);
-    const handleFiltersChange = (filters) => {
-        setSelectedFilters(filters);
-    };
+
 
     const filteredMaterial = material.filter(
         (item) =>
@@ -263,16 +235,6 @@ const AssignMaterialToTech = () => {
         );
     };
 
-    // const toggleModal = (modelName) => {
-    //   setExpandedModals((prevExpandedModals) => {
-    //     if (prevExpandedModals.includes(modelName)) {
-    //       return prevExpandedModals.filter((modal) => modal !== modelName);
-    //     } else {
-    //       return [...prevExpandedModals, modelName];
-    //     }
-    //   });
-    // };
-    //top table
     const handleCheckboxChange = (event, materialData) => {
         const isChecked = event?.target?.checked;
 
@@ -373,36 +335,7 @@ const AssignMaterialToTech = () => {
         );
     };
 
-    useEffect(() => {
-        const fetchMaterial = async () => {
-            const id = getValues("categoryId");
 
-            try {
-                let payload = {
-                    categoryId: id,
-                };
-                if (id) {
-                    let response = await communication.getCategoryWiseParameter(payload);
-                    if (response?.data?.status === "SUCCESS") {
-                        setParameter(response?.data?.parameter);
-                    }
-                }
-            } catch (error) {
-                toast.warn(error.message);
-            }
-        };
-        fetchMaterial();
-    }, [formValues.categoryId]);
-
-    // const handleChange = (e) => {
-    //   const { name, value } = e.target;
-    //   if (value || value) {
-    //     setFormValues({ ...formValues, [name]: value });
-    //     setErrors({ ...errors, [name]: "" }); // Clear error message on input change
-    //   } else {
-    //     setParameter([]);
-    //   }
-    // };
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormValues({ ...formValues, [name]: value });
@@ -418,27 +351,6 @@ const AssignMaterialToTech = () => {
         }
     };
 
-    // const validateForm = () => {
-    //   const newErrors = {};
-
-    //   // Validate form based on conditions
-    //   if (
-    //     !formValues.searchString &&
-    //     (!formValues.categoryId ||
-    //       !formValues.status ||
-    //       !formValues.brandId ||
-    //       !formValues.conditionType)
-    //   ) {
-    //     newErrors.searchString = "Serial No./Item Code is required";
-    //     if (!formValues.categoryId) newErrors.categoryId = "Category is required";
-    //     if (!formValues.status) newErrors.status = "Status is required";
-    //     if (!formValues.brandId) newErrors.brandId = "Brand is required";
-    //     if (!formValues.conditionType) newErrors.conditionType = "Condition is required";
-    //   }
-
-    //   setErrors(newErrors);
-    //   return Object.keys(newErrors).length === 0;
-    // };
     const validateForm = () => {
         const newErrors = {};
 
@@ -522,11 +434,6 @@ const AssignMaterialToTech = () => {
             setLoader(false);
         }
     };
-    useEffect(() => {
-        if (categoryId && brandId) {
-            submitForm();
-        }
-    }, [categoryId, brandId, selectedParameters]);
 
     const handleAssign = async () => {
         try {
@@ -540,10 +447,14 @@ const AssignMaterialToTech = () => {
             }
             setLoader(true);
             let payload = {
+                repairMaterialId: param.get("materialId"),
                 materialDetails: output,
-                userId: userId,
+                userId: param.get("assignTo"),
             };
-
+            {
+                console.log(payload, "payload")
+            }
+            return
             let response = await communication.AssignMaterial(payload);
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response.data.message);
@@ -566,51 +477,96 @@ const AssignMaterialToTech = () => {
         }
     };
 
-    const handleUpdateAssign = async () => {
-        try {
-            if (!userId) {
-                toast.warn("Please Select Technician");
-                return;
-            }
-            if (output?.length <= 0) {
-                toast.warn("Please Select At least one material");
-                return;
-            }
-            setLoader(true);
-            let payload = {
-                materialDetails: output,
-                userId: userId,
-                jobNo: param?.get("JobNo"),
-            };
-            let response = await communication.UpdateAssignMaterial(payload);
-            if (response?.data?.status === "SUCCESS") {
-                toast.success(response.data.message);
-                setSelectedList([]);
-                setMaterial([]);
-                setParameter([]);
-                setOutput([]);
-                setStockIds([]);
-                // reset()
-                setUserId("");
-                setValue("locationId", "");
-            } else if (response?.data?.status === "JWT_INVALID") {
-                toast.warn(response?.data?.message);
-                router.push("/");
-            } else {
-                toast.warn(response?.data?.message);
-            }
-        } catch (error) {
-            toast.error(response?.data?.message);
-        } finally {
-            setLoader(false);
-        }
-    };
+    // const handleUpdateAssign = async () => {
+    //     try {
+    //         if (!userId) {
+    //             toast.warn("Please Select Technician");
+    //             return;
+    //         }
+    //         if (output?.length <= 0) {
+    //             toast.warn("Please Select At least one material");
+    //             return;
+    //         }
+    //         setLoader(true);
+    //         let payload = {
+    //             materialDetails: output,
+    //             userId: userId,
+    //             jobNo: param?.get("JobNo"),
+    //         };
+    //         let response = await communication.UpdateAssignMaterial(payload);
+    //         if (response?.data?.status === "SUCCESS") {
+    //             toast.success(response.data.message);
+    //             setSelectedList([]);
+    //             setMaterial([]);
+    //             setParameter([]);
+    //             setOutput([]);
+    //             setStockIds([]);
+    //             // reset()
+    //             setUserId("");
+    //             setValue("locationId", "");
+    //         } else if (response?.data?.status === "JWT_INVALID") {
+    //             toast.warn(response?.data?.message);
+    //             router.push("/");
+    //         } else {
+    //             toast.warn(response?.data?.message);
+    //         }
+    //     } catch (error) {
+    //         toast.error(response?.data?.message);
+    //     } finally {
+    //         setLoader(false);
+    //     }
+    // };
     async function initialAPICall() {
         setCategoryMapData(await getCategory(router));
-        // if (modalStates?.type !== "create") {
-        //   await getBrandById();
-        // }
     }
+
+
+    useEffect(() => {
+        getLocations();
+    }, []);
+    useEffect(() => {
+        const id = getValues("locationId");
+        if (id) {
+            technicianList(id);
+        }
+    }, [locationList.length >= 1 && location, userId]);
+
+    useEffect(() => {
+        const id = getValues("locationId");
+        if (id) {
+            getMaterialList({ id, isFirstCall: true });
+        }
+    }, [locationList.length >= 1 && location]);
+    const handleFiltersChange = (filters) => {
+        setSelectedFilters(filters);
+    };
+    useEffect(() => {
+        const fetchMaterial = async () => {
+            const id = getValues("categoryId");
+
+            try {
+                let payload = {
+                    categoryId: id,
+                };
+                if (id) {
+                    let response = await communication.getCategoryWiseParameter(payload);
+                    if (response?.data?.status === "SUCCESS") {
+                        setParameter(response?.data?.parameter);
+                    }
+                }
+            } catch (error) {
+                toast.warn(error.message);
+            }
+        };
+        fetchMaterial();
+    }, [formValues.categoryId]);
+
+    useEffect(() => {
+        if (categoryId && brandId) {
+            submitForm();
+        }
+    }, [categoryId, brandId, selectedParameters]);
+
     useEffect(() => {
         initialAPICall();
     }, []);
@@ -621,69 +577,8 @@ const AssignMaterialToTech = () => {
             getCategoryWiseBrand(id, setLoader, router, setBrandsData);
         }
     }, [formValues?.categoryId]);
-    // const fetchMaterial = async (id) => {
-    //   try {
-    //     let payload = {
-    //       categoryId: id,
-    //     };
-    //     if (id) {
-    //       let response = await communication.getCategoryWiseParameter(payload);
-    //       if (response?.data?.status === "SUCCESS") {
-    //         setParameter(response?.data?.parameter);
-    //       }
-    //     }
-    //   } catch (error) {
-    //     toast.error(error.message);
-    //   }
-    // };
 
-    // const handleParameterSelect = (modelName, param) => {
-    //   setSelectedParameters((prev) => ({
-    //     ...prev,
-    //     [modelName]: {
-    //       ...(prev[modelName] || {}),
-    //       [param]: !(prev[modelName] && prev[modelName][param]),
-    //     },
-    //   }));
-    // };
 
-    async function getAssignMaterialByJobNo() {
-        try {
-            setLoader(true);
-            let payload = {
-                // location: "66b0ad1b9d8190631daebeec",
-                jobNo: param?.get("JobNo"),
-            };
-            const responseFromServer = await communication.getMaterialAssignByJob(payload); // bypass
-            if (responseFromServer?.data?.status === "SUCCESS") {
-                // const combinedMaterials = [...assignedMaterial, ...selectedList];
-                // const combinedData = isView ? [...selectedList, ...assignedMaterial] : selectedList;
-                // if (router.query.isView === "true") {
-                setSelectedList(responseFromServer?.data?.material);
-                setValue("locationId", responseFromServer?.data?.locationId);
-                setUserId(responseFromServer?.data?.assignedTo);
-                // }
-            } else if (responseFromServer?.data?.status === "JWT_INVALID") {
-                toast.info(responseFromServer?.data?.message);
-                router.push("/login");
-            } else {
-                toast.info(responseFromServer?.data?.message);
-                setAssignedMaterial([]);
-            }
-        } catch (error) {
-            toast.info(error?.response?.data?.message || error.message);
-        } finally {
-            setLoader(false);
-        }
-    }
-    useEffect(() => {
-        if (param?.get("type") === "edit") {
-            setIsEdit(true);
-            getAssignMaterialByJobNo();
-        } else {
-            setIsEdit(false);
-        }
-    }, []);
 
 
     return (
@@ -692,6 +587,8 @@ const AssignMaterialToTech = () => {
                 <Loader />
             ) : (
                 <div className="kitchen_wrapper">
+                    {console.log(userId, "userId")
+                    }
                     <div className="row">
                         <div className="col-12 col-lg-4 col-md-4">
                             <div className="form_view pt-0">
@@ -744,6 +641,7 @@ const AssignMaterialToTech = () => {
                                                             name="locationId"
                                                             className="form-control custom_input"
                                                             style={{ width: "100%" }}
+                                                            value={userId}
                                                             onChange={(e) => setUserId(e?.target?.value)}
                                                         >
                                                             <option value="" className="text-secondary text-lowercase"></option>
@@ -1268,18 +1166,13 @@ const AssignMaterialToTech = () => {
                                     <div className="form_button_wrapper col-lg-2 col-md-4">
                                         <CustomBtn
                                             name="Assign material"
-                                            onClick={
-                                                param.get("type") === "edit"
-                                                    ? () => handleUpdateAssign()
-                                                    : () => handleAssign()
+                                            onClick={() => handleAssign()
                                             }
                                         />
                                     </div>
-                                    {param.get("type") === "edit" && (
-                                        <div className="form_button_wrapper col-lg-2 col-md-4">
-                                            <CustomBtn name="Back" onClick={() => router.back()} />
-                                        </div>
-                                    )}
+                                    <div className="form_button_wrapper col-lg-2 col-md-4">
+                                        <CustomBtn name="Back" onClick={() => router.back()} />
+                                    </div>
                                 </div>
                             </div>
                         </div>
