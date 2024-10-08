@@ -104,7 +104,9 @@ const RepairMaterialListForAssign = () => {
             const serverResponse = await communication.assignRepairToTech(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
-                repairMaterialList(page, searchString);
+                setSelectedCheckboxes([])
+                setSelectAllChecked([])
+                repairMaterialList({ page, searchString });
                 // router.back();
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse.data.message);

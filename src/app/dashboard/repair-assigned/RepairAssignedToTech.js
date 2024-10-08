@@ -148,8 +148,9 @@ const RepairTask = () => {
             };
             console.log(payload, "payload");
 
-            return
+
             let response = await communication.technicianRepairRemark(payload);
+
             if (response?.data?.status === "SUCCESS") {
                 setIsEditing(false);
                 RepairMaterialAssignedToTechList({ page: currentPage, searchString });

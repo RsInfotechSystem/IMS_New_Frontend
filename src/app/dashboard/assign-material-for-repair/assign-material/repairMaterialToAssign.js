@@ -81,7 +81,7 @@ const AssignMaterialToTech = () => {
     // get-location
     useEffect(() => {
         const paramUser = param.get("assignTo")
-        setUserId(paramUser)
+        // setUserId(paramUser)
     }, [userId, TechnicianList])
     async function getLocations() {
         try {
@@ -454,21 +454,23 @@ const AssignMaterialToTech = () => {
             {
                 console.log(payload, "payload")
             }
-            return
-            let response = await communication.AssignMaterial(payload);
+
+            let response = await communication.AssignRepairMaterial(payload);
+            console.log(response, "response");
+
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response.data.message);
                 setSelectedList([]);
                 setMaterial([]);
                 setParameter([]);
                 setOutput([]);
+                setTechnicianList([]);
+                setLocationList([]);
                 setStockIds([]);
                 // router.back();
             } else if (response?.data?.status === "JWT_INVALID") {
                 toast.warn(response?.data?.message);
                 router.push("/");
-            } else {
-                toast.warn(response?.data?.message);
             }
         } catch (error) {
             toast.error(response?.data?.message);
@@ -529,7 +531,7 @@ const AssignMaterialToTech = () => {
         if (id) {
             technicianList(id);
         }
-    }, [locationList.length >= 1 && location, userId]);
+    }, [locationList.length >= 1 && location]);
 
     useEffect(() => {
         const id = getValues("locationId");
@@ -641,7 +643,7 @@ const AssignMaterialToTech = () => {
                                                             name="locationId"
                                                             className="form-control custom_input"
                                                             style={{ width: "100%" }}
-                                                            value={userId}
+                                                            // value={userId}
                                                             onChange={(e) => setUserId(e?.target?.value)}
                                                         >
                                                             <option value="" className="text-secondary text-lowercase"></option>
