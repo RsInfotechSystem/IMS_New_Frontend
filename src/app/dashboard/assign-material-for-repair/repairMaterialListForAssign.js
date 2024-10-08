@@ -121,7 +121,79 @@ const RepairMaterialListForAssign = () => {
             setLoader(false);
         }
     }
+    const showInputDialog = (id) => {
+        Swal.fire({
+            html: `<p>Do you want move forward with this order ?</p>`,
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                confirmButton: 'custom-button',
+                cancelButton: 'custom-button'
+            }
+        }).then((result) => {
 
+            if (result.isConfirmed) {
+                // yes== go ahead
+                const flag = "goahead"; // Set the flag to true
+                responseToTech(flag, id);
+            } else {
+                // const flag = "";
+                // responseToTech(flag);
+            }
+        });
+    };
+    async function responseToTech(flag = "", id) {
+        try {
+
+            setLoader(true);
+            let payload = {
+                materiald: id,
+                sendResponse: flag
+            };
+            const serverResponse = await communication.responseToTech(payload);
+            if (serverResponse?.data?.status === "SUCCESS") {
+                toast.success(serverResponse.data.message);
+                repairMaterialList();
+                // router.back();
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+                setLoader(false);
+            } else {
+                toast.info(serverResponse.data.message);
+            }
+            setLoader(false);
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
+            setLoader(false);
+        }
+    }
+
+    async function closeRepairMaterial(materialId) {
+        try {
+            setLoader(true);
+            let payload = {
+                materiald: materialId,
+            };
+            const serverResponse = await communication.closeRepairMaterial(payload);
+            if (serverResponse?.data?.status === "SUCCESS") {
+                toast.success(serverResponse.data.message);
+                repairMaterialList();
+                // router.back();
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+                setLoader(false);
+            } else {
+                toast.info(serverResponse.data.message);
+            }
+            setLoader(false);
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
+            setLoader(false);
+        }
+    }
     const handleSearch = (e) => {
         setSearchString(e.target.value);
         let isSearch = true;
@@ -239,7 +311,7 @@ const RepairMaterialListForAssign = () => {
             {/* table  */}
             < div className="table_wrapper" >
                 <div className="table_main">
-                    <div className="table_section inventory_table_res">
+                    <div className="table_section inventory_table_res" style={{ minWidth: "1700px" }}>
                         <div className="table_header">
                             <div className="col_20p">
                                 <div className="check_box">
@@ -277,9 +349,11 @@ const RepairMaterialListForAssign = () => {
                                 <h5>Status</h5>
                             </div>
                             <div className="col_70p">
+                                <h5 className="action_wrraper">Assign</h5>
+                            </div>
+                            <div className="col_70p">
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
-
                         </div>
 
                         {material?.length > 0 ? (
@@ -414,7 +488,23 @@ const RepairMaterialListForAssign = () => {
                                                 }
                                             </h6>
                                         </div>
-
+                                        <div className="col_70p">
+                                            <h6 className="action_wrraper">
+                                                {
+                                                    stockDetails?.materialStatus == "consumed" || stockDetails?.materialStatus == "assigned" || stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} disabled style={{
+                                                        backgroundColor: "#d3d3d3",
+                                                        cursor: "not-allowed"
+                                                    }} /> : <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
+                                                }
+                                                {stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} disabled style={{
+                                                    backgroundColor: "#d3d3d3",
+                                                    cursor: "not-allowed"
+                                                }} />
+                                                    :
+                                                    <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} />
+                                                }
+                                            </h6>
+                                        </div>
                                     </div>
                                 ))}
                             </>

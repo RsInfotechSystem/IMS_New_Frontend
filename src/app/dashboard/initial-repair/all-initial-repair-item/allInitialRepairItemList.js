@@ -245,9 +245,9 @@ const AllInitialRepairItemList = () => {
                             <div className="col_50p">
                                 <h5>Status</h5>
                             </div>
-                            <div className="col_70p">
+                            {/* <div className="col_70p">
                                 <h5 className="action_wrraper">Action</h5>
-                            </div>
+                            </div> */}
 
                         </div>
 
@@ -279,7 +279,7 @@ const AllInitialRepairItemList = () => {
                                         <div className="col_50p">
                                             <h6>{stockDetails?.materialStatus == "commented" ? "Inprocess" : stockDetails?.materialStatus ? stockDetails?.materialStatus : "--"}</h6>
                                         </div>
-                                        <div className="col_70p">
+                                        {/* <div className="col_70p">
                                             <h6 className="action_wrraper">
                                                 {
                                                     stockDetails?.materialStatus == "consumed" || stockDetails?.materialStatus == "assigned" || stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} disabled style={{
@@ -295,7 +295,7 @@ const AllInitialRepairItemList = () => {
                                                     <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} />
                                                 }
                                             </h6>
-                                        </div>
+                                        </div> */}
 
                                     </div>
                                 ))}
