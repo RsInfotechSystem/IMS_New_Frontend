@@ -437,10 +437,10 @@ const AssignMaterialToTech = () => {
 
     const handleAssign = async () => {
         try {
-            if (!userId) {
-                toast.warn("Please Select Technician");
-                return;
-            }
+            // if (!userId) {
+            //     toast.warn("Please Select Technician");
+            //     return;
+            // }
             if (output?.length <= 0) {
                 toast.warn("Please Select At least one material");
                 return;
