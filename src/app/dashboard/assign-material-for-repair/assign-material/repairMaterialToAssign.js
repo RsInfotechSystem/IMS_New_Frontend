@@ -643,6 +643,7 @@ const AssignMaterialToTech = () => {
                                                             name="locationId"
                                                             className="form-control custom_input"
                                                             style={{ width: "100%" }}
+                                                            disabled
                                                             // value={userId}
                                                             onChange={(e) => setUserId(e?.target?.value)}
                                                         >
