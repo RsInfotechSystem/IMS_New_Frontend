@@ -281,8 +281,19 @@ const AllInitialRepairItemList = () => {
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">
-                                                <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
-                                                <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} />
+                                                {
+                                                    stockDetails?.materialStatus == "consumed" || stockDetails?.materialStatus == "assigned" || stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} disabled style={{
+                                                        backgroundColor: "#d3d3d3",
+                                                        cursor: "not-allowed"
+                                                    }} /> : <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
+                                                }
+                                                {stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} disabled style={{
+                                                    backgroundColor: "#d3d3d3",
+                                                    cursor: "not-allowed"
+                                                }} />
+                                                    :
+                                                    <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} />
+                                                }
                                             </h6>
                                         </div>
 
