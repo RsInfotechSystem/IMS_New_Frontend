@@ -51,13 +51,18 @@ const RepairMaterialListForAssign = () => {
             setLoader(false);
         }
     };
-    async function repairMaterialList() {
-        const payload = {
-        }
-        // if (materialAssignTo) {
-        //     payload.materialAssignTo = materialAssignTo;
-        // }
+    async function repairMaterialList({
+        page = 1,
+        searchString,
+        userId,
+        isSearch = false
+    } = {}) {
+
         try {
+            let payload = {
+                page,
+                searchString: searchString,
+            };
             setLoader(true);
             const serverResponse = await communication.repairMaterialAssignedToTechList(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
@@ -240,7 +245,7 @@ const RepairMaterialListForAssign = () => {
             {loader && <Loader text="Fetching Data..." />}
             <div className="top_header">
                 <div className="tab_title">Repair Material List</div>
-                <div
+                {/* <div
                     className="back_btn"
                     onClick={() => {
                         router.back();
@@ -270,14 +275,14 @@ const RepairMaterialListForAssign = () => {
                         </svg>
                     </div>
                     <div>Back</div>
-                </div>
-                {/* <Pagination
+                </div> */}
+                <Pagination
                     isPageUpdated={isPageUpdated}
                     setIsPageUpdated={setIsPageUpdated}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
                     pageCount={pageCount}
-                /> */}
+                />
             </div>
             <div className="search_btn_wrapper">
                 <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
@@ -348,6 +353,9 @@ const RepairMaterialListForAssign = () => {
                             <div className="col_50p">
                                 <h5>Status</h5>
                             </div>
+                            <div className="col_50p">
+                                <h5>Technician Name</h5>
+                            </div>
                             <div className="col_70p">
                                 <h5 className="action_wrraper">Assign</h5>
                             </div>
@@ -395,6 +403,9 @@ const RepairMaterialListForAssign = () => {
                                         </div>
                                         <div className="col_50p">
                                             <h6>{stockDetails?.materialStatus == "commented" ? "Inprocess" : stockDetails?.materialStatus ? stockDetails?.materialStatus : "--"}</h6>
+                                        </div>
+                                        <div className="col_50p">
+                                            <h6>{stockDetails?.materialAssignTo?.name ? stockDetails?.materialAssignTo?.name : "--"}</h6>
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">
