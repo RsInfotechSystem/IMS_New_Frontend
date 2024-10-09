@@ -16,6 +16,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "@/common-components/Button";
 import { stockRepairStatus } from "@/helper/repairStockStatus";
+import Search from "@/common-components/Search";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -47,10 +48,18 @@ const RepairTask = () => {
         id: "",
     });
 
-    async function RepairMaterialAssignedToTechList() {
+    async function RepairMaterialAssignedToTechList({
+        page = 1,
+        searchString,
+        isSearch = false
+    } = {}) {
         try {
             setLoader(true);
-            const serverResponse = await communication.repairMaterialAssignedToTechList();
+            let payload = {
+                page,
+                searchString: searchString,
+            };
+            const serverResponse = await communication.repairMaterialAssignedToTechList(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 const updatedMaterials = serverResponse?.data?.materials.map((material, index) => {
                     const modifiedMaterial = { ...material }; // Create a copy of each material object
@@ -168,6 +177,17 @@ const RepairTask = () => {
             setLoader(false);
         }
     };
+    const handleSearch = (e) => {
+        setSearchString(e.target.value);
+        let isSearch = true;
+        clearTimeout(timeoutId);
+        let _timeOutId = setTimeout(() => {
+            RepairMaterialAssignedToTechList({ page: 1, searchString: e.target.value, isSearch, });
+            setCurrentPage(1);
+        }, 2000);
+        setTimeoutId(_timeOutId);
+    };
+
     const handleEditClick = (index) => {
         setIsEditing(true);
         setEditingIndex(index);
@@ -203,6 +223,11 @@ const RepairTask = () => {
                     setCurrentPage={setCurrentPage}
                     pageCount={pageCount}
                 />
+
+            </div>
+            <div className="search_btn_wrapper">
+                <Search value={searchString} onChange={handleSearch} placeholder={"Search"} />
+
             </div>
             <div className="table_wrapper">
                 <div className="table_main">
