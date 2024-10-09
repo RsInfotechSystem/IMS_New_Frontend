@@ -80,7 +80,7 @@ const ConsumeMaterial = () => {
         const isChecked = e.target.checked;
         setAllMaterialsSelected(isChecked);
         if (isChecked) {
-            setSelectedMaterials(material.map((item) => item?.materialId));
+            setSelectedMaterials(material.map((item) => item?._id));
         } else {
             setSelectedMaterials([]);
         }

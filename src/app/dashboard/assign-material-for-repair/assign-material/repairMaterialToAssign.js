@@ -467,7 +467,7 @@ const AssignMaterialToTech = () => {
                 setTechnicianList([]);
                 setLocationList([]);
                 setStockIds([]);
-                // router.back();
+                router.back();
             } else if (response?.data?.status === "JWT_INVALID") {
                 toast.warn(response?.data?.message);
                 router.push("/");
