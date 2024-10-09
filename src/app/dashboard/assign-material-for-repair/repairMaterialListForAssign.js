@@ -316,7 +316,7 @@ const RepairMaterialListForAssign = () => {
             {/* table  */}
             < div className="table_wrapper" >
                 <div className="table_main">
-                    <div className="table_section inventory_table_res" style={{ minWidth: "1700px" }}>
+                    <div className="table_section inventory_table_res" style={{ minWidth: "2000px" }}>
                         <div className="table_header">
                             <div className="col_20p">
                                 <div className="check_box">
