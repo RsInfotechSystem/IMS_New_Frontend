@@ -453,60 +453,60 @@ const RepairMaterialListForAssign = () => {
                                                             </svg>
                                                         </div>
                                                 } */}
-                                                {
-                                                    stockDetails?.materialStatus == "assigned" ?
-                                                        "--"
-                                                        :
-                                                        <div
-                                                            title="edit"
-                                                            onClick={() => {
-                                                                router.push(`/dashboard/assign-material-for-repair/assign-material?materialId=${stockDetails?._id}&assignTo=${stockDetails?.materialAssignTo?._id}`);
-                                                            }}
+                                                {stockDetails?.stockRequired ?
+                                                    <div
+                                                        title="edit"
+                                                        onClick={() => {
+                                                            router.push(`/dashboard/assign-material-for-repair/assign-material?materialId=${stockDetails?._id}&assignTo=${stockDetails?.materialAssignTo?._id}`);
+                                                        }}
+                                                    >
+                                                        <svg
+                                                            width="27"
+                                                            height="27"
+                                                            viewBox="0 0 25 24"
+                                                            fill="none"
+                                                            xmlns="http://www.w3.org/2000/svg"
                                                         >
-                                                            <svg
-                                                                width="27"
-                                                                height="27"
-                                                                viewBox="0 0 25 24"
-                                                                fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg"
-                                                            >
-                                                                <g clip-path="url(#clip0_279_5204)">
-                                                                    <path
-                                                                        d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
-                                                                        stroke="#0D6EFD"
-                                                                        stroke-linecap="round"
-                                                                        stroke-linejoin="round"
+                                                            <g clip-path="url(#clip0_279_5204)">
+                                                                <path
+                                                                    d="M17.5 15V17.5C17.5 17.8315 17.3683 18.1495 17.1339 18.3839C16.8995 18.6183 16.5815 18.75 16.25 18.75H7.5C7.16848 18.75 6.85054 18.6183 6.61612 18.3839C6.3817 18.1495 6.25 17.8315 6.25 17.5V8.75C6.25 8.41848 6.3817 8.10054 6.61612 7.86612C6.85054 7.6317 7.16848 7.5 7.5 7.5H10"
+                                                                    stroke="#0D6EFD"
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                />
+                                                                <path
+                                                                    d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
+                                                                    stroke="#0D6EFD"
+                                                                    stroke-linecap="round"
+                                                                    stroke-linejoin="round"
+                                                                />
+                                                            </g>
+                                                            <defs>
+                                                                <clipPath id="clip0_279_5204">
+                                                                    <rect
+                                                                        width="15"
+                                                                        height="15"
+                                                                        fill="white"
+                                                                        transform="translate(5 5)"
                                                                     />
-                                                                    <path
-                                                                        d="M12.8125 14.875L18.75 8.875L16.125 6.25L10.1875 12.1875L10 15L12.8125 14.875Z"
-                                                                        stroke="#0D6EFD"
-                                                                        stroke-linecap="round"
-                                                                        stroke-linejoin="round"
-                                                                    />
-                                                                </g>
-                                                                <defs>
-                                                                    <clipPath id="clip0_279_5204">
-                                                                        <rect
-                                                                            width="15"
-                                                                            height="15"
-                                                                            fill="white"
-                                                                            transform="translate(5 5)"
-                                                                        />
-                                                                    </clipPath>
-                                                                </defs>
-                                                            </svg>
-                                                        </div>
+                                                                </clipPath>
+                                                            </defs>
+                                                        </svg>
+                                                    </div> : "--"
                                                 }
                                             </h6>
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">
-                                                {
+                                                {/* {
                                                     stockDetails?.materialStatus == "consumed" || stockDetails?.materialStatus == "assigned" || stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} disabled style={{
                                                         backgroundColor: "#d3d3d3",
                                                         cursor: "not-allowed"
-                                                    }} /> : <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
-                                                }
+                                                    }} /> :
+                                                        <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
+                                                } */}
+                                                <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
+
                                                 {stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} disabled style={{
                                                     backgroundColor: "#d3d3d3",
                                                     cursor: "not-allowed"
