@@ -99,7 +99,6 @@ const InitialRepair = () => {
             }
             let response = await communication.deleteRepairJob(payload);
             if (response?.data?.status === "SUCCESS") {
-                setSelectedCheckboxes([]);
                 toast.success(response.data.message);
                 setModalStates(false)
                 await RepairMaterialList(currentPage, searchString);
@@ -115,6 +114,32 @@ const InitialRepair = () => {
             setLoader(false);
         }
     };
+
+    async function closeRepairJob(repairId) {
+        try {
+            console.log("repairId : ", repairId);
+
+            setLoader(true);
+            let payload = {
+                repairId: repairId,
+            };
+            const serverResponse = await communication.closeRepairJob(payload);
+            if (serverResponse?.data?.status === "SUCCESS") {
+                toast.success(serverResponse.data.message);
+                // router.back();
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+                setLoader(false);
+            } else {
+                toast.info(serverResponse.data.message);
+            }
+            setLoader(false);
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
+            setLoader(false);
+        }
+    }
 
     useEffect(() => {
         RepairMaterialList({ page: currentPage, searchString, isFirstCall: true, ...filter });
@@ -231,7 +256,9 @@ const InitialRepair = () => {
                             <div className="col_30p">
                                 <h5 className="action_wrraper">Action</h5>
                             </div>
-
+                            <div className="col_50p">
+                                <h5 className="action_wrraper">Close Job</h5>
+                            </div>
                         </div>
                         {material?.length > 0 ? (
                             <>
@@ -338,7 +365,11 @@ const InitialRepair = () => {
                                                 </div>
                                             </h6>
                                         </div>
-
+                                        <div className="col_50p">
+                                            <h6 className="action_wrraper">
+                                                <CustomBtn name={"Close"} onClick={(e) => closeRepairJob(stockDetails?._id)} />
+                                            </h6>
+                                        </div>
                                     </div>
                                 ))}
                             </>

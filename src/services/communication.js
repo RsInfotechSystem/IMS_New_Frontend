@@ -2632,6 +2632,18 @@ export const communication = {
       throw error;
     }
   },
+  closeRepairJob: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/repair/close-repair-job`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
   AssignRepairMaterial: async (data) => {
     try {
       return await axios.post(
