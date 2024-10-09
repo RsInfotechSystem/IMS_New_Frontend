@@ -103,9 +103,7 @@ const RepairMaterialListForAssign = () => {
             let payload = {
                 repairMaterials: repairMaterials
             };
-            {
-                console.log(payload, "payload")
-            }
+
             const serverResponse = await communication.assignRepairToTech(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);

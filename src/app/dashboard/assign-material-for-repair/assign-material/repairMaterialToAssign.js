@@ -451,12 +451,9 @@ const AssignMaterialToTech = () => {
                 materialDetails: output,
                 userId: param.get("assignTo"),
             };
-            {
-                console.log(payload, "payload")
-            }
+
 
             let response = await communication.AssignRepairMaterial(payload);
-            console.log(response, "response");
 
             if (response?.data?.status === "SUCCESS") {
                 toast.success(response.data.message);
@@ -589,8 +586,7 @@ const AssignMaterialToTech = () => {
                 <Loader />
             ) : (
                 <div className="kitchen_wrapper">
-                    {console.log(userId, "userId")
-                    }
+
                     <div className="row">
                         <div className="col-12 col-lg-4 col-md-4">
                             <div className="form_view pt-0">

@@ -113,7 +113,6 @@ const ConsumeMaterial = () => {
                 repairmMaterialId: params.get("repairId"),
                 materialIds: selectedMaterials
             };
-            // console.log(payload, "payload");
             const serverResponse = await communication.handleRepairConsume(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);

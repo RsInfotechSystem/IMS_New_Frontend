@@ -155,7 +155,6 @@ const RepairTask = () => {
                 stockRequired: material[index][`stockRequired_${index}`],
                 remark: rowData[index].remark,
             };
-            console.log(payload, "payload");
 
 
             let response = await communication.technicianRepairRemark(payload);
