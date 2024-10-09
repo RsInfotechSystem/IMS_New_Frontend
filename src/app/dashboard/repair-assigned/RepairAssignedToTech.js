@@ -126,7 +126,7 @@ const RepairTask = () => {
 
     const technicianRepairRemark = async (index) => {
         try {
-            if (!material[index][`stockRequired_${index}`]) {
+            if (material[index][`stockRequired_${index}` === false]) {
                 toast.info("Stock Required field is missing. Please provide a value.");
                 return;
             }
@@ -146,8 +146,6 @@ const RepairTask = () => {
                 stockRequired: material[index][`stockRequired_${index}`],
                 remark: rowData[index].remark,
             };
-            console.log(payload, "payload");
-
 
             let response = await communication.technicianRepairRemark(payload);
 

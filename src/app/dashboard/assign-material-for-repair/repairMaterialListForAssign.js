@@ -396,7 +396,7 @@ const RepairMaterialListForAssign = () => {
                                             <h6>{stockDetails?.actionTaken ? stockDetails?.actionTaken : "--"}</h6>
                                         </div>
                                         <div className="col_70p">
-                                            <h6>{stockDetails?.stockRequired == true ? "Yes" : stockDetails?.stockRequired == false ? "No" : "--"}</h6>
+                                            <h6>{stockDetails?.stockRequired == true ? "Yes" : "No"}</h6>
                                         </div>
                                         <div className="col_70p">
                                             <h6>{stockDetails?.remark ? stockDetails?.remark : "--"}</h6>
@@ -498,14 +498,14 @@ const RepairMaterialListForAssign = () => {
                                         </div>
                                         <div className="col_70p">
                                             <h6 className="action_wrraper">
-                                                {/* {
-                                                    stockDetails?.materialStatus == "consumed" || stockDetails?.materialStatus == "assigned" || stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} disabled style={{
+                                                {
+                                                    stockDetails?.materialStatus == "responded" || stockDetails?.materialStatus == "done" || stockDetails?.materialStatus == "closed" || stockDetails?.systemStatus == "non-repairable" ? <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} disabled style={{
                                                         backgroundColor: "#d3d3d3",
                                                         cursor: "not-allowed"
                                                     }} /> :
                                                         <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
-                                                } */}
-                                                <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} />
+                                                }
+                                                {/* <CustomBtn name={"Go Ahead"} onClick={(e) => showInputDialog(stockDetails?._id)} /> */}
 
                                                 {stockDetails?.materialStatus == "closed" ? <CustomBtn name={"Close"} onClick={(e) => closeRepairMaterial(stockDetails?._id)} disabled style={{
                                                     backgroundColor: "#d3d3d3",
