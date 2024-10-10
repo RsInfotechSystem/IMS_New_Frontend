@@ -118,7 +118,7 @@ const InitialRepair = () => {
 
     async function closeRepairJob(repairId) {
         try {
-            console.log("repairId : ", repairId);
+
 
             setLoader(true);
             let payload = {
