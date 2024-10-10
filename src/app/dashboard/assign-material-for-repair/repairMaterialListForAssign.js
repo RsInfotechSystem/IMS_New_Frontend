@@ -452,7 +452,7 @@ const RepairMaterialListForAssign = () => {
                                                             </svg>
                                                         </div>
                                                 } */}
-                                                {stockDetails?.stockRequired && stockDetails?.materialAssignTo ?
+                                                {stockDetails?.stockRequired && stockDetails?.materialAssignTo && stockDetails?.materialStatus !== "done" && stockDetails?.materialStatus !== "closed" ?
                                                     <div
                                                         title="edit"
                                                         onClick={() => {
