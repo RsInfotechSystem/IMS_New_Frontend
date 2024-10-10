@@ -86,8 +86,12 @@ const RepairTask = () => {
                     }))
                 );
                 // toast.success(serverResponse.data.message);
+
                 setPageCount(serverResponse?.data?.totalPages);
                 setPage(page);
+                if (isSearch) {
+                    setCurrentPage(1);
+                }
             } else if (serverResponse?.data?.status === "FAILED") {
                 // toast.info(serverResponse.data.message);
                 setMaterial([]);
@@ -210,7 +214,6 @@ const RepairTask = () => {
             )}
 
             {loader && <Loader text="Fetching Data..." />}
-
             <div className="top_header">
                 <div className="tab_title">Repair Task</div>
 

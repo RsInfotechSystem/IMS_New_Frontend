@@ -68,7 +68,8 @@ const RepairMaterialListForAssign = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 setMaterial(serverResponse?.data?.materials);
                 // toast.success(serverResponse.data.message);
-
+                setPageCount(serverResponse?.data?.totalPages);
+                setPage(page);
             } else if (serverResponse?.data?.status === "FAILED") {
                 // toast.info(serverResponse.data.message);
                 setMaterial([]);

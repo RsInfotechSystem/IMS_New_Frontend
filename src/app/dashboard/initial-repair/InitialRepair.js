@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import CreateInitialRepair from "./create-initial-repair/CreateInitialRepair";
 import CreateRepairPdf from "./create-initial-repair/CreatePDF";
+import Loader from "@/common-components/Loader";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -148,6 +149,7 @@ const InitialRepair = () => {
 
     return (
         <>
+            {loader && <Loader text="Fetching Data..." />}
             {modalState.viewPdf && (
                 <CreateRepairPdf pdfData={modalState?.data} setModalStates={setModalStates} />
             )}

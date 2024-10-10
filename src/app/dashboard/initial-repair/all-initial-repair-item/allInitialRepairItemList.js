@@ -165,6 +165,7 @@ const AllInitialRepairItemList = () => {
 
     return (
         <>
+            {loader && <Loader text="Fetching Data..." />}
             <div className="top_header">
                 <div className="tab_title">Repair Material List</div>
                 <div
