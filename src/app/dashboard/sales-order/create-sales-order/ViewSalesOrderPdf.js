@@ -94,7 +94,7 @@ const ViewSalesOrder = ({ setModalStates, pdfData, toast }) => {
               <Image src={logo} width={80} height={60} alt="ims logo" />
             </div>
             <div className="header_details">
-              <h5>Aanand Computers</h5>
+              <h5>Anand Computers</h5>
               <h6>30/B Saurabh Nagar, Besa road, Ghogali, Nagpur 440034.</h6>
             </div>
           </div>

@@ -59,7 +59,7 @@ const CreateRepairPdf = ({ setModalStates, pdfData, toast }) => {
                             <Image src={logo} width={80} height={60} alt="ims logo" />
                         </div>
                         <div className="header_details">
-                            <h5>Aanand Computers</h5>
+                            <h5>Anand Computers</h5>
                             <h6>30/B Saurabh Nagar, Besa road, Ghogali, Nagpur 440034.</h6>
                         </div>
                     </div>
@@ -124,7 +124,7 @@ const CreateRepairPdf = ({ setModalStates, pdfData, toast }) => {
                                         <h6>{data?.itemDescriptionNproblemObserved}</h6>
                                     </div>
                                     <div className=" data_col col_25p">
-                                        <h6>{data?.remark}</h6>
+                                        <h6>{data?.actionTaken}</h6>
                                     </div>
                                 </div>
                             );

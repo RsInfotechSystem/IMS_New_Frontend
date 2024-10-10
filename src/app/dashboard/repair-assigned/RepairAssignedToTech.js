@@ -362,6 +362,7 @@ const RepairTask = () => {
                                         </div>
                                         <div className="col_50p">
                                             <div className="custom_input_wrapper">
+
                                                 <input
                                                     type="text"
                                                     name="remark"
@@ -372,11 +373,6 @@ const RepairTask = () => {
                                                     style={{ width: "100%" }}
                                                 />
                                             </div>
-                                            {/* <InputBoxOnChange
-                                                name="remark"
-                                                value={rowData[index]?.remark}
-                                                onChange={(e) => handleChange(e, index)}
-                                            /> */}
                                         </div>
                                         <div className="col_30p">
                                             <h6 className="text-center">{stockDetails?.sendResponse ? stockDetails?.sendResponse : "--"}</h6>
