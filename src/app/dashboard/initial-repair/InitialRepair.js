@@ -13,6 +13,7 @@ import CustomResponseHandlerModal from "@/common-components/CustomResponseHandle
 import CreateInitialRepair from "./create-initial-repair/CreateInitialRepair";
 import CreateRepairPdf from "./create-initial-repair/CreatePDF";
 import Loader from "@/common-components/Loader";
+import Swal from "sweetalert2";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -116,6 +117,24 @@ const InitialRepair = () => {
         }
     };
 
+    const showInputDialog = (id) => {
+        Swal.fire({
+            html: `<p>Do you want close this job ?</p>`,
+            showCancelButton: true,
+            confirmButtonText: "Yes",
+            cancelButtonText: "No",
+            customClass: {
+                confirmButton: 'custom-button',
+                cancelButton: 'custom-button'
+            }
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                closeRepairJob(id);
+            } else {
+            }
+        });
+    };
     async function closeRepairJob(repairId) {
         try {
 
@@ -369,7 +388,9 @@ const InitialRepair = () => {
                                         </div>
                                         <div className="col_50p">
                                             <h6 className="action_wrraper">
-                                                <CustomBtn name={"Close"} onClick={(e) => closeRepairJob(stockDetails?._id)} />
+                                                <CustomBtn name={"Close"} onClick={(e) => showInputDialog(stockDetails?._id)}
+                                                // onClick={(e) => closeRepairJob(stockDetails?._id)} 
+                                                />
                                             </h6>
                                         </div>
                                     </div>

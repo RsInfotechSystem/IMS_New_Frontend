@@ -117,7 +117,7 @@ const ConsumeMaterial = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
                 TechnicianConsumedMaterial();
-                router.push("/dashboard/repair-assigned");
+                // router.push("/dashboard/repair-assigned");
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse.data.message);
                 router.push("/");
@@ -143,7 +143,7 @@ const ConsumeMaterial = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
                 TechnicianConsumedMaterial();
-                router.push("/dashboard/repair-assigned");
+                // router.push("/dashboard/repair-assigned");
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse.data.message);
                 router.push("/");
