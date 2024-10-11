@@ -469,6 +469,9 @@ const AssignMaterialToTech = () => {
                 toast.warn(response?.data?.message);
                 router.push("/");
             }
+            else {
+                toast.warn(response?.data?.message);
+            }
         } catch (error) {
             toast.error(response?.data?.message);
         } finally {

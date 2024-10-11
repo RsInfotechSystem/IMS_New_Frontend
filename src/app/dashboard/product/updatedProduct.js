@@ -329,7 +329,13 @@ const UpdatedProduct = () => {
                                                     {data?.models?.map((model, innerInd) => {
                                                         return (
                                                             <h6 key={innerInd}>{model?.description?.substring(0, 100)}
-                                                                {(model?.description?.length > 100) && <div className="custom_button_read" onClick={() => setModalStates(pre => ({ ...pre, showReadMore: true, showReadMoreText: model.description }))}> {model.description?.length > 100 && "Read More"}</div>
+                                                                {(model?.description?.length > 100) && <div
+                                                                    className="custom_button_read"
+                                                                    onClick={() => setModalStates
+                                                                        (pre => ({
+                                                                            ...pre, showReadMore: true,
+                                                                            showReadMoreText: model.description
+                                                                        }))}> {model.description?.length > 100 && "Read More"}</div>
                                                                 }</h6>
                                                         )
                                                     }

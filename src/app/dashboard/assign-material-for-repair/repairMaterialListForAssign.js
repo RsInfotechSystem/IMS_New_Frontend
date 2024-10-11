@@ -9,6 +9,7 @@ import { communication, getServerUrl } from "@/services/communication";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import Loader from "@/common-components/Loader";
+import CustomResponseReadMoreModal from "@/common-components/CustomResponseReadMoreModal";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -29,7 +30,14 @@ const RepairMaterialListForAssign = () => {
     const [selectedTechnician, setSelectedTechnician] = useState("");
     const [selectAllChecked, setSelectAllChecked] = useState(false);
     const [selectedCheckboxes, setSelectedCheckboxes] = useState([]);
-
+    const [modalStates, setModalStates] = useState({
+        deleteProduct: false,
+        modal: false,
+        type: "",
+        productId: "",
+        showReadMoreText: "",
+        showReadMore: ""
+    });
     const technicianList = async () => {
         try {
             setLoader(true);
@@ -109,7 +117,7 @@ const RepairMaterialListForAssign = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
                 setSelectedCheckboxes([])
-                setSelectAllChecked([])
+                setSelectAllChecked(false)
                 repairMaterialList({ page, searchString });
                 // router.back();
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
@@ -242,6 +250,18 @@ const RepairMaterialListForAssign = () => {
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
+            {
+                modalStates?.showReadMore && (
+                    <CustomResponseReadMoreModal
+                        status="warning"
+                        message={modalStates?.showReadMoreText}
+                        cancelButton={"Cancel"}
+                        cancelHandler={() => {
+                            setModalStates((prev) => ({ ...prev, showReadMore: false, showReadMoreText: "" }));
+                        }}
+                    />
+                )
+            }
             <div className="top_header">
                 <div className="tab_title">Repair Material List</div>
                 {/* <div
@@ -398,7 +418,25 @@ const RepairMaterialListForAssign = () => {
                                             <h6>{stockDetails?.stockRequired == true ? "Yes" : "No"}</h6>
                                         </div>
                                         <div className="col_70p">
-                                            <h6>{stockDetails?.remark ? stockDetails?.remark : "--"}</h6>
+                                            {/* <h6>{stockDetails?.remark ? stockDetails?.remark : "--"}</h6> */}
+                                            <h6>{stockDetails?.remark?.substring(0, 100)}
+                                                {stockDetails?.remark?.length > 100 && (
+                                                    <div
+                                                        className="custom_button_read"
+                                                        onClick={() =>
+                                                            setModalStates((pre) => ({
+                                                                ...pre,
+                                                                showReadMore: true,
+                                                                showReadMoreText: stockDetails?.remark,
+                                                            }))
+                                                        }
+                                                    >
+                                                        Read More
+                                                    </div>
+                                                )
+
+                                                }
+                                            </h6>
                                         </div>
                                         <div className="col_50p">
                                             <h6>{stockDetails?.materialStatus == "commented" ? "Inprocess" : stockDetails?.materialStatus ? stockDetails?.materialStatus : "--"}</h6>

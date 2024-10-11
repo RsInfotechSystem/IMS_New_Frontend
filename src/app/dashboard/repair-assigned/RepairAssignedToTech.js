@@ -17,6 +17,7 @@ import {
 import Button from "@/common-components/Button";
 import { stockRepairStatus } from "@/helper/repairStockStatus";
 import Search from "@/common-components/Search";
+import CustomResponseReadMoreModal from "@/common-components/CustomResponseReadMoreModal";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -33,6 +34,7 @@ const RepairTask = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isPageUpdated, setIsPageUpdated] = useState(false);
     const [pageCount, setPageCount] = useState(1);
+    const [showFullText, setShowFullText] = useState(false);
     const [responceFromCustomer, setResponceFromCustomer] = useState("")
     // const [rowData, setRowData] = useState(
     //     material.map(() => ({
@@ -42,10 +44,12 @@ const RepairTask = () => {
     //     }))
     // );
     const [modalStates, setModalStates] = useState({
-        deleteTasks: false,
+        // deleteTasks: false,
         modal: false,
         type: "",
         id: "",
+        showReadMoreText: "",
+        showReadMore: ""
     });
 
     async function RepairMaterialAssignedToTechList({
@@ -200,6 +204,18 @@ const RepairTask = () => {
     }, [isPageUpdated]);
     return (
         <>
+            {
+                modalStates?.showReadMore && (
+                    <CustomResponseReadMoreModal
+                        status="warning"
+                        message={modalStates?.showReadMoreText}
+                        cancelButton={"Cancel"}
+                        cancelHandler={() => {
+                            setModalStates((prev) => ({ ...prev, showReadMore: false, showReadMoreText: "" }));
+                        }}
+                    />
+                )
+            }
             {modalStates.deleteTasks && (
                 <CustomResponseHandlerModal
                     status="warning"
@@ -336,34 +352,10 @@ const RepairTask = () => {
                                                 />
                                                 <label>No</label>
                                             </div>
-                                            {/* <div className="col_50p">
-                                                <label>
-                                                    <input
-                                                        onChange={(e) => handleChange(e, index)}
-                                                        type="radio" // Change to radio
-                                                        name={`stockRequired_${index}`} // Unique name for each group
-                                                        value="yes"
-                                                        checked={stockDetails[`stockRequired_${index}`] === true} // Check if true for "Yes"
-                                                    />{" "}
-                                                    Yes
-                                                </label>
-                                                <br />
-                                                <label>
-                                                    <input
-                                                        onChange={(e) => handleChange(e, index)}
-                                                        type="radio" // Change to radio
-                                                        name={`stockRequired_${index}`} // Unique name for each group
-                                                        value="no"
-                                                        checked={stockDetails[`stockRequired_${index}`] === false} // Check if false for "No"
-                                                    />{" "}
-                                                    No
-                                                </label>
-                                            </div> */}
                                         </div>
                                         <div className="col_50p">
                                             <div className="custom_input_wrapper">
-
-                                                <input
+                                                {/* <input
                                                     type="text"
                                                     name="remark"
                                                     disabled={!isEditing || editingIndex !== index}
@@ -371,11 +363,39 @@ const RepairTask = () => {
                                                     onChange={(e) => handleRemarkChange(e, index)}
                                                     className="form_control_assign custom_input"
                                                     style={{ width: "100%" }}
+                                                /> */}
+                                                <input
+                                                    type="text"
+                                                    name="remark"
+                                                    // disabled={!isEditing || editingIndex !== index}
+                                                    disabled={
+                                                        (!!stockDetails?.remark) || // Disable if remark exists
+                                                        (!isEditing || editingIndex !== index) // Original logic
+                                                    }
+                                                    value={rowData[index]?.remark || stockDetails?.remark}
+                                                    onChange={(e) => handleRemarkChange(e, index)}
+                                                    className="form_control_assign custom_input"
+                                                    style={{ width: "100%" }}
+
                                                 />
+
+                                                {/* Conditionally show the "Read More" button if the text is longer than 10 characters */}
+                                                {(rowData[index]?.remark || stockDetails?.remark)?.length > 10 && (
+                                                    <div
+                                                        className="custom_button_read"
+                                                        // onClick={() => openModal(rowData[index]?.remark || stockDetails?.remark)}
+                                                        onClick={() => setModalStates(pre => ({
+                                                            ...pre, showReadMore: true, showReadMoreText: rowData[index]?.remark || stockDetails?.remark
+                                                        }))}
+                                                    >
+                                                        Read More
+                                                    </div>
+                                                )}
                                             </div>
+
                                         </div>
                                         <div className="col_30p">
-                                            <h6 className="text-center">{stockDetails?.sendResponse ? stockDetails?.sendResponse : "--"}</h6>
+                                            <h6 className="text-center">{stockDetails?.sendResponse == "goahead" ? "Go Ahed" : "--"}</h6>
                                         </div>
                                         <div className="col_20p d-flex justify-content-center align-items-center">
                                             {isEditing && editingIndex === index ? (
@@ -434,9 +454,7 @@ const RepairTask = () => {
                 </div>
             </div>
 
-            {/* <div className="pagination_wrapper">
-        
-      </div> */}
+
         </>
     );
 };
