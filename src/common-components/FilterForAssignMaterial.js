@@ -88,7 +88,7 @@ const FilterStructure = ({ data, selectedFilters, onFiltersChange }) => {
     const newOptions = {
       category: Array.from(
         new Set(
-          data.map((item) =>
+          data?.map((item) =>
             JSON.stringify({
               categoryId: item?.categoryId?._id || "unknown",
               category: item?.categoryId?.name || "unknown",

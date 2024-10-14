@@ -166,7 +166,8 @@ const RepairMaterialListForAssign = () => {
             const serverResponse = await communication.responseToTech(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
-                repairMaterialList();
+                repairMaterialList({ page, searchString });
+                // repairMaterialList();
                 // router.back();
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse.data.message);
@@ -191,7 +192,8 @@ const RepairMaterialListForAssign = () => {
             const serverResponse = await communication.closeRepairMaterial(payload);
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
-                repairMaterialList();
+                repairMaterialList({ page, searchString });
+                // repairMaterialList();
                 // router.back();
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse.data.message);

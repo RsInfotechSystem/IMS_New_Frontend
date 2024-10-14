@@ -14,7 +14,7 @@ import { toast } from "react-toastify";
 import { communication } from "@/services/communication";
 import { useRouter } from "next/navigation";
 import Loader from "@/common-components/Loader";
-import SellGraphLine from "./SellGraphLine";
+import LocationWiseGraph from "./LocationWiseStock";
 
 const Report = () => {
     const router = useRouter();
@@ -47,6 +47,10 @@ const Report = () => {
                         Sell Report
                     </div>
 
+                    {/* <div className="tab_btn" onClick={() => { setActiveTab("location"); }}
+                        style={{ backgroundColor: activeTab == "location" ? "#184965" : "#184965a8", }} >
+                        Location Wise Stock
+                    </div> */}
                 </div>
             </div>
             {/* <div className="search_btn_wrapper">
@@ -83,6 +87,11 @@ const Report = () => {
                                 <StockReportGraph />
                             </div>
                         }
+                        {/* {activeTab === "location" &&
+                            <div className="shift_graph_wrapper">
+                                <LocationWiseGraph />
+                            </div>
+                        } */}
                     </div>
                 </div>
             </div>

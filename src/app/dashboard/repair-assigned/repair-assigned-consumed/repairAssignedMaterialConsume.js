@@ -117,6 +117,7 @@ const ConsumeMaterial = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
                 setSelectedMaterials([])
+                setAllMaterialsSelected([])
                 TechnicianConsumedMaterial();
                 // router.push("/dashboard/repair-assigned");
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
@@ -144,6 +145,7 @@ const ConsumeMaterial = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
                 setSelectedMaterials([])
+                setAllMaterialsSelected([])
                 TechnicianConsumedMaterial();
                 // router.push("/dashboard/repair-assigned");
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
