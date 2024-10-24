@@ -147,6 +147,7 @@ const InitialRepair = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 toast.success(serverResponse.data.message);
                 // router.back();
+                RepairMaterialList();
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.info(serverResponse.data.message);
                 router.push("/");
