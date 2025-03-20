@@ -87,6 +87,23 @@ export const communication = {
       throw error;
     }
   },
+  getStockReport: async (categoryId) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-stock-report`,
+        { categoryId },
+
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   MaterialByLocation: async (data) => {
     try {
       return await axios.post(

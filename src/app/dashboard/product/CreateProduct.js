@@ -408,6 +408,7 @@ function CreateProduct({ data }) {
                           onChange={(event) => {
                             selectFile(event);
                           }}
+                          accept="image/*"
                         />
                         <FontAwesomeIcon icon={faCirclePlus} className="icon fontAwesome_icon" />
                         <p>Add</p>
