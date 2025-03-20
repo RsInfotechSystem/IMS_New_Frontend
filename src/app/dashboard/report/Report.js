@@ -83,9 +83,11 @@ const Report = () => {
         }
     }, [categoryId]);
 
-
-    useEffect(async () => {
+    async function initialAPICall() {
         setCategoryList(await getCategory(setLoader, router,));
+    }
+    useEffect(() => {
+        initialAPICall()
     }, []);
 
     return (
