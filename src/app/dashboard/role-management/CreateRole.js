@@ -224,10 +224,10 @@ function CreateRole({ data }) {
                   <input
                     id="Brand"
                     type="checkbox"
-                    {...register("Brand Management")}
+                    {...register("Brand")}
                     className="checkbox"
                   />
-                  <label className="fs-9" htmlFor="Brand Management">
+                  <label className="fs-9" htmlFor="Brand">
                     Brand
                   </label>
                 </div>
