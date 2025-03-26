@@ -505,8 +505,8 @@ const AttachedSalesOrder = () => {
     //   detail.nonMaterialIDS.includes(materialId)
     // )?.detailId;
     const descriptionToRemove = materialDetails.find((detail) =>
-      detail.nonMaterialIDS.includes(materialId) ||
-      detail.materialIds.some((m) => m.id === materialId)
+      detail?.nonMaterialIDS?.includes(materialId) ||
+      detail?.materialIds?.some((m) => m.id === materialId)
     )?.detailId;
 
     if (descriptionToRemove) {
