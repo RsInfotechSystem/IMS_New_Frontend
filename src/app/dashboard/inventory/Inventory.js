@@ -247,10 +247,10 @@ const Inventory = () => {
                 <h5>Status</h5>
               </div>
               <div className="col_35p">
-                <h5>QTY</h5>
+                <h5>Remaining Quantity</h5>
               </div>
               <div className="col_35p">
-                <h5>Reamaining Quantity</h5>
+                <h5>Vendor</h5>
               </div>
               {/* <div className="col_40p">
                 <h5 className="action_wrraper">Action</h5>
@@ -311,10 +311,10 @@ const Inventory = () => {
                         <h6>{materialDetails?.status}</h6>
                       </div>
                       <div className="col_35p">
-                        <h6>{materialDetails?.quantity}</h6>
+                        <h6>{materialDetails?.reamainingQuantity}</h6>
                       </div>
                       <div className="col_35p">
-                        <h6>{materialDetails?.reamainingQuantity}</h6>
+                        <h6>{materialDetails?.vendorId?.code ?? "--"}</h6>
                       </div>
                       {/* <div className="col_40p">
                     <h6 className="action_wrraper">

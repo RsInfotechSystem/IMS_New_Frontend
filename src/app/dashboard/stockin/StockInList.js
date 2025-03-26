@@ -486,9 +486,6 @@ const StockInList = () => {
               <div className="col_50p">
                 <h5>Box NO</h5>
               </div>
-              {/* <div className="col_50p">
-                <h5>QTY</h5>
-              </div> */}
               <div className="col_50p">
                 <h5>Remaining Quantity</h5>
               </div>
@@ -506,6 +503,9 @@ const StockInList = () => {
               </div>
               <div className="col_50p">
                 <h5>Status</h5>
+              </div>
+              <div className="col_50p">
+                <h5>Vendor</h5>
               </div>
               <div className="col_50p">
                 <h5>Stock In Date</h5>
@@ -568,9 +568,6 @@ const StockInList = () => {
                     <div className="col_50p">
                       <h6>{stockDetails?.itemCode ? stockDetails?.itemCode : "-"}</h6>
                     </div>
-                    {/* <div className="col_50p">
-                      <h6>{stockDetails?.quantity ? stockDetails?.quantity : "-"}</h6>
-                    </div> */}
                     <div className="col_50p">
                       <h6>
                         {stockDetails?.reamainingQuantity ? stockDetails?.reamainingQuantity : "-"}
@@ -590,6 +587,9 @@ const StockInList = () => {
                     </div>
                     <div className="col_50p">
                       <h6>{stockDetails?.status}</h6>
+                    </div>
+                    <div className="col_50p">
+                      <h6>{stockDetails?.vendorId?.code ?? "--"}</h6>
                     </div>
                     <div className="col_50p">
                       <h6>{formatDate(stockDetails?.createdAt)}</h6>

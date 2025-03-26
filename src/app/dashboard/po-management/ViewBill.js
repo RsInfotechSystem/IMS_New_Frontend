@@ -95,8 +95,8 @@ const ViewBill = ({ setModalStates, pdfData, toast }) => {
               <Image src={logo} width={80} height={60} alt="ohno logo" />
             </div>
             <div className="header_details">
-              <h5>Santosh Rakshabandhan</h5>
-              <h6>30/B Saurabh Nagar, Besa road, Ghogali, Nagpur 440034.</h6>
+              <h5>Anand Computer Systems</h5>
+              <h6>Swamipuram,Building- 2160/B Sadashiv Peth, Pune 411030</h6>
             </div>
           </div>
 
@@ -169,7 +169,7 @@ const ViewBill = ({ setModalStates, pdfData, toast }) => {
               </div>
               <div className=" data_col top_border col_25p">
                 <div>
-                  <h6>Reamaining Amount</h6>
+                  <h6>Remaining Amount</h6>
                   <h6>{pdfData?.reamainingAmount ?? "--"}</h6>
                 </div>
               </div>

@@ -173,7 +173,7 @@ const StockOut = () => {
 
     // Update the array of selected checkboxes based on the "Select All" checkbox
     setSelectedCheckboxes((prevSelected) =>
-      e.target.checked ? stock.map((brandDetails) => brandDetails._id) : []
+      e.target.checked ? material.map((brandDetails) => brandDetails._id) : []
     );
   };
   const deleteStock = async () => {

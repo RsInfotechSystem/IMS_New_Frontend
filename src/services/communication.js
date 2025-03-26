@@ -2,6 +2,7 @@ import axios from "axios";
 import { getCookie } from "cookies-next";
 import { toast } from "react-toastify";
 import { getCategoryWiseBrand } from "./commonApis";
+import CreateVendor from "@/app/dashboard/vendor/CreateVendor";
 
 const nodeEnvironment = process.env.NEXT_PUBLIC_NODE_ENV;
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -2690,6 +2691,110 @@ export const communication = {
             Authorization: `Bearer ${getCookie("inventryToken")}`,
           },
         }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  CreateVendor: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/create-vendor`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  getVendorList: async (page = 1, searchString) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/get-vendor-list`, { page, searchString }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  changeVendorStatus: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/change-vendor-status`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateVendor: async (data) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/update-vendor`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  deleteVendors: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/delete-vendor`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  updateVendor: async (data) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/update-vendor`, data, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      });
+    } catch (error) {
+      throw error;
+    }
+  },
+  getVendorById: async (vendorId) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/get-vendor-by-id`, { vendorId }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getActiveVendors: async () => {
+    try {
+      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/vendor/get-active-vendor`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
       );
     } catch (error) {
       throw error;

@@ -59,8 +59,8 @@ const CreateRepairPdf = ({ setModalStates, pdfData, toast }) => {
                             <Image src={logo} width={80} height={60} alt="ims logo" />
                         </div>
                         <div className="header_details">
-                            <h5>Anand Computers</h5>
-                            <h6>30/B Saurabh Nagar, Besa road, Ghogali, Nagpur 440034.</h6>
+                            <h5>Anand Computer Systems</h5>
+                            <h6>Swamipuram,Building- 2160/B Sadashiv Peth, Pune 411030</h6>
                         </div>
                     </div>
                     {/* <div>

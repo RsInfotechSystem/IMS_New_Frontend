@@ -57,6 +57,7 @@ const CreateStockIn = ({ data }) => {
   const [_category, _setCategory] = useState("");
   const [_brand, _setBrand] = useState("");
   const [selectedOption, setSelectedOption] = useState("");
+  const [vendor, setVendor] = useState([]);
   const {
     register,
     handleSubmit,
@@ -73,6 +74,7 @@ const CreateStockIn = ({ data }) => {
   const brandId = watch("brandId");
   const rack = watch("blockId");
   const _rackIdForPrtn = watch("rackId");
+  const vendorId = watch("vendorId");
 
   async function getStockById() {
     try {
@@ -107,6 +109,7 @@ const CreateStockIn = ({ data }) => {
         setValue("brandId", stockData?.brandId?._id);
         _setBrand(stockData?.brandId?._id);
         setValue("blockId", stockData?.blockId?._id);
+        setValue("vendorId", stockData?.vendorId?._id);
         // setValue("partitionName", stockData?.partitionName);
       } else if (responseFromServer?.data?.status === "JWT_INVALID") {
         toast.info(responseFromServer?.data?.message);
@@ -121,6 +124,26 @@ const CreateStockIn = ({ data }) => {
     }
   }
 
+
+  async function getVendors() {
+    try {
+      setLoader(true);
+      const serverResponse = await communication.getActiveVendors();
+      if (serverResponse?.data?.status === "SUCCESS") {
+        setVendor(serverResponse?.data?.vendor);
+      } else if (serverResponse?.data?.status === "JWT_INVALID") {
+        toast.warn(serverResponse.data.message);
+        router.push("/");
+        setLoader(false);
+      } else {
+        setVendor([]);
+      }
+      setLoader(false);
+    } catch (error) {
+      toast.warn(error?.response?.data?.message || error.message);
+      setLoader(false);
+    }
+  }
 
   async function getLocations() {
     try {
@@ -150,6 +173,7 @@ const CreateStockIn = ({ data }) => {
         ...values,
         isBoxAdded: selectedOption === "Yes" ? true : false,
       };
+
       if (selectedOption === "No") {
         delete dataToSend.itemCode;
       }
@@ -215,10 +239,7 @@ const CreateStockIn = ({ data }) => {
   };
   async function initialAPICall() {
     setCategoryMapData(await getCategory(router));
-
-    // if (modalStates?.type !== "create") {
-    //   await getBrandById()
-    // }
+    getVendors();
   }
   const handleCategory = async () => {
     if (getValues("categoryId")) {
@@ -288,12 +309,6 @@ const CreateStockIn = ({ data }) => {
     }
   }, [brandId, brandsData?.length >= 1]);
 
-  // useEffect(() => {
-  //   const id = getValues("brandId");
-  //   if (id) {
-  //     getBrandWiseModel(id, setLoader, router, setModel);
-  //   }
-  // }, [model?.length >=1 && brandId]);
 
   useMemo(() => {
     handleCategory();
@@ -667,11 +682,49 @@ const CreateStockIn = ({ data }) => {
                   <div style={{ height: "5px" }}>
                     {errors.modelId && (
                       <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                        {errors.modelId.message}
+                        {errors?.modelId?.message}
                       </p>
                     )}
                   </div>
                 </div>
+
+                <div className="col-lg-4 col-md-6 input_wrapper">
+                  <label>Vendor Name </label>
+                  <div className="position-relative">
+                    <select
+                      disabled={modalStates.isView}
+                      {...register("vendorId", {})}
+                      className="form-control custom_input"
+                      style={{ width: "100%" }}
+                    >
+                      <option value="" className="text-secondary text-lowercase">
+                        Select Vendor
+                      </option>
+                      {vendor.map((ele, index) => {
+                        return (
+                          <option
+                            value={ele._id}
+                            key={index}
+                            selected={ele._id === getValues("vendorId") ? true : false}
+                          >
+                            {ele?.code}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <div className="select_box_arrow">
+                      <FontAwesomeIcon icon={faAngleDown} className="icon" />
+                    </div>
+                  </div>
+                  <div style={{ height: "5px" }}>
+                    {errors.vendorId && (
+                      <p className="text-danger text-start" style={{ fontSize: "14px" }}>
+                        {errors?.vendorId?.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
                 {rackPartation?.length > 1 && (
                   <div className="col-lg-4 col-md-6 input_wrapper">
                     <label>Do you want to add Box NO ?</label>
