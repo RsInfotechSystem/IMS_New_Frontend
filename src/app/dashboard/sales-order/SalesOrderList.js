@@ -16,10 +16,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ViewSalesOrder from "./create-sales-order/ViewSalesOrderPdf";
 import { getCookie } from "cookies-next";
 import ViewSalesOrderDetails from "./ViewSalesOrder";
+import { getCookiesData } from "@/utilities/getCookiesData";
 
 const SalesOrderList = () => {
   const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
   const router = useRouter();
+  const [userData, setUserData] = useState({})
   const [searchString, setSearchString] = useState("");
   const [timeoutId, setTimeoutId] = useState();
   const [currentPage, setCurrentPage] = useState(1);
@@ -107,6 +109,10 @@ const SalesOrderList = () => {
     getSalesOrderList(currentPage, searchString);
   }, [isPageUpdated]);
 
+  useEffect(() => {
+    setUserData(getCookiesData(router));
+  }, [])
+
   return (
     <>
       {loader && <Loader text={"Fetching Data..."} />}
@@ -143,32 +149,34 @@ const SalesOrderList = () => {
         <Search value={searchString} onChange={(e) => handleSearch(e)} placeholder={"Search"} />
 
         <div className="buttons_wrapper">
-          <CustomBtn
-            name={"Create"}
-            onClick={() => {
-              router.push("/dashboard/sales-order/create-sales-order");
-            }}
-            svg={
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.75 9C12.75 8.58579 12.4142 8.25 12 8.25C11.5858 8.25 11.25 8.58579 11.25 9V11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H11.25V15C11.25 15.4142 11.5858 15.75 12 15.75C12.4142 15.75 12.75 15.4142 12.75 15V12.75H15C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H12.75V9Z"
-                  fill="#F3F8FF"
-                />
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
-                  fill="#F3F8FF"
-                />
-              </svg>
-            }
-          />
+          {!["stores incharge", "stores head incharge"].includes(userData?.roleId?.role?.toLowerCase()) &&
+            <CustomBtn
+              name={"Create"}
+              onClick={() => {
+                router.push("/dashboard/sales-order/create-sales-order");
+              }}
+              svg={
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12.75 9C12.75 8.58579 12.4142 8.25 12 8.25C11.5858 8.25 11.25 8.58579 11.25 9V11.25H9C8.58579 11.25 8.25 11.5858 8.25 12C8.25 12.4142 8.58579 12.75 9 12.75H11.25V15C11.25 15.4142 11.5858 15.75 12 15.75C12.4142 15.75 12.75 15.4142 12.75 15V12.75H15C15.4142 12.75 15.75 12.4142 15.75 12C15.75 11.5858 15.4142 11.25 15 11.25H12.75V9Z"
+                    fill="#F3F8FF"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z"
+                    fill="#F3F8FF"
+                  />
+                </svg>
+              }
+            />
+          }
         </div>
       </div>
       {/* table  */}
