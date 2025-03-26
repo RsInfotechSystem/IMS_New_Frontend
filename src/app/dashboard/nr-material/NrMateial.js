@@ -15,6 +15,7 @@ import { formatDate } from "@/helper/formatDate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import CustomResponseHandlerModal from "@/common-components/CustomResponseHandlerModal";
 import StockFilter from "@/common-components/StockFilter";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const NrMateial = () => {
@@ -58,6 +59,10 @@ const NrMateial = () => {
   const [selectAllChecked, setSelectAllChecked] = useState(false);
   const [showModal, setShowModal] = useState({ modal: false });
   const [filter, setFilter] = useState({});
+  const [respondHandlerModalState, setRespondHandlerModalState] = useState({
+    state: false,
+    deleteId: "",
+  });
 
   async function getNrMaterialList(
     page,
@@ -164,6 +169,74 @@ const NrMateial = () => {
     setShowModal((prev) => ({ ...prev, modal: false }));
   };
 
+  const handleDelete = async (stockIds) => {
+    try {
+      setLoader(true);
+      let payload = {
+        stockIds: [...stockIds],
+      };
+      console.log("payload : ", payload)
+      let response = await communication.deleteStock(payload);
+      if (response?.data?.status === "SUCCESS") {
+        setSelectedCheckboxes([]);
+        toast.success(response.data.message, {
+          autoClose: 1500, // 1.5 seconds
+        });
+        setRespondHandlerModalState((prev) => ({ ...prev, state: false }));
+        await getNrMaterialList({ currentPage, searchString });
+      } else if (response?.data?.status === "JWT_INVALID") {
+        toast.info(response.data.message, {
+          autoClose: 1500, // 1.5 seconds
+        });
+        router.push("/");
+      } else {
+        toast.info(response.data.message, {
+          autoClose: 1500, // 1.5 seconds
+        });
+      }
+    } catch (error) {
+      toast.info(response.data.message, {
+        autoClose: 1500, // 1.5 seconds
+      });
+    } finally {
+      setLoader(false);
+    }
+  };
+
+  const deleteStock = async () => {
+    if (selectedCheckboxes.length <= 0) {
+      toast.info("Please select which stock you want to delete", {
+        autoClose: 1500, // 1.5 seconds
+      });
+    } else {
+      setRespondHandlerModalState({ state: true, deleteId: selectedCheckboxes });
+    }
+  };
+
+  const handleSelectAllChange = (e) => {
+    setSelectAllChecked(e.target.checked);
+
+    // Update the array of selected checkboxes based on the "Select All" checkbox
+    setSelectedCheckboxes((prevSelected) =>
+      e.target.checked ? nrMaterial.map((brandDetails) => brandDetails._id) : []
+    );
+  };
+
+  const handleCheckboxChange = (e) => {
+    const checkboxId = e.target.id;
+    setSelectAllChecked(
+      !selectedCheckboxes.includes(checkboxId) && selectedCheckboxes.length + 1 === nrMaterial?.length
+    );
+    setSelectedCheckboxes((prevSelected) => {
+      if (prevSelected.includes(checkboxId)) {
+        // If the checkbox is already in the array, remove it
+        return prevSelected.filter((id) => id !== checkboxId);
+      } else {
+        // If the checkbox is not in the array, add it
+        return [...prevSelected, checkboxId];
+      }
+    });
+  };
   useEffect(() => {
     getNrMaterialList(currentPage, searchString);
   }, [isPageUpdated]);
@@ -171,6 +244,14 @@ const NrMateial = () => {
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
+      {respondHandlerModalState.state && (
+        <CustomResponseHandlerModal
+          status="warning"
+          message="Are you sure you want to delete this Stock?"
+          cancelHandler={cancelHandler}
+          successHandler={() => handleDelete(respondHandlerModalState.deleteId)}
+        />
+      )}
       {modalStates?.filter && (
         <StockFilter
           setModalStates={setModalStates}
@@ -231,7 +312,14 @@ const NrMateial = () => {
               // svg={<FontAwesomeIcon icon={faTrash} />}
               onClick={() => sellStock("all")}
             />
+            <CustomBtn
+              name={"Delete"}
+              onClick={deleteStock}
+              svg={<FontAwesomeIcon icon={faTrash} />}
+            />
+
           </div>
+
         }
       </div>
       {/* table  */}
@@ -239,7 +327,15 @@ const NrMateial = () => {
         <div className="table_main">
           <div className="table_section inventory_table_res" style={{ minWidth: "1500px" }}>
             <div className="table_header">
-              <div className="col_15p">
+              <div className="col_7p">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  onChange={(e) => handleSelectAllChange(e)}
+                  checked={selectAllChecked}
+                />
+              </div>
+              <div className="col_10p">
                 <h5>Sr. No.</h5>
               </div>
               <div className="col_40p">
@@ -281,7 +377,16 @@ const NrMateial = () => {
                 {nrMaterial?.map((materialDetails, index) => {
                   return (
                     <div className="table_data" key={index}>
-                      <div className="col_15p">
+                      <div className="col_7p">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={materialDetails?._id}
+                          onChange={(e) => handleCheckboxChange(e)}
+                          checked={selectedCheckboxes.includes(materialDetails?._id)}
+                        />
+                      </div>
+                      <div className="col_10p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_40p user_profile_wrapper">
