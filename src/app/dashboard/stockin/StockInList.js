@@ -22,6 +22,7 @@ import filterIcon from "../../../../public/images/filter.png";
 import InventoryView from "../inventory/InventoryView";
 import { formatDate } from "@/helper/formatDate";
 import StockFilter from "@/common-components/StockFilter";
+import { getCookiesData } from "@/utilities/getCookiesData";
 
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
@@ -44,6 +45,7 @@ const StockInList = () => {
   });
 
   const router = useRouter();
+    const [userData, setUserData] = useState({})
   const fileInputRef = useRef(null);
 
   const [timeoutId, setTimeoutId] = useState();
@@ -343,6 +345,10 @@ const StockInList = () => {
   useEffect(() => {
     getStockList({ page: currentPage, searchString, isFirstCall: true });
   }, [isPageUpdated]);
+
+    useEffect(() => {
+      setUserData(getCookiesData(router));
+    }, [])
   return (
     <>
       {respondHandlerModalState.state && (
@@ -435,14 +441,15 @@ const StockInList = () => {
                 />
               </svg>
             }
-          />
-
-          <CustomBtn
-            name={"Delete"}
-            onClick={deleteStock}
-            svg={<FontAwesomeIcon icon={faTrash} />}
-          />
-
+          />{console.log("UserRole : ",userData?.roleId?.role)}
+          {["admin"].includes(userData?.roleId?.role?.toLowerCase()) && (
+            
+            <CustomBtn
+              name={"Delete"}
+              onClick={deleteStock}
+              svg={<FontAwesomeIcon icon={faTrash} />}
+            />
+          )}
         </div>
       </div>
       {/* table  */}
