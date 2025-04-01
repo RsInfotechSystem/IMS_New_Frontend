@@ -2800,5 +2800,48 @@ export const communication = {
       throw error;
     }
   },
+  getStockInReport: async () => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-stock-in-report`, {}, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getInwardReport: async () => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-inward-report`, {}, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  //? ------------------------------------action logs--------------------------------------
+  getActionLogs: async (page = 1, searchString = "", startDate = null, endDate = null) => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/actionLogs/get-action-logs-list`, { page, searchString, startDate, endDate }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 

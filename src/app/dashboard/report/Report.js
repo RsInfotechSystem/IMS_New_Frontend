@@ -26,10 +26,11 @@ const PivotTableUI = dynamic(() => import("react-pivottable/PivotTableUI"), {
     ssr: false, // Disables SSR
 });
 import "react-pivottable/pivottable.css";
+import CustomTableRenderer from "./CustomTableRenderer";
 const Report = () => {
     const router = useRouter();
     const [modalStates, setModalStates] = useState({ modal: false, type: "" });
-    const [activeTab, setActiveTab] = useState("shift");
+    const [activeTab, setActiveTab] = useState("inhand");
     const [loader, setLoader] = useState(false);
     const [filterValues, setFilterValues] = useState({
         startDate: "",
@@ -41,6 +42,10 @@ const Report = () => {
     const [status, setStatus] = useState(""); // Default status
     const [categoryList, setCategoryList] = useState([]);
     const [arrayData, setArrayData] = useState([]);
+    const [inwardData, setInwardData] = useState([]);
+    const [showData, setShowData] = useState([]);
+
+
 
     const { register,
         handleSubmit,
@@ -76,135 +81,212 @@ const Report = () => {
     }
 
 
-    useEffect(() => {
-        const id = getValues("categoryId");
-        if (id) {
-            getStockReport(id);
+    async function getStockInReport() {
+        try {
+            const serverResponse = await communication.getStockInReport();
+            if (serverResponse?.data?.status === "SUCCESS") {
+                setData(serverResponse.data.stockArray.map(ele => ({ ...ele, pivotState: { rows: ['Category'] } })));
+                setArrayData(pre => serverResponse.data.stockArray.map((ele, i) => ({ data: ele.stocks, pivotState: { rows: ['Category', "Condition Type"] } })))
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+            } else {
+                setData([])
+            }
+
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
         }
-    }, [categoryId]);
+    }
+
+    async function getInwardReport() {
+        try {
+            const serverResponse = await communication.getInwardReport();
+            if (serverResponse?.data?.status === "SUCCESS") {
+                setInwardData(serverResponse.data.stockArray.map(ele => ({ ...ele, pivotState: { rows: ['Category'] } })));
+            } else if (serverResponse?.data?.status === "JWT_INVALID") {
+                toast.info(serverResponse.data.message);
+                router.push("/");
+            } else {
+                setInwardData([])
+            }
+
+        } catch (error) {
+            toast.info(error?.response?.data?.message || error.message);
+        }
+    }
+
+    // useEffect(() => {
+    //     const id = getValues("categoryId");
+    //     if (id) {
+    //         getStockReport(id);
+    //     }
+    // }, [categoryId]);
 
     async function initialAPICall() {
         setCategoryList(await getCategory(setLoader, router,));
     }
     useEffect(() => {
-        initialAPICall()
+        // initialAPICall()
+        getStockInReport()
+        getInwardReport()
     }, []);
 
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
-            <div className="top_header" style={{ "marginBottom": "10px", height: "2%" }}>
-
+            <div className="top_header" style={{ "marginBottom": "10px", height: "5%" }}>
+                <div className="my-3 d-flex justify-content-start align-items-start gap-3">
+                    <div className="tab_btn" onClick={() => { setActiveTab("inhand") }}
+                        style={{ backgroundColor: activeTab == "inhand" ? "#184965" : "#184965a8", }}>
+                        Stock In Hand
+                    </div>
+                    <div className="tab_btn" onClick={() => { setActiveTab("inward"); }}
+                        style={{ backgroundColor: activeTab == "inward" ? "#184965" : "#184965a8", }} >
+                        INWARD REPORT
+                    </div>
+                    <div className="tab_btn" onClick={() => { setActiveTab("outward"); }}
+                        style={{ backgroundColor: activeTab == "outward" ? "#184965" : "#184965a8", }} >
+                        OUTWARD REPORT
+                    </div>
+                    <div className="tab_btn" onClick={() => { setActiveTab("assign"); }}
+                        style={{ backgroundColor: activeTab == "assign" ? "#184965" : "#184965a8", }} >
+                        ENGINEER ASSIGN MATERIAL REPORTF
+                    </div>
+                </div>
             </div>
 
-            <div className="table_wrapper" style={{ "height": "98%" }} >
+
+
+            <div className="table_wrapper" style={{ "height": "95%" }} >
                 <div className="table_main">
                     <div className="table_section">
-                        <div className="row" style={{
-                            display: "flex", alignItems: "center",
-                            alignContent: "center"
-                        }}>
-
-                            <div className="input_wrapper col-lg-4">
-                                <label>Category*</label>
-                                <div className="position-relative">
-                                    <select
-                                        name="categoryId"
-                                        className="form-control custom_input"
-                                        style={{ width: "100%" }}
-                                        {...register("categoryId", {
-                                            required: "Category is required",
-                                        })}
-                                    >
-                                        <option value="" className="text-secondary text-lowercase">
-                                            Select Category
-                                        </option>
-                                        {categoryList?.map((ele, index) => {
-                                            return (
-                                                <option className="small text-capitalize" value={ele._id} key={index}>
-                                                    {" "}
-                                                    {ele.name}
-                                                </option>
-                                            );
-                                        })}
-                                    </select>
-                                    <div className="select_box_arrow">
-                                        <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                                    </div>
-                                </div>
-                                <div style={{ height: "5px" }}>
-                                    {errors.categoryId && (
-                                        <p className="text-danger text-start" style={{ fontSize: "14px" }}>
-                                            {errors.categoryId.message}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="col-lg-4">
-                                <label></label>
-                                <FontAwesomeIcon icon={faPlus} size="2x" title="Add" style={{ cursor: "pointer" }} onClick={() => setArrayData(pre => [...pre, { categoryId: "", pivotState: {}, data: [["Category", "Condition Type", "Status", "Brand", "Model"], []] }])} />
-                            </div>
-
-                            <PivotTableUI data={data} onChange={(s) => setPivotState(s)} {...pivotState}
-                                aggregatorName="Sum"
-                                vals={["Quantity"]}
-                                rendererName="Table"
-                                showColumnTotals={false}
-                                showRowTotals={false}
-                            />
-                            <hr style={{ marginTop: "10px", height: "4px", backgroundColor: "#0d6efd", boxShadow: "0 0 10p #0d6efd", border: "none" }}></hr>
-                        </div>
-                        {arrayData?.map((ele, index) => (
+                        {activeTab === "inhand" &&
                             <div className="row" style={{
                                 display: "flex", alignItems: "center",
-                                alignContent: "center",
-                                marginTop: "20px"
-                            }} key={index}>
+                                alignContent: "center"
+                            }}>
+                                <div className="dropdown">
+                                    <h5>Category</h5>
+                                    <ul style={{ marginTop: "10px" }}>
+                                        {data.map((ele, index) => (
+                                            <li key={index} style={{ marginBottom: "10px" }}>
+                                                <div>
+                                                    <label style={{ textTransform: "uppercase", textDecoration: "underline", cursor: "pointer" }} onClick={() => setShowData(pre => pre.includes(ele.categoryId) ? pre.filter(e => ele.categoryId !== e) : [...pre, ele.categoryId])}>{ele?.category}</label>
+                                                    {showData.includes(ele.categoryId) &&
+                                                        <PivotTableUI
+                                                            data={ele?.stocks ?? []}
+                                                            onChange={(s) =>
+                                                                setData((pre) =>
+                                                                    pre.map((ele, i) => (i === index ? { ...ele, pivotState: s } : ele))
+                                                                )
+                                                            }
+                                                            {...ele?.pivotState ?? {}}
+                                                            aggregatorName="Sum"
+                                                            vals={["Quantity"]}
+                                                            rendererName="Table"
+                                                            // renderers={{ Table: CustomTableRenderer }} // Use modified custom table
+                                                            hiddenAttributes={["rendererName", "aggregatorName"]} // Hides dropdowns
+                                                            showColumnTotals={false}
+                                                            showRowTotals={false}
+                                                        />
+                                                        // <CustomTableRenderer data={dataToShow} columns={columns} />
 
-                                <div className="input_wrapper col-lg-4">
-                                    <label>Category*</label>
-                                    <div className="position-relative">
-                                        <select
-                                            name="categoryId"
-                                            className="form-control custom_input"
-                                            style={{ width: "100%" }}
-                                            onChange={e => getStockReport(e.target.value, index)}
-                                        >
-                                            <option value="" className="text-secondary text-lowercase">
-                                                Select Category
-                                            </option>
-                                            {categoryList.map((category, index) => {
-                                                return (
-                                                    <option className="small text-capitalize" value={category._id} key={index}>
-                                                        {" "}
-                                                        {category.name}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
-                                        <div className="select_box_arrow">
-                                            <FontAwesomeIcon icon={faAngleDown} className="icon" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="col-lg-4">
-                                    <label></label>
-                                    <FontAwesomeIcon icon={faPlus} title="Add" style={{ cursor: "pointer" }} size="2x" onClick={() => setArrayData(pre => [...pre, { categoryId: "", pivotState: {}, data: [["Category", "Condition Type", "Status", "Brand", "Model"], []] }])} />
-                                    <FontAwesomeIcon title="Remove Table" style={{ marginLeft: "10px", cursor: "pointer" }} icon={faTrash} size="2x" onClick={() => setArrayData(pre => pre.filter((e, i) => i !== index))} />
+                                                    }
+                                                </div>
+                                            </li>
+
+                                        ))}
+                                    </ul>
                                 </div>
 
-                                <PivotTableUI data={ele?.data ?? []} onChange={(s) => setArrayData(pre => pre.map((ele, i) => i === index ? { ...ele, pivotState: s } : ele))} {...ele?.pivotState ?? {}}
-                                    aggregatorName="Sum"
-                                    vals={["Quantity"]}
-                                    rendererName="Table"
-                                    showColumnTotals={false}
-                                    showRowTotals={false}
-                                />
-                                <hr style={{ marginTop: "10px", height: "4px", backgroundColor: "#0d6efd", boxShadow: "0 0 10p #0d6efd", border: "none" }}></hr>
                             </div>
-
-                        ))
                         }
+
+                        {activeTab === "inward" &&
+                            <div className="row" style={{
+                                display: "flex", alignItems: "center",
+                                alignContent: "center"
+                            }}>
+                                <div className="dropdown">
+                                    <h5>Category</h5>
+                                    <ul style={{ marginTop: "10px" }}>
+                                        {inwardData.map((ele, index) => (
+                                            <li key={index} style={{ marginBottom: "10px" }}>
+                                                <div>
+                                                    <label style={{ textTransform: "uppercase", textUnderlinePosition: "from-font" }} onClick={() => setShowData(pre => pre.includes(ele.categoryId) ? pre.filter(e => ele.categoryId !== e) : [...pre, ele.categoryId])}>{ele?.category}</label>
+                                                    {showData.includes(ele.categoryId) &&
+                                                        <PivotTableUI
+                                                            data={ele?.stocks ?? []}
+                                                            onChange={(s) =>
+                                                                setInwardData((pre) =>
+                                                                    pre.map((ele, i) => (i === index ? { ...ele, pivotState: s } : ele))
+                                                                )
+                                                            }
+                                                            {...ele?.pivotState ?? {}}
+                                                            aggregatorName="Sum"
+                                                            vals={["Quantity"]}
+                                                            rendererName="Table"
+                                                            // renderers={{ Table: CustomTableRenderer }} // Use modified custom table
+                                                            hiddenAttributes={["rendererName", "aggregatorName"]} // Hides dropdowns
+                                                            showColumnTotals={false}
+                                                            showRowTotals={false}
+                                                        />
+                                                        // <CustomTableRenderer data={dataToShow} columns={columns} />
+
+                                                    }
+                                                </div>
+                                            </li>
+
+                                        ))}
+                                    </ul>
+                                </div>
+
+                            </div>
+                        }
+
+                        {activeTab === "outward" &&
+                            <div className="row" style={{
+                                display: "flex", alignItems: "center",
+                                alignContent: "center"
+                            }}>
+                                <div className="dropdown">
+                                    <h5>Category</h5>
+                                    <ul style={{ marginTop: "10px" }}>
+                                        {inwardData.map((ele, index) => (
+                                            <li key={index} style={{ marginBottom: "10px" }}>
+                                                <div>
+                                                    <label style={{ textTransform: "uppercase", textUnderlinePosition: "from-font" }} onClick={() => setShowData(pre => pre.includes(ele.categoryId) ? pre.filter(e => ele.categoryId !== e) : [...pre, ele.categoryId])}>{ele?.category}</label>
+                                                    {showData.includes(ele.categoryId) &&
+                                                        <PivotTableUI
+                                                            data={ele?.stocks ?? []}
+                                                            onChange={(s) =>
+                                                                setInwardData((pre) =>
+                                                                    pre.map((ele, i) => (i === index ? { ...ele, pivotState: s } : ele))
+                                                                )
+                                                            }
+                                                            {...ele?.pivotState ?? {}}
+                                                            aggregatorName="Sum"
+                                                            vals={["Quantity"]}
+                                                            rendererName="Table"
+                                                            // renderers={{ Table: CustomTableRenderer }} // Use modified custom table
+                                                            hiddenAttributes={["rendererName", "aggregatorName"]} // Hides dropdowns
+                                                            showColumnTotals={false}
+                                                            showRowTotals={false}
+                                                        />
+                                                        // <CustomTableRenderer data={dataToShow} columns={columns} />
+
+                                                    }
+                                                </div>
+                                            </li>
+
+                                        ))}
+                                    </ul>
+                                </div>
+
+                            </div>
+                        }
+
 
                     </div>
                 </div>
