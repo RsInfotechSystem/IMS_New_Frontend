@@ -26,7 +26,7 @@ const PivotTableUI = dynamic(() => import("react-pivottable/PivotTableUI"), {
     ssr: false, // Disables SSR
 });
 import "react-pivottable/pivottable.css";
-import CustomTableRenderer from "./CustomTableRenderer";
+
 const Report = () => {
     const router = useRouter();
     const [modalStates, setModalStates] = useState({ modal: false, type: "" });
@@ -185,12 +185,11 @@ const Report = () => {
                                                             aggregatorName="Sum"
                                                             vals={["Quantity"]}
                                                             rendererName="Table"
-                                                            // renderers={{ Table: CustomTableRenderer }} // Use modified custom table
                                                             hiddenAttributes={["rendererName", "aggregatorName"]} // Hides dropdowns
                                                             showColumnTotals={false}
                                                             showRowTotals={false}
                                                         />
-                                                        // <CustomTableRenderer data={dataToShow} columns={columns} />
+                                                      
 
                                                     }
                                                 </div>
@@ -227,12 +226,11 @@ const Report = () => {
                                                             aggregatorName="Sum"
                                                             vals={["Quantity"]}
                                                             rendererName="Table"
-                                                            // renderers={{ Table: CustomTableRenderer }} // Use modified custom table
+                                                          
                                                             hiddenAttributes={["rendererName", "aggregatorName"]} // Hides dropdowns
                                                             showColumnTotals={false}
                                                             showRowTotals={false}
                                                         />
-                                                        // <CustomTableRenderer data={dataToShow} columns={columns} />
 
                                                     }
                                                 </div>
@@ -269,12 +267,10 @@ const Report = () => {
                                                             aggregatorName="Sum"
                                                             vals={["Quantity"]}
                                                             rendererName="Table"
-                                                            // renderers={{ Table: CustomTableRenderer }} // Use modified custom table
                                                             hiddenAttributes={["rendererName", "aggregatorName"]} // Hides dropdowns
                                                             showColumnTotals={false}
                                                             showRowTotals={false}
                                                         />
-                                                        // <CustomTableRenderer data={dataToShow} columns={columns} />
 
                                                     }
                                                 </div>
