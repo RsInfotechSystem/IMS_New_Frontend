@@ -120,108 +120,106 @@ p {
 /****************** COMMON UNIVERSAL CSS END ******************/
 
 /****************** COMMON PERCENTAGE WIDTH CLASSES CSS START ******************/
-div:where(
-    .col_1p,
-    .col_2p,
-    .col_3p,
-    .col_4p,
-    .col_5p,
-    .col_6p,
-    .col_7p,
-    .col_8p,
-    .col_9p,
-    .col_10p,
-    .col_11p,
-    .col_12p,
-    .col_13p,
-    .col_14p,
-    .col_15p,
-    .col_16p,
-    .col_17p,
-    .col_18p,
-    .col_19p,
-    .col_20p,
-    .col_21p,
-    .col_22p,
-    .col_23p,
-    .col_24p,
-    .col_25p,
-    .col_26p,
-    .col_27p,
-    .col_28p,
-    .col_29p,
-    .col_30p,
-    .col_31p,
-    .col_32p,
-    .col_33p,
-    .col_34p,
-    .col_35p,
-    .col_36p,
-    .col_37p,
-    .col_38p,
-    .col_39p,
-    .col_40p,
-    .col_41p,
-    .col_42p,
-    .col_43p,
-    .col_44p,
-    .col_45p,
-    .col_46p,
-    .col_47p,
-    .col_48p,
-    .col_49p,
-    .col_50p,
-    .col_51p,
-    .col_52p,
-    .col_53p,
-    .col_54p,
-    .col_55p,
-    .col_56p,
-    .col_57p,
-    .col_58p,
-    .col_59p,
-    .col_60p,
-    .col_61p,
-    .col_62p,
-    .col_63p,
-    .col_64p,
-    .col_65p,
-    .col_66p,
-    .col_67p,
-    .col_68p,
-    .col_69p,
-    .col_70p,
-    .col_71p,
-    .col_72p,
-    .col_73p,
-    .col_74p,
-    .col_75p,
-    .col_76p,
-    .col_77p,
-    .col_78p,
-    .col_79p,
-    .col_80p,
-    .col_81p,
-    .col_82p,
-    .col_83p,
-    .col_84p,
-    .col_85p,
-    .col_86p,
-    .col_87p,
-    .col_88p,
-    .col_89p,
-    .col_90p,
-    .col_91p,
-    .col_92p,
-    .col_93p,
-    .col_94p,
-    .col_95p,
-    .col_96p,
-    .col_97p,
-    .col_98p,
-    .col_99p,
-    .col_100p
-  ) {
+div:where(.col_1p,
+  .col_2p,
+  .col_3p,
+  .col_4p,
+  .col_5p,
+  .col_6p,
+  .col_7p,
+  .col_8p,
+  .col_9p,
+  .col_10p,
+  .col_11p,
+  .col_12p,
+  .col_13p,
+  .col_14p,
+  .col_15p,
+  .col_16p,
+  .col_17p,
+  .col_18p,
+  .col_19p,
+  .col_20p,
+  .col_21p,
+  .col_22p,
+  .col_23p,
+  .col_24p,
+  .col_25p,
+  .col_26p,
+  .col_27p,
+  .col_28p,
+  .col_29p,
+  .col_30p,
+  .col_31p,
+  .col_32p,
+  .col_33p,
+  .col_34p,
+  .col_35p,
+  .col_36p,
+  .col_37p,
+  .col_38p,
+  .col_39p,
+  .col_40p,
+  .col_41p,
+  .col_42p,
+  .col_43p,
+  .col_44p,
+  .col_45p,
+  .col_46p,
+  .col_47p,
+  .col_48p,
+  .col_49p,
+  .col_50p,
+  .col_51p,
+  .col_52p,
+  .col_53p,
+  .col_54p,
+  .col_55p,
+  .col_56p,
+  .col_57p,
+  .col_58p,
+  .col_59p,
+  .col_60p,
+  .col_61p,
+  .col_62p,
+  .col_63p,
+  .col_64p,
+  .col_65p,
+  .col_66p,
+  .col_67p,
+  .col_68p,
+  .col_69p,
+  .col_70p,
+  .col_71p,
+  .col_72p,
+  .col_73p,
+  .col_74p,
+  .col_75p,
+  .col_76p,
+  .col_77p,
+  .col_78p,
+  .col_79p,
+  .col_80p,
+  .col_81p,
+  .col_82p,
+  .col_83p,
+  .col_84p,
+  .col_85p,
+  .col_86p,
+  .col_87p,
+  .col_88p,
+  .col_89p,
+  .col_90p,
+  .col_91p,
+  .col_92p,
+  .col_93p,
+  .col_94p,
+  .col_95p,
+  .col_96p,
+  .col_97p,
+  .col_98p,
+  .col_99p,
+  .col_100p) {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -712,8 +710,7 @@ div:where(.col_100p) {
   column-gap: 35px;
 }
 
-.image_preview_container {
-}
+.image_preview_container {}
 
 .notification_icon_wrapper {
   position: relative;
@@ -1430,7 +1427,7 @@ div:where(.tab_active, .tab_inactive) {
   gap: 7px;
 }
 
-.table_main .action_wrraper > div {
+.table_main .action_wrraper>div {
   cursor: pointer;
 }
 
@@ -1608,7 +1605,7 @@ div:where(.tab_active, .tab_inactive) {
   margin: 1rem 0;
 }
 
-.input_wrapper > label,
+.input_wrapper>label,
 .form_modal_body .form_label {
   font-weight: 500;
   font-size: 0.9rem;
@@ -1934,7 +1931,7 @@ div:where(.tab_active, .tab_inactive) {
   z-index: 1;
 }
 
-.detail_box .detail_box_header > div {
+.detail_box .detail_box_header>div {
   cursor: pointer;
 }
 
@@ -2158,22 +2155,20 @@ div:where(.access_sudo_class) {
 
 .Dashboard_Header {
   min-width: 250px;
-  background-image: linear-gradient(
-    100deg,
-    hsl(152deg 69% 31%) 1%,
-    hsl(157deg 60% 36%) 79%,
-    hsl(163deg 52% 40%) 89%,
-    hsl(168deg 45% 45%) 93%,
-    hsl(173deg 39% 49%) 95%,
-    hsl(178deg 40% 55%) 97%,
-    hsl(184deg 41% 60%) 98%,
-    hsl(189deg 43% 66%) 99%,
-    hsl(194deg 45% 72%) 99%,
-    hsl(199deg 47% 78%) 99%,
-    hsl(205deg 51% 84%) 100%,
-    hsl(210deg 58% 91%) 100%,
-    hsl(215deg 100% 98%) 100%
-  );
+  background-image: linear-gradient(100deg,
+      hsl(152deg 69% 31%) 1%,
+      hsl(157deg 60% 36%) 79%,
+      hsl(163deg 52% 40%) 89%,
+      hsl(168deg 45% 45%) 93%,
+      hsl(173deg 39% 49%) 95%,
+      hsl(178deg 40% 55%) 97%,
+      hsl(184deg 41% 60%) 98%,
+      hsl(189deg 43% 66%) 99%,
+      hsl(194deg 45% 72%) 99%,
+      hsl(199deg 47% 78%) 99%,
+      hsl(205deg 51% 84%) 100%,
+      hsl(210deg 58% 91%) 100%,
+      hsl(215deg 100% 98%) 100%);
   border-radius: 5px;
   padding: 1rem;
   word-wrap: break-word;
@@ -2185,7 +2180,7 @@ div:where(.access_sudo_class) {
   color: var(--white-color);
 }
 
-.Dashboard_Title > * {
+.Dashboard_Title>* {
   margin-right: 0px;
 }
 
@@ -3443,7 +3438,7 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
   padding: 2%;
 }
 
-.coc_form_wrapper .ql-toolbar.ql-snow + .ql-container.ql-snow {
+.coc_form_wrapper .ql-toolbar.ql-snow+.ql-container.ql-snow {
   min-height: 120px;
 }
 
@@ -4505,24 +4500,18 @@ div:where(.approval_list_wrapper, .coc_list_wrapper) {
 }
 
 .quotation_submission_wrapper {
-  background: linear-gradient(
-    90deg,
-    rgb(50, 149, 103) -10%,
-    rgb(235, 255, 246) 66%,
-    rgb(255, 255, 255) 100%
-  );
-  background: -moz-linear-gradient(
-    90deg,
-    rgb(50, 149, 103) -10%,
-    rgb(235, 255, 246) 66%,
-    rgb(255, 255, 255) 100%
-  );
-  background: -webkit-linear-gradient(
-    90deg,
-    rgb(50, 149, 103) -10%,
-    rgb(235, 255, 246) 66%,
-    rgb(255, 255, 255) 100%
-  );
+  background: linear-gradient(90deg,
+      rgb(50, 149, 103) -10%,
+      rgb(235, 255, 246) 66%,
+      rgb(255, 255, 255) 100%);
+  background: -moz-linear-gradient(90deg,
+      rgb(50, 149, 103) -10%,
+      rgb(235, 255, 246) 66%,
+      rgb(255, 255, 255) 100%);
+  background: -webkit-linear-gradient(90deg,
+      rgb(50, 149, 103) -10%,
+      rgb(235, 255, 246) 66%,
+      rgb(255, 255, 255) 100%);
   width: 100%;
   height: 100dvh;
   display: grid;
@@ -5377,6 +5366,7 @@ ul .appointment_letter_ul {
 .multiSelectContainer ul {
   max-height: 60px !important;
 }
+
 .filter-structure {
   font-family: Arial, sans-serif;
   max-width: 600px;
@@ -5415,6 +5405,7 @@ ul .appointment_letter_ul {
   padding: 10px;
   border: 1px solid #ddd;
 }
+
 /* login img */
 /* .login_img {
   width: 500px;
@@ -5437,11 +5428,13 @@ ul .appointment_letter_ul {
   width: 15px !important;
   /* height: auto !important; */
 }
+
 .searchWrapper {
   height: 50px;
   overflow-y: scroll;
   overflow-x: hidden;
 }
+
 .multiSelectContainer input {
   /* width: 60px; */
 }
@@ -5454,43 +5447,58 @@ ul .appointment_letter_ul {
   border-radius: 10px;
   background-color: "white";
 }
+
 .input_scroll {
-  display: flex; /* Align items horizontally */
-  overflow-x: auto; /* Enable horizontal scrolling */
-  max-width: 100%; /* Ensure the container takes up full width */
+  display: flex;
+  /* Align items horizontally */
+  overflow-x: auto;
+  /* Enable horizontal scrolling */
+  max-width: 100%;
+  /* Ensure the container takes up full width */
   white-space: nowrap;
   gap: 2px;
   /* scrollbar-width: thin; */
 }
+
 .input_box {
-  min-width: 200px; /* Set a minimum width for each InputBox */
+  min-width: 200px;
+  /* Set a minimum width for each InputBox */
   flex: 0 0 auto;
 }
+
 /* --------------------style  for table color in stock mannagement-------------------------------- */
 .status-assigned {
-  background-color: #d3d3d3; /* White */
+  background-color: #d3d3d3;
+  /* White */
 }
 
 .status-returned {
-  background-color: #d8f5d4; /* Very light green */
+  background-color: #d8f5d4;
+  /* Very light green */
 }
 
 .status-accepted {
-  background-color: #ffe0b2; /* Very light orange */
+  background-color: #ffe0b2;
+  /* Very light orange */
 }
+
 .status-changed {
   background-color: #add8e6;
 }
+
 .row-disabled {
-  opacity: 0.6; /* Make it appear faded */
-  pointer-events: none; /* Disable interactions */
+  opacity: 0.6;
+  /* Make it appear faded */
+  pointer-events: none;
+  /* Disable interactions */
 }
 
-.model_div{
+.model_div {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+
 /* .table_data {
   display: flex;
   align-items: flex-start;
@@ -5498,9 +5506,17 @@ ul .appointment_letter_ul {
   padding: 10px 0;
 } */
 
-.col_10p { width: 10%; }
-.col_20p { width: 20%; }
-.col_40p { width: 40%; }
+.col_10p {
+  width: 10%;
+}
+
+.col_20p {
+  width: 20%;
+}
+
+.col_40p {
+  width: 40%;
+}
 
 .model_row {
   display: flex;
@@ -5511,7 +5527,9 @@ ul .appointment_letter_ul {
   border-radius: 4px;
 }
 
-.model_name, .model_description, .model_files {
+.model_name,
+.model_description,
+.model_files {
   margin-bottom: 5px;
 }
 
@@ -5527,12 +5545,14 @@ ul .appointment_letter_ul {
   align-items: center;
   height: 100%;
 }
+
 .model_divimg {
   display: flex;
   flex-direction: column;
 }
 
-.model-description, .model-images {
+.model-description,
+.model-images {
   margin-bottom: 10px;
 }
 
@@ -5545,7 +5565,8 @@ ul .appointment_letter_ul {
   margin-right: 5px;
   margin-bottom: 5px;
 }
-.borderModel{
+
+.borderModel {
   border-top: none;
   display: flex;
   align-items: center;
@@ -5553,8 +5574,10 @@ ul .appointment_letter_ul {
   margin-bottom: 2px;
   border-bottom: 1px solid var(--grey_color_light_shade1);
 }
+
 .model_row {
-  border-bottom: 1px solid #e0e0e0; /* You can adjust the color to match your header */
+  border-bottom: 1px solid #e0e0e0;
+  /* You can adjust the color to match your header */
   padding-bottom: 10px;
   margin-bottom: 10px;
 }
@@ -5564,12 +5587,14 @@ ul .appointment_letter_ul {
   padding-bottom: 0;
   margin-bottom: 0;
 }
+
 .model_div {
   /* border-bottom: 1px solid var(--grey_color_light_shade1); */
   padding-bottom: 5px;
   margin-bottom: 5px;
 }
-.model_div_icon{
+
+.model_div_icon {
   /* padding-bottom: 5px;
   margin-bottom: 5px;
   display: flex;
@@ -5583,12 +5608,27 @@ ul .appointment_letter_ul {
   margin-bottom: 0;
 }
 
-.custom-button, .custom-button {
+.custom-button,
+.custom-button {
   width: 135px;
 }
-.table_data_group{
+
+.table_data_group {
   border-bottom: 1px solid var(--grey_color_light_shade1) !important;
 }
 
 
 
+.engineer_mateial_table {
+  min-width: 900px;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.engineer_mateial_table_view_wrapper {
+  background-color: var(--white-color);
+  border-radius: 5px;
+  max-width: 1000px;
+  height: 95dvh;
+  overflow-y: auto;
+}

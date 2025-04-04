@@ -2828,6 +2828,32 @@ export const communication = {
       throw error;
     }
   },
+  getOutWardReport: async () => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-outward-report`, {}, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getEngineerAssignedReport: async () => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-engineer-assigned-report`, {}, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   //? ------------------------------------action logs--------------------------------------
   getActionLogs: async (page = 1, searchString = "", startDate = null, endDate = null) => {
     try {

@@ -1,17 +1,13 @@
 "use client";
 import CustomBtn from "@/common-components/CustomBtn";
 import Loader from "@/common-components/Loader";
-import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
-import StockFilter from "@/common-components/StockFilter";
 import { communication } from "@/services/communication";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
-import Swal from "sweetalert2";
 
-const ReportDetails = () => {
-  const searchParams = useSearchParams();
+const OutwardReport = () => {
   const router = useRouter();
   const [reportDetails, setReportDetails] = useState([]);
   const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
@@ -24,7 +20,7 @@ const ReportDetails = () => {
   const getReportMaterialList = async () => {
     try {
       setLoader(true);
-      const serverResponse = await communication.getInwardReport();
+      const serverResponse = await communication.getOutWardReport();
       if (serverResponse?.data?.status === "SUCCESS") {
         setReportDetails(serverResponse?.data?.stockArray);
         setData(serverResponse?.data?.stockArray);
@@ -77,7 +73,7 @@ const ReportDetails = () => {
 
       <div className="top_header">
         <div className="tab_title" style={{ textTransform: "capitalize" }}>
-          {"Inward Report"}
+          {"Outward Report"}
         </div>
       </div>
       <div className="search_btn_wrapper">
@@ -123,7 +119,7 @@ const ReportDetails = () => {
                 <h5>QTY</h5>
               </div>
               <div className="col_20p">
-                <h5> Status</h5>
+                <h5> Stock OutBy</h5>
               </div>
             </div>
             {reportDetails?.map((data, index) => {
@@ -159,7 +155,7 @@ const ReportDetails = () => {
                     </div>
 
                     <div className="col_20p">
-                      <h6>{data?.status}</h6>
+                      <h6>{data?.stockOutBy?.name}</h6>
                     </div>
                   </div>
                 </>
@@ -172,4 +168,4 @@ const ReportDetails = () => {
   );
 };
 
-export default ReportDetails;
+export default OutwardReport;
