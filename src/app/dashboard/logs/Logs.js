@@ -38,43 +38,12 @@ function Logs() {
         }, 2000);
         setTimeoutId(_timeOutId);
     };
-    useEffect(() => {
-        getAllLogs(currentPage, searchString);
-    }, [isPageUpdated]);
 
 
-    const handleCheckboxChange = (e) => {
-        const checkboxId = e.target.id;
-        setSelectAllChecked((!selectedCheckboxes.includes(checkboxId) && (selectedCheckboxes.length + 1 === notification?.length)))
-        setSelectedCheckboxes((prevSelected) => {
-            if (prevSelected.includes(checkboxId)) {
-                // If the checkbox is already in the array, remove it
-                return prevSelected.filter((id) => id !== checkboxId);
-            } else {
-                // If the checkbox is not in the array, add it
-                return [...prevSelected, checkboxId];
-            }
-        });
-
-    };
-    const handleSelectAllChange = (e) => {
-        setSelectAllChecked(e.target.checked);
-
-        // Update the array of selected checkboxes based on the "Select All" checkbox
-        setSelectedCheckboxes((prevSelected) =>
-            e.target.checked ? notification.map((brandDetails) => brandDetails._id) : []
-        );
-    };
-
-
-
-    async function getAllLogs(page, searchString, isSearch = false) {
+    async function getAllLogs(page = 1, searchString, isSearch = false) {
         try {
             setLoader(true);
-            const serverResponse = await communication.getActionLogs({
-                page: 1,
-                searchString: searchString,
-            });
+            const serverResponse = await communication.getActionLogs(page, searchString);
             if (serverResponse?.data?.status === "SUCCESS") {
                 setNotification(serverResponse?.data.logs);
                 setPageCount(serverResponse?.data?.totalPages);
@@ -102,6 +71,9 @@ function Logs() {
         }
     }
 
+    useEffect(() => {
+        getAllLogs(currentPage, searchString);
+    }, [isPageUpdated]);
     return (
         <>
             {loader && <Loader />}
@@ -149,7 +121,7 @@ function Logs() {
                                     className="table_data"
                                     key={index}
                                 >
-                                   
+
                                     <div className="col_7p">
                                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                                     </div>

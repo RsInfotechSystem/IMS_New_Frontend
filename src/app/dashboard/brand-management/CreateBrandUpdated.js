@@ -19,8 +19,8 @@ function CreateBrandUpdated({ data }) {
     const { modalStates, setModalStates, setIsPageUpdated, getBrandList, currentPage, searchString } =
         data;
     const [loader, setLoader] = useState(false);
-    const [brandInput, setBrandInput] = useState([]);
-    const [_brandList, _setBrandList] = useState([]);
+    const [brandInput, setBrandInput] = useState("");
+    const [brandList, setBrandList] = useState([]);
     const [CategoryMapData, setCategoryMapData] = useState([]);
     const [_removeBrandList, _setRemoveBrandList] = useState([])
     const [addedBrands, setAddedBrands] = useState([])
@@ -30,15 +30,20 @@ function CreateBrandUpdated({ data }) {
         handleSubmit,
         setValue,
         formState: { errors },
+        setError
     } = useForm();
 
     async function onSubmit(values) {
         try {
+            if (brandList?.length === 0) {
+                toast.info("Please add atleast one brand")
+                return;
+            }
             setLoader(true);
             let response;
             if (modalStates?.type === "create") {
                 response = await communication.createMultipleBrandList({
-                    brandList: _brandList,
+                    brandList: brandList,
                     // name: values.name,
                     categoryId: values.categoryId,
                 });
@@ -46,7 +51,7 @@ function CreateBrandUpdated({ data }) {
                 let payload = {
                     brandId: modalStates.id,
                     removeBrands: _removeBrandList,
-                    brandList: addedBrands,
+                    brandList: brandList,
                     categoryId: values.categoryId,
                     // name: values.name,
                 }
@@ -82,7 +87,7 @@ function CreateBrandUpdated({ data }) {
                 const brandData = responseFromServer?.data?.brand
                 setValue("name", brandData.name);
                 setValue("categoryId", brandData?.categoryId?._id);
-                _setBrandList([...responseFromServer?.data?.brand?.brandList?.map((ele) => ele)])
+                setBrandList([...responseFromServer?.data?.brand?.brandList?.map((ele) => ele)])
                 // _setRemoveBrandList([...responseFromServer?.data?.brand?.brandList?.map((ele) => ele._id)])
             } else if (responseFromServer?.data?.status === "JWT_INVALID") {
                 toast.info(responseFromServer.data.message);
@@ -106,19 +111,33 @@ function CreateBrandUpdated({ data }) {
     function addToBrandList() {
 
         if (brandInput) {
-            _setBrandList((prev) => [...prev, brandInput]);
+            if (brandList?.find((ele) => ele?.name?.toLowerCase() === brandInput?.toLowerCase())) {
+                toast.info("Brand already exist with given name");
+                return;
+            }
+
+            if (addedBrands?.find((ele) => ele?.toLowerCase() === brandInput?.toLowerCase())) {
+                toast.info("Brand already exist with given name");
+                return;
+            }
+
+            setBrandList((prev) => [...prev, brandInput]);
             setAddedBrands((prev) => [...prev, brandInput]);
             setValue("brandId", "");
         } else {
-            setError("brandId", {
-                message: "Please enter brand",
-            });
+            toast.info("Please enter brand name");
+            return;
         }
     }
-    function deleteBrandList(id, ele) {
+    function deleteBrandList(id, ele, type) {
 
-        _setBrandList(_brandList.filter((item, index) => index != id));
-        _setRemoveBrandList(prev => [...prev, ele])
+        setBrandList(brandList.filter((item, index) => index != id));
+        if (type === "ele") {
+            setAddedBrands(addedBrands.filter((item) => item !== ele));
+        }
+        if (type === "id") {
+            _setRemoveBrandList(prev => [...prev, ele])
+        }
     }
     useEffect(() => {
         initialAPICall();
@@ -177,7 +196,7 @@ function CreateBrandUpdated({ data }) {
                                     />
                                 </div>
                             </div>
-                            {_brandList
+                            {brandList
                                 ?.reduce((rows, key, index) => {
                                     // Create a new row after every 3 items
                                     if (index % 3 === 0) rows.push([]);
@@ -196,7 +215,7 @@ function CreateBrandUpdated({ data }) {
                                                 <InputBox value={ele?.name ? ele?.name : ele} disable={true} />
                                                 <FontAwesomeIcon
                                                     icon={faTrash}
-                                                    onClick={() => deleteBrandList(rowIndex * 3 + colIndex, ele?._id)}
+                                                    onClick={() => deleteBrandList(rowIndex * 3 + colIndex, ele?._id ? ele?._id : ele, ele?._id ? "id" : "ele")}
                                                     className="trash fontAwesome_icon cursor_pointer ml-2"
                                                     style={{ marginLeft: 8 }}
                                                 />
