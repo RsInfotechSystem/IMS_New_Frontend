@@ -388,11 +388,11 @@ const Approval = () => {
             }}
             style={{ padding: "0px", minWidth: "100px" }}
           />
-          {/* <div
+          <div
             className="tab_btn"
             onClick={() => handleClick("transferList")}
             style={{
-              padding:"0px",minWidth:"70px",fontSize:"13px",
+              padding: "0px", minWidth: "70px", fontSize: "13px",
               backgroundColor:
                 activeTab == "shift" ? "#184965" : "#184965a8",
             }}
@@ -401,15 +401,16 @@ const Approval = () => {
             className="tab_btn"
             name={"Transfer List"}
             onClick={() => handleClick("anotherButton")}
-            style={{ 
-              padding:"0px",minWidth:"110px",fontSize:"13px",
-              backgroundColor: activeTab == "attendance" ? "#184965" : "#184965a8", }}
-          >Transfer List</div> */}
+            style={{
+              padding: "0px", minWidth: "110px", fontSize: "13px",
+              backgroundColor: activeTab == "attendance" ? "#184965" : "#184965a8",
+            }}
+          >Transfer List</div>
         </div>
       </div>
 
       {/* ============================== Sell Approval================================= */}
-      {/* {state.isShowSellList && (
+      {state.isShowSellList && (
         <div className="table_wrapper">
           <div className="table_main">
             <div className="table_section inventory_table_res">
@@ -495,88 +496,88 @@ const Approval = () => {
             </div>
           </div>
         </div>
-      )} */}
+      )}
 
       {/* ============================== Transfer Approval================================= */}
 
-      {/* {!state.isShowSellList && ( */}
-      <div className="table_wrapper">
-        <div className="table_main">
-          <div className="table_section inventory_table_res">
-            <div className="table_header">
-              <div className="col_20p">
-                <h5>Sr. No.</h5>
-              </div>
-              <div className="col_35p">
-                <h5>From Location</h5>
-              </div>
-              <div className="col_35p">
-                <h5>To Location</h5>
-              </div>
-              <div className="col_35p">
-                <h5>Transfer By</h5>
-              </div>
-              <div className="col_35p">
-                <h5>Remark</h5>
-              </div>
-              <div className="col_35p">
-                <h5>Status</h5>
-              </div>
+      {!state.isShowSellList && (
+        <div className="table_wrapper">
+          <div className="table_main">
+            <div className="table_section inventory_table_res">
+              <div className="table_header">
+                <div className="col_20p">
+                  <h5>Sr. No.</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>From Location</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>To Location</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Transfer By</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Remark</h5>
+                </div>
+                <div className="col_35p">
+                  <h5>Status</h5>
+                </div>
 
-              <div className="col_35p">
-                <h5 className="action_wrraper">Action</h5>
+                <div className="col_35p">
+                  <h5 className="action_wrraper">Action</h5>
+                </div>
               </div>
+              {trasferMaterial?.length > 0 ? (
+                trasferMaterial?.map((materialDetails, index) => {
+                  return (
+                    <>
+                      <div className="table_data" key={index}>
+                        <div className="col_20p">
+                          <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                        </div>
+                        <div className="col_35p">
+                          <h6>{materialDetails?.fromLocation?.name}</h6>
+                        </div>{" "}
+                        <div className="col_35p">
+                          <h6>{materialDetails?.toLocation?.name}</h6>
+                        </div>
+                        <div className="col_35p">
+                          <h6>{materialDetails?.transferBy?.name}</h6>
+                        </div>
+                        <div className="col_35p">
+                          <h6>{materialDetails?.remark ? materialDetails?.remark : "-"}</h6>
+                        </div>
+                        <div className="col_35p">
+                          <h6>{materialDetails?.status}</h6>
+                        </div>
+                        <div className="col_35p">
+                          <h6 className="action_wrraper">
+                            <button
+                              className="actionbtn sell_btn"
+                              onClick={() => approvedTransferMaterials(materialDetails._id)}
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="actionbtn sell_btn"
+                              onClick={() => showInputDialog(materialDetails._id)}
+                            >
+                              Reject
+                            </button>
+                          </h6>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })
+              ) : (
+                <p className="no_data">Data Not Available</p>
+              )}
             </div>
-            {trasferMaterial?.length > 0 ? (
-              trasferMaterial?.map((materialDetails, index) => {
-                return (
-                  <>
-                    <div className="table_data" key={index}>
-                      <div className="col_20p">
-                        <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                      </div>
-                      <div className="col_35p">
-                        <h6>{materialDetails?.fromLocation?.name}</h6>
-                      </div>{" "}
-                      <div className="col_35p">
-                        <h6>{materialDetails?.toLocation?.name}</h6>
-                      </div>
-                      <div className="col_35p">
-                        <h6>{materialDetails?.transferBy?.name}</h6>
-                      </div>
-                      <div className="col_35p">
-                        <h6>{materialDetails?.remark ? materialDetails?.remark : "-"}</h6>
-                      </div>
-                      <div className="col_35p">
-                        <h6>{materialDetails?.status}</h6>
-                      </div>
-                      <div className="col_35p">
-                        <h6 className="action_wrraper">
-                          <button
-                            className="actionbtn sell_btn"
-                            onClick={() => approvedTransferMaterials(materialDetails._id)}
-                          >
-                            Approve
-                          </button>
-                          <button
-                            className="actionbtn sell_btn"
-                            onClick={() => showInputDialog(materialDetails._id)}
-                          >
-                            Reject
-                          </button>
-                        </h6>
-                      </div>
-                    </div>
-                  </>
-                );
-              })
-            ) : (
-              <p className="no_data">Data Not Available</p>
-            )}
           </div>
         </div>
-      </div>
-      {/* )} */}
+      )}
       {/* {
         pageCount > 1 && (
           <div className="pagination_wrapper">
