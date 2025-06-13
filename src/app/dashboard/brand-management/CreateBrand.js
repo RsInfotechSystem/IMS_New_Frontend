@@ -126,7 +126,7 @@ function CreateBrand({ data }) {
               <div className="input_wrapper col-md-6">
                 <label>Category*</label>
                 <SelectBox
-                  firstOption="select Category"
+                  firstOption="Select Category"
                   options={CategoryMapData}
                   displayName={"name"}
                   value={"_id"}
