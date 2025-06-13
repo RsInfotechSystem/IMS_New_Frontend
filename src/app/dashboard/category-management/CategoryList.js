@@ -199,7 +199,7 @@ const CategoryList = () => {
         <div className="table_main">
           <div className="table_section">
             <div className="table_header">
-              <div className="col_20p">
+              <div className="col_10p">
                 <div className="check_box">
                   <input
                     className="form-check-input"
@@ -210,11 +210,14 @@ const CategoryList = () => {
                   <label className="form-check-label"></label>
                 </div>
               </div>
-              <div className="col_20p">
+              <div className="col_15p">
                 <h5>Sr. No.</h5>
               </div>
-              <div className="col_35p">
+              <div className="col_25p">
                 <h5>Category</h5>
+              </div>
+              <div className="col_25p">
+                <h5>Group</h5>
               </div>
               <div className="col_20p">
                 <h5 className="action_wrraper">Action</h5>
@@ -226,7 +229,7 @@ const CategoryList = () => {
                   return (
                     <>
                       <div className="table_data" key={index}>
-                        <div className="col_20p">
+                        <div className="col_10p">
                           <div className="check_box">
                             <input
                               className="form-check-input"
@@ -238,11 +241,14 @@ const CategoryList = () => {
                             <label className="form-check-label"></label>
                           </div>
                         </div>
-                        <div className="col_20p">
+                        <div className="col_15p">
                           <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                         </div>
-                        <div className="col_35p">
+                        <div className="col_25p">
                           <h6>{category?.name}</h6>
+                        </div>
+                        <div className="col_25p">
+                          <h6>{category?.group}</h6>
                         </div>
                         <div className="col_20p">
                           <h6 className="action_wrraper">

@@ -3,6 +3,8 @@ import ButtonLoader from "@/common-components/ButtonLoader";
 import CustomBtn from "@/common-components/CustomBtn";
 import InputBox from "@/common-components/InputBox";
 import Loader from "@/common-components/Loader";
+import SelectBox from "@/common-components/Select";
+import groupArray from "@/helper/groupArray";
 import { getCategory } from "@/services/commonApis";
 import { communication } from "@/services/communication";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
@@ -36,7 +38,9 @@ function CreateCategory({ data }) {
     setValue,
     reset,
     formState: { errors },
+    watch
   } = useForm();
+  const selectedGroup = watch("group");
 
   const onSubmit = async (values) => {
     if (selectedOption == "") {
@@ -47,6 +51,7 @@ function CreateCategory({ data }) {
     try {
       let payload = {
         name: values.category,
+        group: values.group,
         // isReplaceable: selectedOption === "Yes" ? true : false,
         isReplaceable: selectedOption === "Yes" ? true : false,
       };
@@ -83,6 +88,7 @@ function CreateCategory({ data }) {
         // let user = response.data.user;
         setCategoryId(response.data.category._id);
         setValue("category", response.data.category.name);
+        setValue("group", response.data.category.group?.toUpperCase());
         setSelectedOption(response.data.category.isReplaceable ? "Yes" : "No");
       } else if (response?.data?.status === "JWT_INVALID") {
         toast.warn(response.data.message);
@@ -104,6 +110,7 @@ function CreateCategory({ data }) {
       let payload = {
         categoryId: categoryId,
         name: values.category,
+        group: values.group,
         isReplaceable: selectedOption === "Yes" ? true : false,
       };
       setButtonLoader(true);
@@ -151,17 +158,33 @@ function CreateCategory({ data }) {
             />
           </div>
           <div className="form_modal_body">
-            <div className="input_wrapper col-6">
-              <label>Category Name*</label>
-              <InputBox
-                type={"text"}
-                register={{
-                  ...register("category", {
-                    required: "Category Name is required",
-                  }),
-                }}
-                errors={errors.category}
-              />
+            <div className="input_wrapper row">
+              <div className="input_wrapper col-6">
+                <label>Category Name*</label>
+                <InputBox
+                  type={"text"}
+                  register={{
+                    ...register("category", {
+                      required: "Category Name is required",
+                    }),
+                  }}
+                  errors={errors.category}
+                />
+              </div>
+              <div className="input_wrapper col-6">
+                <label>Select Group*</label>
+                <SelectBox
+                  firstOption="Select Group"
+                  options={groupArray}
+                  selectedValue={selectedGroup}
+                  value={selectedGroup}
+                  register={{
+                    ...register("group"),
+                    required: "Group is required",
+                  }}
+                />
+
+              </div>
             </div>
             <div className="input_wrapper col-6">
               <label>Will this category be added to the material? *</label>
