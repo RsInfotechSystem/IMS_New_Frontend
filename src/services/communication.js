@@ -2869,5 +2869,18 @@ export const communication = {
       throw error;
     }
   },
+  getCategoryForInwardReport: async () => {
+    try {
+      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-for-inward`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
 };
 
