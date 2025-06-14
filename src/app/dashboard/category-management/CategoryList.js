@@ -248,7 +248,7 @@ const CategoryList = () => {
                           <h6>{category?.name}</h6>
                         </div>
                         <div className="col_25p">
-                          <h6>{category?.group}</h6>
+                          <h6>{category?.group ?? "--"}</h6>
                         </div>
                         <div className="col_20p">
                           <h6 className="action_wrraper">
