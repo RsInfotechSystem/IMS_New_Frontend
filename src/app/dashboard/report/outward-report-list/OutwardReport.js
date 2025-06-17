@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 
-const OutwardReport = () => {
+const OutwardReportList = () => {
   const router = useRouter();
   const [reportDetails, setReportDetails] = useState([]);
   const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
@@ -168,4 +168,4 @@ const OutwardReport = () => {
   );
 };
 
-export default OutwardReport;
+export default OutwardReportList;
