@@ -1,8 +1,8 @@
 import React from "react";
-import OutwardReport from "./OutwardReport";
+import OutwardReportList from "./OutwardReportList";
 
 function Page() {
-    return <OutwardReport />;
+    return <OutwardReportList />;
 }
 
 export default Page;
