@@ -21,6 +21,10 @@
   --white-color: #ffffff;
   --black_transparent: rgba(0, 0, 0, 0.686);
 }
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 
 custom_button:hover .support-orange {
   color: var(--orange_color) !important;
@@ -5632,3 +5636,4 @@ ul .appointment_letter_ul {
   height: 95dvh;
   overflow-y: auto;
 }
+

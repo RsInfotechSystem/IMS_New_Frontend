@@ -122,45 +122,51 @@ const OutwardReportList = () => {
                 <h5> Stock OutBy</h5>
               </div>
             </div>
-            {reportDetails?.map((data, index) => {
-              return (
-                <>
-                  <div className="table_data">
-                    <div className="col_15p">
-                      <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                    </div>
-                    <div className="col_20p">
-                      <h6>{data?.categoryId?.name}</h6>
-                    </div>
-                    <div className="col_20p">
-                      <h6>{data?.brandId?.name}</h6>
-                    </div>
+            {reportDetails?.length > 0 ? (
+              <>
+                {reportDetails?.map((data, index) => {
+                  return (
+                    <>
+                      <div className="table_data">
+                        <div className="col_15p">
+                          <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
+                        </div>
+                        <div className="col_20p">
+                          <h6>{data?.categoryId?.name}</h6>
+                        </div>
+                        <div className="col_20p">
+                          <h6>{data?.brandId?.name}</h6>
+                        </div>
 
-                    <div className="col_20p">
-                      <h6>{data?.modelId?.name}</h6>
-                    </div>
+                        <div className="col_20p">
+                          <h6>{data?.modelId?.name}</h6>
+                        </div>
 
-                    <div className="col_30p">
-                      <h6>{data?.locationId?.name}</h6>
-                    </div>
-
-
-                    <div className="col_25p">
-                      <h6>{data?.conditionType}</h6>
-                    </div>
+                        <div className="col_30p">
+                          <h6>{data?.locationId?.name}</h6>
+                        </div>
 
 
-                    <div className="col_20p">
-                      <h6>{data?.quantity}</h6>
-                    </div>
+                        <div className="col_25p">
+                          <h6>{data?.conditionType}</h6>
+                        </div>
 
-                    <div className="col_20p">
-                      <h6>{data?.stockOutBy?.name}</h6>
-                    </div>
-                  </div>
-                </>
-              );
-            })}
+
+                        <div className="col_20p">
+                          <h6>{data?.quantity}</h6>
+                        </div>
+
+                        <div className="col_20p">
+                          <h6>{data?.stockOutBy?.name}</h6>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </>
+            ) : (
+              <p className="no_data">Data Not Available</p>
+            )}
           </div>
         </div>
       </div>
