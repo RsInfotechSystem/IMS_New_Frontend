@@ -2844,9 +2844,9 @@ export const communication = {
       throw error;
     }
   },
-  getOutWardReport: async () => {
+  getCategoryWiseOutwardReport: async (id, page = 1, searchString) => {
     try {
-      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-outward-report`, {}, {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-wise-outward-report`, { categoryId: id, page, searchString }, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
