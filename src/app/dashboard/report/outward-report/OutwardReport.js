@@ -74,7 +74,7 @@ const OutwardReport = () => {
 
     useEffect(() => {
         let filtered = originalData.filter((category) =>
-            category.name.toLowerCase().includes(searchTerm.toLowerCase())
+            category?.category?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
         switch (sortBy) {
@@ -85,10 +85,10 @@ const OutwardReport = () => {
                 filtered.sort((a, b) => a.quantity - b.quantity);
                 break;
             case "name-asc":
-                filtered.sort((a, b) => a.name.localeCompare(b.name));
+                filtered.sort((a, b) => a.category.localeCompare(b.category));
                 break;
             case "name-desc":
-                filtered.sort((a, b) => b.name.localeCompare(a.name));
+                filtered.sort((a, b) => b.category.localeCompare(a.category));
                 break;
         }
 
@@ -301,7 +301,7 @@ const OutwardReport = () => {
                         <CardContent>
                             <div
                                 style={{
-                                    height: "400px",
+                                    height: "520px",
                                     backgroundColor: bgColor,
                                     borderRadius: "1rem",
                                     padding: "1rem",
@@ -310,19 +310,28 @@ const OutwardReport = () => {
                                 <ResponsiveContainer width="100%" height="100%">
                                     <BarChart
                                         data={filteredCategories}
+                                        height={700}
                                         margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                                        onClick={() => router.push("/dashboard/report/outward-report-list")}
+                                        onClick={(event) => {
+                                            const payload = event?.activePayload?.[0]?.payload;
+                                            if (payload?.categoryId) {
+                                                router.push(`/dashboard/report/outward-report-list?categoryId=${payload.categoryId}`);
+                                            }
+                                        }}
                                     >
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis
-                                            dataKey="name"
+                                            dataKey="category"
                                             angle={-45}
                                             textAnchor="end"
                                             interval={0}
                                             height={80}
-                                            tick={{ fontSize: 12 }}
+                                            tick={{ fontSize: 14 }}
                                         />
-                                        <YAxis tick={{ fontSize: 12 }} />
+                                        <YAxis
+                                            tick={{ fontSize: 12 }}
+                                        // domain={[0, 'dataMax + 10']} // 👈 adds padding above the highest bar
+                                        />
                                         <Tooltip
                                             contentStyle={{
                                                 backgroundColor: "white",
@@ -331,10 +340,10 @@ const OutwardReport = () => {
                                             }}
                                             formatter={(value, name, props) => [
                                                 `${value.toLocaleString()} quantity`,
-                                                // props.payload.name,
+                                                props.payload.category,
                                             ]}
                                         />
-                                        <Bar dataKey="quantity" fill={primaryColor} radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="quantity" fill={primaryColor} radius={[4, 4, 0, 0]} barSize={80} />
                                     </BarChart>
                                 </ResponsiveContainer>
                             </div>

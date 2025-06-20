@@ -8,6 +8,7 @@ import React, { useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 
 const OutwardReportList = () => {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [reportDetails, setReportDetails] = useState([]);
   const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
@@ -17,13 +18,25 @@ const OutwardReportList = () => {
   const [data, setData] = useState([]);
   const [loader, setLoader] = useState(false);
 
-  const getReportMaterialList = async () => {
+  const getReportMaterialList = async (page = 1, searchString = "") => {
     try {
       setLoader(true);
-      const serverResponse = await communication.getOutWardReport();
+      const serverResponse = await communication.getCategoryWiseOutwardReport(
+        searchParams.get("categoryId"),
+        page,
+        searchString
+      );
+
       if (serverResponse?.data?.status === "SUCCESS") {
-        setReportDetails(serverResponse?.data?.stockArray);
-        setData(serverResponse?.data?.stockArray);
+        // Flatten all records from each category result
+        const flattenedRecords = serverResponse?.data?.result?.flatMap((cat) =>
+          cat?.records?.map((rec) => ({
+            ...rec,
+            category: cat.category, // set category string
+          }))
+        );
+        setReportDetails(flattenedRecords);
+        setData(flattenedRecords);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -37,40 +50,42 @@ const OutwardReportList = () => {
       setLoader(false);
     }
   };
+
+
   const handleSearch = (e) => {
     setSearchString(e.target.value);
-    let isSearch = true;
     clearTimeout(timeoutId);
-    let _timeOutId = setTimeout(() => {
-      const lowerQuery = e?.target?.value?.toLowerCase() ?? "";
-      if (lowerQuery) {
-        const searchData = data.filter(item =>
-          item.locationId.name.toLowerCase().includes(lowerQuery) ||
-          item.brandId.name.toLowerCase().includes(lowerQuery) ||
-          item.categoryId.name.toLowerCase().includes(lowerQuery) ||
-          item.conditionType.toLowerCase().includes(lowerQuery) ||
-          item.status.toLowerCase().includes(lowerQuery) ||
-          item.modelId.name.toLowerCase().includes(lowerQuery)
-        );
-        setReportDetails(searchData)
+    const _timeOutId = setTimeout(() => {
+      const query = e.target.value?.toLowerCase() ?? "";
+      if (query) {
+        const filtered = data.filter((item) => {
+          const stock = item?.stock || {};
+          return (
+            stock?.location?.toLowerCase()?.includes(query) ||
+            stock?.brand?.toLowerCase()?.includes(query) ||
+            item?.category?.toLowerCase()?.includes(query) ||
+            stock?.conditionType?.toLowerCase()?.includes(query) ||
+            stock?.status?.toLowerCase()?.includes(query) ||
+            stock?.modelId?.name?.toLowerCase()?.includes(query)
+          );
+        });
+        setReportDetails(filtered);
       } else {
         setReportDetails(data);
       }
-
-    }, 2000);
+    }, 1000);
     setTimeoutId(_timeOutId);
   };
 
+
   useEffect(() => {
-    getReportMaterialList();
-  }, []);
+    getReportMaterialList(1, searchString);
+  }, [searchString]);
 
 
   return (
     <>
       {loader && <Loader text="Fetching Data..." />}
-
-
       <div className="top_header">
         <div className="tab_title" style={{ textTransform: "capitalize" }}>
           {"Outward Report"}
@@ -125,44 +140,38 @@ const OutwardReportList = () => {
             {reportDetails?.length > 0 ? (
               <>
                 {reportDetails?.map((data, index) => {
+                  const stock = data?.stock || {};
                   return (
-                    <>
-                      <div className="table_data">
-                        <div className="col_15p">
-                          <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
-                        </div>
-                        <div className="col_20p">
-                          <h6>{data?.categoryId?.name}</h6>
-                        </div>
-                        <div className="col_20p">
-                          <h6>{data?.brandId?.name}</h6>
-                        </div>
-
-                        <div className="col_20p">
-                          <h6>{data?.modelId?.name}</h6>
-                        </div>
-
-                        <div className="col_30p">
-                          <h6>{data?.locationId?.name}</h6>
-                        </div>
-
-
-                        <div className="col_25p">
-                          <h6>{data?.conditionType}</h6>
-                        </div>
-
-
-                        <div className="col_20p">
-                          <h6>{data?.quantity}</h6>
-                        </div>
-
-                        <div className="col_20p">
-                          <h6>{data?.stockOutBy?.name}</h6>
-                        </div>
+                    <div className="table_data" key={data?._id}>
+                      <div className="col_15p">
+                        <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
-                    </>
+                      <div className="col_20p">
+                        <h6>{data?.category}</h6>
+                      </div>
+                      <div className="col_20p">
+                        <h6>{stock?.brand}</h6>
+                      </div>
+                      <div className="col_20p">
+                        <h6>{data?.model?.name}</h6>
+                      </div>
+                      <div className="col_30p">
+                        <h6>{stock?.location}</h6>
+                      </div>
+                      <div className="col_25p">
+                        <h6>{stock?.conditionType}</h6>
+                      </div>
+                      <div className="col_20p">
+                        <h6>{data?.quantity}</h6>
+                      </div>
+                      <div className="col_20p">
+                        <h6>{data?.stockOutBy}</h6>
+                      </div>
+                    </div>
                   );
                 })}
+
+
               </>
             ) : (
               <p className="no_data">Data Not Available</p>
