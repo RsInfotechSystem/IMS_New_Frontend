@@ -139,10 +139,26 @@ export const communication = {
       throw error;
     }
   },
-  getOutwardReportCategories: async (data) => {
+  getOutwardReportCategories: async () => {
     try {
       return await axios.post(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-outward-report-categories`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getInwardReportCategories: async () => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-inward-report-categories`,
         {},
         {
           headers: {
@@ -2847,6 +2863,19 @@ export const communication = {
   getCategoryWiseOutwardReport: async (id, page = 1, searchString) => {
     try {
       return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-wise-outward-report`, { categoryId: id, page, searchString }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
+  getCategoryWiseInwardReport: async (id, page = 1, searchString) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-wise-inward-report`, { categoryId: id, page, searchString }, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
