@@ -30,6 +30,7 @@ import {
 import { toast, ToastContainer } from "react-toastify";
 import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
+import CustomBtn from "@/common-components/CustomBtn";
 
 const primaryColor = "#184965";
 const primaryLight = "#2f6a8f";
@@ -99,6 +100,12 @@ const InwardReport = () => {
     return (
         <>
             {loader && <Loader text="Fetching Data..." />}
+            <div className="top_header my-2" style={{ paddingBottom: "10px" }}>
+                <div className="tab_title" style={{ cursor: "pointer" }} title="Back to report" onClick={() => router.push("/dashboard/report")}></div>
+                <div className="buttons_wrapper">
+                    <CustomBtn name={"Back"} onClick={() => { router.push("/dashboard/report"); }} />
+                </div>
+            </div>
             <div
                 style={{
                     minHeight: "100vh",
