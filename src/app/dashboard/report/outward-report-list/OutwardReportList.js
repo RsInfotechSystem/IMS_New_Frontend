@@ -1,17 +1,21 @@
 "use client";
 import CustomBtn from "@/common-components/CustomBtn";
 import Loader from "@/common-components/Loader";
+import Pagination from "@/common-components/Pagination";
 import Search from "@/common-components/Search";
 import { communication } from "@/services/communication";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
+const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
 const OutwardReportList = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [reportDetails, setReportDetails] = useState([]);
-  const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isPageUpdated, setIsPageUpdated] = useState(false);
+  const [pageCount, setPageCount] = useState(1);
   const [page, setPage] = useState(1);
   const [searchString, setSearchString] = useState("");
   const [timeoutId, setTimeoutId] = useState();
@@ -26,7 +30,6 @@ const OutwardReportList = () => {
         page,
         searchString
       );
-
       if (serverResponse?.data?.status === "SUCCESS") {
         // Flatten all records from each category result
         const flattenedRecords = serverResponse?.data?.result?.flatMap((cat) =>
@@ -37,6 +40,8 @@ const OutwardReportList = () => {
         );
         setReportDetails(flattenedRecords);
         setData(flattenedRecords);
+        setPageCount(serverResponse?.data?.xtotalPages);
+        setPage(page);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
         router.push("/");
@@ -50,7 +55,6 @@ const OutwardReportList = () => {
       setLoader(false);
     }
   };
-
 
   const handleSearch = (e) => {
     setSearchString(e.target.value);
@@ -79,8 +83,8 @@ const OutwardReportList = () => {
 
 
   useEffect(() => {
-    getReportMaterialList(1, searchString);
-  }, [searchString]);
+    getReportMaterialList(currentPage, searchString);
+  }, [isPageUpdated, searchString]);
 
 
   return (
@@ -90,6 +94,13 @@ const OutwardReportList = () => {
         <div className="tab_title" style={{ textTransform: "capitalize" }}>
           {"Outward Report"}
         </div>
+        <Pagination
+          isPageUpdated={isPageUpdated}
+          setIsPageUpdated={setIsPageUpdated}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          pageCount={pageCount}
+        />
       </div>
       <div className="search_btn_wrapper">
         <Search onChange={(e) => handleSearch(e)} placeholder={"Search"} />

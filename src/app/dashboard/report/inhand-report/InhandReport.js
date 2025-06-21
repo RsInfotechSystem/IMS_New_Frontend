@@ -35,8 +35,6 @@ const InhandReport = () => {
     }, [])
 
 
-
-
     return (
         <>
             <div className="top_header" style={{ paddingBottom: "10px" }}>
