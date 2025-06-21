@@ -40,7 +40,7 @@ const Report = () => {
                         <div className="report-grid">
                             {[
                                 { title: "STOCK IN HAND", link: "/dashboard/report/inhand-report" },
-                                { title: "INWARD REPORT", link: "/dashboard/report/report-details" },
+                                { title: "INWARD REPORT", link: "/dashboard/report/inward-report" },
                                 { title: "OUTWARD REPORT", link: "/dashboard/report/outward-report" },
                                 { title: "ENGINEER ASSIGN MATERIAL REPORT", link: "/dashboard/report/engineer-report" },
                             ].map((report, index) => (
