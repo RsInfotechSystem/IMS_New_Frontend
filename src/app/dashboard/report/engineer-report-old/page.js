@@ -2,7 +2,7 @@ import React from "react";
 import EngineerReport from "./EngineerReport";
 
 function Page() {
-  return <EngineerReport />;
+  return <EngineerReport/>;
 }
 
 export default Page;
