@@ -18,7 +18,7 @@ import {
     CardTitle,
     CardDescription,
 } from "@/utilities/common-component/Card";
-import { Search, BarChart3, ChevronDown } from "lucide-react";
+import { BarChart3, ChevronDown } from "lucide-react";
 import { Input } from "@/utilities/common-component/Input";
 import {
     Select,
@@ -31,6 +31,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
 import CustomBtn from "@/common-components/CustomBtn";
+import Search from "@/common-components/Search";
 
 const primaryColor = "#184965";
 const primaryLight = "#2f6a8f";
@@ -69,6 +70,10 @@ const OutwardReport = () => {
         }
     };
 
+    const handleSearch = (e) => {
+        setSearchTerm(e.target.value);
+    }
+
     useEffect(() => {
         fetchOutwardReport();
     }, []);
@@ -101,40 +106,40 @@ const OutwardReport = () => {
         <>
             {loader && <Loader text="Fetching Data..." />}
             <div className="top_header my-2" style={{ paddingBottom: "10px" }}>
-                <div className="tab_title" style={{ cursor: "pointer" }} title="Back to report" onClick={() => router.push("/dashboard/report")}></div>
+                <div className="tab_title" style={{ cursor: "pointer" }} title="Back to report" onClick={() => router.push("/dashboard/report")}>
+                    Inventory Outward Report
+                </div>
                 <div className="buttons_wrapper">
                     <CustomBtn name={"Back"} onClick={() => { router.push("/dashboard/report"); }} />
                 </div>
             </div>
 
-            <div
-                style={{
-                    minHeight: "100vh",
-                    backgroundColor: "#f9fafb",
-                    padding: "1rem",
-                    paddingLeft: "1.5rem",
-                    paddingRight: "1.5rem",
-                    paddingTop: "2rem",
-                }}
+            <div style={{
+                minHeight: "100vh",
+                backgroundColor: "#f9fafb",
+                padding: "1rem",
+                paddingLeft: "1.5rem",
+                paddingRight: "1.5rem",
+                paddingTop: "1rem",
+            }}
             >
-                <div
-                    style={{
-                        maxWidth: "1280px",
-                        margin: "0 auto",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "1.5rem",
-                    }}
+                <div style={{
+                    maxWidth: "1280px",
+                    margin: "0 auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1rem",
+                }}
                 >
                     {/* Header */}
-                    <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+                    {/* <div style={{ textAlign: "center", marginBottom: "2rem" }}>
                         <h1 style={{ fontSize: "1.375rem", fontWeight: "bold", color: "#111827", marginBottom: "0.5rem" }}>
                             Inventory Outward Report
                         </h1>
                         <p style={{ color: "#4b5563" }}>
                             Comprehensive analysis of stock movement by category
                         </p>
-                    </div>
+                    </div> */}
 
                     {/* Filters */}
                     <Card
@@ -146,20 +151,19 @@ const OutwardReport = () => {
                             padding: "30px"
                         }}
                     >
-                        <CardHeader style={{ marginBottom: "18px" }}>
-                            <CardTitle
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "8px",
-                                    color: primaryColor,
-                                    fontSize: "1.125rem",
-                                }}
-                            >
-                                <Search size={18} />
-                                Filters & Controls
-                            </CardTitle>
-                        </CardHeader>
+                        {/* <CardHeader style={{ marginBottom: "10px" }}> */}
+                        {/* <CardTitle style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                            color: primaryColor,
+                            fontSize: "1.125rem",
+                        }}
+                        > */}
+                        {/* <Search size={18} /> */}
+                        {/* Filters & Controls */}
+                        {/* </CardTitle> */}
+                        {/* </CardHeader> */}
                         <CardContent>
                             <div
                                 style={{
@@ -170,7 +174,7 @@ const OutwardReport = () => {
                             >
                                 {/* Search */}
                                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                                    <label style={{ fontSize: "0.875rem", fontWeight: "500", color: "#374151" }}>
+                                    {/* <label style={{ fontSize: "0.875rem", fontWeight: "500", color: "#374151" }}>
                                         Search Categories
                                     </label>
                                     <Input
@@ -186,7 +190,11 @@ const OutwardReport = () => {
                                             borderRadius: "0.5rem",
                                             boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
                                         }}
-                                    />
+                                    /> */}
+                                    <label style={{ fontSize: "0.875rem", fontWeight: "500", color: "#374151" }}>
+                                        Search Categories
+                                    </label>
+                                    <Search value={searchTerm} onChange={handleSearch} placeholder={"Search"} />
                                 </div>
 
                                 {/* Sort */}
@@ -202,12 +210,14 @@ const OutwardReport = () => {
                                                 justifyContent: "space-between",
                                                 alignItems: "center",
                                                 paddingRight: "0.75rem",
+                                                fontSize: "13px",
+                                                outline: "none",
                                             }}
                                             className="custom-select-trigger"
                                         >
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent style={{ fontSize: "13px" }} className="search_input">
                                             <SelectItem value="quantity-desc">Quantity (High to Low)</SelectItem>
                                             <SelectItem value="quantity-asc">Quantity (Low to High)</SelectItem>
                                             <SelectItem value="name-asc">Name (A to Z)</SelectItem>
@@ -249,12 +259,14 @@ const OutwardReport = () => {
                                                 justifyContent: "space-between",
                                                 alignItems: "center",
                                                 paddingRight: "0.75rem",
+                                                fontSize: "13px",
+                                                outline: "none",
                                             }}
                                             className="custom-select-trigger"
                                         >
                                             <SelectValue />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent style={{ fontSize: "13px" }}>
                                             <SelectItem value="10">Top 10</SelectItem>
                                             <SelectItem value="20">Top 20</SelectItem>
                                             <SelectItem value="30">Top 30</SelectItem>
@@ -270,7 +282,7 @@ const OutwardReport = () => {
                     {/* Chart */}
                     <Card
                         style={{
-                            marginTop: "2rem",
+                            // marginTop: "1rem",
                             backgroundColor: "#ffffff",
                             border: `1px solid ${borderColor}`,
                             borderRadius: "1rem",
