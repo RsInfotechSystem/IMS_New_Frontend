@@ -171,6 +171,22 @@ export const communication = {
       throw error;
     }
   },
+  getEngineerReportCategories: async () => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-engineer-report-categories`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   //?----------Role Management-------------------------------
   createRole: async (data) => {
     try {
