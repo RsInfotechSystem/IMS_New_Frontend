@@ -2,15 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-    ResponsiveContainer,
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
-    CartesianGrid,
-} from "recharts";
+// import {
+//     ResponsiveContainer,
+//     BarChart,
+//     Bar,
+//     XAxis,
+//     YAxis,
+//     CartesianGrid,
+// } from "recharts";
 import {
     Card,
     CardContent,
@@ -32,11 +31,23 @@ import { communication } from "@/services/communication";
 import Loader from "@/common-components/Loader";
 import CustomBtn from "@/common-components/CustomBtn";
 import Search from "@/common-components/Search";
+import CustomTooltip from "@/common-components/CustomTooltip";
+import {
+    Chart as ChartJS,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Tooltip,
+    Legend,
+} from "chart.js";
+import { Chart } from "react-chartjs-2";
 
 const primaryColor = "#184965";
 const primaryLight = "#2f6a8f";
 const bgColor = "#f4f8fb";
 const borderColor = "#d1d5db";
+// Register chart components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const EngineerReport = () => {
     const router = useRouter();
@@ -51,11 +62,11 @@ const EngineerReport = () => {
     const fetchEngineerReport = async () => {
         try {
             setLoader(true);
-            const serverResponse = await communication.getEngineerReportCategories();
+            const serverResponse = await communication.getEngineerWiseReport();
             if (serverResponse?.data?.status === "SUCCESS") {
-                const categories = serverResponse.data.category || [];
-                const total = categories?.reduce((sum, cat) => sum + cat.quantity, 0);
-                setOriginalData(categories);
+                const reports = serverResponse.data.report || [];
+                setOriginalData(reports);
+                const total = reports.reduce((acc, cur) => acc + (cur.totalAssignedQuantity || 0), 0);
                 setTotalQuantity(total);
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.warn(serverResponse.data.message);
@@ -79,28 +90,107 @@ const EngineerReport = () => {
     }, []);
 
     useEffect(() => {
-        let filtered = originalData.filter((category) =>
-            category?.category?.toLowerCase().includes(searchTerm.toLowerCase())
+        let filtered = originalData.filter((report) =>
+            report?.userName?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
         switch (sortBy) {
             case "quantity-desc":
-                filtered.sort((a, b) => b.quantity - a.quantity);
+                filtered.sort((a, b) => b.totalAssignedQuantity - a.totalAssignedQuantity);
                 break;
             case "quantity-asc":
-                filtered.sort((a, b) => a.quantity - b.quantity);
+                filtered.sort((a, b) => a.totalAssignedQuantity - b.totalAssignedQuantity);
                 break;
             case "name-asc":
-                filtered.sort((a, b) => a.category.localeCompare(b.category));
+                filtered.sort((a, b) => a.userName.localeCompare(b.userName));
                 break;
             case "name-desc":
-                filtered.sort((a, b) => b.category.localeCompare(a.category));
+                filtered.sort((a, b) => b.userName.localeCompare(a.userName));
                 break;
         }
 
         const limit = parseInt(showTop);
         setFilteredCategories(showTop === "100" ? filtered : filtered.slice(0, limit));
     }, [searchTerm, sortBy, originalData, showTop]);
+
+    const statusKeys = ["TO TEST", "READY", "FAULTY", "FAULTY-NO POWER", "NR", "TESTED-OK"];
+    const colors = {
+        "READY": "#2776A3",
+        "TO TEST": "#1D587A",
+        "FAULTY": "#649DC1",
+        "FAULTY-NO POWER": "#2F5B74",
+        "NR": "#7491a2",
+        "TESTED-OK": "#091c27",
+    };
+    const chartData = {
+        labels: filteredCategories.map((user) => user.userName),
+        datasets: statusKeys.map((status) => ({
+            label: status,
+            data: filteredCategories.map((user) => {
+                const entry = user.stockStatusSummary.find((s) => s.stockStatus === status);
+                return entry ? entry.totalAssignedQuantity : 0;
+            }),
+            backgroundColor: colors[status] || primaryColor,
+            stack: 'stack1',
+            barThickness: 70,
+            categoryPercentage: 1.0,  // 👈 Controls spacing between bars
+            barPercentage: 1.0
+        })),
+    };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: (context) => {
+                        const label = context.dataset.label || '';
+                        const value = context.raw;
+                        return `${label}: ${value}`;
+                    },
+                },
+            },
+            legend: {
+                position: 'top',
+                labels: {
+                    boxWidth: 20,
+                    padding: 10,
+                },
+            },
+        },
+        layout: {
+            padding: { top: 0 },
+        },
+        scales: {
+            x: {
+                stacked: true,
+                ticks: {
+                    font: {
+                        size: 16,
+                        weight: '500',
+                    },
+                    color: "#1f2937",
+                },
+            },
+            y: {
+                stacked: true,
+                ticks: {
+                    beginAtZero: true,
+                },
+            },
+        },
+        onClick: (evt, elements) => {
+            if (elements.length > 0) {
+                const index = elements[0].index;
+                const engineer = filteredCategories[index]?.userName;
+                if (engineer) {
+                    router.push(`/dashboard/report/engineer-report-list?userId=${filteredCategories[index]?.userId}`);
+                }
+            }
+        },
+    };
+
 
     return (
         <>
@@ -131,16 +221,6 @@ const EngineerReport = () => {
                     gap: "1rem",
                 }}
                 >
-                    {/* Header */}
-                    {/* <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-                        <h1 style={{ fontSize: "1.375rem", fontWeight: "bold", color: "#111827", marginBottom: "0.5rem" }}>
-                            Inventory Outward Report
-                        </h1>
-                        <p style={{ color: "#4b5563" }}>
-                            Comprehensive analysis of stock movement by category
-                        </p>
-                    </div> */}
-
                     {/* Filters */}
                     <Card
                         style={{
@@ -151,19 +231,7 @@ const EngineerReport = () => {
                             padding: "30px"
                         }}
                     >
-                        {/* <CardHeader style={{ marginBottom: "10px" }}> */}
-                        {/* <CardTitle style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                            color: primaryColor,
-                            fontSize: "1.125rem",
-                        }}
-                        > */}
-                        {/* <Search size={18} /> */}
-                        {/* Filters & Controls */}
-                        {/* </CardTitle> */}
-                        {/* </CardHeader> */}
+
                         <CardContent>
                             <div
                                 style={{
@@ -174,23 +242,6 @@ const EngineerReport = () => {
                             >
                                 {/* Search */}
                                 <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                                    {/* <label style={{ fontSize: "0.875rem", fontWeight: "500", color: "#374151" }}>
-                                        Search Categories
-                                    </label>
-                                    <Input
-                                        type="text"
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        placeholder="Search by category name..."
-                                        style={{
-                                            width: "100%",
-                                            padding: "0.5rem 0.75rem",
-                                            fontSize: "0.875rem",
-                                            border: `1px solid ${borderColor}`,
-                                            borderRadius: "0.5rem",
-                                            boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
-                                        }}
-                                    /> */}
                                     <label style={{ fontSize: "0.875rem", fontWeight: "500", color: "#374151" }}>
                                         Search Categories
                                     </label>
@@ -280,92 +331,24 @@ const EngineerReport = () => {
                     </Card>
 
                     {/* Chart */}
-                    <Card
-                        style={{
-                            // marginTop: "1rem",
-                            backgroundColor: "#ffffff",
-                            border: `1px solid ${borderColor}`,
-                            borderRadius: "1rem",
-                            boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-                            padding: "30px"
-                        }}
-                    >
+                    <Card style={{ backgroundColor: "#ffffff", border: `1px solid ${borderColor}`, borderRadius: "1rem", boxShadow: "0 4px 10px rgba(0,0,0,0.05)", padding: "30px" }}>
                         <CardHeader style={{ marginBottom: "18px" }}>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "1rem",
-                                }}
-                            >
+                            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
                                 <div>
-                                    <CardTitle
-                                        style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: "8px",
-                                            color: primaryColor,
-                                            fontSize: "1.125rem",
-                                        }}
-                                    >
+                                    <CardTitle style={{ display: "flex", alignItems: "center", gap: "8px", color: primaryColor, fontSize: "1.125rem" }}>
                                         <BarChart3 size={18} />
-                                        Stock Outward Visualization
+                                        Stock Assigned Visualization
                                     </CardTitle>
-                                    <CardDescription style={{ color: "#4b5563", marginTop: "0.25rem" }}>
-                                        Showing {filteredCategories.length} categories • Total:{" "}
-                                        {totalQuantity.toLocaleString()} quantity
+                                    <CardDescription style={{ color: "#4b5563", marginTop: "0.25rem", fontSize: "1rem" }}>
+                                        Showing {filteredCategories.length} engineers • Total: {totalQuantity.toLocaleString()} quantity
                                     </CardDescription>
                                 </div>
                             </div>
                         </CardHeader>
+
                         <CardContent>
-                            <div
-                                style={{
-                                    height: "520px",
-                                    backgroundColor: bgColor,
-                                    borderRadius: "1rem",
-                                    padding: "1rem",
-                                }}
-                            >
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart
-                                        data={filteredCategories}
-                                        height={700}
-                                        margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
-                                        onClick={(event) => {
-                                            const payload = event?.activePayload?.[0]?.payload;
-                                            if (payload?.categoryId) {
-                                                router.push(`/dashboard/report/outward-report-list?categoryId=${payload.categoryId}`);
-                                            }
-                                        }}
-                                    >
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis
-                                            dataKey="category"
-                                            angle={-45}
-                                            textAnchor="end"
-                                            interval={0}
-                                            height={80}
-                                            tick={{ fontSize: 14 }}
-                                        />
-                                        <YAxis
-                                            tick={{ fontSize: 12 }}
-                                        // domain={[0, 'dataMax + 10']} // 👈 adds padding above the highest bar
-                                        />
-                                        <Tooltip
-                                            contentStyle={{
-                                                backgroundColor: "white",
-                                                border: "1px solid #ccc",
-                                                borderRadius: "8px",
-                                            }}
-                                            formatter={(value, name, props) => [
-                                                `${value.toLocaleString()} quantity`,
-                                                props.payload.category,
-                                            ]}
-                                        />
-                                        <Bar dataKey="quantity" fill={primaryColor} radius={[4, 4, 0, 0]} barSize={80} />
-                                    </BarChart>
-                                </ResponsiveContainer>
+                            <div style={{ height: "480px", backgroundColor: bgColor, borderRadius: "1rem", padding: "1rem", marginTop: "1rem" }}>
+                                <Chart type="bar" data={chartData} options={chartOptions} />
                             </div>
                         </CardContent>
                     </Card>
