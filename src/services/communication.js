@@ -2918,14 +2918,16 @@ export const communication = {
       throw error;
     }
   },
-  getEngineerAssignedReport: async () => {
+  getEngineerWiseStockList: async (id, page = 1, searchString) => {
     try {
-      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-engineer-assigned-report`, {}, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("inventryToken")}`,
-        },
-      }
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-engineer-wise-stock-list`,
+        { userId: id, page, searchString },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
       );
     } catch (error) {
       throw error;

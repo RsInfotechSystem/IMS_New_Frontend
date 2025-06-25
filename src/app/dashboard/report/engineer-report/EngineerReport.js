@@ -66,7 +66,16 @@ const EngineerReport = () => {
             if (serverResponse?.data?.status === "SUCCESS") {
                 const reports = serverResponse.data.report || [];
                 setOriginalData(reports);
-                const total = reports.reduce((acc, cur) => acc + (cur.totalAssignedQuantity || 0), 0);
+
+                // ✅ Correct way to calculate total assigned quantity
+                const total = reports.reduce((total, user) => {
+                    const userTotal = user.stockStatusSummary.reduce(
+                        (sum, status) => sum + (status.totalAssignedQuantity || 0),
+                        0
+                    );
+                    return total + userTotal;
+                }, 0);
+
                 setTotalQuantity(total);
             } else if (serverResponse?.data?.status === "JWT_INVALID") {
                 toast.warn(serverResponse.data.message);
@@ -370,7 +379,7 @@ const EngineerReport = () => {
                                 <div style={{ fontSize: "1.5rem", fontWeight: "bold", color: primaryColor }}>
                                     {filteredCategories.length}
                                 </div>
-                                <p style={{ fontSize: "0.875rem", color: "#4b5563" }}>Categories Shown</p>
+                                <p style={{ fontSize: "0.875rem", color: "#4b5563" }}>Engineers Shown</p>
                             </CardContent>
                         </Card>
                         <Card style={{ textAlign: "center", borderRadius: "1rem", }}>
@@ -388,7 +397,7 @@ const EngineerReport = () => {
                                         ? Math.round(totalQuantity / filteredCategories.length)
                                         : 0}
                                 </div>
-                                <p style={{ fontSize: "0.875rem", color: "#4b5563" }}>Average per Category</p>
+                                <p style={{ fontSize: "0.875rem", color: "#4b5563" }}>Average per Quantity</p>
                             </CardContent>
                         </Card>
                     </div>
