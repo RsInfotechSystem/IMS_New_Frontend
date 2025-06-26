@@ -43,6 +43,7 @@ const Report = () => {
                                 { title: "INWARD REPORT", link: "/dashboard/report/inward-report" },
                                 { title: "OUTWARD REPORT", link: "/dashboard/report/outward-report" },
                                 { title: "ENGINEER ASSIGN MATERIAL REPORT", link: "/dashboard/report/engineer-report" },
+                                { title: "VENDOR REPORT", link: "/dashboard/report/vendor-report" },
                             ].map((report, index) => (
                                 <div key={index} className="report-card" onClick={() => router.push(report.link)}>
                                     <h6>{report.title}</h6>
