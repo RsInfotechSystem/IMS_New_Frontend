@@ -203,6 +203,22 @@ export const communication = {
       throw error;
     }
   },
+  getVendorReport: async () => {
+    try {
+      return await axios.post(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-vendor-wise-report`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getCookie("inventryToken")}`,
+          },
+        }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   //?----------Role Management-------------------------------
   createRole: async (data) => {
     try {
@@ -2933,11 +2949,24 @@ export const communication = {
       throw error;
     }
   },
+  getVendorWiseStockList: async (id, page = 1, searchString) => {
+    try {
+      return await axios.post(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-vendor-wise-stock-list`, { vendorId: id, page, searchString }, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getCookie("inventryToken")}`,
+        },
+      }
+      );
+    } catch (error) {
+      throw error;
+    }
+  },
   //? ------------------------------------action logs--------------------------------------
   getActionLogs: async (page = 1, searchString = "", startDate = null, endDate = null) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/actionLogs/get-action-logs-list`, { page, searchString, startDate, endDate }, {
+        `${process.env.NEXT_PUBLIC_SERVER_URL} / actionLogs / get - action - logs - list`, { page, searchString, startDate, endDate }, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
@@ -2950,10 +2979,10 @@ export const communication = {
   },
   getCategoryForInwardReport: async () => {
     try {
-      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-for-inward`, {
+      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL} / report / get - category -for-inward`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${getCookie("inventryToken")}`,
+          Authorization: `Bearer ${getCookie("inventryToken")} `,
         },
       }
       );

@@ -9,7 +9,7 @@ import React, { useEffect, useReducer, useState } from "react";
 import { toast } from "react-toastify";
 const pageLimit = process.env.NEXT_PUBLIC_LIMIT ?? 20;
 
-const OutwardReportList = () => {
+const VendorReportList = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [reportDetails, setReportDetails] = useState([]);
@@ -25,22 +25,20 @@ const OutwardReportList = () => {
   const getReportMaterialList = async (page = 1, searchString = "") => {
     try {
       setLoader(true);
-      const serverResponse = await communication.getCategoryWiseOutwardReport(
-        searchParams.get("categoryId"),
+      const serverResponse = await communication.getVendorWiseStockList(
+        searchParams.get("vendorId"),
         page,
         searchString
       );
+
+      console.log('searchParams.get("vendorId"), : ', searchParams.get("vendorId"))
       if (serverResponse?.data?.status === "SUCCESS") {
-        // Flatten all records from each category result
-        const flattenedRecords = serverResponse?.data?.result?.flatMap((cat) =>
-          cat?.records?.map((rec) => ({
-            ...rec,
-            category: cat.category, // set category string
-          }))
+        const flattenedRecords = serverResponse?.data?.result?.flatMap(
+          (cat) => cat?.stocks || []
         );
         setReportDetails(flattenedRecords);
         setData(flattenedRecords);
-        setPageCount(serverResponse?.data?.xtotalPages);
+        setPageCount(serverResponse?.data?.totalPages);
         setPage(page);
       } else if (serverResponse?.data?.status === "JWT_INVALID") {
         toast.info(serverResponse.data.message);
@@ -63,14 +61,13 @@ const OutwardReportList = () => {
       const query = e.target.value?.toLowerCase() ?? "";
       if (query) {
         const filtered = data.filter((item) => {
-          const stock = item?.stock || {};
           return (
-            stock?.location?.toLowerCase()?.includes(query) ||
-            stock?.brand?.toLowerCase()?.includes(query) ||
-            item?.category?.toLowerCase()?.includes(query) ||
-            stock?.conditionType?.toLowerCase()?.includes(query) ||
-            stock?.status?.toLowerCase()?.includes(query) ||
-            stock?.modelId?.name?.toLowerCase()?.includes(query)
+            item?.location?.name?.toLowerCase()?.includes(query) ||
+            item?.brand?.name?.toLowerCase()?.includes(query) ||
+            item?.category?.name?.toLowerCase()?.includes(query) ||
+            item?.conditionType?.toLowerCase()?.includes(query) ||
+            item?.status?.toLowerCase()?.includes(query) ||
+            item?.model?.name?.toLowerCase()?.includes(query)
           );
         });
         setReportDetails(filtered);
@@ -92,7 +89,7 @@ const OutwardReportList = () => {
       {loader && <Loader text="Fetching Data..." />}
       <div className="top_header">
         <div className="tab_title" style={{ textTransform: "capitalize" }}>
-          {"Outward Report"}
+          {"Vendor Report"}
         </div>
         <Pagination
           isPageUpdated={isPageUpdated}
@@ -105,9 +102,7 @@ const OutwardReportList = () => {
       <div className="search_btn_wrapper">
         <Search onChange={(e) => handleSearch(e)} placeholder={"Search"} />
         <div className="pagination_wrapper">
-
           <div className="buttons_wrapper mt-2">
-
             <CustomBtn
               name="Back"
               onClick={() => {
@@ -145,38 +140,37 @@ const OutwardReportList = () => {
                 <h5>QTY</h5>
               </div>
               <div className="col_20p">
-                <h5> Stock OutBy</h5>
+                <h5>Status</h5>
               </div>
             </div>
             {reportDetails?.length > 0 ? (
               <>
                 {reportDetails?.map((data, index) => {
-                  const stock = data?.stock || {};
                   return (
                     <div className="table_data" key={data?._id}>
                       <div className="col_15p">
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{data?.category ?? "--"}</h6>
+                        <h6>{data?.category?.name ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{stock?.brand ?? "--"}</h6>
+                        <h6>{data?.brand?.name ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
                         <h6>{data?.model?.name ?? "--"}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{stock?.location ?? "--"}</h6>
+                        <h6>{data?.location?.name ?? "--"}</h6>
                       </div>
                       <div className="col_25p">
-                        <h6>{stock?.conditionType ?? "--"}</h6>
+                        <h6>{data?.conditionType ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
                         <h6>{data?.quantity ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{data?.stockOutBy ?? "--"}</h6>
+                        <h6>{data?.status ?? "--"}</h6>
                       </div>
                     </div>
                   );
@@ -194,4 +188,4 @@ const OutwardReportList = () => {
   );
 };
 
-export default OutwardReportList;
+export default VendorReportList;

@@ -151,25 +151,25 @@ const InwardReportList = () => {
                         <h6>{Number(pageLimit) * (page - 1) + (index + 1)}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{data?.category?.name}</h6>
+                        <h6>{data?.category?.name ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{data?.brand?.name}</h6>
+                        <h6>{data?.brand?.name ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{data?.model?.name}</h6>
+                        <h6>{data?.model?.name ?? "--"}</h6>
                       </div>
                       <div className="col_30p">
-                        <h6>{data?.location?.name}</h6>
+                        <h6>{data?.location?.name ?? "--"}</h6>
                       </div>
                       <div className="col_25p">
-                        <h6>{data?.conditionType}</h6>
+                        <h6>{data?.conditionType ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{data?.quantity}</h6>
+                        <h6>{data?.quantity ?? "--"}</h6>
                       </div>
                       <div className="col_20p">
-                        <h6>{data?.status}</h6>
+                        <h6>{data?.status ?? "--"}</h6>
                       </div>
                     </div>
                   );
