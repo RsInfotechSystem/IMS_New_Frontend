@@ -312,10 +312,10 @@ const VendorReport = () => {
                                         }}
                                     >
                                         <BarChart3 size={18} />
-                                        Stock Outward Visualization
+                                        Stock Vendor Visualization
                                     </CardTitle>
                                     <CardDescription style={{ color: "#4b5563", marginTop: "0.25rem" }}>
-                                        Showing {filteredCategories.length} categories • Total:{" "}
+                                        Showing {filteredCategories.length} vendors • Total:{" "}
                                         {totalQuantity.toLocaleString()} quantity
                                     </CardDescription>
                                 </div>
@@ -324,7 +324,7 @@ const VendorReport = () => {
                         <CardContent>
                             <div
                                 style={{
-                                    height: "520px",
+                                    height: "500px",
                                     backgroundColor: bgColor,
                                     borderRadius: "1rem",
                                     padding: "1rem",
@@ -334,7 +334,7 @@ const VendorReport = () => {
                                     <BarChart
                                         data={filteredCategories}
                                         height={700}
-                                        margin={{ top: 20, right: 30, left: 20, bottom: 40 }}
+                                        margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
                                         onClick={(event) => {
                                             const payload = event?.activePayload?.[0]?.payload;
                                             if (payload?.vendorId) {
@@ -345,11 +345,11 @@ const VendorReport = () => {
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis
                                             dataKey="vendorName"
-                                            angle={-45}
-                                            textAnchor="end"
+                                            // angle={-45}
+                                            // textAnchor="end"
                                             interval={0}
                                             height={80}
-                                            tick={{ fontSize: 14 }}
+                                            tick={{ fontSize: 15 }}
                                         />
                                         <YAxis
                                             tick={{ fontSize: 12 }}
