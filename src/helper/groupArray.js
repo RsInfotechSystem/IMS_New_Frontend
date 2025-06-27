@@ -10,6 +10,8 @@ const groupArray = [
     "NETWORKING DEVICES",
     "NON-IT MATERIAL",
     "PASSIVE NETWORKING",
+    "PRINTERS/SCANNERS",
+    "Plotters",
     "PHONES",
     "POWER DISTRIBUTION UNITS",
     "RACKS",

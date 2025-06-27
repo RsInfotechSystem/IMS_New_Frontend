@@ -2966,7 +2966,7 @@ export const communication = {
   getActionLogs: async (page = 1, searchString = "", startDate = null, endDate = null) => {
     try {
       return await axios.post(
-        `${process.env.NEXT_PUBLIC_SERVER_URL} / actionLogs / get - action - logs - list`, { page, searchString, startDate, endDate }, {
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/actionLogs/get-action-logs-list`, { page, searchString, startDate, endDate }, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")}`,
@@ -2979,7 +2979,7 @@ export const communication = {
   },
   getCategoryForInwardReport: async () => {
     try {
-      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL} / report / get - category -for-inward`, {
+      return await axios.get(`${process.env.NEXT_PUBLIC_SERVER_URL}/report/get-category-for-inward`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${getCookie("inventryToken")} `,
